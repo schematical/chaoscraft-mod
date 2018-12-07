@@ -7,6 +7,8 @@ package com.schematical.chaoscraft.entities;
 
 import com.google.common.collect.Sets;
 import com.schematical.chaoscraft.ChaosCraft;
+import com.schematical.chaoscraft.ai.AIFindExistingOrganisims;
+import com.schematical.chaoscraft.ai.AISpawnOrganisim;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.entity.RenderLiving;
@@ -36,47 +38,15 @@ public class EntityRick extends EntityLiving {
 
         this.tasks.taskEntries.clear();
 
-        this.tasks.addTask(2, new AISpawnOrganisim(this));
+        this.tasks.addTask(3, new AISpawnOrganisim(this));
         this.tasks.addTask(1, new EntityAISwimming(this));
         //this.tasks.addTask(6, new EntityAIWander(this, 0.6D));
         this.tasks.addTask(11, new EntityAIWatchClosest(this, EntityPlayer.class, 10.0F));
         //this.targetTasks.addTask(2, new EntityAINearestAttackableTarget(this, EntityPlayer.class, true));
+        this.tasks.addTask(2, new AIFindExistingOrganisims(this, EntityEvilRabbit.class));
     }
-    static class AISpawnOrganisim extends EntityAIBase
-    {
-        protected EntityRick rick;
-        public AISpawnOrganisim(EntityRick _rick)
-        {
-            super();
-            this.rick = _rick;
-        }
-        public boolean shouldExecute(){
-            if(rick.organisims.size() >= ChaosCraft.config.maxBotCount) {
-                return false;
-            }
-            return true;
-        }
-        public boolean shouldContinueExecuting() {
-
-            return false;//super.shouldContinueExecuting();
-        }
-        public void startExecuting()
-        {
-
-            World world = rick.getEntityWorld();
-            if(!world.isRemote) {
-                EntityEvilRabbit rabbit = new EntityEvilRabbit(world, "ChaosCraft Rabbit", rick);
-                rabbit.setCustomNameTag("ChaosCraft Rabbit");
-                BlockPos pos = rick.getPosition();
-                rabbit.setPosition(pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1);
-                rick.organisims.add(rabbit);
-                world.spawnEntity(rabbit);
-            }
-        }
 
 
-
-    }
 
 
     @Override

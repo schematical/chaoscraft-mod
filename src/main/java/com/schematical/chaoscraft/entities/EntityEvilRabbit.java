@@ -17,7 +17,7 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import java.util.Set;
 
 public class EntityEvilRabbit extends EntityRabbit {
-    protected EntityRick rick;
+    public EntityRick rick;
 
     public EntityEvilRabbit(World worldIn) {
         this(worldIn, "Evil Rabbit", null);
