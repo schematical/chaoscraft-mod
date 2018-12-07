@@ -1,0 +1,16 @@
+[
+{
+  "modid": "chaoscraft",
+  "name": "ChaosCraft",
+  "description": "The NPCs are learning",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Schematical"],
+  "credits": "Schematical.com",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
