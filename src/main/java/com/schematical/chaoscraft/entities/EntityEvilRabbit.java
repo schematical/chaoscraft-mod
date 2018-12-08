@@ -5,6 +5,7 @@ package com.schematical.chaoscraft.entities;
  */
 
 
+import com.schematical.chaoscraft.ai.NeuralNet;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.passive.EntityRabbit;
@@ -18,6 +19,7 @@ import java.util.Set;
 
 public class EntityEvilRabbit extends EntityRabbit {
     public EntityRick rick;
+    public NeuralNet neuralNet;
 
     public EntityEvilRabbit(World worldIn) {
         this(worldIn, "Evil Rabbit", null);

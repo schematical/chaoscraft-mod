@@ -19,7 +19,7 @@ public class AISpawnOrganisim extends EntityAIBase
         this.rick = _rick;
     }
     public boolean shouldExecute(){
-        if(rick.organisims.size() >= ChaosCraft.config.maxBotCount) {
+        if(ChaosCraft.organisims.size() >= ChaosCraft.config.maxBotCount) {
             return false;
         }
         return true;
@@ -37,7 +37,7 @@ public class AISpawnOrganisim extends EntityAIBase
             rabbit.setCustomNameTag("ChaosCraft Rabbit");
             BlockPos pos = rick.getPosition();
             rabbit.setPosition(pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1);
-            rick.organisims.add(rabbit);
+            ChaosCraft.organisims.add(rabbit);
             world.spawnEntity(rabbit);
         }
     }

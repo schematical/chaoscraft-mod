@@ -8,10 +8,12 @@ import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.entities.EntityEvilRabbit;
 import com.schematical.chaoscraft.entities.EntityRick;
 import net.minecraft.command.CommandBase;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.EntityEntry;
@@ -38,6 +40,19 @@ public class ModEntities {
                 .id(new ResourceLocation(ChaosCraft.MODID, "evilrabbit"), 2)
                 .build();
         event.getRegistry().registerAll(e2);
+    }
+
+    @SubscribeEvent
+    public static void onEntityJoinWorld(EntityJoinWorldEvent event) {
+        Entity entity = event.getEntity();
+        if(event.getEntity().getEntityWorld().isRemote){
+            return;
+        }
+        if (entity instanceof EntityRick) {
+            ChaosCraft.rick = (EntityRick) event.getEntity();
+        }else if (entity instanceof EntityEvilRabbit) {
+            ChaosCraft.organisims.add((EntityEvilRabbit)entity);
+        }
     }
 
 

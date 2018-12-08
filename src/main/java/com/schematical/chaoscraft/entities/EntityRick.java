@@ -27,7 +27,7 @@ import net.minecraft.world.World;
 import java.util.Set;
 
 public class EntityRick extends EntityLiving {
-    public Set<EntityCreature> organisims = Sets.<EntityCreature>newLinkedHashSet();
+
 
     public EntityRick(World worldIn) {
         this(worldIn, "Rick");
@@ -68,8 +68,8 @@ public class EntityRick extends EntityLiving {
     }
     public void onOrganisimDeath(EntityCreature creature){
         if(!world.isRemote) {
-            if(organisims.contains(creature)) {
-                organisims.remove(creature);
+            if(ChaosCraft.organisims.contains(creature)) {
+                ChaosCraft.organisims.remove(creature);
             }
         }
     }
