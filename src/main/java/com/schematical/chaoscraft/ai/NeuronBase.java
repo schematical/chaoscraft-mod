@@ -26,12 +26,16 @@ public class NeuronBase extends InnovationBase {
         }
     }
     public float evaluate(){
+        if(hasBeenEvaluated){
+            return _lastValue;
+        }
         float totalScore = 0;
         for(NeuronDep neuronDep :dependencies){
             neuronDep._lastValue = neuronDep.weight * neuronDep.depNeuron.evaluate();
             totalScore += neuronDep._lastValue;
         }
         _lastValue = sigmoid(totalScore);
+        hasBeenEvaluated = true;
         return _lastValue;
 
     }
