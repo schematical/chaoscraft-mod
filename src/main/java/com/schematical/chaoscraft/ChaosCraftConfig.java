@@ -29,12 +29,20 @@ public class ChaosCraftConfig {
         obj.put("expiration", expiration);
         // try-with-resources statement based on post comment below :)
         try {
-            FileWriter file = new FileWriter(getConfigPath());
+            String configFilePath = getConfigPath();
+            File file = new File(configFilePath);
+            String dirPath = file.getParent();
+            File dir = new File(dirPath);
+            if(!dir.exists()){
+                dir.mkdirs();
+            }
+            FileWriter fileWriter = new FileWriter(configFilePath);
 
-            file.write(obj.toJSONString());
+
+            fileWriter.write(obj.toJSONString());
             System.out.println("Successfully Copied JSON Object to File..." + obj.toJSONString());
             System.out.println("\nJSON Object: " + obj);
-            file.close();
+            fileWriter.close();
         }catch (Exception e){
             ChaosCraft.logger.error("Error saving Config: " + e.getMessage());
         }
