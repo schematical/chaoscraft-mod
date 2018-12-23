@@ -1,6 +1,7 @@
 package com.schematical.chaoscraft;
 
 
+import com.amazonaws.ImmutableRequest;
 import com.amazonaws.opensdk.config.ConnectionConfiguration;
 import com.amazonaws.opensdk.config.TimeoutConfiguration;
 
@@ -11,6 +12,11 @@ import com.schematical.chaoscraft.proxies.IProxy;
 
 import com.schematical.chaosnet.ChaosNet;
 
+import com.schematical.chaosnet.ChaosNetClientBuilder;
+import com.schematical.chaosnet.auth.ChaosnetCognitoUserPool;
+import com.schematical.chaosnet.model.AuthLoginResponse;
+import com.schematical.chaosnet.model.AuthTokenRequest;
+import com.schematical.chaosnet.model.PostAuthTokenRequest;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -29,6 +35,7 @@ import java.util.Set;
 @Mod(modid = ChaosCraft.MODID, name = ChaosCraft.NAME, version = ChaosCraft.VERSION)
 public class ChaosCraft
 {
+
     public static final String MODID = "chaoscraft";
     public static final String NAME = "ChaosCraft";
     public static final String VERSION = "1.0";
@@ -47,20 +54,35 @@ public class ChaosCraft
         proxy.preInit(event);
         config = new ChaosCraftConfig();
         config.load();
+        if(config.refreshToken != null){
+            AuthTokenRequest authTokenRequest = new AuthTokenRequest();
+            authTokenRequest.setRefreshToken(config.refreshToken);
+            PostAuthTokenRequest postAuthTokenRequest = new PostAuthTokenRequest();
+            postAuthTokenRequest.authTokenRequest(authTokenRequest);
+            AuthLoginResponse authLoginResponse = ChaosCraft.sdk.postAuthToken(postAuthTokenRequest).getAuthLoginResponse();
+            config.accessToken = authLoginResponse.getAccessToken();
+
+        }
         logger = event.getModLog();
+
         sdk =  ChaosNet.builder()
                 .connectionConfiguration(
-                    new ConnectionConfiguration()
-                        .maxConnections(100)
-                        .connectionMaxIdleMillis(1000)
+                        new ConnectionConfiguration()
+                                .maxConnections(100)
+                                .connectionMaxIdleMillis(1000)
                 )
                 .timeoutConfiguration(
-                    new TimeoutConfiguration()
-                        .httpRequestTimeout(10000)
-                        .totalExecutionTimeout(20000)
-                        .socketTimeout(10000)
+                        new TimeoutConfiguration()
+                                .httpRequestTimeout(10000)
+                                .totalExecutionTimeout(20000)
+                                .socketTimeout(10000)
+                )
+                .signer(
+                        new ChaosNetSigner()
                 )
                 .build();
+
+
     }
 
     @EventHandler
@@ -72,6 +94,12 @@ public class ChaosCraft
         //logger.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
 
 
+    }
+    public class ChaosNetSigner implements ChaosnetCognitoUserPool {
+        @Override
+        public String generateToken(ImmutableRequest<?> immutableRequest) {
+            return ChaosCraft.config.accessToken;
+        }
     }
 
 

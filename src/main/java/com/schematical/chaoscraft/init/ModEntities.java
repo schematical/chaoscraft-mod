@@ -18,7 +18,6 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.EntityEntryBuilder;
-import org.apache.http.client.entity.EntityBuilder;
 
 @EventBusSubscriber(modid= ChaosCraft.MODID)
 public class ModEntities {

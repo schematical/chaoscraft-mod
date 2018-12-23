@@ -9,7 +9,7 @@ import org.json.simple.JSONObject;
 /**
  * Created by user1a on 12/8/18.
  */
-public class BlockPositionInput extends InputNeuron {
+public class BlockPositionInput                                                                                                                          extends InputNeuron {
     private static final String BLOCK_ID = "BLOCK_ID";
     public String attributeId;
     public String attributeValue;

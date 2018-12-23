@@ -68,10 +68,14 @@ public class CommandChaosCraftAuth extends CommandBase {
         AuthLoginResponse authLoginResponse = ChaosCraft.sdk.postAuthLogin(postAuthLoginRequest).getAuthLoginResponse();
 
         ChaosCraft.logger.info("Access Token >> {}", authLoginResponse.getAccessToken());
-
+        ChaosCraft.config.username = authLogin.getUsername();
+        ChaosCraft.config.idToken =  authLoginResponse.getIdToken();
+        ChaosCraft.config.refreshToken =  authLoginResponse.getRefreshToken();
         ChaosCraft.config.refreshToken =  authLoginResponse.getRefreshToken();
         ChaosCraft.config.accessToken =  authLoginResponse.getAccessToken();
         ChaosCraft.config.save();
+
+
 
         p_execute_2_.sendMessage(
             new TextComponentString("Auth Credentials pulled from server and saved locally ")
