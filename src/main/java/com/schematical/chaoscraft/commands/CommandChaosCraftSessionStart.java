@@ -41,14 +41,42 @@ public class CommandChaosCraftSessionStart extends CommandBase {
 
     public void execute(MinecraftServer p_execute_1_, ICommandSender p_execute_2_, String[] p_execute_3_) throws CommandException {
 
-        World world = p_execute_1_.getEntityWorld();
-        if(!world.isRemote) {
-            EntityRick rick = new EntityRick(world, "Rick");
-            rick.setCustomNameTag("Rick");
-            BlockPos pos = p_execute_2_.getPosition();
-            rick.setPosition(pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1);
+         if(p_execute_3_.length == 2){
+             ChaosCraft.config.trainingRoomUsernameNamespace = p_execute_3_[0];
+             ChaosCraft.config.trainingRoomNamespace= p_execute_3_[1];
 
-            world.spawnEntity(rick);
+        }else /* if(p_execute_3_.length == 1) {
+             String uri = p_execute_3_[0];
+        }else */ {
+            //Do an error
+             p_execute_2_.sendMessage(
+                     new TextComponentString("Error: Invalid trainingRoom passed in")
+             );
+             return;
+        }
+        ChaosCraft.config.save();
+
+
+        ChaosCraft.startTrainingSession();
+        p_execute_2_.sendMessage(
+            new TextComponentString("Error: Successfully started a session - " + ChaosCraft.config.sessionNamespace)
+        );
+        if(ChaosCraft.rick == null) {
+            World world = p_execute_1_.getEntityWorld();
+            if (!world.isRemote) {
+                p_execute_2_.sendMessage(
+                    new TextComponentString("Spawining Rick...")
+                );
+                EntityRick rick = new EntityRick(world, "Rick");
+                rick.setCustomNameTag("Rick");
+                BlockPos pos = p_execute_2_.getPosition();
+                rick.setPosition(pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1);
+
+                world.spawnEntity(rick);
+                p_execute_2_.sendMessage(
+                    new TextComponentString("Rick Spawned")
+                );
+            }
         }
     }
 

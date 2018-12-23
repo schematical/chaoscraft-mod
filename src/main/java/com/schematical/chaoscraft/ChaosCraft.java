@@ -14,9 +14,7 @@ import com.schematical.chaosnet.ChaosNet;
 
 import com.schematical.chaosnet.ChaosNetClientBuilder;
 import com.schematical.chaosnet.auth.ChaosnetCognitoUserPool;
-import com.schematical.chaosnet.model.AuthLoginResponse;
-import com.schematical.chaosnet.model.AuthTokenRequest;
-import com.schematical.chaosnet.model.PostAuthTokenRequest;
+import com.schematical.chaosnet.model.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -54,15 +52,7 @@ public class ChaosCraft
         proxy.preInit(event);
         config = new ChaosCraftConfig();
         config.load();
-        if(config.refreshToken != null){
-            AuthTokenRequest authTokenRequest = new AuthTokenRequest();
-            authTokenRequest.setRefreshToken(config.refreshToken);
-            PostAuthTokenRequest postAuthTokenRequest = new PostAuthTokenRequest();
-            postAuthTokenRequest.authTokenRequest(authTokenRequest);
-            AuthLoginResponse authLoginResponse = ChaosCraft.sdk.postAuthToken(postAuthTokenRequest).getAuthLoginResponse();
-            config.accessToken = authLoginResponse.getAccessToken();
 
-        }
         logger = event.getModLog();
 
         sdk =  ChaosNet.builder()
@@ -78,11 +68,47 @@ public class ChaosCraft
                                 .socketTimeout(10000)
                 )
                 .signer(
-                        new ChaosNetSigner()
+                        (ChaosnetCognitoUserPool) request -> ChaosCraft.config.accessToken
+                        //new ChaosNetSigner()
                 )
                 .build();
 
+        if(config.refreshToken != null){
+            AuthTokenRequest authTokenRequest = new AuthTokenRequest();
+            authTokenRequest.setUsername(config.username);
+            authTokenRequest.setRefreshToken(config.refreshToken);
+            PostAuthTokenRequest postAuthTokenRequest = new PostAuthTokenRequest();
+            postAuthTokenRequest.authTokenRequest(authTokenRequest);
 
+            try {
+                AuthLoginResponse authLoginResponse = ChaosCraft.sdk.postAuthToken(postAuthTokenRequest).getAuthLoginResponse();
+                config.accessToken = authLoginResponse.getAccessToken();
+            }catch (ChaosNetException e) {
+                logger.error(e);
+            }
+
+        }
+
+        startTrainingSession();
+
+
+    }
+    public static void startTrainingSession(){
+        if(
+            ChaosCraft.config.trainingRoomNamespace == null ||
+            ChaosCraft.config.trainingRoomUsernameNamespace == null
+        ){
+            return;
+        }
+        if(ChaosCraft.config.sessionNamespace != null){
+            //Do stuff
+
+        }
+        PostUsernameTrainingroomsTrainingroomSessionsStartRequest startSessionRequest = new PostUsernameTrainingroomsTrainingroomSessionsStartRequest();
+        startSessionRequest.setTrainingroom(ChaosCraft.config.trainingRoomNamespace);
+        startSessionRequest.setUsername(ChaosCraft.config.trainingRoomUsernameNamespace);
+
+        PostUsernameTrainingroomsTrainingroomSessionsStartResult result = ChaosCraft.sdk.postUsernameTrainingroomsTrainingroomSessionsStart(startSessionRequest);
     }
 
     @EventHandler

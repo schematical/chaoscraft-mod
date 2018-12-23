@@ -18,6 +18,9 @@ public class ChaosCraftConfig {
     public String accessToken;
     public int expiration;
     public int maxBotCount = 5;
+    public String sessionNamespace;
+    public String trainingRoomUsernameNamespace;
+    public String trainingRoomNamespace;
     public void save(){
 
         JSONObject obj = new JSONObject();
@@ -27,6 +30,9 @@ public class ChaosCraftConfig {
         obj.put("accessToken", accessToken);
         obj.put("maxBotCount", maxBotCount);
         obj.put("expiration", expiration);
+        obj.put("sessionNamespace", sessionNamespace);
+        obj.put("trainingRoomNamespace", trainingRoomNamespace);
+        obj.put("trainingRoomUsernameNamespace", trainingRoomUsernameNamespace);
         // try-with-resources statement based on post comment below :)
         try {
             String configFilePath = getConfigPath();
@@ -65,9 +71,12 @@ public class ChaosCraftConfig {
                 username = obj.get("username").toString();
                 idToken = obj.get("idToken").toString();
                 refreshToken = obj.get("refreshToken").toString();
-                accessToken = obj.get("accessTokenToken").toString();
+                accessToken = obj.get("accessToken").toString();
                 expiration = Integer.parseInt(obj.get("expiration").toString());
                 maxBotCount = Integer.parseInt(obj.get("maxBotCount").toString());
+                trainingRoomNamespace = obj.get("trainingRoomNamespace").toString();
+                trainingRoomUsernameNamespace = obj.get("trainingRoomUsernameNamespace").toString();
+                sessionNamespace = obj.get("sessionNamespace").toString();
             } catch (Exception e) {
                 e.printStackTrace();
             }
