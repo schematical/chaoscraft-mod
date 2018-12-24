@@ -109,6 +109,9 @@ public class ChaosCraft
         startSessionRequest.setUsername(ChaosCraft.config.trainingRoomUsernameNamespace);
 
         PostUsernameTrainingroomsTrainingroomSessionsStartResult result = ChaosCraft.sdk.postUsernameTrainingroomsTrainingroomSessionsStart(startSessionRequest);
+        ChaosCraft.config.sessionNamespace = result.getTrainingRoomSession().getNamespace();
+        ChaosCraft.config.save();
+
     }
 
     @EventHandler
