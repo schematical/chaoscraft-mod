@@ -30,10 +30,10 @@ public class AISpawnOrganisim extends EntityAIBase
     }
     public void startExecuting()
     {
-
+        ChaosCraft.getNextOrgs(null);
         World world = rick.getEntityWorld();
         if(!world.isRemote) {
-            EntityEvilRabbit rabbit = new EntityEvilRabbit(world, "ChaosCraft Rabbit", rick);
+            EntityEvilRabbit rabbit = new EntityEvilRabbit(world, "ChaosCraft Rabbit");
             rabbit.setCustomNameTag("ChaosCraft Rabbit");
             BlockPos pos = rick.getPosition();
             rabbit.setPosition(pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1);

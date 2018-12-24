@@ -31,9 +31,7 @@ public class AIFindExistingOrganisims<T extends EntityLivingBase> extends Entity
         List<T> list = this.rick.world.<T>getEntitiesWithinAABB(this.targetClass, this.getTargetableArea(this.getTargetDistance()), this.targetEntitySelector);
         for(int i  = 0; i < list.size(); i++){
             EntityEvilRabbit rabbit = (EntityEvilRabbit) list.get(i);
-            if(rabbit.rick == null){
-                rabbit.rick = rick;
-            }
+
         }
 
         return false;

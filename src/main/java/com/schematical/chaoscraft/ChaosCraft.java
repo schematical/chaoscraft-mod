@@ -27,6 +27,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.logging.log4j.Logger;
 
+import java.util.List;
 import java.util.Set;
 
 
@@ -113,6 +114,16 @@ public class ChaosCraft
         ChaosCraft.config.save();
 
     }
+    public static TrainingRoomSessionNextResponse getNextOrgs(List<Organism> organismList){
+        PostUsernameTrainingroomsTrainingroomSessionsSessionNextRequest request = new PostUsernameTrainingroomsTrainingroomSessionsSessionNextRequest();
+        request.setTrainingroom(ChaosCraft.config.trainingRoomNamespace);
+        request.setUsername(ChaosCraft.config.trainingRoomUsernameNamespace);
+        request.setSession(ChaosCraft.config.sessionNamespace);
+        PostUsernameTrainingroomsTrainingroomSessionsSessionNextResult result = ChaosCraft.sdk.postUsernameTrainingroomsTrainingroomSessionsSessionNext(request);
+        TrainingRoomSessionNextResponse response = result.getTrainingRoomSessionNextResponse();
+        return response;
+    }
+
 
     @EventHandler
     public void init(FMLInitializationEvent event)

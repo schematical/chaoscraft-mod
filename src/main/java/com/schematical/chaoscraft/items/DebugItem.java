@@ -28,7 +28,7 @@ public class DebugItem extends Item {
                                       EnumFacing facing, float hitX, float hitY, float hitZ) {
 
         if(!worldIn.isRemote) {
-            EntityEvilRabbit man = new EntityEvilRabbit(worldIn, player.getName() + "'s bot", null);
+            EntityEvilRabbit man = new EntityEvilRabbit(worldIn, player.getName() + "'s bot");
             man.setCustomNameTag( player.getName() + "'s rabbit");
             man.setPosition(pos.getX() + hitX, pos.getY() + hitY, pos.getZ() + hitZ);
 

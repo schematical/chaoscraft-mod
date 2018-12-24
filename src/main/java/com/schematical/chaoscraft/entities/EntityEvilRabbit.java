@@ -5,7 +5,9 @@ package com.schematical.chaoscraft.entities;
  */
 
 
+import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.NeuralNet;
+import com.schematical.chaosnet.model.Organism;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.passive.EntityRabbit;
@@ -18,17 +20,17 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import java.util.Set;
 
 public class EntityEvilRabbit extends EntityRabbit {
-    public EntityRick rick;
+    public Organism organism;
     public NeuralNet neuralNet;
 
     public EntityEvilRabbit(World worldIn) {
-        this(worldIn, "Evil Rabbit", null);
+        this(worldIn, "Evil Rabbit");
 
     }
 
-    public EntityEvilRabbit(World worldIn, String name, EntityRick _rick) {
+    public EntityEvilRabbit(World worldIn, String name) {
         super(worldIn);
-        rick = _rick;
+
         this.tasks.taskEntries.clear();
         Set<EntityAITasks.EntityAITaskEntry> taskEntries = this.tasks.taskEntries;
         /*for(int i = 0; i < taskEntries.size(); i ++){
@@ -94,10 +96,7 @@ public class EntityEvilRabbit extends EntityRabbit {
     public void onDeathUpdate(){
         super.onDeathUpdate();
         if(!world.isRemote) {
-            if(rick != null) {
-                rick.onOrganisimDeath(this);
-                rick = null;
-            }
+            ChaosCraft.rick.onOrganisimDeath(this);
         }
     }
 
