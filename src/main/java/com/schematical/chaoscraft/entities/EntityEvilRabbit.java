@@ -53,6 +53,7 @@ public class EntityEvilRabbit extends EntityRabbit {
         this.tasks.addTask(11, new EntityAIWatchClosest(this, EntityPlayer.class, 10.0F));
         this.targetTasks.addTask(2, new EntityAINearestAttackableTarget(this, EntityPlayer.class, true));
     }
+
     static class AIRabbitAttack extends EntityAIAttackMelee
     {
         public AIRabbitAttack(EntityEvilRabbit rabbit)

@@ -43,7 +43,7 @@ public class EntityRick extends EntityLiving {
         //this.tasks.addTask(6, new EntityAIWander(this, 0.6D));
         this.tasks.addTask(11, new EntityAIWatchClosest(this, EntityPlayer.class, 10.0F));
         //this.targetTasks.addTask(2, new EntityAINearestAttackableTarget(this, EntityPlayer.class, true));
-        this.tasks.addTask(2, new AIFindExistingOrganisims(this, EntityEvilRabbit.class));
+        this.tasks.addTask(2, new AIFindExistingOrganisims(this, EntityOrganism.class));
     }
 
 

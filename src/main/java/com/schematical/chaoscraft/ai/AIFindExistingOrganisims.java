@@ -2,6 +2,7 @@ package com.schematical.chaoscraft.ai;
 
 import com.google.common.base.Predicate;
 import com.schematical.chaoscraft.entities.EntityEvilRabbit;
+import com.schematical.chaoscraft.entities.EntityOrganism;
 import com.schematical.chaoscraft.entities.EntityRick;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
@@ -30,7 +31,7 @@ public class AIFindExistingOrganisims<T extends EntityLivingBase> extends Entity
     public boolean shouldExecute() {
         List<T> list = this.rick.world.<T>getEntitiesWithinAABB(this.targetClass, this.getTargetableArea(this.getTargetDistance()), this.targetEntitySelector);
         for(int i  = 0; i < list.size(); i++){
-            EntityEvilRabbit rabbit = (EntityEvilRabbit) list.get(i);
+            EntityOrganism entityOrganism = (EntityOrganism) list.get(i);
 
         }
 
