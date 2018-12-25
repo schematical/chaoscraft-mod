@@ -3,6 +3,7 @@ package com.schematical.chaoscraft.proxies;
 import com.schematical.chaoscraft.commands.CommandChaosCraftAuth;
 import com.schematical.chaoscraft.commands.CommandChaosCraftSessionStart;
 import com.schematical.chaoscraft.commands.CommandChaosCraftSetConfig;
+import com.schematical.chaoscraft.entities.EntityOrganism;
 import com.schematical.chaoscraft.entities.EntityRick;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -28,6 +29,11 @@ public class ClientProxy implements IProxy {
                 EntityRick.class,
                 manager -> new EntityRick.RickRenderer(manager)
         );
+        RenderingRegistry.registerEntityRenderingHandler(
+                EntityOrganism.class,
+                manager -> new EntityOrganism.EntityOrganismRenderer(manager)
+        );
+
     }
     @Override
     public void init(FMLInitializationEvent event) {

@@ -6,6 +6,7 @@ package com.schematical.chaoscraft.init;
 
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.entities.EntityEvilRabbit;
+import com.schematical.chaoscraft.entities.EntityOrganism;
 import com.schematical.chaoscraft.entities.EntityRick;
 import net.minecraft.command.CommandBase;
 import net.minecraft.entity.Entity;
@@ -39,6 +40,15 @@ public class ModEntities {
                 .id(new ResourceLocation(ChaosCraft.MODID, "evilrabbit"), 2)
                 .build();
         event.getRegistry().registerAll(e2);
+
+
+        EntityEntry e3 = entityBuilder.entity(EntityOrganism.class)
+                .name("morty")
+                .tracker(81, 1, false)
+                .id(new ResourceLocation(ChaosCraft.MODID, "morty"), 2)
+                .build();
+
+        event.getRegistry().registerAll(e3);
     }
 
     @SubscribeEvent

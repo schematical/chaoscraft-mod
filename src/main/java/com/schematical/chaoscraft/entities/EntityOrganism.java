@@ -59,6 +59,7 @@ public class EntityOrganism extends EntityCreature {
              nNet = new NeuralNet();
              nNet.parseData(obj);
              nNet.attachEntity(this);
+             //this.tasks.addTask(2, new AIFindExistingOrganisims(this, EntityOrganism.class));
 
          } catch (Exception e) {
              e.printStackTrace();
@@ -66,12 +67,6 @@ public class EntityOrganism extends EntityCreature {
      }
      public void attachOrganism(Organism _organism){
          organism = _organism;
-         nNet = new NeuralNet();
-         //NNet _nNet = organism.getNNet();
-         //ChaosCraft.logger.info("LOOK AT ME");
-         //nNet.parseData();
-         //this.tasks.addTask(2, new AIFindExistingOrganisims(this, EntityOrganism.class));
-
      }
 
 
@@ -80,6 +75,7 @@ public class EntityOrganism extends EntityCreature {
     @Override
     public void onUpdate()
     {
+        ChaosCraft.logger.info(this.getEntityId() + this.getPosition().toString());
         super.onUpdate();
 
     }
