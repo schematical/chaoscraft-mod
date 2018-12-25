@@ -2,6 +2,7 @@ package com.schematical.chaoscraft.ai;
 
 import com.google.common.collect.Sets;
 import com.schematical.chaoscraft.ChaosCraft;
+import com.schematical.chaoscraft.ai.biology.BiologyBase;
 import net.minecraft.entity.Entity;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -24,27 +25,45 @@ public class NeuralNet {
         this.entity = entity;
     }
     public void parseData(JSONObject jsonObject){
-        JSONArray neurons = (JSONArray) jsonObject.get("neurons");
-        Iterator<JSONObject> iterator = neurons.iterator();
-        while (iterator.hasNext()) {
-            JSONObject neuronBaseJSON = iterator.next();
+        try {
 
-            String clsName = neuronBaseJSON.get("type").toString();  // use fully qualified name
+            JSONArray outputs = (JSONArray) ((JSONObject)jsonObject.get("biology")).get("Eye");
+            Iterator<JSONObject> iterator = outputs.iterator();
+            while (iterator.hasNext()) {
+                JSONObject outputBaseJSON = iterator.next();
 
-            try {
-                String fullClassName = "com.schematical.chaoscraft.ai." + neuronBaseJSON.get("_base_type").toString()  +  "s." + clsName;
+                String clsName = outputBaseJSON.get("$TYPE").toString();  // use fully qualified name
+
+
+                String fullClassName = "com.schematical.chaoscraft.ai.biology." + clsName;
                 ChaosCraft.logger.info("Full Class name: " + fullClassName);
                 Class cls = Class.forName(fullClassName);
-                NeuronBase neuronBase = (NeuronBase) cls.newInstance();
-                neuronBase.parseData(neuronBaseJSON);
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InstantiationException e) {
-                e.printStackTrace();
+                BiologyBase biologyBase = (BiologyBase) cls.newInstance();
+                biologyBase.parseData(outputBaseJSON);
             }
 
+
+
+            JSONArray neurons = (JSONArray) jsonObject.get("neurons");
+            /*Iterator<JSONObject> */iterator = neurons.iterator();
+            while (iterator.hasNext()) {
+                JSONObject neuronBaseJSON = iterator.next();
+
+                String clsName = neuronBaseJSON.get("$TYPE").toString();  // use fully qualified name
+
+
+                    String fullClassName = "com.schematical.chaoscraft.ai." + neuronBaseJSON.get("_base_type").toString()  +  "s." + clsName;
+                    ChaosCraft.logger.info("Full Class name: " + fullClassName);
+                    Class cls = Class.forName(fullClassName);
+                    NeuronBase neuronBase = (NeuronBase) cls.newInstance();
+                    neuronBase.parseData(neuronBaseJSON);
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
         }
     }
 }

@@ -58,6 +58,7 @@ public class EntityOrganism extends EntityCreature {
              );
              nNet = new NeuralNet();
              nNet.parseData(obj);
+             nNet.attachEntity(this);
 
          } catch (Exception e) {
              e.printStackTrace();

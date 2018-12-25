@@ -1,6 +1,7 @@
 package com.schematical.chaoscraft.ai.inputs;
 
 import com.schematical.chaoscraft.ai.InputNeuron;
+import com.schematical.chaoscraft.ai.biology.Eye;
 import com.schematical.chaoscraft.util.PositionRange;
 import net.minecraft.block.Block;
 import net.minecraft.util.math.BlockPos;
@@ -13,12 +14,14 @@ public class BlockPositionInput                                                 
     private static final String BLOCK_ID = "BLOCK_ID";
     public String attributeId;
     public String attributeValue;
-    public PositionRange positionRange;
+    public Eye eye;
+
+    //public PositionRange positionRange;
 
     @Override
     public float evaluate(){
         //Iterate through all blocks entities etc with in the range
-        PositionRange adustedPositionRange = this.positionRange.orientToEntity(this.nNet.entity);
+        PositionRange adustedPositionRange = this.eye.positionRange.orientToEntity(this.nNet.entity);
         float value = -1;
         for(float x = adustedPositionRange.minX; x < adustedPositionRange.maxX; x++){
             for(float y = adustedPositionRange.minY; y < adustedPositionRange.maxY; y++){
@@ -43,8 +46,7 @@ public class BlockPositionInput                                                 
         super.parseData(jsonObject);
         attributeId = jsonObject.get("attributeId").toString();
         attributeValue = jsonObject.get("attributeValue").toString();
-        positionRange = new PositionRange();
-        positionRange.parseData((JSONObject) jsonObject.get("positionRange"));
+
     }
 
 }
