@@ -7,7 +7,9 @@ import net.minecraft.entity.Entity;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import com.schematical.chaoscraft.ai.inputs.*;
 import com.schematical.chaoscraft.ai.outputs.*;
@@ -16,7 +18,8 @@ import com.schematical.chaoscraft.ai.outputs.*;
  */
 public class NeuralNet {
     public Entity entity;
-    public static Set<NeuronBase> neurons = Sets.<NeuronBase>newLinkedHashSet();
+    public Set<NeuronBase> neurons = Sets.<NeuronBase>newLinkedHashSet();
+    public List<BiologyBase> biology = new ArrayList<BiologyBase>();
 
     public NeuralNet() {
 
@@ -40,23 +43,26 @@ public class NeuralNet {
                 Class cls = Class.forName(fullClassName);
                 BiologyBase biologyBase = (BiologyBase) cls.newInstance();
                 biologyBase.parseData(outputBaseJSON);
+                biology.add(biologyBase);
             }
 
 
 
             JSONArray neurons = (JSONArray) jsonObject.get("neurons");
-            /*Iterator<JSONObject> */iterator = neurons.iterator();
+            /*Iterator<JSONObject>*/ iterator = neurons.iterator();
             while (iterator.hasNext()) {
                 JSONObject neuronBaseJSON = iterator.next();
 
                 String clsName = neuronBaseJSON.get("$TYPE").toString();  // use fully qualified name
 
 
-                    String fullClassName = "com.schematical.chaoscraft.ai." + neuronBaseJSON.get("_base_type").toString()  +  "s." + clsName;
-                    ChaosCraft.logger.info("Full Class name: " + fullClassName);
-                    Class cls = Class.forName(fullClassName);
-                    NeuronBase neuronBase = (NeuronBase) cls.newInstance();
-                    neuronBase.parseData(neuronBaseJSON);
+                String fullClassName = "com.schematical.chaoscraft.ai." + neuronBaseJSON.get("_base_type").toString()  +  "s." + clsName;
+                ChaosCraft.logger.info("Full Class name: " + fullClassName);
+                Class cls = Class.forName(fullClassName);
+                NeuronBase neuronBase = (NeuronBase) cls.newInstance();
+                neuronBase.attachNNet(this);
+                neuronBase.parseData(neuronBaseJSON);
+                this.neurons.add(neuronBase);
             }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();

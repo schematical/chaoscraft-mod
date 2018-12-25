@@ -42,4 +42,8 @@ public class NeuronBase extends InnovationBase {
     public float sigmoid(float x){
         return (float) (1 / (1 + Math.exp(-x)));
     }
+
+    public void attachNNet(NeuralNet neuralNet) {
+        this.nNet = neuralNet;
+    }
 }
