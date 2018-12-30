@@ -6,9 +6,7 @@ package com.schematical.chaoscraft.entities;
 
 
 import com.schematical.chaoscraft.ChaosCraft;
-import com.schematical.chaoscraft.ai.AIFindExistingOrganisims;
-import com.schematical.chaoscraft.ai.AISpawnOrganisim;
-import com.schematical.chaoscraft.ai.NeuralNet;
+import com.schematical.chaoscraft.ai.*;
 import com.schematical.chaosnet.model.NNetRaw;
 import com.schematical.chaosnet.model.Organism;
 import com.schematical.chaosnet.model.NNet;
@@ -27,6 +25,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.FileReader;
+import java.util.Iterator;
+import java.util.List;
 
 public class EntityOrganism extends EntityCreature {
     protected Organism organism;
@@ -78,11 +78,21 @@ public class EntityOrganism extends EntityCreature {
         if (!this.world.isRemote)
         {
             //Tick neural net
-            this.nNet.evaluate();
+            List<OutputNeuron> outputs = this.nNet.evaluate();
+            Iterator<OutputNeuron> iterator = outputs.iterator();
+            while (iterator.hasNext()) {
+                OutputNeuron outputNeuron = iterator.next();
+                outputNeuron.execute();
 
+            }
         }
         super.onUpdate();
 
+    }
+    public void jump(){
+         if(!this.isJumping) {
+             super.jump();
+         }
     }
     public static class EntityOrganismRenderer extends RenderLiving<EntityOrganism> {
         public EntityOrganismRenderer(RenderManager rendermanagerIn) {

@@ -8,6 +8,9 @@ import com.schematical.chaoscraft.ai.OutputNeuron;
 public class JumpOutput extends OutputNeuron {
     @Override
     public void execute() {
-
+        if(this._lastValue == 0){
+            return;
+        }
+        this.nNet.entity.jump();
     }
 }

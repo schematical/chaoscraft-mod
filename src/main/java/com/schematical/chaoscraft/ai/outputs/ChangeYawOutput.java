@@ -8,6 +8,10 @@ import com.schematical.chaoscraft.ai.OutputNeuron;
 public class ChangeYawOutput extends OutputNeuron {
     @Override
     public void execute() {
+        if(this._lastValue == 0){
+            return;
+        }
+        this.nNet.entity.rotationYaw += this._lastValue;
 
     }
 }
