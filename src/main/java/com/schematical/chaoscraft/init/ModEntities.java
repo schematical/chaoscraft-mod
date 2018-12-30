@@ -44,8 +44,8 @@ public class ModEntities {
 
         EntityEntry e3 = entityBuilder.entity(EntityOrganism.class)
                 .name("morty")
-                .tracker(81, 1, false)
-                .id(new ResourceLocation(ChaosCraft.MODID, "morty"), 2)
+                .tracker(82, 1, false)
+                .id(new ResourceLocation(ChaosCraft.MODID, "morty"), 3)
                 .build();
 
         event.getRegistry().registerAll(e3);

@@ -75,7 +75,12 @@ public class EntityOrganism extends EntityCreature {
     @Override
     public void onUpdate()
     {
-        ChaosCraft.logger.info(this.getEntityId() + this.getPosition().toString());
+        if (!this.world.isRemote)
+        {
+            //Tick neural net
+            this.nNet.evaluate();
+
+        }
         super.onUpdate();
 
     }

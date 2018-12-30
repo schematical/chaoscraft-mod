@@ -7,7 +7,7 @@ import com.schematical.chaoscraft.ai.OutputNeuron;
  */
 public class SetTargetOutput extends OutputNeuron {
     @Override
-    public void exicute() {
+    public void execute() {
 
     }
 }

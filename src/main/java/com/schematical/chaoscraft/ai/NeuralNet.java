@@ -27,6 +27,25 @@ public class NeuralNet {
     public void attachEntity(Entity entity){
         this.entity = entity;
     }
+    public void evaluate(){
+        //Iterate through output neurons
+        Iterator<NeuronBase> iterator = neurons.iterator();
+
+        while (iterator.hasNext()) {
+            NeuronBase neuronBase = iterator.next();
+            neuronBase.reset();
+        }
+        iterator = neurons.iterator();
+
+        while (iterator.hasNext()) {
+            NeuronBase neuronBase = iterator.next();
+            if(neuronBase._base_type() == com.schematical.chaoscraft.Enum.OUTPUT){
+                float _last_value = neuronBase.evaluate();
+
+            }
+
+        }
+    }
     public void parseData(JSONObject jsonObject){
         try {
 

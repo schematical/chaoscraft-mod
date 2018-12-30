@@ -10,11 +10,12 @@ import java.util.Set;
 /**
  * Created by user1a on 12/8/18.
  */
-public class NeuronBase extends InnovationBase {
+public abstract class NeuronBase extends InnovationBase {
     public NeuralNet nNet;
     public float _lastValue;
     protected boolean hasBeenEvaluated = false;
     public static Set<NeuronDep> dependencies = Sets.<NeuronDep>newLinkedHashSet();
+    public abstract String _base_type();
 
     public void parseData(JSONObject jsonObject){
         JSONArray dependencies = (JSONArray) jsonObject.get("dependencies");
@@ -24,6 +25,10 @@ public class NeuronBase extends InnovationBase {
             NeuronDep neuronDep = new NeuronDep();
             neuronDep.parseData(neuronDepJSON);
         }
+    }
+    public void reset(){
+        hasBeenEvaluated = false;
+        _lastValue = -1;
     }
     public float evaluate(){
         if(hasBeenEvaluated){
