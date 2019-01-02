@@ -1,5 +1,5 @@
 package com.schematical.chaoscraft.ai.outputs;
-
+import com.schematical.chaoscraft.Enum;
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.OutputNeuron;
 import net.minecraft.util.math.MathHelper;
@@ -19,7 +19,7 @@ public class WalkSidewaysOutput extends OutputNeuron {
         //this.entity.getMoveHelper().setMoveTo(vec3d2.x, vec3d2.y, vec3d2.z, this.speed);
 
 
-        nNet.entity.moveStrafing =  MathHelper.clamp(this._lastValue * 0.8f, -1, 1);
+        nNet.entity.moveStrafing =  this._lastValue * Enum.SPEED;
         nNet.entity.getMoveHelper().strafe(nNet.entity.moveForward, nNet.entity.moveStrafing);
         /*
         Vec3d vec3d = nNet.entity.getPositionVector();

@@ -95,7 +95,7 @@ public class EntityOrganism extends EntityLiving {
     }
     public void jump(){
          if(!this.isJumping) {
-             super.jump();
+             //super.jump();
              super.getJumpHelper().setJumping();
          }
     }
