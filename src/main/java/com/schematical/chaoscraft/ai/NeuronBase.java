@@ -4,21 +4,27 @@ import com.google.common.collect.Sets;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 /**
  * Created by user1a on 12/8/18.
  */
 public abstract class NeuronBase extends InnovationBase {
+
     public String id;
     public NeuralNet nNet;
     public float _lastValue;
     protected boolean hasBeenEvaluated = false;
-    public static Set<NeuronDep> dependencies = Sets.<NeuronDep>newLinkedHashSet();
+    public List<NeuronDep> dependencies = new ArrayList<NeuronDep>();
     public abstract String _base_type();
 
     public void parseData(JSONObject jsonObject){
+        if(this.id != null){
+            throw new Error("Neuron has already parsedData");
+        }
         this.id = (String) jsonObject.get("id");
         JSONArray jsonDependencies = (JSONArray) jsonObject.get("dependencies");
         Iterator<JSONObject> iterator = jsonDependencies.iterator();

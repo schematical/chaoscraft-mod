@@ -14,12 +14,13 @@ public class WalkSidewaysOutput extends OutputNeuron {
         if(this._lastValue == 0){
             return;
         }
-        ChaosCraft.logger.info(nNet.entity.getName() + " Walking Sideways: " + this._lastValue);
+
         //Pulled from net.minecraft.pathfinding.PathNavigate.onUpdateNavigation#263
         //this.entity.getMoveHelper().setMoveTo(vec3d2.x, vec3d2.y, vec3d2.z, this.speed);
 
 
-        nNet.entity.moveStrafing =  this._lastValue * Enum.SPEED;
+        nNet.entity.moveStrafing = ((this._lastValue * 2) -1) * Enum.SPEED;
+        ChaosCraft.logger.info(nNet.entity.getName() + " Walking Sideways: " + this._lastValue + " - " +  nNet.entity.moveStrafing);
         nNet.entity.getMoveHelper().strafe(nNet.entity.moveForward, nNet.entity.moveStrafing);
         /*
         Vec3d vec3d = nNet.entity.getPositionVector();
