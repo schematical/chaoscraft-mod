@@ -51,7 +51,12 @@ public class AISpawnOrganisim extends EntityAIBase
                 EntityOrganism entityOrganism = new EntityOrganism(world, organism.getNamespace());
                 entityOrganism.setCustomNameTag(organism.getName());
                 BlockPos pos = rick.getPosition();
-                entityOrganism.setPosition(pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1);
+                int range = 10;
+                entityOrganism.setPosition(
+                    pos.getX() + Math.floor((Math.random() * range * 2) - range),
+                    pos.getY() + Math.floor((Math.random() * range * 2) - range),
+                    pos.getZ() + Math.floor((Math.random() * range * 2) - range)
+                );
                 entityOrganism.attachOrganism(organism);
                 entityOrganism.attachNNetRaw(nNetRaw);
                 ChaosCraft.organisims.add(entityOrganism);

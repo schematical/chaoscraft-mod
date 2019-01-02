@@ -1,5 +1,6 @@
 package com.schematical.chaoscraft.ai.outputs;
 
+import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.OutputNeuron;
 import net.minecraft.util.math.Vec3d;
 import software.amazon.ion.Decimal;
@@ -13,6 +14,7 @@ public class WalkForwardOutput extends OutputNeuron {
         if(this._lastValue == 0){
             return;
         }
+        ChaosCraft.logger.info("Walking Forward: " + this._lastValue);
         //Pulled from net.minecraft.pathfinding.PathNavigate.onUpdateNavigation#263
         //this.entity.getMoveHelper().setMoveTo(vec3d2.x, vec3d2.y, vec3d2.z, this.speed);
         Vec3d vec3d = nNet.entity.getPositionVector();

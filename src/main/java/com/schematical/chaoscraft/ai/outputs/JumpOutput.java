@@ -1,5 +1,6 @@
 package com.schematical.chaoscraft.ai.outputs;
 
+import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.OutputNeuron;
 
 /**
@@ -8,9 +9,10 @@ import com.schematical.chaoscraft.ai.OutputNeuron;
 public class JumpOutput extends OutputNeuron {
     @Override
     public void execute() {
-        if(this._lastValue == 0){
+        if(this._lastValue <= 0){
             return;
         }
+        ChaosCraft.logger.info("Jumping: " + this._lastValue);
         this.nNet.entity.jump();
     }
 }

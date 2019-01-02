@@ -43,6 +43,7 @@ public class EntityOrganism extends EntityCreature {
 
 
         this.tasks.addTask(1, new EntityAISwimming(this));
+        ChaosCraft.organisims.add(this);
 
      }
      public void attachNNetRaw(NNetRaw nNetRaw){
@@ -78,12 +79,14 @@ public class EntityOrganism extends EntityCreature {
         if (!this.world.isRemote)
         {
             //Tick neural net
-            List<OutputNeuron> outputs = this.nNet.evaluate();
-            Iterator<OutputNeuron> iterator = outputs.iterator();
-            while (iterator.hasNext()) {
-                OutputNeuron outputNeuron = iterator.next();
-                outputNeuron.execute();
+            if(this.nNet != null) {
+                List<OutputNeuron> outputs = this.nNet.evaluate();
+                Iterator<OutputNeuron> iterator = outputs.iterator();
+                while (iterator.hasNext()) {
+                    OutputNeuron outputNeuron = iterator.next();
+                    outputNeuron.execute();
 
+                }
             }
         }
         super.onUpdate();
@@ -92,6 +95,7 @@ public class EntityOrganism extends EntityCreature {
     public void jump(){
          if(!this.isJumping) {
              super.jump();
+             super.getJumpHelper().setJumping();
          }
     }
     public static class EntityOrganismRenderer extends RenderLiving<EntityOrganism> {

@@ -24,6 +24,7 @@ public abstract class NeuronBase extends InnovationBase {
             JSONObject neuronDepJSON = iterator.next();
             NeuronDep neuronDep = new NeuronDep();
             neuronDep.parseData(neuronDepJSON);
+            dependencies.add(neuronDep);
         }
     }
     public void reset(){

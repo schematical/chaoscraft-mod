@@ -17,6 +17,9 @@ import com.schematical.chaosnet.auth.ChaosnetCognitoUserPool;
 import com.schematical.chaosnet.model.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -132,6 +135,26 @@ public class ChaosCraft
 
         // some example code
         //logger.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
+
+
+    }
+    public static EntityRick spawnRick(World world, BlockPos pos ){
+        if(ChaosCraft.rick != null) {
+            return ChaosCraft.rick;
+        }
+
+        if (!world.isRemote) {
+
+            EntityRick rick = new EntityRick(world, "Rick");
+            rick.setCustomNameTag("Rick");
+
+            rick.setPosition(pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1);
+
+            world.spawnEntity(rick);
+            ChaosCraft.rick = rick;
+
+        }
+        return ChaosCraft.rick;
 
 
     }

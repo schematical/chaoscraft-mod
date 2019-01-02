@@ -1,14 +1,13 @@
 package com.schematical.chaoscraft.commands;
 
 import com.schematical.chaoscraft.ChaosCraft;
-import com.schematical.chaoscraft.entities.EntityEvilRabbit;
-import com.schematical.chaoscraft.entities.EntityRick;
 import com.schematical.chaosnet.model.AuthLogin;
 import com.schematical.chaosnet.model.AuthLoginResponse;
 import com.schematical.chaosnet.model.PostAuthLoginRequest;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityList;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -23,12 +22,12 @@ import java.util.List;
 /**
  * Created by user1a on 12/4/18.
  */
-public class CommandChaosCraftSessionStart extends CommandBase {
-    public CommandChaosCraftSessionStart() {
+public class CommandChaosCraftRefresh extends CommandBase {
+    public CommandChaosCraftRefresh() {
     }
 
     public String getName() {
-        return "chaoscraft-start";
+        return "chaoscraft-refresh";
     }
 
    /* public int getRequiredPermissionLevel() {
@@ -36,45 +35,38 @@ public class CommandChaosCraftSessionStart extends CommandBase {
     } */
 
     public String getUsage(ICommandSender p_getUsage_1_) {
-        return "commands.chaoscraft-start.usage";
+        return "commands.chaoscraft-refresh.usage";
     }
 
     public void execute(MinecraftServer p_execute_1_, ICommandSender p_execute_2_, String[] p_execute_3_) throws CommandException {
-
-         if(p_execute_3_.length == 2){
-             ChaosCraft.config.trainingRoomUsernameNamespace = p_execute_3_[0];
-             ChaosCraft.config.trainingRoomNamespace= p_execute_3_[1];
-
-        }else /* if(p_execute_3_.length == 1) {
-             String uri = p_execute_3_[0];
-        }else */ {
-            //Do an error
-             p_execute_2_.sendMessage(
-                     new TextComponentString("Error: Invalid trainingRoom passed in")
-             );
-             return;
-        }
-
-
-
-        ChaosCraft.startTrainingSession();
-        ChaosCraft.config.save();
-        p_execute_2_.sendMessage(
-            new TextComponentString("Error: Successfully started a session - " + ChaosCraft.config.sessionNamespace)
-        );
         if(ChaosCraft.rick == null) {
             World world = p_execute_1_.getEntityWorld();
             if (!world.isRemote) {
                 p_execute_2_.sendMessage(
-                    new TextComponentString("Spawning Rick...")
+                        new TextComponentString("Spawning Rick...")
                 );
                 BlockPos pos = p_execute_2_.getPosition();
                 ChaosCraft.spawnRick(world, pos);
                 p_execute_2_.sendMessage(
-                    new TextComponentString("Rick Spawned")
+                        new TextComponentString("Rick Spawned")
                 );
             }
         }
+        //Cycle mortys?
+        p_execute_2_.sendMessage(
+            new TextComponentString("Clearing Organisms")
+        );
+        for (EntityCreature organisim : ChaosCraft.organisims) {
+            organisim.setHealth(0);
+            organisim.setDead();
+
+            p_execute_2_.sendMessage(
+                    new TextComponentString("Cleared Dead: " + organisim.getName())
+            );
+        }
+        p_execute_2_.sendMessage(
+                new TextComponentString("Cleared Dead")
+        );
     }
 
     public List<String> getTabCompletions(MinecraftServer p_getTabCompletions_1_, ICommandSender p_getTabCompletions_2_, String[] p_getTabCompletions_3_, @Nullable BlockPos p_getTabCompletions_4_) {

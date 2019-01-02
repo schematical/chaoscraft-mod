@@ -1,6 +1,7 @@
 package com.schematical.chaoscraft.proxies;
 
 import com.schematical.chaoscraft.commands.CommandChaosCraftAuth;
+import com.schematical.chaoscraft.commands.CommandChaosCraftRefresh;
 import com.schematical.chaoscraft.commands.CommandChaosCraftSessionStart;
 import com.schematical.chaoscraft.commands.CommandChaosCraftSetConfig;
 import com.schematical.chaoscraft.entities.EntityOrganism;
@@ -24,7 +25,7 @@ public class ClientProxy implements IProxy {
         ClientCommandHandler.instance.registerCommand(new CommandChaosCraftAuth());
         ClientCommandHandler.instance.registerCommand(new CommandChaosCraftSetConfig());
         ClientCommandHandler.instance.registerCommand(new CommandChaosCraftSessionStart());
-
+        ClientCommandHandler.instance.registerCommand(new CommandChaosCraftRefresh());
         RenderingRegistry.registerEntityRenderingHandler(
                 EntityRick.class,
                 manager -> new EntityRick.RickRenderer(manager)
