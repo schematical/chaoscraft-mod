@@ -60,7 +60,7 @@ public class CommandChaosCraftSessionStart extends CommandBase {
         ChaosCraft.startTrainingSession();
         ChaosCraft.config.save();
         p_execute_2_.sendMessage(
-            new TextComponentString("Error: Successfully started a session - " + ChaosCraft.config.sessionNamespace)
+            new TextComponentString("Successfully started a session - " + ChaosCraft.config.sessionNamespace)
         );
         if(ChaosCraft.rick == null) {
             World world = p_execute_1_.getEntityWorld();

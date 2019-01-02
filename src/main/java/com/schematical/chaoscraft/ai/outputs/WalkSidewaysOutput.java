@@ -20,6 +20,7 @@ public class WalkSidewaysOutput extends OutputNeuron {
 
 
         nNet.entity.moveStrafing =  MathHelper.clamp(this._lastValue * 0.8f, -1, 1);
+        nNet.entity.getMoveHelper().strafe(nNet.entity.moveForward, nNet.entity.moveStrafing);
         /*
         Vec3d vec3d = nNet.entity.getPositionVector();
 

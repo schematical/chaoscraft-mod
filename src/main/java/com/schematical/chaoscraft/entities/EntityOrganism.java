@@ -28,7 +28,7 @@ import java.io.FileReader;
 import java.util.Iterator;
 import java.util.List;
 
-public class EntityOrganism extends EntityCreature {
+public class EntityOrganism extends EntityLiving {
     protected Organism organism;
     protected NeuralNet nNet;
 
@@ -74,7 +74,7 @@ public class EntityOrganism extends EntityCreature {
 
 
     @Override
-    public void onUpdate()
+    public void onLivingUpdate()
     {
         if (!this.world.isRemote)
         {
@@ -89,8 +89,8 @@ public class EntityOrganism extends EntityCreature {
                 }
             }
         }
-       
-        super.onUpdate();
+
+        super.onLivingUpdate();
 
     }
     public void jump(){

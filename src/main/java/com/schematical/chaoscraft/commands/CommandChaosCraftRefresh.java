@@ -1,6 +1,7 @@
 package com.schematical.chaoscraft.commands;
 
 import com.schematical.chaoscraft.ChaosCraft;
+import com.schematical.chaoscraft.entities.EntityOrganism;
 import com.schematical.chaosnet.model.AuthLogin;
 import com.schematical.chaosnet.model.AuthLoginResponse;
 import com.schematical.chaosnet.model.PostAuthLoginRequest;
@@ -57,8 +58,8 @@ public class CommandChaosCraftRefresh extends CommandBase {
         p_execute_2_.sendMessage(
             new TextComponentString("Clearing Organisms")
         );
-        List<EntityCreature> deadOrgs = new ArrayList<EntityCreature>();
-        for (EntityCreature organisim : ChaosCraft.organisims) {
+        List<EntityOrganism> deadOrgs = new ArrayList<EntityOrganism>();
+        for (EntityOrganism organisim : ChaosCraft.organisims) {
             organisim.setHealth(0);
             organisim.setDead();
             deadOrgs.add(organisim);
@@ -66,7 +67,7 @@ public class CommandChaosCraftRefresh extends CommandBase {
                     new TextComponentString("Cleared Dead: " + organisim.getName())
             );
         }
-        for (EntityCreature organisim : deadOrgs) {
+        for (EntityOrganism organisim : deadOrgs) {
             ChaosCraft.organisims.remove(organisim);
         }
         p_execute_2_.sendMessage(

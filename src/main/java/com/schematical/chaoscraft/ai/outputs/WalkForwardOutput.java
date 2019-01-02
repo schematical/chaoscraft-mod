@@ -19,6 +19,7 @@ public class WalkForwardOutput extends OutputNeuron {
         //this.entity.getMoveHelper().setMoveTo(vec3d2.x, vec3d2.y, vec3d2.z, this.speed);
 
         nNet.entity.moveForward = this._lastValue * 0.8f;
+        nNet.entity.getMoveHelper().strafe(nNet.entity.moveForward, nNet.entity.moveStrafing);
         /*
         Vec3d vec3d = nNet.entity.getPositionVector();
         double distance = (this._lastValue > 0)? 1: -1;

@@ -7,6 +7,7 @@ import com.amazonaws.opensdk.config.TimeoutConfiguration;
 
 import com.google.common.collect.Sets;
 import com.schematical.chaoscraft.entities.EntityEvilRabbit;
+import com.schematical.chaoscraft.entities.EntityOrganism;
 import com.schematical.chaoscraft.entities.EntityRick;
 import com.schematical.chaoscraft.proxies.IProxy;
 
@@ -48,7 +49,7 @@ public class ChaosCraft
     public static Logger logger;
     public static ChaosCraftConfig config;
     public static EntityRick rick;
-    public static Set<EntityCreature> organisims = Sets.<EntityCreature>newLinkedHashSet();
+    public static Set<EntityOrganism> organisims = Sets.<EntityOrganism>newLinkedHashSet();
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
