@@ -2,6 +2,7 @@ package com.schematical.chaoscraft.ai.outputs;
 
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.OutputNeuron;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 /**
@@ -13,12 +14,12 @@ public class WalkSidewaysOutput extends OutputNeuron {
         if(this._lastValue == 0){
             return;
         }
-        ChaosCraft.logger.info("Walking Sideways: " + this._lastValue);
+        ChaosCraft.logger.info(nNet.entity.getName() + " Walking Sideways: " + this._lastValue);
         //Pulled from net.minecraft.pathfinding.PathNavigate.onUpdateNavigation#263
         //this.entity.getMoveHelper().setMoveTo(vec3d2.x, vec3d2.y, vec3d2.z, this.speed);
 
 
-        nNet.entity.moveStrafing = this._lastValue * 0.8f;
+        nNet.entity.moveStrafing =  MathHelper.clamp(this._lastValue * 0.8f, -1, 1);
         /*
         Vec3d vec3d = nNet.entity.getPositionVector();
 

@@ -25,9 +25,9 @@ public class BlockPositionInput                                                 
         //Iterate through all blocks entities etc with in the range
         PositionRange adustedPositionRange = this.eye.positionRange.orientToEntity(this.nNet.entity);
         float value = -1;
-        for(float x = adustedPositionRange.minX; x < adustedPositionRange.maxX; x++){
-            for(float y = adustedPositionRange.minY; y < adustedPositionRange.maxY; y++){
-                for(float z = adustedPositionRange.minZ; z < adustedPositionRange.maxZ; z++){
+        for(float x = adustedPositionRange.minX; x < adustedPositionRange.maxX && value != 1; x++){
+            for(float y = adustedPositionRange.minY; y < adustedPositionRange.maxY && value != 1; y++){
+                for(float z = adustedPositionRange.minZ; z < adustedPositionRange.maxZ && value != 1; z++){
                     BlockPos pos = new BlockPos(x,y,z);
                     Block block = this.nNet.entity.world.getBlockState(pos).getBlock();
                     switch(attributeId){

@@ -1,5 +1,6 @@
 package com.schematical.chaoscraft.ai.outputs;
 
+import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.OutputNeuron;
 
 /**
@@ -11,7 +12,8 @@ public class ChangeYawOutput extends OutputNeuron {
         if(this._lastValue == 0){
             return;
         }
-        this.nNet.entity.rotationYaw += this._lastValue;
+        ChaosCraft.logger.info(nNet.entity.getName() + " ChangeYawOutput: " + this._lastValue);
+        this.nNet.entity.rotationYaw += this._lastValue * 90;
 
     }
 }
