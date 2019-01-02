@@ -89,6 +89,7 @@ public class EntityOrganism extends EntityCreature {
                 }
             }
         }
+       
         super.onUpdate();
 
     }

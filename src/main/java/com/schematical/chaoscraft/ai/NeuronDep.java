@@ -7,6 +7,7 @@ import org.json.simple.JSONObject;
  */
 public class NeuronDep extends InnovationBase{
     public NeuronBase depNeuron;
+    public String depNeuronId;
     public float weight;
     public float _lastValue;
     public NeuronDep(){
@@ -17,6 +18,10 @@ public class NeuronDep extends InnovationBase{
     public void parseData(JSONObject jsonObject){
         String neuronId = jsonObject.get("neuronId").toString();
         //this.depNeuron = //TODO: Load neuron
+        this.depNeuronId = neuronId;
         this.weight = Float.parseFloat(jsonObject.get("weight").toString());
+    }
+    public void populate(NeuralNet neuralNet){
+        this.depNeuron = neuralNet.neurons.get(this.depNeuronId);
     }
 }

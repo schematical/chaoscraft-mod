@@ -8,10 +8,8 @@ import net.minecraft.entity.Entity;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+
 import com.schematical.chaoscraft.ai.inputs.*;
 import com.schematical.chaoscraft.ai.outputs.*;
 /**
@@ -19,7 +17,7 @@ import com.schematical.chaoscraft.ai.outputs.*;
  */
 public class NeuralNet {
     public EntityOrganism entity;
-    public Set<NeuronBase> neurons = Sets.<NeuronBase>newLinkedHashSet();
+    public HashMap<String, NeuronBase> neurons = new HashMap<String, NeuronBase>();
     public List<BiologyBase> biology = new ArrayList<BiologyBase>();
 
     public NeuralNet() {
@@ -30,16 +28,16 @@ public class NeuralNet {
     }
     public List<OutputNeuron> evaluate(){
         //Iterate through output neurons
-        Iterator<NeuronBase> iterator = neurons.iterator();
+        Iterator<Map.Entry<String, NeuronBase>> iterator = neurons.entrySet().iterator();
 
         while (iterator.hasNext()) {
-            NeuronBase neuronBase = iterator.next();
+            NeuronBase neuronBase = iterator.next().getValue();
             neuronBase.reset();
         }
-        iterator = neurons.iterator();
+        iterator = neurons.entrySet().iterator();
         List<OutputNeuron> outputs = new ArrayList<OutputNeuron>();
         while (iterator.hasNext()) {
-            NeuronBase neuronBase = iterator.next();
+            NeuronBase neuronBase = iterator.next().getValue();
             if(neuronBase._base_type() == com.schematical.chaoscraft.Enum.OUTPUT){
                 OutputNeuron outputNeuron = (OutputNeuron)neuronBase;
                 float _last_value = outputNeuron.evaluate();
@@ -53,8 +51,8 @@ public class NeuralNet {
     public void parseData(JSONObject jsonObject){
         try {
 
-            JSONArray outputs = (JSONArray) ((JSONObject)jsonObject.get("biology")).get("Eye");
-            Iterator<JSONObject> iterator = outputs.iterator();
+            JSONArray eyes = (JSONArray) ((JSONObject)jsonObject.get("biology")).get("Eye");
+            Iterator<JSONObject> iterator = eyes.iterator();
             while (iterator.hasNext()) {
                 JSONObject outputBaseJSON = iterator.next();
 
@@ -85,7 +83,12 @@ public class NeuralNet {
                 NeuronBase neuronBase = (NeuronBase) cls.newInstance();
                 neuronBase.attachNNet(this);
                 neuronBase.parseData(neuronBaseJSON);
-                this.neurons.add(neuronBase);
+                this.neurons.put(neuronBase.id, neuronBase);
+            }
+            Iterator<Map.Entry<String, NeuronBase>> iterator2 = this.neurons.entrySet().iterator();
+            while (iterator2.hasNext()){
+                NeuronBase neuronBase = iterator2.next().getValue();
+                neuronBase.populate();
             }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();

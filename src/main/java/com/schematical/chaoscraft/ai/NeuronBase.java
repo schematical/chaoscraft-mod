@@ -11,6 +11,7 @@ import java.util.Set;
  * Created by user1a on 12/8/18.
  */
 public abstract class NeuronBase extends InnovationBase {
+    public String id;
     public NeuralNet nNet;
     public float _lastValue;
     protected boolean hasBeenEvaluated = false;
@@ -18,13 +19,14 @@ public abstract class NeuronBase extends InnovationBase {
     public abstract String _base_type();
 
     public void parseData(JSONObject jsonObject){
-        JSONArray dependencies = (JSONArray) jsonObject.get("dependencies");
-        Iterator<JSONObject> iterator = dependencies.iterator();
+        this.id = (String) jsonObject.get("id");
+        JSONArray jsonDependencies = (JSONArray) jsonObject.get("dependencies");
+        Iterator<JSONObject> iterator = jsonDependencies.iterator();
         while (iterator.hasNext()) {
             JSONObject neuronDepJSON = iterator.next();
             NeuronDep neuronDep = new NeuronDep();
             neuronDep.parseData(neuronDepJSON);
-            dependencies.add(neuronDep);
+            this.dependencies.add(neuronDep);
         }
     }
     public void reset(){
@@ -44,6 +46,11 @@ public abstract class NeuronBase extends InnovationBase {
         hasBeenEvaluated = true;
         return _lastValue;
 
+    }
+    public void populate(){
+        for (NeuronDep neuronDep: dependencies) {
+            neuronDep.populate(this.nNet);
+        }
     }
     public float sigmoid(float x){
         return (float) (1 / (1 + Math.exp(-x)));

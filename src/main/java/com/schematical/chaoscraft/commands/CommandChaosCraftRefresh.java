@@ -16,6 +16,7 @@ import net.minecraft.world.World;
 import scala.collection.concurrent.Debug;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -56,13 +57,17 @@ public class CommandChaosCraftRefresh extends CommandBase {
         p_execute_2_.sendMessage(
             new TextComponentString("Clearing Organisms")
         );
+        List<EntityCreature> deadOrgs = new ArrayList<EntityCreature>();
         for (EntityCreature organisim : ChaosCraft.organisims) {
             organisim.setHealth(0);
             organisim.setDead();
-
+            deadOrgs.add(organisim);
             p_execute_2_.sendMessage(
                     new TextComponentString("Cleared Dead: " + organisim.getName())
             );
+        }
+        for (EntityCreature organisim : deadOrgs) {
+            ChaosCraft.organisims.remove(organisim);
         }
         p_execute_2_.sendMessage(
                 new TextComponentString("Cleared Dead")

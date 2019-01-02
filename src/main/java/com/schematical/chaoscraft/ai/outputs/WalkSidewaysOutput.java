@@ -16,13 +16,16 @@ public class WalkSidewaysOutput extends OutputNeuron {
         ChaosCraft.logger.info("Walking Sideways: " + this._lastValue);
         //Pulled from net.minecraft.pathfinding.PathNavigate.onUpdateNavigation#263
         //this.entity.getMoveHelper().setMoveTo(vec3d2.x, vec3d2.y, vec3d2.z, this.speed);
-        Vec3d vec3d = nNet.entity.getPositionVector();
 
+
+        nNet.entity.moveStrafing = this._lastValue * 0.8f;
+        /*
+        Vec3d vec3d = nNet.entity.getPositionVector();
 
         double distance = (this._lastValue > 0)? 1: -1;
         vec3d.add(new Vec3d(0D, 0D, distance));
-        //TODO: Make this adjust to facing vector
         vec3d.rotateYaw(nNet.entity.rotationYaw);
         nNet.entity.getMoveHelper().setMoveTo(vec3d.x, vec3d.y, vec3d.z, Math.abs(this._lastValue) * 0.8D);
+        */
     }
 }
