@@ -8,6 +8,7 @@ import com.schematical.chaoscraft.entities.EntityRick;
 import com.schematical.chaosnet.model.*;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -51,12 +52,29 @@ public class AISpawnOrganisim extends EntityAIBase
                 EntityOrganism entityOrganism = new EntityOrganism(world, organism.getNamespace());
                 entityOrganism.setCustomNameTag(organism.getName());
                 BlockPos pos = rick.getPosition();
-                int range = 10;
-                entityOrganism.setPosition(
+                int range = 15;
+                Vec3d rndPos = null;
+                int saftyCatch = 0;
+                while(
+                        rndPos == null &&
+                        saftyCatch < 10
+                ) {
+                    saftyCatch ++;
+                    rndPos = new Vec3d(
                     pos.getX() + Math.floor((Math.random() * range * 2) - range),
                     pos.getY() + Math.floor((Math.random() * range * 2) - range),
                     pos.getZ() + Math.floor((Math.random() * range * 2) - range)
-                );
+                    );
+                    entityOrganism.setPosition(
+                        rndPos.x,
+                        rndPos.y,
+                        rndPos.z
+                    );
+                    if(!entityOrganism.getCanSpawnHere()){
+                        rndPos = null;
+                    }
+                }
+
                 entityOrganism.attachOrganism(organism);
                 entityOrganism.attachNNetRaw(nNetRaw);
                 ChaosCraft.organisims.add(entityOrganism);

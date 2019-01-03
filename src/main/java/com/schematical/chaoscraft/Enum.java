@@ -4,6 +4,8 @@ package com.schematical.chaoscraft;
  * Created by user1a on 12/30/18.
  */
 public class Enum {
+    public static final String BLOCK_ID = "BLOCK_ID";
+
     public final static String INPUT = "INPUT";
     public final static String OUTPUT = "OUTPUT";
     public final static String MIDDLE = "MIDDLE";

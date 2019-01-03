@@ -204,7 +204,7 @@ public class EntityOrganism extends EntityLiving {
             }
             harvest = false;
         }
-        ChaosCraft.logger.info(this.getName() + " Mining: " + state.getBlock().getLocalizedName() + " Tool:" + tool + " Held Stack: " + stack.getDisplayName() + "  Hardness: " + hardness + " - " + miningTicks + " - " + harvest + " => " + (hardness * miningTicks > 1.0f));
+        //ChaosCraft.logger.info(this.getName() + " Mining: " + state.getBlock().getLocalizedName() + " Tool:" + tool + " Held Stack: " + stack.getDisplayName() + "  Hardness: " + hardness + " - " + miningTicks + " - " + harvest + " => " + (hardness * miningTicks > 1.0f));
         //Check if block has been broken
         if (hardness * miningTicks > 1.0f) {
             //Broken
@@ -252,6 +252,16 @@ public class EntityOrganism extends EntityLiving {
         if (stack.isEmpty()) {
             item.setDead();
         }
+    }
+    public void placeBlock(BlockPos blockPos, Block block){
+        ChaosCraft.logger.info(getName() + " Placing Block: " + block.getLocalizedName() + " - " + blockPos.toString());
+        IBlockState blockState = this.nNet.entity.world.getBlockState(blockPos);
+        //TODO: Check if it is in their inventory
+        Block replaceBlock = blockState.getBlock();
+        //if(block.isReplaceable(world, block)){
+        world.setBlockState(blockPos, block.getDefaultState());
+        //}
+
     }
 
 

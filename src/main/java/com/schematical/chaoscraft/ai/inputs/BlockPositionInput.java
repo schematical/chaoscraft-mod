@@ -13,7 +13,7 @@ import scala.actors.Debug;
  * Created by user1a on 12/8/18.
  */
 public class BlockPositionInput                                                                                                                          extends InputNeuron {
-    private static final String BLOCK_ID = "BLOCK_ID";
+
     public String attributeId;
     public String attributeValue;
     public Eye eye;
@@ -31,7 +31,7 @@ public class BlockPositionInput                                                 
                     BlockPos pos = new BlockPos(x,y,z);
                     Block block = this.nNet.entity.world.getBlockState(pos).getBlock();
                     switch(attributeId){
-                        case(BLOCK_ID):
+                        case(com.schematical.chaoscraft.Enum.BLOCK_ID):
                             int blockId = Block.getIdFromBlock(block);
                             if(blockId == Integer.parseInt(attributeValue)){
                                 value = 1;
