@@ -94,10 +94,14 @@ public class EntityOrganism extends EntityLiving {
 
     }
     public void jump(){
-         if(!this.isJumping) {
+        if (this.onGround)
+        {
+            super.jump();
+        }
+         /*if(!this.isJumping) {
              //super.jump();
              super.getJumpHelper().setJumping();
-         }
+         }*/
     }
     public static class EntityOrganismRenderer extends RenderLiving<EntityOrganism> {
         public EntityOrganismRenderer(RenderManager rendermanagerIn) {

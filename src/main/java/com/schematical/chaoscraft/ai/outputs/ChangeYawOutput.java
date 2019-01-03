@@ -15,7 +15,7 @@ public class ChangeYawOutput extends OutputNeuron {
         float delta = ((this._lastValue * 2) -1) * 45;
         ChaosCraft.logger.info(nNet.entity.getName() + " ChangeYawOutput: " + this._lastValue + " - " + delta);
 
-        this.nNet.entity.rotationYawHead += delta;
+        this.nNet.entity.rotationYaw += delta;
 
     }
 }
