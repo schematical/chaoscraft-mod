@@ -19,16 +19,8 @@ public class WalkForwardOutput extends OutputNeuron {
         //this.entity.getMoveHelper().setMoveTo(vec3d2.x, vec3d2.y, vec3d2.z, this.speed);
 
         nNet.entity.moveForward = ((this._lastValue * 2) -1) * Enum.SPEED;
-        ChaosCraft.logger.info(nNet.entity.getName() + " Walking Forward: " + this._lastValue + " - " + nNet.entity.moveForward);
+        //ChaosCraft.logger.info(nNet.entity.getName() + " Walking Forward: " + this._lastValue + " - " + nNet.entity.moveForward);
         nNet.entity.getMoveHelper().strafe(nNet.entity.moveForward, nNet.entity.moveStrafing);
-        /*
-        Vec3d vec3d = nNet.entity.getPositionVector();
-        double distance = (this._lastValue > 0)? 1: -1;
 
-        vec3d.add(new Vec3d(distance, 0D, 0D));
-
-        vec3d.rotateYaw(nNet.entity.rotationYaw);
-        nNet.entity.getMoveHelper().setMoveTo(vec3d.x, vec3d.y, vec3d.z, Math.abs(this._lastValue) * 0.8D);
-        */
     }
 }

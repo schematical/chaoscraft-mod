@@ -20,13 +20,16 @@ import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.items.ItemStackHandler;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -39,9 +42,11 @@ public class EntityOrganism extends EntityLiving {
     protected Organism organism;
     protected NeuralNet nNet;
     protected float digSpeed = 1;
+    protected ItemStackHandler itemHandler = new ItemStackHandler();
     protected BlockPos lastMinePos = BlockPos.ORIGIN.down();
 
     protected int miningTicks = 0;
+    protected int selectedItemIndex = 0;
 
     public EntityOrganism(World worldIn) {
         this(worldIn, "EntityOrganism");
@@ -56,6 +61,9 @@ public class EntityOrganism extends EntityLiving {
         this.tasks.addTask(1, new EntityAISwimming(this));
         ChaosCraft.organisims.add(this);
 
+     }
+     public NeuralNet getNNet(){
+        return nNet;
      }
      public void attachNNetRaw(NNetRaw nNetRaw){
         String nNetString = nNetRaw.getNNetRaw();
@@ -82,7 +90,17 @@ public class EntityOrganism extends EntityLiving {
      }
 
 
+    @Override
+    public void onUpdate(){
 
+        List<EntityItem> items = this.world.getEntitiesWithinAABB(EntityItem.class, this.getEntityBoundingBox().grow(1.0D, 0.0D, 1.0D));
+
+        for (EntityItem item : items) {
+            pickupItem(item);
+        }
+
+        super.onUpdate();
+    }
 
     @Override
     public void onLivingUpdate()
@@ -173,6 +191,20 @@ public class EntityOrganism extends EntityLiving {
 
         this.world.sendBlockBreakProgress(this.getEntityId(), pos, (int) (hardness * miningTicks * 10.0F) - 1);
 
+        boolean harvest = true;//state.getBlock().canHarvestBlock(world, pos, fakePlayer);
+
+        ItemStack stack = getHeldItemMainhand();
+        String tool = state.getBlock().getHarvestTool(state);
+        if (stack.isEmpty() || tool == null)
+        {
+            if(state.getMaterial().isToolNotRequired()){
+                hardness /= 30F;
+            }else {
+                hardness /= 100F;
+            }
+            harvest = false;
+        }
+        ChaosCraft.logger.info(this.getName() + " Mining: " + state.getBlock().getLocalizedName() + " Tool:" + tool + " Held Stack: " + stack.getDisplayName() + "  Hardness: " + hardness + " - " + miningTicks + " - " + harvest + " => " + (hardness * miningTicks > 1.0f));
         //Check if block has been broken
         if (hardness * miningTicks > 1.0f) {
             //Broken
@@ -180,11 +212,9 @@ public class EntityOrganism extends EntityLiving {
 
             world.playEvent(2001, pos, Block.getStateId(state));
 
-            ItemStack itemstack = this.getActiveItemStack();
 
 
 
-            boolean harvest = true;//state.getBlock().canHarvestBlock(world, pos, fakePlayer);
 
             boolean bool = world.setBlockState(pos, net.minecraft.init.Blocks.AIR.getDefaultState(), world.isRemote ? 11 : 3);
             if (bool) {
@@ -204,6 +234,24 @@ public class EntityOrganism extends EntityLiving {
         miningTicks = 0;
         this.world.sendBlockBreakProgress(this.getEntityId(), lastMinePos, -1);
         this.lastMinePos.down(255);
+    }
+
+    private void pickupItem(EntityItem item) {
+        if (item.cannotPickup()) return;
+
+        ItemStack stack = item.getItem();
+
+        for (int i = 0; i < this.itemHandler.getSlots() && !stack.isEmpty(); i++) {
+            stack = this.itemHandler.insertItem(i, stack, false);
+
+            //PacketHandler.INSTANCE.sendToAllTracking(new SyncHandsMessage(this.itemHandler.getStackInSlot(i), getEntityId(), i, selectedItemIndex), this);
+        }
+
+        this.setHeldItem(EnumHand.MAIN_HAND, this.itemHandler.getStackInSlot(this.selectedItemIndex));
+
+        if (stack.isEmpty()) {
+            item.setDead();
+        }
     }
 
 

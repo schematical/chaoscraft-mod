@@ -14,7 +14,7 @@ public class ChangePitchOutput extends OutputNeuron {
         }
 
         float delta = ((this._lastValue * 2) -1) * 45;
-        ChaosCraft.logger.info(nNet.entity.getName() + " ChangePitchOutput: " + this._lastValue + " - " + delta);
+        //ChaosCraft.logger.info(nNet.entity.getName() + " ChangePitchOutput: " + this._lastValue + " - " + delta);
 
         this.nNet.entity.rotationPitch += delta;
     }
