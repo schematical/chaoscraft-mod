@@ -258,6 +258,17 @@ public class EntityOrganism extends EntityLiving {
         IBlockState blockState = this.nNet.entity.world.getBlockState(blockPos);
         //TODO: Check if it is in their inventory
         Block replaceBlock = blockState.getBlock();
+        //blockState.getBoundingBox().
+        if(!blockState.getMaterial().isReplaceable()){
+            return;
+        }
+        if(this.getEntityBoundingBox().contains(new Vec3d(
+                blockPos.getX(),
+                blockPos.getY(),
+                blockPos.getZ()
+        ))){
+            return;//This will kill us
+        }
         //if(block.isReplaceable(world, block)){
         world.setBlockState(blockPos, block.getDefaultState());
         //}

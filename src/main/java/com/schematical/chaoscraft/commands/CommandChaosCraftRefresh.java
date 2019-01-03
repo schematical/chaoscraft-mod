@@ -73,7 +73,16 @@ public class CommandChaosCraftRefresh extends CommandBase {
             ChaosCraft.organisims.remove(organisim);
         }
         p_execute_2_.sendMessage(
-                new TextComponentString("Cleared Dead")
+                new TextComponentString("Cleared Dead, spawning orgs")
+        );
+        List<EntityOrganism> spawnedEntityOrganisms = ChaosCraft.spawnOrgs();
+        for (EntityOrganism organism:spawnedEntityOrganisms) {
+            p_execute_2_.sendMessage(
+                new TextComponentString("Spawned: " + organism.getName())
+            );
+        }
+        p_execute_2_.sendMessage(
+            new TextComponentString("Orgs spawned")
         );
     }
 

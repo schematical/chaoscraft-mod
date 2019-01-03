@@ -36,51 +36,7 @@ public class AISpawnOrganisim extends EntityAIBase
     }
     public void startExecuting()
     {
-        TrainingRoomSessionNextResponse response = ChaosCraft.getNextOrgs(null);
-        List<Organism> organismList = response.getOrganisms();
-        World world = rick.getEntityWorld();
-        if(!world.isRemote) {
-            for(int i = 0; i < organismList.size(); i++) {
-                Organism organism = organismList.get(i);
-                GetUsernameTrainingroomsTrainingroomOrganismsOrganismNnetRequest request = new GetUsernameTrainingroomsTrainingroomOrganismsOrganismNnetRequest();
-                request.setUsername(ChaosCraft.config.trainingRoomUsernameNamespace);
-                request.setTrainingroom(ChaosCraft.config.trainingRoomNamespace);
-                request.setOrganism(organism.getNamespace());
-                GetUsernameTrainingroomsTrainingroomOrganismsOrganismNnetResult result = ChaosCraft.sdk.getUsernameTrainingroomsTrainingroomOrganismsOrganismNnet(request);
-                NNetRaw nNetRaw = result.getNNetRaw();
-
-                EntityOrganism entityOrganism = new EntityOrganism(world, organism.getNamespace());
-                entityOrganism.setCustomNameTag(organism.getName());
-                BlockPos pos = rick.getPosition();
-                int range = 15;
-                Vec3d rndPos = null;
-                int saftyCatch = 0;
-                while(
-                        rndPos == null &&
-                        saftyCatch < 10
-                ) {
-                    saftyCatch ++;
-                    rndPos = new Vec3d(
-                    pos.getX() + Math.floor((Math.random() * range * 2) - range),
-                    pos.getY() + Math.floor((Math.random() * range * 2) - range),
-                    pos.getZ() + Math.floor((Math.random() * range * 2) - range)
-                    );
-                    entityOrganism.setPosition(
-                        rndPos.x,
-                        rndPos.y,
-                        rndPos.z
-                    );
-                    if(!entityOrganism.getCanSpawnHere()){
-                        rndPos = null;
-                    }
-                }
-
-                entityOrganism.attachOrganism(organism);
-                entityOrganism.attachNNetRaw(nNetRaw);
-                ChaosCraft.organisims.add(entityOrganism);
-                world.spawnEntity(entityOrganism);
-            }
-        }
+       ChaosCraft.spawnOrgs();
     }
 
 

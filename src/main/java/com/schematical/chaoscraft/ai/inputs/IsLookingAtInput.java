@@ -31,13 +31,14 @@ public class IsLookingAtInput extends InputNeuron {
         switch(attributeId){
             case(BLOCK_ID):
                 RayTraceResult rayTraceResult = nNet.entity.rayTraceBlocks(3d);
-
-                Block block = nNet.entity.world.getBlockState(
-                        rayTraceResult.getBlockPos()
-                ).getBlock();
-                int blockId = Block.getIdFromBlock(block);
-                if(blockId == Integer.parseInt(attributeValue)){
-                    value = 1;
+                if(rayTraceResult != null) {
+                    Block block = nNet.entity.world.getBlockState(
+                            rayTraceResult.getBlockPos()
+                    ).getBlock();
+                    int blockId = Block.getIdFromBlock(block);
+                    if (blockId == Integer.parseInt(attributeValue)) {
+                        value = 1;
+                    }
                 }
             break;
 

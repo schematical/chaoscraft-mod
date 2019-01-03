@@ -19,6 +19,7 @@ import com.schematical.chaosnet.model.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -31,6 +32,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -138,6 +140,56 @@ public class ChaosCraft
         //logger.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
 
 
+    }
+    public static List<EntityOrganism> spawnOrgs(){
+        TrainingRoomSessionNextResponse response = ChaosCraft.getNextOrgs(null);
+        List<Organism> organismList = response.getOrganisms();
+        List<EntityOrganism> spawnedEntityOrganisms = new ArrayList<EntityOrganism>();
+        World world = rick.getEntityWorld();
+        if(!world.isRemote) {
+            for(int i = 0; i < organismList.size(); i++) {
+                Organism organism = organismList.get(i);
+                GetUsernameTrainingroomsTrainingroomOrganismsOrganismNnetRequest request = new GetUsernameTrainingroomsTrainingroomOrganismsOrganismNnetRequest();
+                request.setUsername(ChaosCraft.config.trainingRoomUsernameNamespace);
+                request.setTrainingroom(ChaosCraft.config.trainingRoomNamespace);
+                request.setOrganism(organism.getNamespace());
+                GetUsernameTrainingroomsTrainingroomOrganismsOrganismNnetResult result = ChaosCraft.sdk.getUsernameTrainingroomsTrainingroomOrganismsOrganismNnet(request);
+                NNetRaw nNetRaw = result.getNNetRaw();
+
+                EntityOrganism entityOrganism = new EntityOrganism(world, organism.getNamespace());
+                entityOrganism.setCustomNameTag(organism.getName());
+                BlockPos pos = rick.getPosition();
+                int range = 15;
+                Vec3d rndPos = null;
+                int saftyCatch = 0;
+                while(
+                        rndPos == null &&
+                                saftyCatch < 10
+                        ) {
+                    saftyCatch ++;
+                    rndPos = new Vec3d(
+                            pos.getX() + Math.floor((Math.random() * range * 2) - range),
+                            pos.getY() + Math.floor((Math.random() * range * 2) - range),
+                            pos.getZ() + Math.floor((Math.random() * range * 2) - range)
+                    );
+                    entityOrganism.setPosition(
+                            rndPos.x,
+                            rndPos.y,
+                            rndPos.z
+                    );
+                    if(!entityOrganism.getCanSpawnHere()){
+                        rndPos = null;
+                    }
+                }
+
+                entityOrganism.attachOrganism(organism);
+                entityOrganism.attachNNetRaw(nNetRaw);
+                ChaosCraft.organisims.add(entityOrganism);
+                spawnedEntityOrganisms.add(entityOrganism);
+                world.spawnEntity(entityOrganism);
+            }
+        }
+        return spawnedEntityOrganisms;
     }
     public static EntityRick spawnRick(World world, BlockPos pos ){
         if(ChaosCraft.rick != null) {
