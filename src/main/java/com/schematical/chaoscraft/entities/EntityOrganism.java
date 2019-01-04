@@ -22,6 +22,8 @@ import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
@@ -256,22 +258,43 @@ public class EntityOrganism extends EntityLiving {
     public void placeBlock(BlockPos blockPos, Block block){
         ChaosCraft.logger.info(getName() + " Placing Block: " + block.getLocalizedName() + " - " + blockPos.toString());
         IBlockState blockState = this.nNet.entity.world.getBlockState(blockPos);
-        //TODO: Check if it is in their inventory
-        Block replaceBlock = blockState.getBlock();
-        //blockState.getBoundingBox().
+
+        //Block replaceBlock = blockState.getBlock();
+
         if(!blockState.getMaterial().isReplaceable()){
             return;
         }
-        if(this.getEntityBoundingBox().contains(new Vec3d(
-                blockPos.getX(),
-                blockPos.getY(),
-                blockPos.getZ()
-        ))){
+
+        if(this.getEntityBoundingBox().grow(.5d).intersects(blockState.getBoundingBox(this.world, blockPos).grow(.5d))){
             return;//This will kill us
         }
-        //if(block.isReplaceable(world, block)){
+
+        //Check if it is in their inventory
+        ItemStack stack = null;
+        int slot = -1;
+        for (int i = 0; i < this.itemHandler.getSlots(); i++) {
+            ItemStack checkStack = this.itemHandler.getStackInSlot(i);
+            Item item = checkStack.getItem();
+            if(item instanceof ItemBlock){
+                ItemBlock itemBlock = (ItemBlock) item;
+                //itemBlock.placeBlockAt()
+                if(itemBlock.getBlock() == block){
+                    stack = checkStack;
+                    slot = i;
+                }
+            }
+            //PacketHandler.INSTANCE.sendToAllTracking(new SyncHandsMessage(this.itemHandler.getStackInSlot(i), getEntityId(), i, selectedItemIndex), this);
+        }
+        if (stack == null  ||stack.isEmpty()) {
+            return;
+        }
+
+
+        this.itemHandler.extractItem(slot, 1, false);
+
+
+
         world.setBlockState(blockPos, block.getDefaultState());
-        //}
 
     }
 

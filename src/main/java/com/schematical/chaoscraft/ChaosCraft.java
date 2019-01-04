@@ -159,7 +159,7 @@ public class ChaosCraft
                 EntityOrganism entityOrganism = new EntityOrganism(world, organism.getNamespace());
                 entityOrganism.setCustomNameTag(organism.getName());
                 BlockPos pos = rick.getPosition();
-                int range = 15;
+                int range = 3;
                 Vec3d rndPos = null;
                 int saftyCatch = 0;
                 while(
