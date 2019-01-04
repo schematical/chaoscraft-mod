@@ -50,20 +50,7 @@ public class IsLookingAtInput extends InputNeuron {
         super.parseData(jsonObject);
         attributeId = jsonObject.get("attributeId").toString();
         attributeValue = jsonObject.get("attributeValue").toString();
-        /*for(int i = 0; i < nNet.biology.size(); i++){
-            BiologyBase biologyBase = nNet.biology.get(i);
-            if(biologyBase instanceof Eye){
-                Eye eyeTmp = (Eye) biologyBase;
-                JSONObject eyeData = (JSONObject)jsonObject.get("eye");
-                int eyeIndex = Integer.parseInt(eyeData.get("index").toString());
-                if(eyeTmp.index == eyeIndex){
-                    eye = eyeTmp;
-                }
-            }
-        }
-        if(eye == null){
-            Debug.error("Invalid Eye Index: " + jsonObject.get("index"));
-        }*/
+
 
     }
 

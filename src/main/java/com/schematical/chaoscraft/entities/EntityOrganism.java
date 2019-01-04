@@ -7,6 +7,9 @@ package com.schematical.chaoscraft.entities;
 
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.*;
+import com.schematical.chaoscraft.events.CCWorldEvent;
+import com.schematical.chaoscraft.events.CCWorldEventType;
+import com.schematical.chaoscraft.fitness.EntityFitnessManager;
 import com.schematical.chaosnet.model.NNetRaw;
 import com.schematical.chaosnet.model.Organism;
 import com.schematical.chaosnet.model.NNet;
@@ -41,6 +44,7 @@ import java.util.List;
 
 public class EntityOrganism extends EntityLiving {
     public final double REACH_DISTANCE = 5.0D;
+    public EntityFitnessManager entityFitnessManager;
     protected Organism organism;
     protected NeuralNet nNet;
     protected float digSpeed = 1;
@@ -61,6 +65,8 @@ public class EntityOrganism extends EntityLiving {
 
 
         this.tasks.addTask(1, new EntityAISwimming(this));
+
+        this.entityFitnessManager = new EntityFitnessManager(this);
         ChaosCraft.organisims.add(this);
 
      }
@@ -228,6 +234,9 @@ public class EntityOrganism extends EntityLiving {
             if (harvest) {
                 //state.getBlock().harvestBlock(world, fakePlayer, pos, state, world.getTileEntity(pos), itemstack);
                 state.getBlock().dropBlockAsItem(world, pos, state, 0);
+                CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEventType.BLOCK_MINED);
+                worldEvent.block = state.getBlock();
+                entityFitnessManager.test(worldEvent);
             }
         }
     }
@@ -254,6 +263,9 @@ public class EntityOrganism extends EntityLiving {
         if (stack.isEmpty()) {
             item.setDead();
         }
+        CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEventType.ITEM_COLLECTED);
+        worldEvent.item = stack.getItem();
+        entityFitnessManager.test(worldEvent);
     }
     public void placeBlock(BlockPos blockPos, Block block){
         ChaosCraft.logger.info(getName() + " Placing Block: " + block.getLocalizedName() + " - " + blockPos.toString());
@@ -295,6 +307,9 @@ public class EntityOrganism extends EntityLiving {
 
 
         world.setBlockState(blockPos, block.getDefaultState());
+        CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEventType.BLOCK_PLACED);
+        worldEvent.block = block;
+        entityFitnessManager.test(worldEvent);
 
     }
 
