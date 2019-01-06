@@ -5,6 +5,10 @@ package com.schematical.chaoscraft;
  */
 public class Enum {
     public static final String BLOCK_ID = "BLOCK_ID";
+    public static final String ENTITY_ID = "ENTITY_ID";
+    public static final String ITEM_ID = "ITEM_ID";
+
+
 
     public final static String INPUT = "INPUT";
     public final static String OUTPUT = "OUTPUT";

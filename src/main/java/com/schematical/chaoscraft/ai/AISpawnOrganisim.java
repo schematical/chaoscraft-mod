@@ -25,6 +25,11 @@ public class AISpawnOrganisim extends EntityAIBase
         this.rick = _rick;
     }
     public boolean shouldExecute(){
+        for (EntityOrganism organism: ChaosCraft.organisims) {
+            if(organism.isDead){
+
+            }
+        }
         if(ChaosCraft.organisims.size() >= ChaosCraft.config.maxBotCount) {
             return false;
         }

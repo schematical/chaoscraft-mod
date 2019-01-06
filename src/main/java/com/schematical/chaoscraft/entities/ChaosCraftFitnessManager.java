@@ -19,7 +19,13 @@ import java.util.Map;
 public class ChaosCraftFitnessManager {
     protected List<EntityFitnessRule> rules = new ArrayList<EntityFitnessRule>();
     public EntityFitnessScoreEvent testEntityFitnessEvent(EntityOrganism entityOrganism, CCWorldEvent event){
-        return null;
+        EntityFitnessScoreEvent scoreEvent = null;
+        for (EntityFitnessRule rule: rules) {
+            if(scoreEvent == null) {
+                scoreEvent = rule.testWorldEvent(event);
+            }
+        }
+        return scoreEvent;
     }
 
     public void parseData(JSONArray rulesJSON){

@@ -59,13 +59,13 @@ public class CommandChaosCraftRefresh extends CommandBase {
             new TextComponentString("Clearing Organisms")
         );
         List<EntityOrganism> deadOrgs = new ArrayList<EntityOrganism>();
-        for (EntityOrganism organisim : ChaosCraft.organisims) {
-            if(organisim.getNNet() == null) {
-                organisim.setHealth(0);
-                organisim.setDead();
-                deadOrgs.add(organisim);
+        for (EntityOrganism organsim : ChaosCraft.organisims) {
+            if(organsim.getNNet() == null) {
+                organsim.setHealth(0);
+                organsim.setDead();
+                deadOrgs.add(organsim);
                 p_execute_2_.sendMessage(
-                        new TextComponentString("Cleared Dead: " + organisim.getName())
+                        new TextComponentString("Cleared Dead: " + organsim.getName())
                 );
             }
         }

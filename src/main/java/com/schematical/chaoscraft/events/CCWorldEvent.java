@@ -1,6 +1,7 @@
 package com.schematical.chaoscraft.events;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 
 /**
@@ -10,6 +11,7 @@ public class CCWorldEvent {
     public String eventType;
     public Block block;
     public Item item;
+    public Entity entity;
 
     public CCWorldEvent(String _eventType){
         eventType = _eventType;

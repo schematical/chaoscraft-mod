@@ -44,6 +44,8 @@ import java.util.List;
 
 public class EntityOrganism extends EntityLiving {
     public final double REACH_DISTANCE = 5.0D;
+    private final long spawnTime;
+
     public EntityFitnessManager entityFitnessManager;
     protected Organism organism;
     protected NeuralNet nNet;
@@ -53,6 +55,7 @@ public class EntityOrganism extends EntityLiving {
 
     protected int miningTicks = 0;
     protected int selectedItemIndex = 0;
+    protected float maxLifeSeconds = 10;
 
     public EntityOrganism(World worldIn) {
         this(worldIn, "EntityOrganism");
@@ -68,6 +71,7 @@ public class EntityOrganism extends EntityLiving {
 
         this.entityFitnessManager = new EntityFitnessManager(this);
         ChaosCraft.organisims.add(this);
+        spawnTime = world.getWorldTime();
 
      }
      public NeuralNet getNNet(){
@@ -100,6 +104,7 @@ public class EntityOrganism extends EntityLiving {
 
     @Override
     public void onUpdate(){
+        long age = this.world.getWorldTime() - spawnTime;
 
         List<EntityItem> items = this.world.getEntitiesWithinAABB(EntityItem.class, this.getEntityBoundingBox().grow(1.0D, 0.0D, 1.0D));
 
@@ -108,6 +113,10 @@ public class EntityOrganism extends EntityLiving {
         }
 
         super.onUpdate();
+        if(age / 20 > maxLifeSeconds){
+            this.setDead();
+            return;
+        }
     }
 
     @Override
