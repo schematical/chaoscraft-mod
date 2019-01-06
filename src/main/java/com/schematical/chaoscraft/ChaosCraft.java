@@ -17,6 +17,7 @@ import com.schematical.chaosnet.ChaosNet;
 import com.schematical.chaosnet.ChaosNetClientBuilder;
 import com.schematical.chaosnet.auth.ChaosnetCognitoUserPool;
 import com.schematical.chaosnet.model.*;
+import com.schematical.chaosnet.model.transform.GetUsernameTrainingroomsTrainingroomFitnessrulesResultJsonUnmarshaller;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.util.math.BlockPos;
@@ -32,7 +33,11 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.logging.log4j.Logger;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -101,6 +106,35 @@ public class ChaosCraft
 
 
     }
+
+    public static void loadTraingRoom(){
+        if(
+            ChaosCraft.config.trainingRoomNamespace == null ||
+            ChaosCraft.config.trainingRoomUsernameNamespace == null
+        ){
+            ChaosCraft.logger.error("Not enough TrainingRoom Data set");
+        }
+
+        GetUsernameTrainingroomsTrainingroomFitnessrulesRequest fitnessRulesRequest = new GetUsernameTrainingroomsTrainingroomFitnessrulesRequest();
+        fitnessRulesRequest.setTrainingroom(ChaosCraft.config.trainingRoomNamespace);
+        fitnessRulesRequest.setUsername(ChaosCraft.config.trainingRoomUsernameNamespace);
+
+        GetUsernameTrainingroomsTrainingroomFitnessrulesResult result = ChaosCraft.sdk.getUsernameTrainingroomsTrainingroomFitnessrules(fitnessRulesRequest);
+        String fitnessRulesRaw = result.getTrainingRoomFitnessRules().getFitnessRulesRaw();
+
+        JSONParser parser = new JSONParser();
+        try {
+            JSONObject obj = (JSONObject) parser.parse(
+                    fitnessRulesRaw
+            );
+            ChaosCraft.fitnessManager.parseData(obj);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
     public static void startTrainingSession(){
         if(
             ChaosCraft.config.trainingRoomNamespace == null ||

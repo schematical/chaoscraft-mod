@@ -25,7 +25,7 @@ public class ChaosCraftFitnessManager {
     public void parseData(JSONObject jsonObject){
         try {
 
-            JSONArray rulesJSON = (JSONArray) ((JSONArray)jsonObject.get("rules"));
+            JSONArray rulesJSON = (JSONArray) ((JSONArray)jsonObject.get("fitnessRules"));
             Iterator<JSONObject> iterator = rulesJSON.iterator();
             while (iterator.hasNext()) {
                 JSONObject ruleJSON = iterator.next();
