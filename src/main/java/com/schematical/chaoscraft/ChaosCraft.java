@@ -33,6 +33,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.logging.log4j.Logger;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -103,11 +104,11 @@ public class ChaosCraft
         }
 
         startTrainingSession();
-
+        loadFitnessFunctions();
 
     }
 
-    public static void loadTraingRoom(){
+    public static void loadFitnessFunctions(){
         if(
             ChaosCraft.config.trainingRoomNamespace == null ||
             ChaosCraft.config.trainingRoomUsernameNamespace == null
@@ -124,9 +125,10 @@ public class ChaosCraft
 
         JSONParser parser = new JSONParser();
         try {
-            JSONObject obj = (JSONObject) parser.parse(
+            JSONArray obj = (JSONArray) parser.parse(
                     fitnessRulesRaw
             );
+            ChaosCraft.fitnessManager = new ChaosCraftFitnessManager();
             ChaosCraft.fitnessManager.parseData(obj);
         } catch (ParseException e) {
             e.printStackTrace();
