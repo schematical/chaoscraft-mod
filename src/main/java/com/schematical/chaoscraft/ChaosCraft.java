@@ -59,7 +59,7 @@ public class ChaosCraft
     public static Logger logger;
     public static ChaosCraftConfig config;
     public static EntityRick rick;
-    public static Set<EntityOrganism> organisims = Sets.<EntityOrganism>newLinkedHashSet();
+    public static List<EntityOrganism> organisims = new ArrayList<EntityOrganism>();
     public static ChaosCraftFitnessManager fitnessManager;
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)

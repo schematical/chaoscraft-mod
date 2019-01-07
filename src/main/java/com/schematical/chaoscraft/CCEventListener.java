@@ -16,16 +16,23 @@ public class CCEventListener {
     public static void onWorldTickEvent(TickEvent.WorldTickEvent worldTickEvent){
         List<EntityOrganism> deadOrgs = new ArrayList<EntityOrganism>();
         Iterator<EntityOrganism> iterator = ChaosCraft.organisims.iterator();
+        int index = 0;
         while(iterator.hasNext()){
             EntityOrganism organism = iterator.next();
             if(organism.isDead){
                 deadOrgs.add(organism);
-                iterator.remove();
+                ChaosCraft.logger.info("Removing: " + organism.getName() + " - Org Size Before" + ChaosCraft.organisims.size());
+                //iterator.remove();
+
+                ChaosCraft.logger.info("Dead Orgs: " + deadOrgs.size() + " / " + ChaosCraft.organisims.size());
             }
+            index ++;
         }
+        ChaosCraft.organisims.removeIf((org)-> org.isDead);
+
 
         //TODO: Add to reporting...
-        ChaosCraft.logger.info("Dead Orgs: " + deadOrgs.size() + " / " + ChaosCraft.organisims.size());
+
 
     }
 
