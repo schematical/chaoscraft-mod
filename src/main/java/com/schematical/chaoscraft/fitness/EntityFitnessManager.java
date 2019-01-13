@@ -25,4 +25,12 @@ public class EntityFitnessManager {
             scoreEvents.add(scoreEvent);
         }
     }
+
+    public Double totalScore() {
+        Double total = 0d;
+        for (EntityFitnessScoreEvent scoreEvent: scoreEvents) {
+            total += scoreEvent.score;
+        }
+        return total;
+    }
 }

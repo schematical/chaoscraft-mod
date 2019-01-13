@@ -14,7 +14,7 @@ import java.util.List;
 public class CCEventListener {
     @SubscribeEvent
     public static void onWorldTickEvent(TickEvent.WorldTickEvent worldTickEvent){
-        List<EntityOrganism> deadOrgs = new ArrayList<EntityOrganism>();
+        /*List<EntityOrganism> deadOrgs = new ArrayList<EntityOrganism>();
         Iterator<EntityOrganism> iterator = ChaosCraft.organisims.iterator();
         int index = 0;
         while(iterator.hasNext()){
@@ -28,7 +28,7 @@ public class CCEventListener {
             }
             index ++;
         }
-        ChaosCraft.organisims.removeIf((org)-> org.isDead);
+        ChaosCraft.organisims.removeIf((org)-> org.isDead);*/
 
 
         //TODO: Add to reporting...

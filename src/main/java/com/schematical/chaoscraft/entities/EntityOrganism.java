@@ -46,6 +46,7 @@ public class EntityOrganism extends EntityLiving {
     public final double REACH_DISTANCE = 5.0D;
     private final long spawnTime;
 
+
     public EntityFitnessManager entityFitnessManager;
     protected Organism organism;
     protected NeuralNet nNet;
@@ -70,9 +71,15 @@ public class EntityOrganism extends EntityLiving {
         this.tasks.addTask(1, new EntityAISwimming(this));
 
         this.entityFitnessManager = new EntityFitnessManager(this);
-        ChaosCraft.organisims.add(this);
+
         spawnTime = world.getWorldTime();
 
+     }
+     public String getCCNamespace(){
+        if(this.organism == null){
+            return null;
+        }
+        return this.organism.getNamespace();
      }
      public NeuralNet getNNet(){
         return nNet;
@@ -113,7 +120,11 @@ public class EntityOrganism extends EntityLiving {
         }
 
         super.onUpdate();
-        if(age / 20 > maxLifeSeconds){
+        if(
+            this.organism == null ||
+            age / 20 > maxLifeSeconds
+        ){
+            ChaosCraft.logger.info("Killing: " + this.getName());
             this.setDead();
             return;
         }
@@ -277,7 +288,7 @@ public class EntityOrganism extends EntityLiving {
         entityFitnessManager.test(worldEvent);
     }
     public void placeBlock(BlockPos blockPos, Block block){
-        ChaosCraft.logger.info(getName() + " Placing Block: " + block.getLocalizedName() + " - " + blockPos.toString());
+        //ChaosCraft.logger.info(getName() + " Placing Block: " + block.getLocalizedName() + " - " + blockPos.toString());
         IBlockState blockState = this.nNet.entity.world.getBlockState(blockPos);
 
         //Block replaceBlock = blockState.getBlock();

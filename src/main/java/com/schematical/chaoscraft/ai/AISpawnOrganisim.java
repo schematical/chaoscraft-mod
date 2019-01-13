@@ -11,6 +11,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -25,12 +27,13 @@ public class AISpawnOrganisim extends EntityAIBase
         this.rick = _rick;
     }
     public boolean shouldExecute(){
+        int liveOrgCount = 0;
         for (EntityOrganism organism: ChaosCraft.organisims) {
-            if(organism.isDead){
-
+            if(!organism.isDead){
+                liveOrgCount += 1;
             }
         }
-        if(ChaosCraft.organisims.size() >= ChaosCraft.config.maxBotCount) {
+        if(liveOrgCount >= ChaosCraft.config.maxBotCount) {
             return false;
         }
         return true;
@@ -41,7 +44,25 @@ public class AISpawnOrganisim extends EntityAIBase
     }
     public void startExecuting()
     {
-       ChaosCraft.spawnOrgs();
+
+        List<EntityOrganism> deadOrgs = new ArrayList<EntityOrganism>();
+        Iterator<EntityOrganism> iterator = ChaosCraft.organisims.iterator();
+        int index = 0;
+        while(iterator.hasNext()){
+            EntityOrganism organism = iterator.next();
+            if(organism.isDead){
+                if(organism.getCCNamespace()  != null) {
+                    deadOrgs.add(organism);
+                }
+                ChaosCraft.logger.info("Removing: " + organism.getName() + " - Org Size Before" + ChaosCraft.organisims.size());
+                iterator.remove();
+
+                ChaosCraft.logger.info("Dead Orgs: " + deadOrgs.size() + " / " + ChaosCraft.organisims.size());
+            }
+            index ++;
+        }
+        ChaosCraft.organisims.removeIf((org)-> org.isDead);
+        ChaosCraft.spawnOrgs(deadOrgs);
     }
 
 

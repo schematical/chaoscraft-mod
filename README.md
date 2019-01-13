@@ -11,13 +11,17 @@
 /chaoscraft-start {trainingRoomOwnerUsername} {trainingRoomNamespace}
 ```
 
+### Additional Helpful Notes for Beginners(Thank You 0xFFFF):
+https://pastebin.com/GwwRkDSM
+
+
+
+## Matt's SideNotes:
+AWS APIGateway Build Commands(I Now have a script for this).
+```
 mvn clean package -Pstandalone-jar
 cp target/ChaosNet-1.0-SNAPSHOT.jar  ~/IdeaProjects/chaoscraft/libs/ChaosNet-1.0-SNAPSHOT.jar
 
-
-
-
-##Matts Notes:
 ###Stop Mobs from Spawning:
 ```
 /gamerule doMobSpawning false

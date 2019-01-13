@@ -20,6 +20,7 @@ import com.schematical.chaosnet.model.*;
 import com.schematical.chaosnet.model.transform.GetUsernameTrainingroomsTrainingroomFitnessrulesResultJsonUnmarshaller;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
+import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
@@ -41,6 +42,7 @@ import org.json.simple.parser.ParseException;
 
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -159,13 +161,33 @@ public class ChaosCraft
         ChaosCraft.config.save();
 
     }
-    public static TrainingRoomSessionNextResponse getNextOrgs(List<Organism> organismList){
+    public static TrainingRoomSessionNextResponse getNextOrgs(List<EntityOrganism> organismList){
         PostUsernameTrainingroomsTrainingroomSessionsSessionNextRequest request = new PostUsernameTrainingroomsTrainingroomSessionsSessionNextRequest();
         request.setTrainingroom(ChaosCraft.config.trainingRoomNamespace);
         request.setUsername(ChaosCraft.config.trainingRoomUsernameNamespace);
         request.setSession(ChaosCraft.config.sessionNamespace);
+        TrainingRoomSessionNextRequest trainingRoomSessionNextRequest = new TrainingRoomSessionNextRequest();
+
+        Collection<TrainingRoomSessionNextReport> report = new ArrayList<TrainingRoomSessionNextReport>();
+        if(organismList != null) {
+            for (EntityOrganism organism : organismList) {
+                String namespace = organism.getCCNamespace();
+                if(namespace != null) {
+                    TrainingRoomSessionNextReport reportEntry = new TrainingRoomSessionNextReport();
+                    reportEntry.setScore(organism.entityFitnessManager.totalScore());
+                    reportEntry.setNamespace(organism.getCCNamespace());
+                    report.add(reportEntry);
+                }
+            }
+
+        }
+        trainingRoomSessionNextRequest.setReport(report);
+
+
+        request.setTrainingRoomSessionNextRequest(trainingRoomSessionNextRequest);
         PostUsernameTrainingroomsTrainingroomSessionsSessionNextResult result = ChaosCraft.sdk.postUsernameTrainingroomsTrainingroomSessionsSessionNext(request);
         TrainingRoomSessionNextResponse response = result.getTrainingRoomSessionNextResponse();
+
         return response;
     }
 
@@ -180,8 +202,11 @@ public class ChaosCraft
 
 
     }
-    public static List<EntityOrganism> spawnOrgs(){
-        TrainingRoomSessionNextResponse response = ChaosCraft.getNextOrgs(null);
+    public static List<EntityOrganism> spawnOrgs() {
+        return ChaosCraft.spawnOrgs(null);
+    }
+    public static List<EntityOrganism> spawnOrgs(List<EntityOrganism> reportOrgs){
+        TrainingRoomSessionNextResponse response = ChaosCraft.getNextOrgs(reportOrgs);
         List<Organism> organismList = response.getOrganisms();
         List<EntityOrganism> spawnedEntityOrganisms = new ArrayList<EntityOrganism>();
         World world = rick.getEntityWorld();
@@ -196,6 +221,8 @@ public class ChaosCraft
                 NNetRaw nNetRaw = result.getNNetRaw();
 
                 EntityOrganism entityOrganism = new EntityOrganism(world, organism.getNamespace());
+                entityOrganism.attachOrganism(organism);
+                entityOrganism.attachNNetRaw(nNetRaw);
                 entityOrganism.setCustomNameTag(organism.getName());
                 BlockPos pos = rick.getPosition();
                 int range = 3;
@@ -221,14 +248,24 @@ public class ChaosCraft
                     }
                 }
 
-                entityOrganism.attachOrganism(organism);
-                entityOrganism.attachNNetRaw(nNetRaw);
+
                 ChaosCraft.organisims.add(entityOrganism);
                 spawnedEntityOrganisms.add(entityOrganism);
                 world.spawnEntity(entityOrganism);
             }
         }
+        String message = "";
+        message += "Gen Progress: " + response.getStats().getGenProgress() + "\n";
+        message += "Spawned So Far: " + response.getStats().getOrgsSpawnedSoFar() + "\n";
+        message += "Total: " + response.getStats().getTotalOrgsPerGen() + "\n";
+        ChaosCraft.chat(message);
         return spawnedEntityOrganisms;
+    }
+    public static void chat(String message){
+        PlayerList players =  rick.world.getMinecraftServer().getPlayerList();
+        players.sendMessage(
+                new TextComponentString(message)
+        );
     }
     public static EntityRick spawnRick(World world, BlockPos pos ){
         if(ChaosCraft.rick != null) {
