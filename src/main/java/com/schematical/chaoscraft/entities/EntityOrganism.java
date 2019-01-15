@@ -81,6 +81,9 @@ public class EntityOrganism extends EntityLiving {
         }
         return this.organism.getNamespace();
      }
+     public Organism getOrganism(){
+         return this.organism;
+     }
      public NeuralNet getNNet(){
         return nNet;
      }
@@ -121,7 +124,7 @@ public class EntityOrganism extends EntityLiving {
 
         super.onUpdate();
         if(
-            this.organism == null ||
+            //this.organism == null ||
             age / 20 > maxLifeSeconds
         ){
             ChaosCraft.logger.info("Killing: " + this.getName());

@@ -14,24 +14,21 @@ import java.util.List;
 public class CCEventListener {
     @SubscribeEvent
     public static void onWorldTickEvent(TickEvent.WorldTickEvent worldTickEvent){
-        /*List<EntityOrganism> deadOrgs = new ArrayList<EntityOrganism>();
+        List<EntityOrganism> deadOrgs = new ArrayList<EntityOrganism>();
         Iterator<EntityOrganism> iterator = ChaosCraft.organisims.iterator();
-        int index = 0;
+
         while(iterator.hasNext()){
             EntityOrganism organism = iterator.next();
-            if(organism.isDead){
+            if(
+                    organism.getOrganism() == null
+                //organism.isDead
+            ){
+                organism.setDead();
                 deadOrgs.add(organism);
-                ChaosCraft.logger.info("Removing: " + organism.getName() + " - Org Size Before" + ChaosCraft.organisims.size());
-                //iterator.remove();
-
-                ChaosCraft.logger.info("Dead Orgs: " + deadOrgs.size() + " / " + ChaosCraft.organisims.size());
+                ChaosCraft.logger.info("Setting Dead: " + organism.getName() + " - Has no `Organism` record");
             }
-            index ++;
         }
-        ChaosCraft.organisims.removeIf((org)-> org.isDead);*/
-
-
-        //TODO: Add to reporting...
+        //ChaosCraft.organisims.removeIf((org)-> org.isDead);
 
 
     }
