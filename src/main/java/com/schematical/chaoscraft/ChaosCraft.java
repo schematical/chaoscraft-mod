@@ -81,8 +81,8 @@ public class ChaosCraft
                 )
                 .timeoutConfiguration(
                         new TimeoutConfiguration()
-                                .httpRequestTimeout(10000)
-                                .totalExecutionTimeout(20000)
+                                .httpRequestTimeout(20000)
+                                .totalExecutionTimeout(30000)
                                 .socketTimeout(10000)
                 )
                 .signer(
@@ -166,6 +166,7 @@ public class ChaosCraft
         request.setTrainingroom(ChaosCraft.config.trainingRoomNamespace);
         request.setUsername(ChaosCraft.config.trainingRoomUsernameNamespace);
         request.setSession(ChaosCraft.config.sessionNamespace);
+
         TrainingRoomSessionNextRequest trainingRoomSessionNextRequest = new TrainingRoomSessionNextRequest();
 
         Collection<TrainingRoomSessionNextReport> report = new ArrayList<TrainingRoomSessionNextReport>();
@@ -182,7 +183,7 @@ public class ChaosCraft
 
         }
         trainingRoomSessionNextRequest.setReport(report);
-
+        trainingRoomSessionNextRequest.setNNetRaw(true);
 
         request.setTrainingRoomSessionNextRequest(trainingRoomSessionNextRequest);
         PostUsernameTrainingroomsTrainingroomSessionsSessionNextResult result = ChaosCraft.sdk.postUsernameTrainingroomsTrainingroomSessionsSessionNext(request);
@@ -213,12 +214,19 @@ public class ChaosCraft
         if(!world.isRemote) {
             for(int i = 0; i < organismList.size(); i++) {
                 Organism organism = organismList.get(i);
-                GetUsernameTrainingroomsTrainingroomOrganismsOrganismNnetRequest request = new GetUsernameTrainingroomsTrainingroomOrganismsOrganismNnetRequest();
-                request.setUsername(ChaosCraft.config.trainingRoomUsernameNamespace);
-                request.setTrainingroom(ChaosCraft.config.trainingRoomNamespace);
-                request.setOrganism(organism.getNamespace());
-                GetUsernameTrainingroomsTrainingroomOrganismsOrganismNnetResult result = ChaosCraft.sdk.getUsernameTrainingroomsTrainingroomOrganismsOrganismNnet(request);
-                NNetRaw nNetRaw = result.getNNetRaw();
+                NNetRaw nNetRaw = null;
+                String nNetRawStr = organism.getNNetRaw();
+                if(nNetRawStr != null){
+                    nNetRaw = new NNetRaw();
+                    nNetRaw.setNNetRaw(nNetRawStr);
+                }else{
+                    GetUsernameTrainingroomsTrainingroomOrganismsOrganismNnetRequest request = new GetUsernameTrainingroomsTrainingroomOrganismsOrganismNnetRequest();
+                    request.setUsername(ChaosCraft.config.trainingRoomUsernameNamespace);
+                    request.setTrainingroom(ChaosCraft.config.trainingRoomNamespace);
+                    request.setOrganism(organism.getNamespace());
+                    GetUsernameTrainingroomsTrainingroomOrganismsOrganismNnetResult result = ChaosCraft.sdk.getUsernameTrainingroomsTrainingroomOrganismsOrganismNnet(request);
+                    nNetRaw = result.getNNetRaw();
+                }
 
                 EntityOrganism entityOrganism = new EntityOrganism(world, organism.getNamespace());
                 entityOrganism.attachOrganism(organism);
@@ -257,6 +265,7 @@ public class ChaosCraft
         String message = "";
         message += "Gen Progress: " + response.getStats().getGenProgress() + "\n";
         message += "Spawned So Far: " + response.getStats().getOrgsSpawnedSoFar() + "\n";
+        message += "Reported So Far: " + response.getStats().getOrgsReportedSoFar() + "\n";
         message += "Total: " + response.getStats().getTotalOrgsPerGen() + "\n";
         ChaosCraft.chat(message);
         return spawnedEntityOrganisms;
