@@ -33,7 +33,10 @@ public class AISpawnOrganisim extends EntityAIBase
                 liveOrgCount += 1;
             }
         }
-        if(liveOrgCount >= ChaosCraft.config.maxBotCount) {
+        if(
+            ChaosCraft.ticksSinceLastSpawn < (20 * 5) ||
+            liveOrgCount >= ChaosCraft.config.maxBotCount
+        ) {
             return false;
         }
         return true;

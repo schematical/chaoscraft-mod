@@ -14,6 +14,7 @@ import java.util.List;
 public class CCEventListener {
     @SubscribeEvent
     public static void onWorldTickEvent(TickEvent.WorldTickEvent worldTickEvent){
+        ChaosCraft.ticksSinceLastSpawn += 1;
         List<EntityOrganism> deadOrgs = new ArrayList<EntityOrganism>();
         Iterator<EntityOrganism> iterator = ChaosCraft.organisims.iterator();
 

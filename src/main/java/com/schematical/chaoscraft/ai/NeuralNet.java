@@ -81,7 +81,7 @@ public class NeuralNet {
 
 
                 String fullClassName = "com.schematical.chaoscraft.ai." + neuronBaseJSON.get("_base_type").toString()  +  "s." + clsName;
-                ChaosCraft.logger.info("Full Class name: " + fullClassName);
+                //ChaosCraft.logger.info("Full Class name: " + fullClassName);
                 Class cls = Class.forName(fullClassName);
                 NeuronBase neuronBase = (NeuronBase) cls.newInstance();
                 neuronBase.attachNNet(this);

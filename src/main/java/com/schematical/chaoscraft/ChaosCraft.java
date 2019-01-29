@@ -63,6 +63,7 @@ public class ChaosCraft
     public static EntityRick rick;
     public static List<EntityOrganism> organisims = new ArrayList<EntityOrganism>();
     public static ChaosCraftFitnessManager fitnessManager;
+    public static int ticksSinceLastSpawn = 0;
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
@@ -162,7 +163,8 @@ public class ChaosCraft
 
     }
     public static TrainingRoomSessionNextResponse getNextOrgs(List<EntityOrganism> organismList){
-        logger.info("GETTING getNextOrgs: " + ((organismList != null) ? organismList.size() : ""));
+        String namespaces = "";
+
         PostUsernameTrainingroomsTrainingroomSessionsSessionNextRequest request = new PostUsernameTrainingroomsTrainingroomSessionsSessionNextRequest();
         request.setTrainingroom(ChaosCraft.config.trainingRoomNamespace);
         request.setUsername(ChaosCraft.config.trainingRoomUsernameNamespace);
@@ -180,16 +182,25 @@ public class ChaosCraft
                     reportEntry.setNamespace(organism.getCCNamespace());
                     report.add(reportEntry);
                 }
+                namespaces += namespace + "    ";
             }
 
         }
+        logger.info("GETTING getNextOrgs: " + ((organismList != null) ? organismList.size() : "") + " - " + namespaces + " - Ticks: " + ChaosCraft.ticksSinceLastSpawn);
+
         trainingRoomSessionNextRequest.setReport(report);
         trainingRoomSessionNextRequest.setNNetRaw(true);
+        TrainingRoomSessionNextResponse response = null;
+        try {
+            request.setTrainingRoomSessionNextRequest(trainingRoomSessionNextRequest);
+            PostUsernameTrainingroomsTrainingroomSessionsSessionNextResult result = ChaosCraft.sdk.postUsernameTrainingroomsTrainingroomSessionsSessionNext(request);
 
-        request.setTrainingRoomSessionNextRequest(trainingRoomSessionNextRequest);
-        PostUsernameTrainingroomsTrainingroomSessionsSessionNextResult result = ChaosCraft.sdk.postUsernameTrainingroomsTrainingroomSessionsSessionNext(request);
-        TrainingRoomSessionNextResponse response = result.getTrainingRoomSessionNextResponse();
 
+            response = result.getTrainingRoomSessionNextResponse();
+        }catch(ChaosNetException exeception){
+            //logger.error(exeception.getMessage());
+            throw exeception;
+        }
         return response;
     }
 
@@ -208,6 +219,7 @@ public class ChaosCraft
         return ChaosCraft.spawnOrgs(null);
     }
     public static List<EntityOrganism> spawnOrgs(List<EntityOrganism> reportOrgs){
+
         TrainingRoomSessionNextResponse response = ChaosCraft.getNextOrgs(reportOrgs);
         List<Organism> organismList = response.getOrganisms();
         List<EntityOrganism> spawnedEntityOrganisms = new ArrayList<EntityOrganism>();
@@ -215,52 +227,66 @@ public class ChaosCraft
         if(!world.isRemote) {
             for(int i = 0; i < organismList.size(); i++) {
                 Organism organism = organismList.get(i);
-                NNetRaw nNetRaw = null;
-                String nNetRawStr = organism.getNNetRaw();
-                if(nNetRawStr != null){
-                    nNetRaw = new NNetRaw();
-                    nNetRaw.setNNetRaw(nNetRawStr);
-                }else{
-                    GetUsernameTrainingroomsTrainingroomOrganismsOrganismNnetRequest request = new GetUsernameTrainingroomsTrainingroomOrganismsOrganismNnetRequest();
-                    request.setUsername(ChaosCraft.config.trainingRoomUsernameNamespace);
-                    request.setTrainingroom(ChaosCraft.config.trainingRoomNamespace);
-                    request.setOrganism(organism.getNamespace());
-                    GetUsernameTrainingroomsTrainingroomOrganismsOrganismNnetResult result = ChaosCraft.sdk.getUsernameTrainingroomsTrainingroomOrganismsOrganismNnet(request);
-                    nNetRaw = result.getNNetRaw();
-                }
 
-                EntityOrganism entityOrganism = new EntityOrganism(world, organism.getNamespace());
-                entityOrganism.attachOrganism(organism);
-                entityOrganism.attachNNetRaw(nNetRaw);
-                entityOrganism.setCustomNameTag(organism.getName() + " - " + organism.getGeneration());
-                BlockPos pos = rick.getPosition();
-                int range = 3;
-                Vec3d rndPos = null;
-                int saftyCatch = 0;
-                while(
-                        rndPos == null &&
-                                saftyCatch < 10
-                        ) {
-                    saftyCatch ++;
-                    rndPos = new Vec3d(
-                            pos.getX() + Math.floor((Math.random() * range * 2) - range),
-                            pos.getY() + Math.floor((Math.random() * range * 2) - range),
-                            pos.getZ() + Math.floor((Math.random() * range * 2) - range)
-                    );
-                    entityOrganism.setPosition(
-                            rndPos.x,
-                            rndPos.y,
-                            rndPos.z
-                    );
-                    if(!entityOrganism.getCanSpawnHere()){
-                        rndPos = null;
+
+                boolean orgIsAlreadyAlive = false;
+                for(int ii = 0; ii < organisims.size(); ii++){
+                    EntityOrganism entityOrganism = organisims.get(ii);
+                    if(entityOrganism.getCCNamespace().equals(organism.getNamespace())){
+                        orgIsAlreadyAlive = true;
                     }
                 }
 
 
-                ChaosCraft.organisims.add(entityOrganism);
-                spawnedEntityOrganisms.add(entityOrganism);
-                world.spawnEntity(entityOrganism);
+
+                if(!orgIsAlreadyAlive) {
+                    NNetRaw nNetRaw = null;
+                    String nNetRawStr = organism.getNNetRaw();
+                    if (nNetRawStr != null) {
+                        nNetRaw = new NNetRaw();
+                        nNetRaw.setNNetRaw(nNetRawStr);
+                    } else {
+                        GetUsernameTrainingroomsTrainingroomOrganismsOrganismNnetRequest request = new GetUsernameTrainingroomsTrainingroomOrganismsOrganismNnetRequest();
+                        request.setUsername(ChaosCraft.config.trainingRoomUsernameNamespace);
+                        request.setTrainingroom(ChaosCraft.config.trainingRoomNamespace);
+                        request.setOrganism(organism.getNamespace());
+                        GetUsernameTrainingroomsTrainingroomOrganismsOrganismNnetResult result = ChaosCraft.sdk.getUsernameTrainingroomsTrainingroomOrganismsOrganismNnet(request);
+                        nNetRaw = result.getNNetRaw();
+                    }
+
+                    EntityOrganism entityOrganism = new EntityOrganism(world, organism.getNamespace());
+                    entityOrganism.attachOrganism(organism);
+                    entityOrganism.attachNNetRaw(nNetRaw);
+                    entityOrganism.setCustomNameTag(organism.getName() + " - " + organism.getGeneration());
+                    BlockPos pos = rick.getPosition();
+                    int range = 3;
+                    Vec3d rndPos = null;
+                    int saftyCatch = 0;
+                    while (
+                            rndPos == null &&
+                                    saftyCatch < 10
+                            ) {
+                        saftyCatch++;
+                        rndPos = new Vec3d(
+                                pos.getX() + Math.floor((Math.random() * range * 2) - range),
+                                pos.getY() + Math.floor((Math.random() * range * 2) - range),
+                                pos.getZ() + Math.floor((Math.random() * range * 2) - range)
+                        );
+                        entityOrganism.setPosition(
+                                rndPos.x,
+                                rndPos.y,
+                                rndPos.z
+                        );
+                        if (!entityOrganism.getCanSpawnHere()) {
+                            rndPos = null;
+                        }
+                    }
+
+
+                    ChaosCraft.organisims.add(entityOrganism);
+                    spawnedEntityOrganisms.add(entityOrganism);
+                    world.spawnEntity(entityOrganism);
+                }
             }
         }
         String message = "";
@@ -268,7 +294,9 @@ public class ChaosCraft
         message += "Spawned So Far: " + response.getStats().getOrgsSpawnedSoFar() + "\n";
         message += "Reported So Far: " + response.getStats().getOrgsReportedSoFar() + "\n";
         message += "Total: " + response.getStats().getTotalOrgsPerGen() + "\n";
+        message += "Ticks Since Last Spawn: " + ticksSinceLastSpawn + "\n";
         ChaosCraft.chat(message);
+        ticksSinceLastSpawn = 0;
         return spawnedEntityOrganisms;
     }
     public static void chat(String message){
