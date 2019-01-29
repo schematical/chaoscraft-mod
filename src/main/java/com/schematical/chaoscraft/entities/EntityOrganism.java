@@ -56,7 +56,8 @@ public class EntityOrganism extends EntityLiving {
 
     protected int miningTicks = 0;
     protected int selectedItemIndex = 0;
-    protected float maxLifeSeconds = 10;
+    protected float maxLifeSeconds = 30;
+
 
     public EntityOrganism(World worldIn) {
         this(worldIn, "EntityOrganism");
@@ -99,8 +100,9 @@ public class EntityOrganism extends EntityLiving {
                      nNetString
              );
              nNet = new NeuralNet();
-             nNet.parseData(obj);
              nNet.attachEntity(this);
+             nNet.parseData(obj);
+
              //this.tasks.addTask(2, new AIFindExistingOrganisims(this, EntityOrganism.class));
 
          } catch (Exception e) {
@@ -123,13 +125,15 @@ public class EntityOrganism extends EntityLiving {
         }
 
         super.onUpdate();
-        if(
-            //this.organism == null ||
-            age / 20 > maxLifeSeconds
-        ){
-            ChaosCraft.logger.info("Killing: " + this.getName());
-            this.setDead();
-            return;
+        if(!world.isRemote) {
+            if (
+                //this.organism == null ||
+                    age / 20 > maxLifeSeconds
+                    ) {
+                ChaosCraft.logger.info("Killing: " + this.getName() + " - AGE: " + age + " - maxLifeSeconds: " + maxLifeSeconds + " - Score: " + this.entityFitnessManager.totalScore());
+                this.setDead();
+                return;
+            }
         }
     }
 
@@ -163,6 +167,11 @@ public class EntityOrganism extends EntityLiving {
              super.getJumpHelper().setJumping();
          }*/
     }
+
+    public void adjustMaxLife(int life) {
+        maxLifeSeconds += life;
+    }
+
     public static class EntityOrganismRenderer extends RenderLiving<EntityOrganism> {
         public EntityOrganismRenderer(RenderManager rendermanagerIn) {
             super(rendermanagerIn, new ModelPlayer(.5f, false), 0.5f);
@@ -231,9 +240,10 @@ public class EntityOrganism extends EntityLiving {
             if(state.getMaterial().isToolNotRequired()){
                 hardness /= 30F;
             }else {
+                harvest = false;
                 hardness /= 100F;
             }
-            harvest = false;
+
         }
         //ChaosCraft.logger.info(this.getName() + " Mining: " + state.getBlock().getLocalizedName() + " Tool:" + tool + " Held Stack: " + stack.getDisplayName() + "  Hardness: " + hardness + " - " + miningTicks + " - " + harvest + " => " + (hardness * miningTicks > 1.0f));
         //Check if block has been broken

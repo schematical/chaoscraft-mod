@@ -17,7 +17,7 @@ public class ChaosCraftConfig {
     public String refreshToken;
     public String accessToken;
     public int expiration;
-    public int maxBotCount = 5;
+    public int maxBotCount = 20;
     public String sessionNamespace;
     public String trainingRoomUsernameNamespace;
     public String trainingRoomNamespace;

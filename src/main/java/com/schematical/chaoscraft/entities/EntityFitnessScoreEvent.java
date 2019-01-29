@@ -8,6 +8,7 @@ import com.schematical.chaoscraft.events.CCWorldEvent;
 public class EntityFitnessScoreEvent {
     public CCWorldEvent worldEvent;
     public int score;
+    public int life;
 
 
     public EntityFitnessScoreEvent(CCWorldEvent event, int _score) {

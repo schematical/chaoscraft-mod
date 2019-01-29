@@ -23,6 +23,9 @@ public class EntityFitnessManager {
         EntityFitnessScoreEvent scoreEvent = ChaosCraft.fitnessManager.testEntityFitnessEvent(this.entityOrganism, event);
         if(scoreEvent != null){
             scoreEvents.add(scoreEvent);
+            if(scoreEvent.life != 0) {
+                entityOrganism.adjustMaxLife(scoreEvent.life);
+            }
         }
     }
 

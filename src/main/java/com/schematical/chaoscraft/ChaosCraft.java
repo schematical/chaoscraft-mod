@@ -162,6 +162,7 @@ public class ChaosCraft
 
     }
     public static TrainingRoomSessionNextResponse getNextOrgs(List<EntityOrganism> organismList){
+        logger.info("GETTING getNextOrgs: " + ((organismList != null) ? organismList.size() : ""));
         PostUsernameTrainingroomsTrainingroomSessionsSessionNextRequest request = new PostUsernameTrainingroomsTrainingroomSessionsSessionNextRequest();
         request.setTrainingroom(ChaosCraft.config.trainingRoomNamespace);
         request.setUsername(ChaosCraft.config.trainingRoomUsernameNamespace);
@@ -231,7 +232,7 @@ public class ChaosCraft
                 EntityOrganism entityOrganism = new EntityOrganism(world, organism.getNamespace());
                 entityOrganism.attachOrganism(organism);
                 entityOrganism.attachNNetRaw(nNetRaw);
-                entityOrganism.setCustomNameTag(organism.getName());
+                entityOrganism.setCustomNameTag(organism.getName() + " - " + organism.getGeneration());
                 BlockPos pos = rick.getPosition();
                 int range = 3;
                 Vec3d rndPos = null;

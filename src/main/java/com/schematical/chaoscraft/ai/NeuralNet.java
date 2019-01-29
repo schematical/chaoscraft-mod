@@ -73,8 +73,11 @@ public class NeuralNet {
             /*Iterator<JSONObject>*/ iterator = neurons.iterator();
             while (iterator.hasNext()) {
                 JSONObject neuronBaseJSON = iterator.next();
-
-                String clsName = neuronBaseJSON.get("$TYPE").toString();  // use fully qualified name
+                Object type = neuronBaseJSON.get("$TYPE");
+                if(type == null){
+                    throw new Error("Invalid Neuron. Missing `$TYPE` - Org.namepace: " + entity.getCCNamespace() + " - Neuron: " + neuronBaseJSON.toJSONString());
+                }
+                String clsName = type.toString();  // use fully qualified name
 
 
                 String fullClassName = "com.schematical.chaoscraft.ai." + neuronBaseJSON.get("_base_type").toString()  +  "s." + clsName;

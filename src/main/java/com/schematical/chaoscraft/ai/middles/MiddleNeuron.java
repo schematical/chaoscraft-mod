@@ -1,6 +1,7 @@
-package com.schematical.chaoscraft.ai;
+package com.schematical.chaoscraft.ai.middles;
 
 import com.schematical.chaoscraft.Enum;
+import com.schematical.chaoscraft.ai.NeuronBase;
 
 /**
  * Created by user1a on 12/8/18.

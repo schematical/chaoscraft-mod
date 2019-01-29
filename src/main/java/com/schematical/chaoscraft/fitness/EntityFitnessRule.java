@@ -20,6 +20,7 @@ public class EntityFitnessRule {
     public String attributeId;
     public String attributeValue;
     public int scoreEffect;
+    public int lifeEffect = 0;
     public void parseData(JSONObject jsonObject){
         eventType = jsonObject.get("eventType").toString();
         Object jsonAttributeId = jsonObject.get("attributeId");
@@ -31,10 +32,13 @@ public class EntityFitnessRule {
             attributeValue = jsonAttributeValue.toString();
         }
         scoreEffect = Integer.parseInt(jsonObject.get("scoreEffect").toString());
+        if(jsonObject.get("lifeEffect") != null) {
+            lifeEffect = Integer.parseInt(jsonObject.get("lifeEffect").toString());
+        }
     }
 
     public EntityFitnessScoreEvent testWorldEvent(CCWorldEvent event) {
-        if(eventType != event.eventType) {
+        if(!eventType.equals(event.eventType)) {
             return null;
         }
         if(
@@ -76,6 +80,7 @@ public class EntityFitnessRule {
         }
 
         EntityFitnessScoreEvent scoreEvent  = new EntityFitnessScoreEvent(event, scoreEffect);
+        scoreEvent.life = lifeEffect;
         return scoreEvent;
     }
 }

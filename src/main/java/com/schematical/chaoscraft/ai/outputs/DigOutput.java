@@ -16,6 +16,9 @@ public class DigOutput extends OutputNeuron {
         }
         nNet.entity.swingArm(EnumHand.MAIN_HAND);
         RayTraceResult rayTraceResult = nNet.entity.rayTraceBlocks(nNet.entity.REACH_DISTANCE);
+        if(rayTraceResult == null){
+            return;
+        }
         nNet.entity.dig(rayTraceResult.getBlockPos());
     }
 

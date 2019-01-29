@@ -16,7 +16,11 @@ public class NeuronDep extends InnovationBase{
         this.weight = weight; */
     }
     public void parseData(JSONObject jsonObject){
-        String neuronId = jsonObject.get("neuronId").toString();
+        Object neuronIdObj = jsonObject.get("neuronId");
+        if(neuronIdObj == null){
+            throw new Error("Could not find a valid `neuronId` " + jsonObject.toJSONString());
+        }
+        String neuronId = neuronIdObj.toString();
         //this.depNeuron = //TODO: Load neuron
         this.depNeuronId = neuronId;
         this.weight = Float.parseFloat(jsonObject.get("weight").toString());
