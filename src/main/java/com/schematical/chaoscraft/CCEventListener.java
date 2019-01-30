@@ -29,6 +29,15 @@ public class CCEventListener {
                 ChaosCraft.logger.info("Setting Dead: " + organism.getName() + " - Has no `Organism` record");
             }
         }
+
+
+        if(
+            ChaosCraft.orgsToSpawn != null &&
+            ChaosCraft.orgsToSpawn.size() > 0
+        ){
+            ChaosCraft.spawnOrgs(ChaosCraft.orgsToSpawn);
+            ChaosCraft.orgsToSpawn.clear();
+        }
         //ChaosCraft.organisims.removeIf((org)-> org.isDead);
 
 

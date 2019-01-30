@@ -64,6 +64,12 @@ public class ChaosCraft
     public static List<EntityOrganism> organisims = new ArrayList<EntityOrganism>();
     public static ChaosCraftFitnessManager fitnessManager;
     public static int ticksSinceLastSpawn = 0;
+    public static Thread thread;
+
+    public static List<Organism> orgsToSpawn;
+    public static List<EntityOrganism> orgsToReport = new ArrayList<EntityOrganism>();
+    public static TrainingRoomSessionNextResponse lastResponse;
+
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
@@ -72,7 +78,11 @@ public class ChaosCraft
         config = new ChaosCraftConfig();
         config.load();
 
+
         logger = event.getModLog();
+
+
+        //thread.start();
 
         sdk =  ChaosNet.builder()
                 .connectionConfiguration(
@@ -111,6 +121,16 @@ public class ChaosCraft
         startTrainingSession();
         loadFitnessFunctions();
 
+
+    }
+    public static void queueSpawn(List<EntityOrganism> _orgsToReport){
+        _orgsToReport.forEach((EntityOrganism organism)->{
+            ChaosCraft.orgsToReport.add(organism);
+        });
+
+        ticksSinceLastSpawn = 0;
+        thread = new Thread(new ChaosThread(), "ChaosThread");
+        thread.start();
     }
 
     public static void loadFitnessFunctions(){
@@ -162,7 +182,7 @@ public class ChaosCraft
         ChaosCraft.config.save();
 
     }
-    public static TrainingRoomSessionNextResponse getNextOrgs(List<EntityOrganism> organismList){
+    /*public static TrainingRoomSessionNextResponse getNextOrgs(List<EntityOrganism> organismList){
         String namespaces = "";
 
         PostUsernameTrainingroomsTrainingroomSessionsSessionNextRequest request = new PostUsernameTrainingroomsTrainingroomSessionsSessionNextRequest();
@@ -202,7 +222,7 @@ public class ChaosCraft
             throw exeception;
         }
         return response;
-    }
+    }*/
 
 
     @EventHandler
@@ -218,10 +238,8 @@ public class ChaosCraft
     public static List<EntityOrganism> spawnOrgs() {
         return ChaosCraft.spawnOrgs(null);
     }
-    public static List<EntityOrganism> spawnOrgs(List<EntityOrganism> reportOrgs){
+    public static List<EntityOrganism> spawnOrgs(List<Organism> organismList){
 
-        TrainingRoomSessionNextResponse response = ChaosCraft.getNextOrgs(reportOrgs);
-        List<Organism> organismList = response.getOrganisms();
         List<EntityOrganism> spawnedEntityOrganisms = new ArrayList<EntityOrganism>();
         World world = rick.getEntityWorld();
         if(!world.isRemote) {
@@ -290,13 +308,13 @@ public class ChaosCraft
             }
         }
         String message = "";
-        message += "Gen Progress: " + response.getStats().getGenProgress() + "\n";
-        message += "Spawned So Far: " + response.getStats().getOrgsSpawnedSoFar() + "\n";
-        message += "Reported So Far: " + response.getStats().getOrgsReportedSoFar() + "\n";
-        message += "Total: " + response.getStats().getTotalOrgsPerGen() + "\n";
+        message += "Gen Progress: " + ChaosCraft.lastResponse.getStats().getGenProgress() + "\n";
+        message += "Spawned So Far: " + ChaosCraft.lastResponse.getStats().getOrgsSpawnedSoFar() + "\n";
+        message += "Reported So Far: " + ChaosCraft.lastResponse.getStats().getOrgsReportedSoFar() + "\n";
+        message += "Total: " + ChaosCraft.lastResponse.getStats().getTotalOrgsPerGen() + "\n";
         message += "Ticks Since Last Spawn: " + ticksSinceLastSpawn + "\n";
         ChaosCraft.chat(message);
-        ticksSinceLastSpawn = 0;
+
         return spawnedEntityOrganisms;
     }
     public static void chat(String message){

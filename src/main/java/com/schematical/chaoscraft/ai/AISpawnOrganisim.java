@@ -64,8 +64,11 @@ public class AISpawnOrganisim extends EntityAIBase
             }
             index ++;
         }
+
         ChaosCraft.organisims.removeIf((org)-> org.isDead);
-        ChaosCraft.spawnOrgs(deadOrgs);
+        ChaosCraft.logger.info("Queining Spawn");
+        ChaosCraft.queueSpawn(deadOrgs);
+
     }
 
 
