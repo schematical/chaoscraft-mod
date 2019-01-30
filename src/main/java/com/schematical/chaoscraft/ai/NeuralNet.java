@@ -60,7 +60,7 @@ public class NeuralNet {
 
 
                 String fullClassName = "com.schematical.chaoscraft.ai.biology." + clsName;
-                ChaosCraft.logger.info("Full Class name: " + fullClassName);
+                //ChaosCraft.logger.info("Full Class name: " + fullClassName);
                 Class cls = Class.forName(fullClassName);
                 BiologyBase biologyBase = (BiologyBase) cls.newInstance();
                 biologyBase.parseData(outputBaseJSON);

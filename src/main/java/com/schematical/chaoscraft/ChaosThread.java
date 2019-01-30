@@ -50,13 +50,15 @@ public class ChaosThread implements Runnable {
 
 
             ChaosCraft.lastResponse = result.getTrainingRoomSessionNextResponse();
+            ChaosCraft.orgsToSpawn = ChaosCraft.lastResponse.getOrganisms();
+            ChaosCraft.orgsToReport.clear();
         }catch(ChaosNetException exeception){
             //logger.error(exeception.getMessage());
-            throw exeception;
+            ChaosCraft.chat("ChaosThread `/next` Error: " + exeception.getMessage());
+            //throw exeception;
         }
 
-        ChaosCraft.orgsToSpawn = ChaosCraft.lastResponse.getOrganisms();
-        ChaosCraft.orgsToReport.clear();
+
     }
 
 }

@@ -15,6 +15,7 @@ import com.schematical.chaosnet.model.Organism;
 import com.schematical.chaosnet.model.NNet;
 import jdk.nashorn.internal.parser.JSONParser;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.entity.RenderLiving;
@@ -118,7 +119,7 @@ public class EntityOrganism extends EntityLiving {
     public void onUpdate(){
         long age = this.world.getWorldTime() - spawnTime;
 
-        List<EntityItem> items = this.world.getEntitiesWithinAABB(EntityItem.class, this.getEntityBoundingBox().grow(1.0D, 0.0D, 1.0D));
+        List<EntityItem> items = this.world.getEntitiesWithinAABB(EntityItem.class, this.getEntityBoundingBox().grow(2.0D, 1.0D, 2.0D));
 
         for (EntityItem item : items) {
             pickupItem(item);
@@ -235,16 +236,28 @@ public class EntityOrganism extends EntityLiving {
 
         ItemStack stack = getHeldItemMainhand();
         String tool = state.getBlock().getHarvestTool(state);
-        if (stack.isEmpty() || tool == null)
-        {
-            if(state.getMaterial().isToolNotRequired()){
-                hardness /= 30F;
-            }else {
-                harvest = false;
+
+        if(hardness != 0) {
+
+            Material material = state.getMaterial();
+            if (material.isToolNotRequired()) {
                 hardness /= 100F;
+            } else {
+                if (
+                    tool != null &&
+                    (
+                        stack.isEmpty() ||
+                        stack.getItem().equals(tool)
+                    )
+                ) {
+                    harvest = false;
+                }
+                hardness /= 300F;
+
             }
 
         }
+
         //ChaosCraft.logger.info(this.getName() + " Mining: " + state.getBlock().getLocalizedName() + " Tool:" + tool + " Held Stack: " + stack.getDisplayName() + "  Hardness: " + hardness + " - " + miningTicks + " - " + harvest + " => " + (hardness * miningTicks > 1.0f));
         //Check if block has been broken
         if (hardness * miningTicks > 1.0f) {
@@ -267,10 +280,11 @@ public class EntityOrganism extends EntityLiving {
             if (harvest) {
                 //state.getBlock().harvestBlock(world, fakePlayer, pos, state, world.getTileEntity(pos), itemstack);
                 state.getBlock().dropBlockAsItem(world, pos, state, 0);
-                CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEventType.BLOCK_MINED);
-                worldEvent.block = state.getBlock();
-                entityFitnessManager.test(worldEvent);
+
             }
+            CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEventType.BLOCK_MINED);
+            worldEvent.block = state.getBlock();
+            entityFitnessManager.test(worldEvent);
         }
     }
 
