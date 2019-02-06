@@ -32,3 +32,13 @@ cp target/ChaosNet-1.0-SNAPSHOT.jar  ~/IdeaProjects/chaoscraft/libs/ChaosNet-1.0
 /kill @e[type=slime]
 /kill @e[type=!player]
 ```
+
+```
+/time set day
+```
+
+```
+/effect @p night_vision 9999 0 true
+```
+
+My mouse stopped working :/

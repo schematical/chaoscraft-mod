@@ -50,23 +50,30 @@ public class AISpawnOrganisim extends EntityAIBase
 
         List<EntityOrganism> deadOrgs = new ArrayList<EntityOrganism>();
         Iterator<EntityOrganism> iterator = ChaosCraft.organisims.iterator();
-        int index = 0;
+
         while(iterator.hasNext()){
             EntityOrganism organism = iterator.next();
             if(organism.isDead){
-                if(organism.getCCNamespace()  != null) {
+                if(
+                    organism.getCCNamespace()  != null &&
+                    organism.getSpawnHash() == ChaosCraft.spawnHash
+                ) {
                     deadOrgs.add(organism);
                 }
-                ChaosCraft.logger.info("Removing: " + organism.getName() + " - Org Size Before" + ChaosCraft.organisims.size());
+                //ChaosCraft.logger.info("Removing: " + organism.getName() + " - Org Size Before" + ChaosCraft.organisims.size());
                 iterator.remove();
 
-                ChaosCraft.logger.info("Dead Orgs: " + deadOrgs.size() + " / " + ChaosCraft.organisims.size());
+                //ChaosCraft.logger.info("Dead Orgs: " + deadOrgs.size() + " / " + ChaosCraft.organisims.size());
             }
-            index ++;
         }
-
+        /*int orgCountBefore = ChaosCraft.organisims.size();
         ChaosCraft.organisims.removeIf((org)-> org.isDead);
-        ChaosCraft.logger.info("Queining Spawn");
+        if(deadOrgs.size() > 0){
+            if((orgCountBefore - deadOrgs.size()) != ChaosCraft.organisims.size()){
+                throw new ChaosNetException("orgCountBefore - deadOrgs.size() != ChaosCraft.organisims.size():  " + orgCountBefore + " - " + deadOrgs.size() + " != " + ChaosCraft.organisims.size());
+            }
+        }*/
+        //ChaosCraft.logger.info("Queining Spawn");
         ChaosCraft.queueSpawn(deadOrgs);
 
     }

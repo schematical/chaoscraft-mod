@@ -1,8 +1,10 @@
 package com.schematical.chaoscraft.proxies;
 
+import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.commands.*;
 import com.schematical.chaoscraft.entities.EntityOrganism;
 import com.schematical.chaoscraft.entities.EntityRick;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraftforge.client.ClientCommandHandler;
@@ -24,6 +26,7 @@ public class ClientProxy implements IProxy {
         ClientCommandHandler.instance.registerCommand(new CommandChaosCraftSessionStart());
         ClientCommandHandler.instance.registerCommand(new CommandChaosCraftRefresh());
         ClientCommandHandler.instance.registerCommand(new CommandChaosCraftTP());
+        ClientCommandHandler.instance.registerCommand(new CommandChaosCraftList());
         RenderingRegistry.registerEntityRenderingHandler(
                 EntityRick.class,
                 manager -> new EntityRick.RickRenderer(manager)
@@ -36,7 +39,7 @@ public class ClientProxy implements IProxy {
     }
     @Override
     public void init(FMLInitializationEvent event) {
-
+        ChaosCraft.fontRenderer = Minecraft.getMinecraft().fontRenderer;
     }
 
     @Override

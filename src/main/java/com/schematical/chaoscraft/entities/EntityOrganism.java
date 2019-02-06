@@ -59,6 +59,9 @@ public class EntityOrganism extends EntityLiving {
     protected int selectedItemIndex = 0;
     protected float maxLifeSeconds = 30;
 
+    public boolean hasAttemptedReport = false;
+    public boolean hasFinishedReport = false;
+    protected int spawnHash;
 
     public EntityOrganism(World worldIn) {
         this(worldIn, "EntityOrganism");
@@ -114,10 +117,12 @@ public class EntityOrganism extends EntityLiving {
          organism = _organism;
      }
 
-
+    public float getAgeSeconds(){
+        return (this.world.getWorldTime() - spawnTime)  / 20;
+    }
     @Override
     public void onUpdate(){
-        long age = this.world.getWorldTime() - spawnTime;
+
 
         List<EntityItem> items = this.world.getEntitiesWithinAABB(EntityItem.class, this.getEntityBoundingBox().grow(2.0D, 1.0D, 2.0D));
 
@@ -129,9 +134,10 @@ public class EntityOrganism extends EntityLiving {
         if(!world.isRemote) {
             if (
                 //this.organism == null ||
-                    age / 20 > maxLifeSeconds
-                    ) {
-                ChaosCraft.logger.info("Killing: " + this.getName() + " - AGE: " + age + " - maxLifeSeconds: " + maxLifeSeconds + " - Score: " + this.entityFitnessManager.totalScore());
+                getAgeSeconds() > maxLifeSeconds ||
+                this.spawnHash != ChaosCraft.spawnHash
+            ) {
+                //ChaosCraft.logger.info("Killing: " + this.getName() + " - AGE: " + age + " - maxLifeSeconds: " + maxLifeSeconds + " - Score: " + this.entityFitnessManager.totalScore());
                 this.setDead();
                 return;
             }
@@ -168,9 +174,18 @@ public class EntityOrganism extends EntityLiving {
              super.getJumpHelper().setJumping();
          }*/
     }
-
+    public float getMaxLife(){
+        return maxLifeSeconds;
+    }
     public void adjustMaxLife(int life) {
         maxLifeSeconds += life;
+    }
+
+    public void setSpawnHash(int _spawnHash) {
+        this.spawnHash = _spawnHash;
+    }
+    public int getSpawnHash() {
+        return this.spawnHash;
     }
 
     public static class EntityOrganismRenderer extends RenderLiving<EntityOrganism> {
@@ -228,6 +243,15 @@ public class EntityOrganism extends EntityLiving {
         miningTicks++;
 
         IBlockState state = world.getBlockState(pos);
+
+        Material material = state.getMaterial();
+        if(
+            material == Material.WATER ||
+            material == Material.AIR ||
+            material == Material.LAVA
+        ){
+            return;
+        }
         float hardness = state.getBlockHardness(world, pos);
 
         this.world.sendBlockBreakProgress(this.getEntityId(), pos, (int) (hardness * miningTicks * 10.0F) - 1);
@@ -239,7 +263,7 @@ public class EntityOrganism extends EntityLiving {
 
         if(hardness != 0) {
 
-            Material material = state.getMaterial();
+
             if (material.isToolNotRequired()) {
                 hardness /= 100F;
             } else {

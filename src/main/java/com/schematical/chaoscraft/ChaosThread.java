@@ -34,6 +34,10 @@ public class ChaosThread implements Runnable {
                     reportEntry.setScore(organism.entityFitnessManager.totalScore());
                     reportEntry.setNamespace(organism.getCCNamespace());
                     report.add(reportEntry);
+                    if(organism.hasAttemptedReport){
+                        ChaosCraft.logger.info(organism.getCCNamespace() + " has already attempted a report");
+                    }
+                    organism.hasAttemptedReport = true;
                 }
                 namespaces += namespace + "    ";
             }
@@ -44,6 +48,7 @@ public class ChaosThread implements Runnable {
         trainingRoomSessionNextRequest.setReport(report);
         trainingRoomSessionNextRequest.setNNetRaw(true);
         ChaosCraft.lastResponse = null;
+
         try {
             request.setTrainingRoomSessionNextRequest(trainingRoomSessionNextRequest);
             PostUsernameTrainingroomsTrainingroomSessionsSessionNextResult result = ChaosCraft.sdk.postUsernameTrainingroomsTrainingroomSessionsSessionNext(request);
@@ -51,11 +56,26 @@ public class ChaosThread implements Runnable {
 
             ChaosCraft.lastResponse = result.getTrainingRoomSessionNextResponse();
             ChaosCraft.orgsToSpawn = ChaosCraft.lastResponse.getOrganisms();
+            String namespacesToSpawn = "";
+            for(Organism org : ChaosCraft.orgsToSpawn){
+                namespacesToSpawn += org.getNamespace() + ", ";
+            }
+            ChaosCraft.logger.info("SUCCESS getNextOrgs: " + ChaosCraft.orgsToSpawn.size() + " - " + namespacesToSpawn);
+
+            for (EntityOrganism organism : ChaosCraft.orgsToReport) {
+                organism.hasFinishedReport = true;
+            }
             ChaosCraft.orgsToReport.clear();
-        }catch(ChaosNetException exeception){
+            ChaosCraft.consecutiveErrorCount = 0;
+            ChaosCraft.thread = null;
+        }catch(Exception exeception){
             //logger.error(exeception.getMessage());
+            ChaosCraft.consecutiveErrorCount += 1;
             ChaosCraft.chat("ChaosThread `/next` Error: " + exeception.getMessage());
-            //throw exeception;
+            ChaosCraft.thread = null;
+
+
+
         }
 
 
