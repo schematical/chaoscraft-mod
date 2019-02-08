@@ -63,6 +63,8 @@ public class EntityOrganism extends EntityLiving {
     public boolean hasFinishedReport = false;
     protected int spawnHash;
 
+    protected double desiredPitch;
+    protected double desiredYaw;
     public EntityOrganism(World worldIn) {
         this(worldIn, "EntityOrganism");
     }
@@ -86,6 +88,12 @@ public class EntityOrganism extends EntityLiving {
         }
         return this.organism.getNamespace();
      }
+     public void setDesiredPitch(double _desiredPitch){
+         this.desiredPitch = _desiredPitch;
+     }
+    public void setDesiredYaw(double _desiredYaw){
+        this.desiredYaw = _desiredYaw;
+    }
      public Organism getOrganism(){
          return this.organism;
      }
@@ -129,7 +137,26 @@ public class EntityOrganism extends EntityLiving {
         for (EntityItem item : items) {
             pickupItem(item);
         }
+        if(!world.isRemote){
+            //Tick neural net
+            if(this.nNet != null) {
+                List<OutputNeuron> outputs = this.nNet.evaluate();
+                Iterator<OutputNeuron> iterator = outputs.iterator();
+                while (iterator.hasNext()) {
+                    OutputNeuron outputNeuron = iterator.next();
+                    outputNeuron.execute();
 
+                }
+            }
+
+            double yOffset = Math.sin(Math.toRadians(desiredPitch));
+            double zOffset = Math.cos(Math.toRadians(this.desiredYaw)) * Math.cos(Math.toRadians(desiredPitch));
+            double xOffset = Math.sin(Math.toRadians(this.desiredYaw)) * Math.cos(Math.toRadians(desiredPitch));
+            this.getLookHelper().setLookPosition(posX + xOffset, posY + this.getEyeHeight() + yOffset, posZ + zOffset, 360, 360);
+            this.renderYawOffset = 0;
+            this.setRotation(this.rotationYaw, this.rotationPitch);
+
+        }
         super.onUpdate();
         if(!world.isRemote) {
             if (
@@ -141,6 +168,10 @@ public class EntityOrganism extends EntityLiving {
                 this.setDead();
                 return;
             }
+
+
+
+
         }
     }
 
@@ -149,16 +180,7 @@ public class EntityOrganism extends EntityLiving {
     {
         if (!this.world.isRemote)
         {
-            //Tick neural net
-            if(this.nNet != null) {
-                List<OutputNeuron> outputs = this.nNet.evaluate();
-                Iterator<OutputNeuron> iterator = outputs.iterator();
-                while (iterator.hasNext()) {
-                    OutputNeuron outputNeuron = iterator.next();
-                    outputNeuron.execute();
 
-                }
-            }
         }
 
         super.onLivingUpdate();
