@@ -27,6 +27,9 @@ public class PlaceBlockOutput extends OutputNeuron {
         }
         nNet.entity.swingArm(EnumHand.MAIN_HAND);
         RayTraceResult rayTraceResult = nNet.entity.rayTraceBlocks(nNet.entity.REACH_DISTANCE);
+        if(rayTraceResult == null){
+            return;
+        }
         Block block = null;
         switch(attributeId){
             case(Enum.BLOCK_ID):
@@ -35,6 +38,7 @@ public class PlaceBlockOutput extends OutputNeuron {
             default:
                 ChaosCraft.logger.error("Invalid `attributeId`: " + attributeId);
         }
+
         Vec3i vec3i = rayTraceResult.sideHit.getDirectionVec();
         BlockPos destBlockPos = rayTraceResult.getBlockPos().add(vec3i);
         nNet.entity.placeBlock(destBlockPos, block);

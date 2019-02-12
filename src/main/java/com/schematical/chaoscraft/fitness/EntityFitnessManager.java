@@ -4,6 +4,7 @@ import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.entities.EntityFitnessScoreEvent;
 import com.schematical.chaoscraft.entities.EntityOrganism;
 import com.schematical.chaoscraft.events.CCWorldEvent;
+import net.minecraft.util.text.TextComponentString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,9 @@ public class EntityFitnessManager {
             if(scoreEvent.life != 0) {
                 entityOrganism.adjustMaxLife(scoreEvent.life);
             }
+            entityOrganism.sendMessage(
+                new TextComponentString("I just scored: " + scoreEvent.worldEvent + " - Current Score: " + this.totalScore())
+            );
         }
     }
 

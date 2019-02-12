@@ -73,6 +73,7 @@ public class ChaosThread implements Runnable {
             ChaosCraft.consecutiveErrorCount += 1;
             ChaosCraft.chat("ChaosThread `/next` Error: " + exeception.getMessage());
             ChaosCraft.thread = null;
+            
 
 
 

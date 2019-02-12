@@ -16,6 +16,7 @@ import com.schematical.chaoscraft.ai.outputs.*;
  * Created by user1a on 12/8/18.
  */
 public class NeuralNet {
+    public int neuronEvalDepth = -1;
     public EntityOrganism entity;
     public HashMap<String, NeuronBase> neurons = new HashMap<String, NeuronBase>();
     public List<BiologyBase> biology = new ArrayList<BiologyBase>();
@@ -40,6 +41,7 @@ public class NeuralNet {
             NeuronBase neuronBase = iterator.next().getValue();
             if(neuronBase._base_type() == com.schematical.chaoscraft.Enum.OUTPUT){
                 OutputNeuron outputNeuron = (OutputNeuron)neuronBase;
+                neuronEvalDepth = 0;
                 float _last_value = outputNeuron.evaluate();
 
                 outputs.add(outputNeuron);

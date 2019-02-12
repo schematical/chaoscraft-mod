@@ -1,6 +1,7 @@
 package com.schematical.chaoscraft.ai;
 
 import com.google.common.collect.Sets;
+import com.schematical.chaosnet.model.ChaosNetException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -32,6 +33,9 @@ public abstract class NeuronBase extends InnovationBase {
             JSONObject neuronDepJSON = iterator.next();
             NeuronDep neuronDep = new NeuronDep();
             neuronDep.parseData(neuronDepJSON);
+            if(neuronDep.depNeuronId.equals(id)){
+                throw new ChaosNetException("Invalid `neuronDep` - NeuronDep on self: " + id);
+            }
             this.dependencies.add(neuronDep);
         }
     }
@@ -42,6 +46,10 @@ public abstract class NeuronBase extends InnovationBase {
     public float evaluate(){
         if(hasBeenEvaluated){
             return _lastValue;
+        }
+        nNet.neuronEvalDepth += 1;
+        if(nNet.neuronEvalDepth > 5){
+            throw new ChaosNetException("Max Eval Depth Hit: " + this.nNet.entity.getCCNamespace() + " - ");
         }
         float totalScore = 0;
         for(NeuronDep neuronDep :dependencies){

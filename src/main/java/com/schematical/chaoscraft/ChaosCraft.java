@@ -340,12 +340,15 @@ public class ChaosCraft
             }
         }
         String message = "";
-        Stats stats = ChaosCraft.lastResponse.getStats();
+
         message += "Generation: " + generation + "\n";
-        if(stats != null) {
-            message += "Gen Progress: " + stats.getGenProgress() + "\n";
-        }else{
-            message += "MISSING STATS";
+        if(ChaosCraft.lastResponse != null) {
+            Stats stats = ChaosCraft.lastResponse.getStats();
+            if (stats != null) {
+                message += "Gen Progress: " + stats.getGenProgress() + "\n";
+            } else {
+                message += "MISSING STATS";
+            }
         }
         //message += "Spawned So Far: " + ChaosCraft.lastResponse.getStats().getOrgsSpawnedSoFar() + "\n";
         //message += "Reported So Far: " + ChaosCraft.lastResponse.getStats().getOrgsReportedSoFar() + "\n";
