@@ -111,6 +111,15 @@ public class ChaosCraft
                 )
                 .build();
 
+        auth();
+
+        startTrainingSession();
+        loadFitnessFunctions();
+
+
+
+    }
+    public static void auth(){
         if(config.refreshToken != null){
             AuthTokenRequest authTokenRequest = new AuthTokenRequest();
             authTokenRequest.setUsername(config.username);
@@ -126,12 +135,6 @@ public class ChaosCraft
             }
 
         }
-
-        startTrainingSession();
-        loadFitnessFunctions();
-
-
-
     }
     public static void queueSpawn(List<EntityOrganism> _orgsToReport){
         _orgsToReport.forEach((EntityOrganism organism)->{

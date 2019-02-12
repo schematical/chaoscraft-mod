@@ -48,8 +48,8 @@ public abstract class NeuronBase extends InnovationBase {
             return _lastValue;
         }
         nNet.neuronEvalDepth += 1;
-        if(nNet.neuronEvalDepth > 5){
-            throw new ChaosNetException("Max Eval Depth Hit: " + this.nNet.entity.getCCNamespace() + " - ");
+        if(nNet.neuronEvalDepth > 15){
+            throw new ChaosNetException("Max Eval Depth Hit: " + this.nNet.entity.getCCNamespace() + "   " + this.id);
         }
         float totalScore = 0;
         for(NeuronDep neuronDep :dependencies){

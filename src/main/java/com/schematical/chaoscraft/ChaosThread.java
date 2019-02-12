@@ -68,10 +68,16 @@ public class ChaosThread implements Runnable {
             ChaosCraft.orgsToReport.clear();
             ChaosCraft.consecutiveErrorCount = 0;
             ChaosCraft.thread = null;
-        }catch(Exception exeception){
+        }catch(ChaosNetException exeception){
             //logger.error(exeception.getMessage());
             ChaosCraft.consecutiveErrorCount += 1;
-            ChaosCraft.chat("ChaosThread `/next` Error: " + exeception.getMessage());
+            int statusCode = exeception.sdkHttpMetadata().httpStatusCode();
+            switch(statusCode){
+                case(401):
+                    ChaosCraft.auth();
+                break;
+            }
+            ChaosCraft.chat("ChaosThread `/next` Error: " + exeception.getMessage() + " - statusCode: " + statusCode);
             ChaosCraft.thread = null;
             
 

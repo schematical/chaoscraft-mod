@@ -23,13 +23,19 @@ public class EntityFitnessManager {
     public void test(CCWorldEvent event){
         EntityFitnessScoreEvent scoreEvent = ChaosCraft.fitnessManager.testEntityFitnessEvent(this.entityOrganism, event);
         if(scoreEvent != null){
+
             scoreEvents.add(scoreEvent);
             if(scoreEvent.life != 0) {
                 entityOrganism.adjustMaxLife(scoreEvent.life);
             }
-            entityOrganism.sendMessage(
-                new TextComponentString("I just scored: " + scoreEvent.worldEvent + " - Current Score: " + this.totalScore())
-            );
+            String message = entityOrganism.getCCNamespace() +" just scored - Event: " + scoreEvent.worldEvent.eventType + " - Current Score: " + this.totalScore();
+            ChaosCraft.chat(message);
+           /* entityOrganism.world
+                    .getMinecraftServer()
+                    .getPlayerList()
+                    .sendMessage(
+                        new TextComponentString(message)
+                    );*/
         }
     }
 

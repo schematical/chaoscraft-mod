@@ -41,4 +41,6 @@ cp target/ChaosNet-1.0-SNAPSHOT.jar  ~/IdeaProjects/chaoscraft/libs/ChaosNet-1.0
 /effect @p night_vision 9999 0 true
 ```
 
-My mouse stopped working :/
+```
+/tp @e[type=chaoscraft:rick] @p
+```
