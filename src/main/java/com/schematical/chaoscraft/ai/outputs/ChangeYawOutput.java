@@ -9,7 +9,7 @@ import com.schematical.chaoscraft.ai.OutputNeuron;
 public class ChangeYawOutput extends OutputNeuron {
     @Override
     public void execute() {
-        if(this._lastValue == 0){
+        if(Math.abs(this._lastValue) < ChaosCraft.activationThreshold){
             return;
         }
         float delta = ((this._lastValue * 2) -1) * 45;

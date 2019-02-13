@@ -77,6 +77,7 @@ public class ChaosCraft
     public static FontRenderer fontRenderer;
     public static String topLeftMessage;
     public static int spawnHash;
+    public static float activationThreshold = .3f;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)

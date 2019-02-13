@@ -11,7 +11,7 @@ import net.minecraft.util.math.Vec3d;
 public class WalkSidewaysOutput extends OutputNeuron {
     @Override
     public void execute() {
-        if(this._lastValue == 0){
+        if(Math.abs(this._lastValue) < ChaosCraft.activationThreshold){
             return;
         }
 

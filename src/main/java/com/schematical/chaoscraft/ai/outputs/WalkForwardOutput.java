@@ -11,7 +11,7 @@ import software.amazon.ion.Decimal;
 public class WalkForwardOutput extends OutputNeuron {
     @Override
     public void execute() {
-        if(this._lastValue == 0){
+        if(Math.abs(this._lastValue) < ChaosCraft.activationThreshold){
             return;
         }
 
