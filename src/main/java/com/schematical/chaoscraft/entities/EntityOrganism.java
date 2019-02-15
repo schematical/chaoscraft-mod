@@ -10,6 +10,7 @@ import com.schematical.chaoscraft.ai.*;
 import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.events.CCWorldEventType;
 import com.schematical.chaoscraft.fitness.EntityFitnessManager;
+import com.schematical.chaosnet.model.ChaosNetException;
 import com.schematical.chaosnet.model.NNetRaw;
 import com.schematical.chaosnet.model.Organism;
 import com.schematical.chaosnet.model.NNet;
@@ -67,6 +68,10 @@ public class EntityOrganism extends EntityLiving {
 
     protected double desiredPitch;
     protected double desiredYaw;
+    protected boolean debug = false;
+    public boolean refreshRender = false;
+    protected String skin = "chaoscraft:morty.png";
+
     public EntityOrganism(World worldIn) {
         this(worldIn, "EntityOrganism");
     }
@@ -82,7 +87,7 @@ public class EntityOrganism extends EntityLiving {
         this.entityFitnessManager = new EntityFitnessManager(this);
 
         spawnTime = world.getWorldTime();
-
+        this.refreshRender = true;
      }
      public String getCCNamespace(){
         if(this.organism == null){
@@ -126,7 +131,12 @@ public class EntityOrganism extends EntityLiving {
      public void attachOrganism(Organism _organism){
          organism = _organism;
      }
-
+    public boolean getDebug(){
+         return this.debug;
+    }
+    public void setDebug(boolean _debug){
+        this.debug = _debug;
+    }
     public float getAgeSeconds(){
         return (this.world.getWorldTime() - spawnTime)  / 20;
     }
@@ -212,17 +222,35 @@ public class EntityOrganism extends EntityLiving {
         return this.spawnHash;
     }
 
+    public void setSkin(String _skin) {
+        this.skin = _skin;
+        this.refreshRender = true;
+    }
+
     public static class EntityOrganismRenderer extends RenderLiving<EntityOrganism> {
+
         public EntityOrganismRenderer(RenderManager rendermanagerIn) {
             super(rendermanagerIn, new ModelPlayer(.5f, false), 0.5f);
         }
 
         @Override
         protected ResourceLocation getEntityTexture(EntityOrganism entity) {
-            return new ResourceLocation("chaoscraft:morty.png");
+            if(entity.refreshRender){
+                EntityOrganism realOrg = ChaosCraft.getEntityOrganismByName(entity.getName());
+                if(realOrg != null){
+                    entity.setSkin(realOrg.getSkin());
+                    entity.refreshRender = false;
+                }
+            }
+            return new ResourceLocation(entity.getSkin());
         }
 
     }
+
+    private String getSkin() {
+        return this.skin;
+    }
+
     public void onOrganisimDeath(EntityCreature creature){
         if(!world.isRemote) {
             if(ChaosCraft.organisims.contains(creature)) {

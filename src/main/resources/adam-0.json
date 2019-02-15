@@ -1,0 +1,96 @@
+{
+  "trainingRoomNamespace": "test-3",
+  "namespace": "species-testman-wookie-adam-0",
+  "name": "adam-0",
+  "generation": 0,
+  "naturalGeneration": 0,
+  "owner_username": "testman",
+  "speciesNamespace": "species-testman-wookie",
+  "nNet": {
+    "neurons": [
+      {
+        "$TYPE": "BlockPositionInput",
+        "attributeId": "BLOCK_ID",
+        "attributeValue": 5,
+        "eye": {
+          "index": 2,
+          "type": "Eye"
+        },
+        "_base_type": "input",
+        "dependencies": [],
+        "id": "neuron-0"
+      }
+    ],
+    "biology": {
+      "Eye": [
+        {
+          "$TYPE": "Eye",
+          "$COUNT": 5,
+          "index": "0",
+          "positionRange": {
+            "minX": -4,
+            "minY": 0,
+            "minZ": 9,
+            "maxX": -1,
+            "maxY": 4,
+            "maxZ": 10
+          }
+        },
+        {
+          "$TYPE": "Eye",
+          "$COUNT": 5,
+          "index": "1",
+          "positionRange": {
+            "minX": 4,
+            "minY": -1,
+            "minZ": -6,
+            "maxX": 5,
+            "maxY": 1,
+            "maxZ": 2
+          }
+        },
+        {
+          "$TYPE": "Eye",
+          "$COUNT": 5,
+          "index": "2",
+          "positionRange": {
+            "minX": 1,
+            "minY": 7,
+            "minZ": 9,
+            "maxX": 3,
+            "maxY": 9,
+            "maxZ": 10
+          }
+        },
+        {
+          "$TYPE": "Eye",
+          "$COUNT": 5,
+          "index": "3",
+          "positionRange": {
+            "minX": 7,
+            "minY": -7,
+            "minZ": -8,
+            "maxX": 8,
+            "maxY": 5,
+            "maxZ": 1
+          }
+        },
+        {
+          "$TYPE": "Eye",
+          "$COUNT": 5,
+          "index": "4",
+          "positionRange": {
+            "minX": 8,
+            "minY": -7,
+            "minZ": -6,
+            "maxX": 9,
+            "maxY": -3,
+            "maxZ": -4
+          }
+        }
+      ]
+    }
+  },
+  "score": 0,
+  "ttl": 1550700955.809
+}

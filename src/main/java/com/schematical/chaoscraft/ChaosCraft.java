@@ -78,6 +78,7 @@ public class ChaosCraft
     public static String topLeftMessage;
     public static int spawnHash;
     public static float activationThreshold = .3f;
+    public static EntityOrganism adam = null;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
@@ -368,6 +369,22 @@ public class ChaosCraft
         players.sendMessage(
                 new TextComponentString(message)
         );
+    }
+    public static EntityOrganism getEntityOrganismByName(String name){
+        for(EntityOrganism org : ChaosCraft.organisims){
+            if(org.getName() == name){
+                return org;
+            }
+        }
+        return null;
+    }
+    public static EntityOrganism getEntityOrganismById(String id){
+        for(EntityOrganism org : ChaosCraft.organisims){
+            if(org.getCCNamespace() == id){
+                return org;
+            }
+        }
+        return null;
     }
     public static EntityRick spawnRick(World world, BlockPos pos ){
         if(ChaosCraft.rick != null) {

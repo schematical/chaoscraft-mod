@@ -56,7 +56,8 @@ public class AISpawnOrganisim extends EntityAIBase
             if(organism.isDead){
                 if(
                     organism.getCCNamespace()  != null &&
-                    organism.getSpawnHash() == ChaosCraft.spawnHash
+                    organism.getSpawnHash() == ChaosCraft.spawnHash &&
+                    !organism.getDebug()//Dont report Adam-0
                 ) {
                     deadOrgs.add(organism);
                 }
@@ -66,14 +67,7 @@ public class AISpawnOrganisim extends EntityAIBase
                 //ChaosCraft.logger.info("Dead Orgs: " + deadOrgs.size() + " / " + ChaosCraft.organisims.size());
             }
         }
-        /*int orgCountBefore = ChaosCraft.organisims.size();
-        ChaosCraft.organisims.removeIf((org)-> org.isDead);
-        if(deadOrgs.size() > 0){
-            if((orgCountBefore - deadOrgs.size()) != ChaosCraft.organisims.size()){
-                throw new ChaosNetException("orgCountBefore - deadOrgs.size() != ChaosCraft.organisims.size():  " + orgCountBefore + " - " + deadOrgs.size() + " != " + ChaosCraft.organisims.size());
-            }
-        }*/
-        //ChaosCraft.logger.info("Queining Spawn");
+
         ChaosCraft.queueSpawn(deadOrgs);
 
     }

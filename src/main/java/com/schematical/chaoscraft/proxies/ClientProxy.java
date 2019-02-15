@@ -27,6 +27,7 @@ public class ClientProxy implements IProxy {
         ClientCommandHandler.instance.registerCommand(new CommandChaosCraftRefresh());
         ClientCommandHandler.instance.registerCommand(new CommandChaosCraftTP());
         ClientCommandHandler.instance.registerCommand(new CommandChaosCraftList());
+        ClientCommandHandler.instance.registerCommand(new CommandChaosCraftAdam());
         RenderingRegistry.registerEntityRenderingHandler(
                 EntityRick.class,
                 manager -> new EntityRick.RickRenderer(manager)
