@@ -9,29 +9,6 @@
   "nNet": {
     "neurons": [
       {
-        "$TYPE": "IsLookingAtInput",
-        "attributeId": "ENTITY_ID",
-        "attributeValue": 93,
-        "eye": {
-          "index": 2,
-          "type": "Eye"
-        },
-        "_base_type": "input",
-        "dependencies": [],
-        "id": "neuron-0"
-      },
-      {
-        "$TYPE": "ChatOutput",
-        "_base_type": "output",
-        "dependencies": [
-          {
-            "neuronId": "neuron-0",
-            "weight": 1
-          }
-        ],
-        "id": "neuron-1"
-      },
-      {
         "$TYPE": "DebugInput",
         "value": "1",
         "_base_type": "input",
@@ -41,6 +18,7 @@
       {
         "$TYPE": "CraftOutput",
         "_base_type": "output",
+        "recipeId":"minecraft:birch_planks",
         "dependencies": [
           {
             "neuronId": "neuron-2",
@@ -48,6 +26,42 @@
           }
         ],
         "id": "neuron-3"
+      },
+      {
+        "$TYPE": "CraftOutput",
+        "_base_type": "output",
+        "recipeId":"minecraft:crafting_table",
+        "dependencies": [
+          {
+            "neuronId": "neuron-2",
+            "weight": 1
+          }
+        ],
+        "id": "neuron-4"
+      },
+      {
+        "$TYPE": "PlaceBlockOutput",
+        "_base_type": "output",
+        "attributeId":"BLOCK_ID",
+        "attributeValue":"minecraft:crafting_table",
+        "dependencies": [
+          {
+            "neuronId": "neuron-2",
+            "weight": 1
+          }
+        ],
+        "id": "neuron-5"
+      },
+      {
+        "$TYPE": "AttackOutput",
+        "_base_type": "output",
+        "dependencies": [
+          {
+            "neuronId": "neuron-2",
+            "weight": 1
+          }
+        ],
+        "id": "neuron-6"
       }
     ],
     "biology": {

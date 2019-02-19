@@ -36,7 +36,7 @@ public class BlockPositionInput                                                 
                         case(com.schematical.chaoscraft.Enum.BLOCK_ID):
                             ResourceLocation regeistryName = block.getRegistryName();
                             String key = regeistryName.getResourceDomain() + ":" + regeistryName.getResourcePath();
-                            if(key == attributeValue){
+                            if(attributeValue.equals(key)){
                                 _lastValue = 1;
                             }
                             /*int blockId = Block.getIdFromBlock(block);

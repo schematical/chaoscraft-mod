@@ -89,6 +89,7 @@ public class EntityOrganism extends EntityLiving {
 
         spawnTime = world.getWorldTime();
         this.refreshRender = true;
+        this.itemHandler.setSize(8);
      }
      public String getCCNamespace(){
         if(this.organism == null){
@@ -96,10 +97,13 @@ public class EntityOrganism extends EntityLiving {
         }
         return this.organism.getNamespace();
      }
+     public ItemStackHandler getItemStack(){
+        return this.itemHandler;
+     }
      public void setDesiredPitch(double _desiredPitch){
          this.desiredPitch = _desiredPitch;
      }
-    public void setDesiredYaw(double _desiredYaw){
+     public void setDesiredYaw(double _desiredYaw){
         this.desiredYaw = _desiredYaw;
     }
      public Organism getOrganism(){
@@ -287,6 +291,19 @@ public class EntityOrganism extends EntityLiving {
 
         return this.world.rayTraceBlocks(vec3d, vec3d2, false, false, false);
     }
+    public RayTraceResult isEntityInLineOfSight(Entity target, double blockReachDistance) {
+        Vec3d vec3d = this.getPositionEyes(1);
+        Vec3d vec3d1 = this.getLook(1);
+        Vec3d vec3d2 = vec3d.add(
+                new Vec3d(
+                        vec3d1.x * blockReachDistance,
+                        vec3d1.y * blockReachDistance,
+                        vec3d1.z * blockReachDistance
+                )
+        );
+
+        return target.getEntityBoundingBox().calculateIntercept(vec3d, vec3d2);
+    }
 
 
 
@@ -387,16 +404,18 @@ public class EntityOrganism extends EntityLiving {
         ItemStack stack = item.getItem();
 
         for (int i = 0; i < this.itemHandler.getSlots() && !stack.isEmpty(); i++) {
+            this.setHeldItem(EnumHand.MAIN_HAND, stack);
             stack = this.itemHandler.insertItem(i, stack, false);
+            this.selectedItemIndex = i;
+            //ItemStack itemStack = this.itemHandler.getStackInSlot(this.selectedItemIndex);
+
 
             //PacketHandler.INSTANCE.sendToAllTracking(new SyncHandsMessage(this.itemHandler.getStackInSlot(i), getEntityId(), i, selectedItemIndex), this);
         }
-
-        this.setHeldItem(EnumHand.MAIN_HAND, this.itemHandler.getStackInSlot(this.selectedItemIndex));
-
         if (stack.isEmpty()) {
             item.setDead();
         }
+
         CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEventType.ITEM_COLLECTED);
         worldEvent.item = stack.getItem();
         entityFitnessManager.test(worldEvent);

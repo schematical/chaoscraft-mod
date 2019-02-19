@@ -56,7 +56,7 @@ public class IsLookingAtInput extends InputNeuron {
 
                     ResourceLocation regeistryName = block.getRegistryName();
                     String key = regeistryName.getResourceDomain() + ":" + regeistryName.getResourcePath();
-                    if(key == attributeValue){
+                    if(attributeValue.equals(key)){
                         _lastValue = 1;
                     }
                     /*int blockId = Block.getIdFromBlock(block);
@@ -77,7 +77,7 @@ public class IsLookingAtInput extends InputNeuron {
                     String key = resourceLocation.getResourceDomain() + ":" + resourceLocation.getResourcePath();
 
                     if (
-                        (key == attributeValue)  &&
+                        (attributeValue.equals(key))  &&
                         (rayTraceResult.getBlockPos().equals(targetBlockPos))
                     ){
                         _lastValue = 1;

@@ -299,7 +299,8 @@ public class ChaosCraft
                         entityOrganism.attachNNetRaw(nNetRaw);
                         entityOrganism.setCustomNameTag(organism.getName() + " - " + organism.getGeneration());
                         BlockPos pos = rick.getPosition();
-                        int range = 5;
+                        int range = 10;
+                        int minRange = 3;
                         int yRange = 1;
                         Vec3d rndPos = null;
                         int saftyCatch = 0;
@@ -309,9 +310,9 @@ public class ChaosCraft
                                 ) {
                             saftyCatch++;
                             rndPos = new Vec3d(
-                                    pos.getX() + Math.floor((Math.random() * range * 2) - range),
+                                    pos.getX() + Math.floor((Math.random() * (minRange + range) * 2) - range),
                                     pos.getY() + Math.floor((Math.random() * yRange)),
-                                    pos.getZ() + Math.floor((Math.random() * range * 2) - range)
+                                    pos.getZ() + Math.floor((Math.random() * (minRange + range) * 2) - range)
                             );
                             entityOrganism.setPosition(
                                     rndPos.x,
@@ -326,14 +327,14 @@ public class ChaosCraft
                             /*if(!rick.world.getWorldBorder().contains(blockPos)){
                                 rndPos = null;
                             }*/
-                                IBlockState state = world.getBlockState(pos);
+                                IBlockState state = world.getBlockState(blockPos);
                                 Material material = state.getMaterial();
                                 if (
-                                        !(
-                                                material == Material.WATER ||
-                                                        material == Material.AIR
-                                        )
-                                        ) {
+                                    !(
+                                        material == Material.WATER ||
+                                        material == Material.AIR
+                                    )
+                                ) {
                                     rndPos = null;
                                 }
                             }
@@ -375,7 +376,7 @@ public class ChaosCraft
     }
     public static EntityOrganism getEntityOrganismByName(String name){
         for(EntityOrganism org : ChaosCraft.organisims){
-            if(org.getName() == name){
+            if(org.getName().equals(name)){
                 return org;
             }
         }

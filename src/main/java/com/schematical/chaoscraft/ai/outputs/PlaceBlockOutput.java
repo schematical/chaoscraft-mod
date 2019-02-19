@@ -5,6 +5,7 @@ import com.schematical.chaoscraft.Enum;
 import com.schematical.chaoscraft.ai.OutputNeuron;
 import com.schematical.chaoscraft.ai.biology.BiologyBase;
 import com.schematical.chaoscraft.ai.biology.Eye;
+import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.block.Block;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -22,6 +23,9 @@ public class PlaceBlockOutput extends OutputNeuron {
     public String attributeValue;
     @Override
     public void execute() {
+       /* if(nNet.entity.getDebug()) {
+            ChaosCraft.logger.info(nNet.entity.getCCNamespace() + " Attempting to Place Block: " + attributeValue);
+        }*/
         if(this._lastValue <= .5){
             return;
         }
@@ -33,7 +37,11 @@ public class PlaceBlockOutput extends OutputNeuron {
         Block block = null;
         switch(attributeId){
             case(Enum.BLOCK_ID):
-                block = Block.getBlockById(Integer.parseInt(attributeValue));
+                block = Block.getBlockFromName(attributeValue);
+                if(block == null){
+                    throw new ChaosNetException("Cannot find block from `Block.getBlockFromName('" + attributeValue + "');");
+                }
+                //block = Block.getBlockById(Integer.parseInt(attributeValue));
             break;
             default:
                 ChaosCraft.logger.error("Invalid `attributeId`: " + attributeId);
@@ -41,6 +49,7 @@ public class PlaceBlockOutput extends OutputNeuron {
 
         Vec3i vec3i = rayTraceResult.sideHit.getDirectionVec();
         BlockPos destBlockPos = rayTraceResult.getBlockPos().add(vec3i);
+
         nNet.entity.placeBlock(destBlockPos, block);
     }
     @Override

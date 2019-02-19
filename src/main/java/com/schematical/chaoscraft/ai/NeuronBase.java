@@ -53,7 +53,8 @@ public abstract class NeuronBase extends InnovationBase {
         }
         float totalScore = 0;
         for(NeuronDep neuronDep :dependencies){
-            neuronDep._lastValue = neuronDep.weight * neuronDep.depNeuron.evaluate();
+            neuronDep._lastValue = neuronDep.weight *
+                    neuronDep.depNeuron.evaluate();
             totalScore += neuronDep._lastValue;
         }
         _lastValue = sigmoid(totalScore);

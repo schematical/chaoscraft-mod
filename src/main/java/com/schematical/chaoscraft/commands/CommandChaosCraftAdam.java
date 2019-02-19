@@ -93,8 +93,8 @@ public class CommandChaosCraftAdam extends CommandBase{
 
             Organism organism = new Organism();
             organism.setGeneration(0d);
-            organism.setName("adam-0");
-            organism.setNamespace("adam-0");
+            organism.setName("adam");
+            organism.setNamespace("adam");
             JSONObject nNet = (JSONObject) obj.get("nNet");
             organism.setNNetRaw(nNet.toJSONString());
 
@@ -108,6 +108,7 @@ public class CommandChaosCraftAdam extends CommandBase{
                 org.setDebug(true);
                 org.setSkin("chaoscraft:batman.png");
                 org.adjustMaxLife(1000);
+                org.setCustomNameTag("adam");
             });
             ChaosCraft.chat("Adam Successfully Spawned!");
         } catch (Exception e) {

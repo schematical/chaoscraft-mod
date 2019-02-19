@@ -1,5 +1,6 @@
 package com.schematical.chaoscraft.ai.outputs;
 
+import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.OutputNeuron;
 import com.schematical.chaoscraft.entities.EntityOrganism;
 import net.minecraft.entity.EntityLiving;
@@ -22,15 +23,23 @@ public class AttackOutput extends OutputNeuron {
         EntityOrganism entity = this.nNet.entity;
         List<EntityLiving> entities = entity.world.getEntitiesWithinAABB(EntityLiving.class, entity.getEntityBoundingBox().grow(2.0D, 1.0D, 2.0D));
         //
-        RayTraceResult rayTraceResult = nNet.entity.rayTraceBlocks(nNet.entity.REACH_DISTANCE);
-        if(rayTraceResult == null){
-            return;
-        }
+
+
+
         for (EntityLiving target : entities) {
-           BlockPos targetBlockPos = target.getPosition();
-           if(rayTraceResult.getBlockPos().equals(targetBlockPos)){
-               entity.attackEntityAsMob(target);
-           }
+            if(target != nNet.entity) {
+                if (nNet.entity.getDebug()) {
+                    ChaosCraft.logger.info(nNet.entity.getCCNamespace() + " Attempting to Attack: " + target.getName());
+                }
+
+                RayTraceResult rayTraceResult = entity.isEntityInLineOfSight(target, 3d);
+                if (rayTraceResult != null) {
+                    entity.attackEntityAsMob(target);
+                    if (nNet.entity.getDebug()) {
+                        ChaosCraft.logger.info(nNet.entity.getCCNamespace() + "Attacked: " + target.getName());
+                    }
+                }
+            }
 
         }
 

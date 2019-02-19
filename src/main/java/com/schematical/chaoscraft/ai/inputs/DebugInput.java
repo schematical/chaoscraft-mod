@@ -25,7 +25,7 @@ public class DebugInput extends InputNeuron {
     @Override
     public void parseData(JSONObject jsonObject){
         super.parseData(jsonObject);
-        value = (float)jsonObject.get("value");
+        value = Float.parseFloat(jsonObject.get("value").toString());
        
 
     }

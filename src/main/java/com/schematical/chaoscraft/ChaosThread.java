@@ -43,7 +43,7 @@ public class ChaosThread implements Runnable {
             }
 
         }
-        ChaosCraft.logger.info("GETTING getNextOrgs: " + ((ChaosCraft.orgsToReport != null) ? ChaosCraft.orgsToReport.size() : "") + " - " + namespaces + " - Ticks: " + ChaosCraft.ticksSinceLastSpawn);
+        //ChaosCraft.logger.info("GETTING getNextOrgs: " + ((ChaosCraft.orgsToReport != null) ? ChaosCraft.orgsToReport.size() : "") + " - " + namespaces + " - Ticks: " + ChaosCraft.ticksSinceLastSpawn);
 
         trainingRoomSessionNextRequest.setReport(report);
         trainingRoomSessionNextRequest.setNNetRaw(true);
@@ -60,7 +60,7 @@ public class ChaosThread implements Runnable {
             for(Organism org : ChaosCraft.orgsToSpawn){
                 namespacesToSpawn += org.getNamespace() + ", ";
             }
-            ChaosCraft.logger.info("SUCCESS getNextOrgs: " + ChaosCraft.orgsToSpawn.size() + " - " + namespacesToSpawn);
+            //ChaosCraft.logger.info("SUCCESS getNextOrgs: " + ChaosCraft.orgsToSpawn.size() + " - " + namespacesToSpawn);
 
             for (EntityOrganism organism : ChaosCraft.orgsToReport) {
                 organism.hasFinishedReport = true;
