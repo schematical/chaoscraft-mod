@@ -9,7 +9,7 @@ import com.schematical.chaoscraft.ai.OutputNeuron;
 public class JumpOutput extends OutputNeuron {
     @Override
     public void execute() {
-        if(this._lastValue <= 0){
+        if(this._lastValue <= .5){
             return;
         }
         //ChaosCraft.logger.info(nNet.entity.getName() + " Jumping: " + this._lastValue);

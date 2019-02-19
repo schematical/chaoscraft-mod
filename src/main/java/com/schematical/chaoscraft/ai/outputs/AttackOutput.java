@@ -16,13 +16,16 @@ import java.util.List;
 public class AttackOutput extends OutputNeuron {
     @Override
     public void execute() {
-        if(this._lastValue <= 0){
+        if(this._lastValue <= .5){
             return;
         }
         EntityOrganism entity = this.nNet.entity;
         List<EntityLiving> entities = entity.world.getEntitiesWithinAABB(EntityLiving.class, entity.getEntityBoundingBox().grow(2.0D, 1.0D, 2.0D));
         //
         RayTraceResult rayTraceResult = nNet.entity.rayTraceBlocks(nNet.entity.REACH_DISTANCE);
+        if(rayTraceResult == null){
+            return;
+        }
         for (EntityLiving target : entities) {
            BlockPos targetBlockPos = target.getPosition();
            if(rayTraceResult.getBlockPos().equals(targetBlockPos)){

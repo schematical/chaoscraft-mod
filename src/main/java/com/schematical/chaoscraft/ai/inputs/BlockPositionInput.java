@@ -5,7 +5,9 @@ import com.schematical.chaoscraft.ai.biology.BiologyBase;
 import com.schematical.chaoscraft.ai.biology.Eye;
 import com.schematical.chaoscraft.util.PositionRange;
 import net.minecraft.block.Block;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.json.simple.JSONObject;
 import scala.actors.Debug;
 
@@ -24,24 +26,29 @@ public class BlockPositionInput                                                 
     public float evaluate(){
         //Iterate through all blocks entities etc with in the range
         PositionRange adustedPositionRange = this.eye.positionRange.orientToEntity(this.nNet.entity);
-        float value = -1;
-        for(float x = adustedPositionRange.minX; x < adustedPositionRange.maxX && value != 1; x++){
-            for(float y = adustedPositionRange.minY; y < adustedPositionRange.maxY && value != 1; y++){
-                for(float z = adustedPositionRange.minZ; z < adustedPositionRange.maxZ && value != 1; z++){
+
+        for(float x = adustedPositionRange.minX; x < adustedPositionRange.maxX && _lastValue != 1; x++){
+            for(float y = adustedPositionRange.minY; y < adustedPositionRange.maxY && _lastValue != 1; y++){
+                for(float z = adustedPositionRange.minZ; z < adustedPositionRange.maxZ && _lastValue != 1; z++){
                     BlockPos pos = new BlockPos(x,y,z);
                     Block block = this.nNet.entity.world.getBlockState(pos).getBlock();
                     switch(attributeId){
                         case(com.schematical.chaoscraft.Enum.BLOCK_ID):
-                            int blockId = Block.getIdFromBlock(block);
-                            if(blockId == Integer.parseInt(attributeValue)){
-                                value = 1;
+                            ResourceLocation regeistryName = block.getRegistryName();
+                            String key = regeistryName.getResourceDomain() + ":" + regeistryName.getResourcePath();
+                            if(key == attributeValue){
+                                _lastValue = 1;
                             }
+                            /*int blockId = Block.getIdFromBlock(block);
+                            if(blockId == Integer.parseInt(attributeValue)){
+                                _lastValue = 1;
+                            }*/
                         break;
                     }
                 }
             }
         }
-        return value;
+        return _lastValue;
     }
     @Override
     public void parseData(JSONObject jsonObject){

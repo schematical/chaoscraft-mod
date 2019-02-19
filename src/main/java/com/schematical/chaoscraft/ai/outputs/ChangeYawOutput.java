@@ -9,10 +9,11 @@ import com.schematical.chaoscraft.ai.OutputNeuron;
 public class ChangeYawOutput extends OutputNeuron {
     @Override
     public void execute() {
-        if(Math.abs(this._lastValue) < ChaosCraft.activationThreshold){
+
+        float delta = ((this._lastValue * 2) -1) * 45;
+        if(Math.abs(delta) < ChaosCraft.activationThreshold){
             return;
         }
-        float delta = ((this._lastValue * 2) -1) * 45;
         //ChaosCraft.logger.info(nNet.entity.getName() + " ChangeYawOutput: " + this._lastValue + " - " + delta);
         //this.nNet.entity.setDesiredYaw(delta);
         this.nNet.entity.rotationYaw += delta;

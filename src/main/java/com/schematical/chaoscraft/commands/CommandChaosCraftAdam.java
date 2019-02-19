@@ -107,6 +107,7 @@ public class CommandChaosCraftAdam extends CommandBase{
             entitys.forEach((EntityOrganism org)->{
                 org.setDebug(true);
                 org.setSkin("chaoscraft:batman.png");
+                org.adjustMaxLife(1000);
             });
             ChaosCraft.chat("Adam Successfully Spawned!");
         } catch (Exception e) {

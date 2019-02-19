@@ -25,6 +25,7 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
+import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -208,6 +209,15 @@ public class EntityOrganism extends EntityLiving {
              super.getJumpHelper().setJumping();
          }*/
     }
+
+    protected void applyEntityAttributes()
+    {
+        super.applyEntityAttributes();
+        //this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.30000001192092896D);
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20.0D);
+        this.getAttributeMap().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(2.0D);
+    }
+
     public float getMaxLife(){
         return maxLifeSeconds;
     }
@@ -275,7 +285,7 @@ public class EntityOrganism extends EntityLiving {
             )
         );
 
-        return this.world.rayTraceBlocks(vec3d, vec3d2, false, false, true);
+        return this.world.rayTraceBlocks(vec3d, vec3d2, false, false, false);
     }
 
 
@@ -411,6 +421,7 @@ public class EntityOrganism extends EntityLiving {
         for (int i = 0; i < this.itemHandler.getSlots(); i++) {
             ItemStack checkStack = this.itemHandler.getStackInSlot(i);
             Item item = checkStack.getItem();
+
             if(item instanceof ItemBlock){
                 ItemBlock itemBlock = (ItemBlock) item;
                 //itemBlock.placeBlockAt()
@@ -438,7 +449,8 @@ public class EntityOrganism extends EntityLiving {
     }
     public boolean attackEntityAsMob(Entity entityIn)
     {
-        float f = (float)this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getAttributeValue();
+        IAttributeInstance attributeInstance = this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE);
+        float f = (float) attributeInstance.getAttributeValue();
         int i = 0;
 
         if (entityIn instanceof EntityLivingBase)

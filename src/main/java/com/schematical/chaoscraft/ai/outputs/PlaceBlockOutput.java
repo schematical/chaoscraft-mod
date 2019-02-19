@@ -22,7 +22,7 @@ public class PlaceBlockOutput extends OutputNeuron {
     public String attributeValue;
     @Override
     public void execute() {
-        if(this._lastValue <= 0){
+        if(this._lastValue <= .5){
             return;
         }
         nNet.entity.swingArm(EnumHand.MAIN_HAND);
