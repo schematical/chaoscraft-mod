@@ -52,12 +52,11 @@ public class CommandChaosCraftObserve extends CommandBase{
     /**
      * Callback for when the command is executed
      */
+
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
 
-        if (!sender.getEntityWorld().isRemote) {
-            return;
-        }
+
         EntityPlayerMP player = null;
         if (sender instanceof EntityPlayerMP)
         {

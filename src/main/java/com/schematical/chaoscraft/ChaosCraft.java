@@ -6,6 +6,7 @@ import com.amazonaws.opensdk.config.ConnectionConfiguration;
 import com.amazonaws.opensdk.config.TimeoutConfiguration;
 
 import com.google.common.collect.Sets;
+import com.schematical.chaoscraft.commands.CommandChaosCraftObserve;
 import com.schematical.chaoscraft.entities.ChaosCraftFitnessManager;
 import com.schematical.chaoscraft.entities.EntityEvilRabbit;
 import com.schematical.chaoscraft.entities.EntityOrganism;
@@ -35,11 +36,12 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
+
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -52,7 +54,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-
+import net.minecraftforge.fml.common.Mod.EventHandler;
 
 @Mod(modid = ChaosCraft.MODID, name = ChaosCraft.NAME, version = ChaosCraft.VERSION)
 public class ChaosCraft
@@ -429,7 +431,12 @@ public class ChaosCraft
         }
     }
 
+    @EventHandler
+    public void serverLoad(FMLServerStartingEvent event) {
+        // register server commands
+        event.registerServerCommand(new CommandChaosCraftObserve());
 
+    }
 
 
 
