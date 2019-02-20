@@ -194,13 +194,25 @@ public class ChaosCraft
             //Do stuff
 
         }
-        PostUsernameTrainingroomsTrainingroomSessionsStartRequest startSessionRequest = new PostUsernameTrainingroomsTrainingroomSessionsStartRequest();
-        startSessionRequest.setTrainingroom(ChaosCraft.config.trainingRoomNamespace);
-        startSessionRequest.setUsername(ChaosCraft.config.trainingRoomUsernameNamespace);
+        try {
+            PostUsernameTrainingroomsTrainingroomSessionsStartRequest startSessionRequest = new PostUsernameTrainingroomsTrainingroomSessionsStartRequest();
+            startSessionRequest.setTrainingroom(ChaosCraft.config.trainingRoomNamespace);
+            startSessionRequest.setUsername(ChaosCraft.config.trainingRoomUsernameNamespace);
 
-        PostUsernameTrainingroomsTrainingroomSessionsStartResult result = ChaosCraft.sdk.postUsernameTrainingroomsTrainingroomSessionsStart(startSessionRequest);
-        ChaosCraft.config.sessionNamespace = result.getTrainingRoomSession().getNamespace();
-        ChaosCraft.config.save();
+            PostUsernameTrainingroomsTrainingroomSessionsStartResult result = ChaosCraft.sdk.postUsernameTrainingroomsTrainingroomSessionsStart(startSessionRequest);
+            ChaosCraft.config.sessionNamespace = result.getTrainingRoomSession().getNamespace();
+            ChaosCraft.config.save();
+        }catch(ChaosNetException exception){
+            if(exception.sdkHttpMetadata().httpStatusCode() == 401){
+                ChaosCraft.logger.error(exception.getMessage());
+                String message = "Your login has expired. Please re-run `/chaoscraft-auth {username} {password}`";
+                ChaosCraft.chat(message);
+                ChaosCraft.logger.error(message);
+            }else{
+                throw exception;
+            }
+
+        }
 
     }
     /*public static TrainingRoomSessionNextResponse getNextOrgs(List<EntityOrganism> organismList){

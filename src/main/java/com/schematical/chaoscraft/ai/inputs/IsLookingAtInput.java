@@ -70,19 +70,22 @@ public class IsLookingAtInput extends InputNeuron {
                 List<EntityLiving> entities =  nNet.entity.world.getEntitiesWithinAABB(EntityLiving.class,  nNet.entity.getEntityBoundingBox().grow(MAX_DISTANCE, MAX_DISTANCE, MAX_DISTANCE));
                 //
 
+
+
+
+
                 for (EntityLiving target : entities) {
-                    BlockPos targetBlockPos = target.getPosition();
-                    EntityEntry entityEntry = EntityRegistry.getEntry(target.getClass());
-                    ResourceLocation resourceLocation = entityEntry.getRegistryName();
-                    String key = resourceLocation.getResourceDomain() + ":" + resourceLocation.getResourcePath();
+                    if(target != nNet.entity) {
 
-                    if (
-                        (attributeValue.equals(key))  &&
-                        (rayTraceResult.getBlockPos().equals(targetBlockPos))
-                    ){
-                        _lastValue = 1;
+
+                        rayTraceResult = nNet.entity.isEntityInLineOfSight(target, 3d);
+                        if (rayTraceResult != null) {
+                            _lastValue = 1;
+                            if (nNet.entity.getDebug()) {
+                                ChaosCraft.logger.info(nNet.entity.getCCNamespace() + "IsLookingAt: " + target.getName());
+                            }
+                        }
                     }
-
                 }
 
             break;
