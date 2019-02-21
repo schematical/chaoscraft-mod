@@ -16,4 +16,17 @@ public class CCWorldEvent {
     public CCWorldEvent(String _eventType){
         eventType = _eventType;
     }
+    public String toString(){
+        String response = eventType;
+        if(block != null){
+            response += " " + block.getRegistryName();
+        }
+        if(item != null){
+            response += " " + item.getRegistryName();
+        }
+        if(entity != null){
+            response += " " + entity.getDisplayName();
+        }
+        return response;
+    }
 }

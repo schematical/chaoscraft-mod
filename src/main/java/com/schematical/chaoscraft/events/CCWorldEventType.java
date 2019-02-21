@@ -9,4 +9,5 @@ public class CCWorldEventType {
     public static final String BLOCK_PLACED = "BLOCK_PLACED";
     public static final String HEALTH_CHANGE = "HEALTH_CHANGE";
     public static final String ITEM_COLLECTED = "ITEM_COLLECTED";
+    public static final String ENTITY_ATTACKED = "ENTITY_ATTACKED";
 }

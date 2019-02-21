@@ -15,4 +15,7 @@ public class EntityFitnessScoreEvent {
         worldEvent = event;
         score = _score;
     }
+    public String toString(){
+        return worldEvent.toString() + " - " + score;
+    }
 }

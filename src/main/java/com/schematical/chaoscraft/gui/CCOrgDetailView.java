@@ -22,16 +22,20 @@ import java.util.List;
  * Created by user1a on 2/21/19.
  */
 public class CCOrgDetailView extends GuiScreen {
+    private static final String SHOW_NNET = "SHOW_NNET";
+    final String CLOSE = "CLOSE";
+    final String SHOW_SCORE_EVENTS = "SHOW_SCORE_EVENTS";
 
     final ResourceLocation texture = new ResourceLocation(ChaosCraft.MODID, "book.png");
     int guiWidth = 175;
     int guiHeight = 228;
 
-    GuiButton button1;
+    List<GuiButton> buttons = new ArrayList<GuiButton>();
+    CCGuiButton btnClose;
     //GuiButtonTutorial arrow;
     GuiTextField textBox;
 
-    final int BUTTON1 = 0, ARROW = 1;
+    final int BUTTON1 = 0;
     String title = "Tutorial";
 
     protected EntityOrganism entityOrganism;
@@ -66,16 +70,10 @@ public class CCOrgDetailView extends GuiScreen {
         }
         GlStateManager.popMatrix();
 
-        button1.drawButton(mc, mouseX, mouseY, partialTicks);
-        //arrow.drawButton(mc, mouseX, mouseY);
-        /*ItemStack icon = new ItemStack(Blocks.OBSIDIAN);
-        GlStateManager.pushMatrix();
-        {
-            GlStateManager.translate(centerX, centerY, 0);
-            GlStateManager.scale(2, 2, 2);
-            mc.getRenderItem().renderItemAndEffectIntoGUI(icon, 0, 0);
+        btnClose.drawButton(mc, mouseX, mouseY, partialTicks);
+        for(GuiButton button: buttons){
+            button.drawButton(mc, mouseX, mouseY, partialTicks);
         }
-        GlStateManager.popMatrix();*/
         textBox.drawTextBox();
         List<String> text = new ArrayList<String>();
         text.add(I18n.format("gui.tooltip"));
@@ -93,19 +91,48 @@ public class CCOrgDetailView extends GuiScreen {
     @Override
     public void initGui() {
         buttonList.clear();
-        buttonList.add(button1 = new GuiButton(BUTTON1, (width / 2) - 100 / 2, height - 40, 100, 20, "Close"));
-        //buttonList.add(arrow = new GuiButtonTutorial(ARROW, 100, 100));
+        buttonList.add(btnClose = new CCGuiButton(BUTTON1, (width / 2) - 100 / 2, height - 40, 100, 20, "Close"));
+        btnClose.action = CLOSE;
         textBox = new GuiTextField(0, fontRenderer, 0, 0, 100, 20);
         updateButtons();
         super.initGui();
     }
 
     public void updateButtons() {
-        //if (title.equals("Close"))  {
-            button1.enabled = true;
-        /*} else {
-            button1.enabled = false;
-        }*/
+
+        buttons.clear();
+        CCGuiButton button;
+        buttonList.add(
+            button = new CCGuiButton(
+                    1,
+                    (width / 2) - 100,
+                     30,
+                    100,
+                    20,
+                    "Score Events"
+            )
+        );
+        button.entity = entityOrganism;
+        button.action = SHOW_SCORE_EVENTS;
+
+        buttons.add(button);
+
+
+        buttonList.add(
+                button = new CCGuiButton(
+                        2,
+                        (width / 2) - 100,
+                        60,
+                        100,
+                        20,
+                        "NNet"
+                )
+        );
+        button.entity = entityOrganism;
+        button.action = SHOW_NNET;
+
+        buttons.add(button);
+
     }
 
     public void updateTextBoxes() {
@@ -119,15 +146,20 @@ public class CCOrgDetailView extends GuiScreen {
 
     @Override
     protected void actionPerformed(GuiButton button) throws IOException {
-        switch (button.id) {
-            case BUTTON1:
+        CCGuiButton ccButton = (CCGuiButton) button;
+        switch (ccButton.action) {
+            case CLOSE:
                 mc.displayGuiScreen(null);
                 break;
-            case ARROW:
-                mc.displayGuiScreen(new GuiInventory(mc.player));
+            case(SHOW_SCORE_EVENTS):
+                CCOrgScoreEventsView view = new CCOrgScoreEventsView();
+                view.entityOrganism = entityOrganism;
+                mc.displayGuiScreen(view);
+
                 break;
+
         }
-        updateButtons();
+        //updateButtons();
         super.actionPerformed(button);
     }
 

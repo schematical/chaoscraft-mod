@@ -1,13 +1,12 @@
 package com.schematical.chaoscraft.gui;
 
 import com.schematical.chaoscraft.ChaosCraft;
+import com.schematical.chaoscraft.entities.EntityFitnessScoreEvent;
 import com.schematical.chaoscraft.entities.EntityOrganism;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
@@ -19,7 +18,7 @@ import java.util.List;
 /**
  * Created by user1a on 2/21/19.
  */
-public class CCOrgListView extends GuiScreen {
+public class CCOrgScoreEventsView extends GuiScreen {
     final String VIEW_ORG_DETAIL_ACTION = "VIEW_ORG_DETAIL_ACTION";
     final ResourceLocation texture = new ResourceLocation(ChaosCraft.MODID, "book.png");
     int guiWidth = 175;
@@ -31,9 +30,9 @@ public class CCOrgListView extends GuiScreen {
     GuiTextField textBox;
 
     final int BUTTON1 = 0, ARROW = 1;
-    String title = "Tutorial";
+    String title = "Score Events";
 
-    protected EntityOrganism entityOrganism;
+    public EntityOrganism entityOrganism;
 
     /*public void setEntityOrganism(EntityOrganism _entityOrganism){
         this.entityOrganism = _entityOrganism;
@@ -41,7 +40,7 @@ public class CCOrgListView extends GuiScreen {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         drawDefaultBackground();
-
+title = entityOrganism.getName() + " Score Events";
 
         Minecraft.getMinecraft().renderEngine.bindTexture(texture);
         int centerX = (width / 2) - guiWidth / 2;
@@ -60,7 +59,7 @@ public class CCOrgListView extends GuiScreen {
         GlStateManager.pushMatrix();
         {
             GlStateManager.translate((width / 2) - fontRenderer.getStringWidth(title), centerY + 10, 0);
-            //GlStateManager.scale(2, 2, 2);
+
             fontRenderer.drawString(title, 0, 0, 0x000000);
         }
         GlStateManager.popMatrix();
@@ -106,15 +105,15 @@ public class CCOrgListView extends GuiScreen {
     public void updateButtons() {
         int btnCount = 1;
         buttons.clear();
-        for(EntityOrganism entityOrganism: ChaosCraft.organisims){
+        for(EntityFitnessScoreEvent scoreEvent: entityOrganism.entityFitnessManager.scoreEvents){
             CCGuiButton button;
             buttonList.add(button = new CCGuiButton(
                     btnCount,
                     (width / 2) - 100,
-                    btnCount * 10,
-                    150,
-                    10,
-                    entityOrganism.getName() + " - " + entityOrganism.entityFitnessManager.totalScore()
+                    btnCount * 15 + 30,
+                    200,
+                    15,
+                    scoreEvent.toString()
                 )
             );
             button.entity = entityOrganism;
@@ -122,11 +121,7 @@ public class CCOrgListView extends GuiScreen {
             btnCount += 1;
             buttons.add(button);
         }
-        //if (title.equals("Close"))  {
-            button1.enabled = true;
-        /*} else {
-            button1.enabled = false;
-        }*/
+
     }
 
     public void updateTextBoxes() {

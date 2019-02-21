@@ -406,13 +406,11 @@ public class EntityOrganism extends EntityLiving {
         if (item.cannotPickup()) return;
 
         ItemStack stack = item.getItem();
-
+        Item worldEventItem = stack.getItem();
         for (int i = 0; i < this.itemHandler.getSlots() && !stack.isEmpty(); i++) {
             this.setHeldItem(EnumHand.MAIN_HAND, stack);
             stack = this.itemHandler.insertItem(i, stack, false);
             this.selectedItemIndex = i;
-            //ItemStack itemStack = this.itemHandler.getStackInSlot(this.selectedItemIndex);
-
 
             //PacketHandler.INSTANCE.sendToAllTracking(new SyncHandsMessage(this.itemHandler.getStackInSlot(i), getEntityId(), i, selectedItemIndex), this);
         }
@@ -421,7 +419,7 @@ public class EntityOrganism extends EntityLiving {
         }
 
         CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEventType.ITEM_COLLECTED);
-        worldEvent.item = stack.getItem();
+        worldEvent.item = worldEventItem;
         entityFitnessManager.test(worldEvent);
     }
     public void placeBlock(BlockPos blockPos, Block block){
@@ -519,6 +517,10 @@ public class EntityOrganism extends EntityLiving {
             }
 
             this.applyEnchantments(this, entityIn);
+
+            CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEventType.ENTITY_ATTACKED);
+            worldEvent.entity = entityIn;
+            entityFitnessManager.test(worldEvent);
         }
 
         return flag;

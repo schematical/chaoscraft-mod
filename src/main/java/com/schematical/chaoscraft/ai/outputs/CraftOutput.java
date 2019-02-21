@@ -2,6 +2,8 @@ package com.schematical.chaoscraft.ai.outputs;
 
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.OutputNeuron;
+import com.schematical.chaoscraft.events.CCWorldEvent;
+import com.schematical.chaoscraft.events.CCWorldEventType;
 import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -94,8 +96,9 @@ public class CraftOutput extends OutputNeuron {
         }else{
             throw new ChaosNetException("TODO: Code how to drop this when stack is full");
         }
-
-
+        CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEventType.CRAFT);
+        worldEvent.item = outputStack.getItem();
+        nNet.entity.entityFitnessManager.test(worldEvent);
     }
     @Override
     public void parseData(JSONObject jsonObject){
