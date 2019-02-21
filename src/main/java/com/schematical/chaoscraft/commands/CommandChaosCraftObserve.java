@@ -69,10 +69,8 @@ public class CommandChaosCraftObserve extends CommandBase{
 
 
         player.setGameType(GameType.SPECTATOR);
-        int index = (int)Math.floor(ChaosCraft.organisims.size() * Math.random());
-        EntityOrganism orgToObserve = ChaosCraft.organisims.get(index);
-        ChaosCraft.chat("Observing: " + orgToObserve);
-        player.setSpectatingEntity(orgToObserve);
+
+        ChaosCraft.observingPlayers.add(player);
 
     }
 

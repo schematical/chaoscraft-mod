@@ -28,6 +28,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -84,7 +85,7 @@ public class ChaosCraft
     public static int spawnHash;
     public static float activationThreshold = .3f;
     public static EntityOrganism adam = null;
-
+    public static List<EntityPlayerMP> observingPlayers = new ArrayList<EntityPlayerMP>();
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
@@ -167,17 +168,19 @@ public class ChaosCraft
         GetUsernameTrainingroomsTrainingroomFitnessrulesRequest fitnessRulesRequest = new GetUsernameTrainingroomsTrainingroomFitnessrulesRequest();
         fitnessRulesRequest.setTrainingroom(ChaosCraft.config.trainingRoomNamespace);
         fitnessRulesRequest.setUsername(ChaosCraft.config.trainingRoomUsernameNamespace);
-
-        GetUsernameTrainingroomsTrainingroomFitnessrulesResult result = ChaosCraft.sdk.getUsernameTrainingroomsTrainingroomFitnessrules(fitnessRulesRequest);
-        String fitnessRulesRaw = result.getTrainingRoomFitnessRules().getFitnessRulesRaw();
-
-        JSONParser parser = new JSONParser();
         try {
+            GetUsernameTrainingroomsTrainingroomFitnessrulesResult result = ChaosCraft.sdk.getUsernameTrainingroomsTrainingroomFitnessrules(fitnessRulesRequest);
+            String fitnessRulesRaw = result.getTrainingRoomFitnessRules().getFitnessRulesRaw();
+
+            JSONParser parser = new JSONParser();
+
             JSONArray obj = (JSONArray) parser.parse(
                     fitnessRulesRaw
             );
             ChaosCraft.fitnessManager = new ChaosCraftFitnessManager();
             ChaosCraft.fitnessManager.parseData(obj);
+        } catch (ChaosNetException e) {
+            e.printStackTrace();
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -208,7 +211,7 @@ public class ChaosCraft
             if(exception.sdkHttpMetadata().httpStatusCode() == 401){
                 ChaosCraft.logger.error(exception.getMessage());
                 String message = "Your login has expired. Please re-run `/chaoscraft-auth {username} {password}`";
-                ChaosCraft.chat(message);
+                //ChaosCraft.chat(message);
                 ChaosCraft.logger.error(message);
             }else{
                 throw exception;

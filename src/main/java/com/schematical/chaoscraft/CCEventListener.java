@@ -5,6 +5,8 @@ import com.schematical.chaoscraft.entities.EntityOrganism;
 import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
@@ -52,6 +54,20 @@ public class CCEventListener {
             throw new ChaosNetException("ChaosCraft.consecutiveErrorCount > 5");
         }
         //ChaosCraft.organisims.removeIf((org)-> org.isDead);
+        if(ChaosCraft.organisims.size() > 0) {
+            for (EntityPlayerMP observingPlayer : ChaosCraft.observingPlayers) {
+                Entity entity = observingPlayer.getSpectatingEntity();
+                if (
+                        entity.equals(observingPlayer) ||
+                                entity == null ||
+                                entity.isDead
+                        ) {
+                    int index = (int) Math.floor(ChaosCraft.organisims.size() * Math.random());
+                    EntityOrganism orgToObserve = ChaosCraft.organisims.get(index);
+                    observingPlayer.setSpectatingEntity(orgToObserve);
+                }
+            }
+        }
 
 
     }
