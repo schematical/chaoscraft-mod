@@ -4,21 +4,36 @@ import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.commands.*;
 import com.schematical.chaoscraft.entities.EntityOrganism;
 import com.schematical.chaoscraft.entities.EntityRick;
+import com.schematical.chaoscraft.gui.CCKeyBinding;
+import com.schematical.chaoscraft.gui.CCMainOverlay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.ClientCommandHandler;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.input.Keyboard;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by user1a on 12/4/18.
  */
 public class ClientProxy implements IProxy {
-
+// declare an array of key bindings
+    public static List<KeyBinding> keyBindings = new ArrayList<KeyBinding>();
     @Override
     public void preInit(FMLPreInitializationEvent e) {
         ClientCommandHandler.instance.registerCommand(new CommandChaosCraftAuth());
@@ -37,7 +52,18 @@ public class ClientProxy implements IProxy {
                 EntityOrganism.class,
                 manager -> new EntityOrganism.EntityOrganismRenderer(manager)
         );
+        MinecraftForge.EVENT_BUS.register(new CCMainOverlay());
 
+
+// instantiate the key bindings
+        //keyBindings[1] = new KeyBinding("key.structure.desc", Keyboard.KEY_P, "key.magicbeans.category");
+        keyBindings.add(new KeyBinding(CCKeyBinding.SHOW_ORG_LIST, Keyboard.KEY_H, "key.magicbeans.category"));
+
+// register all the key bindings
+        for (int i = 0; i < keyBindings.size(); ++i)
+        {
+            ClientRegistry.registerKeyBinding(keyBindings.get(i));
+        }
     }
     @Override
     public void init(FMLInitializationEvent event) {
@@ -48,5 +74,6 @@ public class ClientProxy implements IProxy {
     public void postInit(FMLPostInitializationEvent event) {
 
     }
+
 
 }

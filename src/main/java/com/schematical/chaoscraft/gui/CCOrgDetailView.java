@@ -1,6 +1,7 @@
 package com.schematical.chaoscraft.gui;
 
 import com.schematical.chaoscraft.ChaosCraft;
+import com.schematical.chaoscraft.entities.EntityOrganism;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -8,6 +9,7 @@ import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -19,7 +21,7 @@ import java.util.List;
 /**
  * Created by user1a on 2/21/19.
  */
-public class CCBotDetailView extends GuiScreen {
+public class CCOrgDetailView extends GuiScreen {
 
     final ResourceLocation texture = new ResourceLocation(ChaosCraft.MODID, "book.png");
     int guiWidth = 175;
@@ -32,9 +34,16 @@ public class CCBotDetailView extends GuiScreen {
     final int BUTTON1 = 0, ARROW = 1;
     String title = "Tutorial";
 
+    protected EntityOrganism entityOrganism;
+
+    public void setEntityOrganism(EntityOrganism _entityOrganism){
+        this.entityOrganism = _entityOrganism;
+    }
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         drawDefaultBackground();
+
+        title = this.entityOrganism.getName();
         Minecraft.getMinecraft().renderEngine.bindTexture(texture);
         int centerX = (width / 2) - guiWidth / 2;
         int centerY = (height / 2) - guiHeight / 2;
@@ -52,26 +61,26 @@ public class CCBotDetailView extends GuiScreen {
         GlStateManager.pushMatrix();
         {
             GlStateManager.translate((width / 2) - fontRenderer.getStringWidth(title), centerY + 10, 0);
-            GlStateManager.scale(2, 2, 2);
-            fontRenderer.drawString(title, 0, 0, 0x6028ff);
+            //GlStateManager.scale(2, 2, 2);
+            fontRenderer.drawString(title, 0, 0, 0x000000);
         }
         GlStateManager.popMatrix();
-        //super.drawScreen(mouseX, mouseY, partialTicks);
+
         button1.drawButton(mc, mouseX, mouseY, partialTicks);
         //arrow.drawButton(mc, mouseX, mouseY);
-        ItemStack icon = new ItemStack(Blocks.OBSIDIAN);
+        /*ItemStack icon = new ItemStack(Blocks.OBSIDIAN);
         GlStateManager.pushMatrix();
         {
             GlStateManager.translate(centerX, centerY, 0);
             GlStateManager.scale(2, 2, 2);
             mc.getRenderItem().renderItemAndEffectIntoGUI(icon, 0, 0);
         }
-        GlStateManager.popMatrix();
+        GlStateManager.popMatrix();*/
         textBox.drawTextBox();
         List<String> text = new ArrayList<String>();
         text.add(I18n.format("gui.tooltip"));
         text.add(I18n.format("gui.tooltip2", mc.world.provider.getDimension()));
-        text.add(icon.getDisplayName());
+        //text.add(icon.getDisplayName());
         drawTooltip(text, mouseX, mouseY, centerX, centerY, 16 * 2, 16 * 2);
     }
 
@@ -92,11 +101,11 @@ public class CCBotDetailView extends GuiScreen {
     }
 
     public void updateButtons() {
-        if (title.equals("Close"))  {
+        //if (title.equals("Close"))  {
             button1.enabled = true;
-        } else {
+        /*} else {
             button1.enabled = false;
-        }
+        }*/
     }
 
     public void updateTextBoxes() {

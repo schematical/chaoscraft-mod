@@ -1,23 +1,23 @@
 package com.schematical.chaoscraft;
 
-import com.schematical.chaoscraft.commands.CommandChaosCraftObserve;
 import com.schematical.chaoscraft.entities.EntityOrganism;
+import com.schematical.chaoscraft.gui.CCKeyBinding;
+import com.schematical.chaoscraft.gui.CCOrgListView;
+import com.schematical.chaoscraft.proxies.ClientProxy;
 import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * Created by user1a on 1/6/19.
@@ -89,6 +89,31 @@ public class CCEventListener {
         }
     }
 
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent(priority= EventPriority.NORMAL, receiveCanceled=true)
+    public  static void onEvent(InputEvent.KeyInputEvent event) {
 
+
+        for (KeyBinding keyBinding : ClientProxy.keyBindings) {
+            // check each enumerated key binding type for pressed and take appropriate action
+            if (keyBinding.isPressed()) {
+                // DEBUG
+                switch(keyBinding.getKeyDescription()){
+                    case(CCKeyBinding.SHOW_ORG_LIST):
+                        CCOrgListView view = new CCOrgListView();
+
+                        Minecraft.getMinecraft().displayGuiScreen(view);
+                    break;
+                }
+
+                // do stuff for this key binding here
+                // remember you may need to send packet to server
+
+
+            }
+        }
+
+
+    }
 
 }

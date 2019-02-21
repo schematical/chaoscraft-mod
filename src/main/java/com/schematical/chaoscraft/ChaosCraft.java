@@ -11,6 +11,7 @@ import com.schematical.chaoscraft.entities.ChaosCraftFitnessManager;
 import com.schematical.chaoscraft.entities.EntityEvilRabbit;
 import com.schematical.chaoscraft.entities.EntityOrganism;
 import com.schematical.chaoscraft.entities.EntityRick;
+import com.schematical.chaoscraft.gui.CCMainOverlay;
 import com.schematical.chaoscraft.proxies.IProxy;
 
 import com.schematical.chaosnet.ChaosNet;
@@ -90,6 +91,7 @@ public class ChaosCraft
     public void preInit(FMLPreInitializationEvent event)
     {
         MinecraftForge.EVENT_BUS.register(new CCEventListener().getClass());
+
         proxy.preInit(event);
         config = new ChaosCraftConfig();
         config.load();

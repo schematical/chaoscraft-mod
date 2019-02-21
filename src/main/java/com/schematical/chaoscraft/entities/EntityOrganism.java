@@ -10,12 +10,9 @@ import com.schematical.chaoscraft.ai.*;
 import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.events.CCWorldEventType;
 import com.schematical.chaoscraft.fitness.EntityFitnessManager;
-import com.schematical.chaoscraft.gui.CCBotDetailView;
-import com.schematical.chaosnet.model.ChaosNetException;
+import com.schematical.chaoscraft.gui.CCOrgDetailView;
 import com.schematical.chaosnet.model.NNetRaw;
 import com.schematical.chaosnet.model.Organism;
-import com.schematical.chaosnet.model.NNet;
-import jdk.nashorn.internal.parser.JSONParser;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -26,15 +23,12 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.EntityAISwimming;
-import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.stats.StatList;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
@@ -46,10 +40,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.ItemStackHandler;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import java.io.FileReader;
 import java.util.Iterator;
 import java.util.List;
 
@@ -313,8 +305,9 @@ public class EntityOrganism extends EntityLiving {
     @SideOnly(Side.CLIENT)
     public boolean processInteract(EntityPlayer player, EnumHand hand)
     {
-
-        Minecraft.getMinecraft().displayGuiScreen(new CCBotDetailView());
+        CCOrgDetailView view = new CCOrgDetailView();
+        view.setEntityOrganism(this);
+        Minecraft.getMinecraft().displayGuiScreen(view);
         return true;
     }
 
