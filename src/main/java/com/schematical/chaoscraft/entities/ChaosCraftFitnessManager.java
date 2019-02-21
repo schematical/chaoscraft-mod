@@ -8,16 +8,14 @@ import com.schematical.chaoscraft.fitness.EntityFitnessRule;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by user1a on 1/4/19.
  */
 public class ChaosCraftFitnessManager {
     protected List<EntityFitnessRule> rules = new ArrayList<EntityFitnessRule>();
+
     public EntityFitnessScoreEvent testEntityFitnessEvent(EntityOrganism entityOrganism, CCWorldEvent event){
         EntityFitnessScoreEvent scoreEvent = null;
         for (EntityFitnessRule rule: rules) {
@@ -25,6 +23,7 @@ public class ChaosCraftFitnessManager {
                 scoreEvent = rule.testWorldEvent(event);
             }
         }
+
         return scoreEvent;
     }
 

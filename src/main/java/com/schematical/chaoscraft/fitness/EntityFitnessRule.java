@@ -23,7 +23,7 @@ public class EntityFitnessRule {
     public int scoreEffect;
     public int lifeEffect = 0;
     public int maxOccurrences = -1;
-    protected int occurrences = 0;
+
     public void parseData(JSONObject jsonObject){
         eventType = jsonObject.get("eventType").toString();
         Object jsonId = jsonObject.get("id");
@@ -51,9 +51,8 @@ public class EntityFitnessRule {
         if(!eventType.equals(event.eventType)) {
             return null;
         }
-        if(occurrences >= maxOccurrences){
-            return null;
-        }
+
+
         if(
             attributeId != null &&
             attributeValue != null
@@ -92,9 +91,9 @@ public class EntityFitnessRule {
            }
         }
 
-        EntityFitnessScoreEvent scoreEvent  = new EntityFitnessScoreEvent(event, scoreEffect);
+        EntityFitnessScoreEvent scoreEvent  = new EntityFitnessScoreEvent(event, scoreEffect, this);
         scoreEvent.life = lifeEffect;
-        occurrences += 1;
+
         return scoreEvent;
     }
 }

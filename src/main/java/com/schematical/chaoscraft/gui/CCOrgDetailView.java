@@ -23,6 +23,7 @@ import java.util.List;
  */
 public class CCOrgDetailView extends GuiScreen {
     private static final String SHOW_NNET = "SHOW_NNET";
+    private static final String SHOW_INVENTORY = "SHOW_INVENTORY";
     final String CLOSE = "CLOSE";
     final String SHOW_SCORE_EVENTS = "SHOW_SCORE_EVENTS";
 
@@ -133,6 +134,22 @@ public class CCOrgDetailView extends GuiScreen {
 
         buttons.add(button);
 
+
+        buttonList.add(
+                button = new CCGuiButton(
+                        2,
+                        (width / 2) - 100,
+                        90,
+                        100,
+                        20,
+                        "Inventory"
+                )
+        );
+        button.entity = entityOrganism;
+        button.action = SHOW_INVENTORY;
+
+        buttons.add(button);
+
     }
 
     public void updateTextBoxes() {
@@ -155,6 +172,11 @@ public class CCOrgDetailView extends GuiScreen {
                 CCOrgScoreEventsView view = new CCOrgScoreEventsView();
                 view.entityOrganism = entityOrganism;
                 mc.displayGuiScreen(view);
+
+                break;
+            case(SHOW_INVENTORY):
+                CCOrgInventoryView view2 = new CCOrgInventoryView(entityOrganism);
+                mc.displayGuiScreen(view2);
 
                 break;
 
