@@ -22,7 +22,7 @@ public class CCOrgInventoryContainer extends Container {
         // CONTAINER INVENTORY
         for (int y = 0; y < 3; y++) {
             for (int x = 0; x < 3; x++) {
-                if(itemStackHandler.getSlots() < y * 3 + x) {
+                if(((y * 3) + x) < itemStackHandler.getSlots()) {
                     addSlotToContainer(new SlotItemHandler(itemStackHandler, x + (y * 3), 62 + x * 18, 17 + y * 18));
                 }
             }
@@ -31,8 +31,8 @@ public class CCOrgInventoryContainer extends Container {
 
     }
 
-    @Override
-    public ItemStack transferStackInSlot(EntityPlayer player, int index) {
+    //@Override
+    public ItemStack transferStackInSlot(EntityOrganism organism, int index) {
         ItemStack stack = ItemStack.EMPTY;
         Slot slot = inventorySlots.get(index);
 
@@ -40,7 +40,7 @@ public class CCOrgInventoryContainer extends Container {
             ItemStack stackInSlot = slot.getStack();
             stack = stackInSlot.copy();
 
-            int containerSlots = inventorySlots.size() - player.inventory.mainInventory.size();
+            int containerSlots = inventorySlots.size() - organism.inventory.mainInventory.size();//TODO: Matt look here
 
             if (index < containerSlots) {
                 if (!this.mergeItemStack(stackInSlot, containerSlots, inventorySlots.size(), true)) {
@@ -56,7 +56,7 @@ public class CCOrgInventoryContainer extends Container {
                 slot.onSlotChanged();
             }
 
-            slot.onTake(player, stackInSlot);
+            //slot.onTake(organism, stackInSlot);
 
         }
         return stack;

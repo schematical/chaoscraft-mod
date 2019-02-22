@@ -11,6 +11,8 @@ import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.events.CCWorldEventType;
 import com.schematical.chaoscraft.fitness.EntityFitnessManager;
 import com.schematical.chaoscraft.gui.CCOrgDetailView;
+import com.schematical.chaoscraft.gui.CCOrgInventoryView;
+import com.schematical.chaoscraft.inventory.InventoryOrganism;
 import com.schematical.chaosnet.model.NNetRaw;
 import com.schematical.chaosnet.model.Organism;
 import net.minecraft.block.Block;
@@ -70,6 +72,7 @@ public class EntityOrganism extends EntityLiving {
     protected boolean debug = false;
     public boolean refreshRender = false;
     protected String skin = "chaoscraft:morty.png";
+    public InventoryOrganism inventory;
 
     public EntityOrganism(World worldIn) {
         this(worldIn, "EntityOrganism");
@@ -88,6 +91,7 @@ public class EntityOrganism extends EntityLiving {
         spawnTime = world.getWorldTime();
         this.refreshRender = true;
         this.itemHandler.setSize(8);
+        this.inventory = new InventoryOrganism(this);
      }
      public String getCCNamespace(){
         if(this.organism == null){
@@ -406,7 +410,9 @@ public class EntityOrganism extends EntityLiving {
         if (item.cannotPickup()) return;
 
         ItemStack stack = item.getItem();
+
         Item worldEventItem = stack.getItem();
+        //inventory.addItemStackToInventory(stack);
         for (int i = 0; i < this.itemHandler.getSlots() && !stack.isEmpty(); i++) {
             this.setHeldItem(EnumHand.MAIN_HAND, stack);
             stack = this.itemHandler.insertItem(i, stack, false);
@@ -421,6 +427,8 @@ public class EntityOrganism extends EntityLiving {
         CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEventType.ITEM_COLLECTED);
         worldEvent.item = worldEventItem;
         entityFitnessManager.test(worldEvent);
+
+
     }
     public void placeBlock(BlockPos blockPos, Block block){
         //ChaosCraft.logger.info(getName() + " Placing Block: " + block.getLocalizedName() + " - " + blockPos.toString());
@@ -445,7 +453,7 @@ public class EntityOrganism extends EntityLiving {
 
             if(item instanceof ItemBlock){
                 ItemBlock itemBlock = (ItemBlock) item;
-                //itemBlock.placeBlockAt()
+                //itemBlock.placeBlockAt();
                 if(itemBlock.getBlock() == block){
                     stack = checkStack;
                     slot = i;

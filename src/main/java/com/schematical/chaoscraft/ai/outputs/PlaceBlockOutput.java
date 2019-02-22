@@ -39,12 +39,14 @@ public class PlaceBlockOutput extends OutputNeuron {
             case(Enum.BLOCK_ID):
                 block = Block.getBlockFromName(attributeValue);
                 if(block == null){
-                    throw new ChaosNetException("Cannot find block from `Block.getBlockFromName('" + attributeValue + "');");
+                   ChaosCraft.logger.error("Cannot find block from `Block.getBlockFromName('" + attributeValue + "');");
+                    return;
                 }
                 //block = Block.getBlockById(Integer.parseInt(attributeValue));
             break;
             default:
                 ChaosCraft.logger.error("Invalid `attributeId`: " + attributeId);
+                return;
         }
 
         Vec3i vec3i = rayTraceResult.sideHit.getDirectionVec();
