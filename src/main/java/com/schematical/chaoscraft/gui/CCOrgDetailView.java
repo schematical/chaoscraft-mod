@@ -179,6 +179,12 @@ public class CCOrgDetailView extends GuiScreen {
                 mc.displayGuiScreen(view2);
 
                 break;
+            case(SHOW_NNET):
+                CCOrgNNetView view3 = new CCOrgNNetView();
+                view3.entityOrganism = entityOrganism;
+                mc.displayGuiScreen(view3);
+
+                break;
 
         }
         //updateButtons();

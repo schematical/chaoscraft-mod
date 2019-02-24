@@ -1,5 +1,6 @@
 package com.schematical.chaoscraft.ai;
 
+import com.schematical.chaosnet.model.ChaosNetException;
 import org.json.simple.JSONObject;
 
 /**
@@ -27,5 +28,8 @@ public class NeuronDep extends InnovationBase{
     }
     public void populate(NeuralNet neuralNet){
         this.depNeuron = neuralNet.neurons.get(this.depNeuronId);
+        if(this.depNeuron == null){
+            throw new ChaosNetException("Could not find a neuron for " + this.depNeuronId);
+        }
     }
 }

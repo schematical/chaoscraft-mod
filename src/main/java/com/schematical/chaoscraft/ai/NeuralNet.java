@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.biology.BiologyBase;
 import com.schematical.chaoscraft.entities.EntityOrganism;
+import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.entity.Entity;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -95,12 +96,15 @@ public class NeuralNet {
                 NeuronBase neuronBase = iterator2.next().getValue();
                 neuronBase.populate();
             }
-        } catch (ClassNotFoundException e) {
+        }/* catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (InstantiationException e) {
             e.printStackTrace();
+        }*/catch(Exception e){
+            e.printStackTrace();
+            //throw new ChaosNetException(e.getMessage());
         }
     }
 }

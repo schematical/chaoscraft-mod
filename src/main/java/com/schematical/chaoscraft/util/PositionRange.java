@@ -1,5 +1,6 @@
 package com.schematical.chaoscraft.util;
 
+import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -36,12 +37,22 @@ public class PositionRange {
 
     }
     public void parseData(JSONObject jsonObject){
-        minX = Float.parseFloat(jsonObject.get("minX").toString());
-        maxX = Float.parseFloat(jsonObject.get("maxX").toString());
-        minY = Float.parseFloat(jsonObject.get("minY").toString());
-        maxY = Float.parseFloat(jsonObject.get("maxY").toString());
-        minZ = Float.parseFloat(jsonObject.get("minZ").toString());
-        maxZ = Float.parseFloat(jsonObject.get("maxZ").toString());
+        if(jsonObject == null){
+            throw new ChaosNetException("`PositionRange` is missing");
+        }
+        if(jsonObject.get("minX") == null){
+            throw new ChaosNetException("`PositionRange.minX` is missing");
+        }
+        try {
+            minX = Float.parseFloat(jsonObject.get("minX").toString());
+            maxX = Float.parseFloat(jsonObject.get("maxX").toString());
+            minY = Float.parseFloat(jsonObject.get("minY").toString());
+            maxY = Float.parseFloat(jsonObject.get("maxY").toString());
+            minZ = Float.parseFloat(jsonObject.get("minZ").toString());
+            maxZ = Float.parseFloat(jsonObject.get("maxZ").toString());
+        }catch(Exception exception){
+            throw exception;
+        }
     }
 
 }

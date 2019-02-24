@@ -29,12 +29,12 @@ public class PlaceBlockOutput extends OutputNeuron {
         if(this._lastValue <= .5){
             return;
         }
-        nNet.entity.swingArm(EnumHand.MAIN_HAND);
+
         RayTraceResult rayTraceResult = nNet.entity.rayTraceBlocks(nNet.entity.REACH_DISTANCE);
         if(rayTraceResult == null){
             return;
         }
-        Block block = null;
+       /* Block block = null;
         switch(attributeId){
             case(Enum.BLOCK_ID):
                 block = Block.getBlockFromName(attributeValue);
@@ -47,19 +47,19 @@ public class PlaceBlockOutput extends OutputNeuron {
             default:
                 ChaosCraft.logger.error("Invalid `attributeId`: " + attributeId);
                 return;
-        }
+        }*/
 
         Vec3i vec3i = rayTraceResult.sideHit.getDirectionVec();
         BlockPos destBlockPos = rayTraceResult.getBlockPos().add(vec3i);
 
-        nNet.entity.placeBlock(destBlockPos, block);
+        nNet.entity.placeBlock(destBlockPos);
     }
-    @Override
+    /*@Override
     public void parseData(JSONObject jsonObject){
         super.parseData(jsonObject);
         attributeId = jsonObject.get("attributeId").toString();
         attributeValue = jsonObject.get("attributeValue").toString();
 
     }
-
+*/
 }

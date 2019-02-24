@@ -430,9 +430,19 @@ public class EntityOrganism extends EntityLiving {
 
 
     }
-    public void placeBlock(BlockPos blockPos, Block block){
+    public void placeBlock(BlockPos blockPos){
+        ItemStack itemStack = nNet.entity.getHeldItemMainhand();
+        if(itemStack == null){
+            return;
+        }
+        Item heldItem = itemStack.getItem();
+        if(!(heldItem instanceof ItemBlock)){
+            return;
+        }
+        Block block = ((ItemBlock) heldItem).getBlock();
+
         //ChaosCraft.logger.info(getName() + " Placing Block: " + block.getLocalizedName() + " - " + blockPos.toString());
-        IBlockState blockState = this.nNet.entity.world.getBlockState(blockPos);
+        IBlockState blockState = this.world.getBlockState(blockPos);
 
         //Block replaceBlock = blockState.getBlock();
 
@@ -465,9 +475,8 @@ public class EntityOrganism extends EntityLiving {
             return;
         }
 
-
         this.itemHandler.extractItem(slot, 1, false);
-
+        swingArm(EnumHand.MAIN_HAND);
 
 
         world.setBlockState(blockPos, block.getDefaultState());
@@ -475,6 +484,25 @@ public class EntityOrganism extends EntityLiving {
         worldEvent.block = block;
         entityFitnessManager.test(worldEvent);
 
+    }
+
+    public int hasInInventory(Item item){
+        //Check if it is in their inventory
+        ItemStack stack = null;
+        int slot = -1;
+        for (int i = 0; i < this.itemHandler.getSlots(); i++) {
+            ItemStack checkStack = this.itemHandler.getStackInSlot(i);
+            Item _item = checkStack.getItem();
+
+            if(_item.equals(item)){
+                slot = i;
+            }
+
+        }
+        if (stack == null  ||stack.isEmpty()) {
+            return -1;
+        }
+        return slot;
     }
     public boolean attackEntityAsMob(Entity entityIn)
     {

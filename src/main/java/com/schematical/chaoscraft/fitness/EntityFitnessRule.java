@@ -7,10 +7,15 @@ import com.schematical.chaoscraft.entities.EntityFitnessScoreEvent;
 import com.schematical.chaoscraft.events.CCWorldEvent;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import java.awt.*;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by user1a on 1/4/19.
@@ -19,7 +24,7 @@ public class EntityFitnessRule {
     public String id;
     public String eventType;
     public String attributeId;
-    public String attributeValue;
+    public List<String> attributeValue;
     public int scoreEffect;
     public int lifeEffect = 0;
     public int maxOccurrences = -1;
@@ -36,7 +41,12 @@ public class EntityFitnessRule {
         }
         Object jsonAttributeValue = jsonObject.get("attributeValue");
         if(jsonAttributeId != null) {
-            attributeValue = jsonAttributeValue.toString();
+            if(jsonAttributeId instanceof  JSONArray){
+                attributeValue = (ArrayList<String>) jsonAttributeValue;
+            }else {
+                attributeValue = new ArrayList<String>();
+                attributeValue.add(jsonAttributeValue.toString());
+            }
         }
         scoreEffect = Integer.parseInt(jsonObject.get("scoreEffect").toString());
         if(jsonObject.get("lifeEffect") != null) {
@@ -57,13 +67,17 @@ public class EntityFitnessRule {
             attributeId != null &&
             attributeValue != null
         ){
+            ResourceLocation resourceLocation;
            switch (attributeId){
                case(Enum.BLOCK_ID):
                    if(event.block == null){
                        ChaosCraft.logger.error("No block to check against!");
                    }
-                   int blockId = Block.getIdFromBlock(event.block);
-                   if(blockId != Integer.parseInt(attributeValue)){
+
+                   resourceLocation = event.block.getRegistryName();
+                   String blockId = resourceLocation.getResourceDomain() + ":" + resourceLocation.getResourcePath();
+                   ChaosCraft.logger.info("Testing: " + blockId);
+                   if(!attributeValue.contains(blockId)){
                        return null;
                    }
                break;
@@ -71,8 +85,10 @@ public class EntityFitnessRule {
                    if(event.entity == null){
                        ChaosCraft.logger.error("No `entity` to check against!");
                    }
-                   int entityId = event.entity.getEntityId();
-                   if(entityId != Integer.parseInt(attributeValue)){
+
+                   resourceLocation = EntityRegistry.getEntry(event.entity.getClass()).getRegistryName();
+                   String entityId = resourceLocation.getResourceDomain() + ":" + resourceLocation.getResourcePath();
+                   if(!attributeValue.contains(entityId)){
                        return null;
                    }
                    break;
@@ -80,8 +96,11 @@ public class EntityFitnessRule {
                    if(event.item == null){
                        ChaosCraft.logger.error("No `item` to check against!");
                    }
-                   int itemId = Item.getIdFromItem(event.item);
-                   if(itemId != Integer.parseInt(attributeValue)){
+                   resourceLocation = event.item.getRegistryName();
+                   String itemId = resourceLocation.getResourceDomain() + ":" + resourceLocation.getResourcePath();
+
+
+                   if(attributeValue.contains(itemId)){
                        return null;
                    }
                    break;

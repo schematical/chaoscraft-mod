@@ -74,4 +74,15 @@ public abstract class NeuronBase extends InnovationBase {
     public void attachNNet(NeuralNet neuralNet) {
         this.nNet = neuralNet;
     }
+    public String toString(){
+        String response = this.getClass().getSimpleName().replace("Input","");
+        response += " " + (Math.round(this._lastValue * 100) / 100);
+        return response;
+    }
+    public String toLongString(){
+        String response = this.getClass().getSimpleName().replace("Input","");
+        response += " " + (Math.round(this._lastValue * 100) / 100);
+        response += " " + (Math.round(this._lastValue * 100) / 100);
+        return response;
+    }
 }

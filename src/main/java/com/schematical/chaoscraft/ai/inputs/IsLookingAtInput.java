@@ -1,6 +1,7 @@
 package com.schematical.chaoscraft.ai.inputs;
 
 import com.schematical.chaoscraft.ChaosCraft;
+import com.schematical.chaoscraft.ai.CCAttributeId;
 import com.schematical.chaoscraft.ai.InputNeuron;
 import com.schematical.chaoscraft.ai.biology.BiologyBase;
 import com.schematical.chaoscraft.ai.biology.Eye;
@@ -23,8 +24,7 @@ import java.util.List;
  * Created by user1a on 12/8/18.
  */
 public class IsLookingAtInput extends InputNeuron {
-    private static final String BLOCK_ID = "BLOCK_ID";
-    private static final String ENTITY_ID = "ENTITY_ID";
+
     public static final double MAX_DISTANCE = 3d;
     public String attributeId;
     public String attributeValue;
@@ -44,7 +44,7 @@ public class IsLookingAtInput extends InputNeuron {
             return _lastValue;
         }
         switch(attributeId){
-            case(BLOCK_ID):
+            case(CCAttributeId.BLOCK_ID):
 
                 /*if(!nNet.entity.world.isRemote) {
                     ChaosCraftGUI.drawDebugLine(nNet.entity, rayTraceResult);
@@ -65,7 +65,7 @@ public class IsLookingAtInput extends InputNeuron {
                     }*/
                 }
             break;
-            case(ENTITY_ID):
+            case(CCAttributeId.ENTITY_ID):
 
                 List<EntityLiving> entities =  nNet.entity.world.getEntitiesWithinAABB(EntityLiving.class,  nNet.entity.getEntityBoundingBox().grow(MAX_DISTANCE, MAX_DISTANCE, MAX_DISTANCE));
                 //
@@ -75,7 +75,12 @@ public class IsLookingAtInput extends InputNeuron {
 
 
                 for (EntityLiving target : entities) {
-                    if(target != nNet.entity) {
+                    ResourceLocation resourceLocation = EntityRegistry.getEntry(target.getClass()).getRegistryName();
+                    String key = resourceLocation.getResourceDomain() + ":" + resourceLocation.getResourcePath();
+                    if(
+                        key == this.attributeValue &&
+                        target != nNet.entity
+                    ) {
 
 
                         rayTraceResult = nNet.entity.isEntityInLineOfSight(target, 3d);
@@ -99,6 +104,12 @@ public class IsLookingAtInput extends InputNeuron {
         attributeId = jsonObject.get("attributeId").toString();
         attributeValue = jsonObject.get("attributeValue").toString();
 
+
+    }
+    public String toLongString(){
+        String response = super.toLongString();
+        response += " " + this.attributeId + " " + this.attributeValue;
+        return response;
 
     }
 
