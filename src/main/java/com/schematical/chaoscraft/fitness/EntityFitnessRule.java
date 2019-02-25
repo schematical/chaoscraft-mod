@@ -5,6 +5,7 @@ import com.schematical.chaoscraft.Enum;
 import com.schematical.chaoscraft.ai.NeuronDep;
 import com.schematical.chaoscraft.entities.EntityFitnessScoreEvent;
 import com.schematical.chaoscraft.events.CCWorldEvent;
+import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
@@ -40,8 +41,8 @@ public class EntityFitnessRule {
             attributeId = jsonAttributeId.toString();
         }
         Object jsonAttributeValue = jsonObject.get("attributeValue");
-        if(jsonAttributeId != null) {
-            if(jsonAttributeId instanceof  JSONArray){
+        if(jsonAttributeValue != null) {
+            if(jsonAttributeValue instanceof  JSONArray){
                 attributeValue = (ArrayList<String>) jsonAttributeValue;
             }else {
                 attributeValue = new ArrayList<String>();
@@ -71,7 +72,7 @@ public class EntityFitnessRule {
            switch (attributeId){
                case(Enum.BLOCK_ID):
                    if(event.block == null){
-                       ChaosCraft.logger.error("No block to check against!");
+                       throw new ChaosNetException("No block to check against! " + event.eventType);
                    }
 
                    resourceLocation = event.block.getRegistryName();
@@ -100,7 +101,7 @@ public class EntityFitnessRule {
                    String itemId = resourceLocation.getResourceDomain() + ":" + resourceLocation.getResourcePath();
 
 
-                   if(attributeValue.contains(itemId)){
+                   if(!attributeValue.contains(itemId)){
                        return null;
                    }
                    break;

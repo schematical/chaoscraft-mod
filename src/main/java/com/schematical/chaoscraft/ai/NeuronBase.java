@@ -1,6 +1,7 @@
 package com.schematical.chaoscraft.ai;
 
 import com.google.common.collect.Sets;
+import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaosnet.model.ChaosNetException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -76,7 +77,10 @@ public abstract class NeuronBase extends InnovationBase {
     }
     public String toString(){
         String response = this.getClass().getSimpleName().replace("Input","");
-        response += " " + (Math.round(this._lastValue * 100) / 100);
+        response += " ";
+        float prettyLastValue = (Math.round(this._lastValue * 1000f) / 1000f);
+        response += prettyLastValue;
+
         return response;
     }
     public String toLongString(){

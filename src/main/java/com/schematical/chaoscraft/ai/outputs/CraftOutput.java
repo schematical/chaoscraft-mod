@@ -107,4 +107,10 @@ public class CraftOutput extends OutputNeuron {
 
         init();
     }
+    public String toLongString(){
+        String response = super.toLongString();
+        response += " " + this.recipeId;
+        return response;
+
+    }
 }

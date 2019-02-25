@@ -45,6 +45,7 @@ public class CCOrgNNetView extends GuiScreen {
     }*/
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+
         drawDefaultBackground();
         title = entityOrganism.getName() + " NNet " + entityOrganism.getNNet().neurons.size();
 
@@ -71,7 +72,7 @@ public class CCOrgNNetView extends GuiScreen {
         GlStateManager.popMatrix();
 
         button1.drawButton(mc, mouseX, mouseY, partialTicks);
-        for(GuiButton button: buttons){
+        for(CCGUINeuronDisplayButton button: buttons){
             button.drawButton(mc, mouseX, mouseY, partialTicks);
         }
         //arrow.drawButton(mc, mouseX, mouseY);
@@ -239,6 +240,7 @@ public class CCOrgNNetView extends GuiScreen {
         public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks)
         {
             this.displayString = neuron.toString();
+            ChaosCraft.logger.info("CCGUINeuronDisplayButton.drawButton " + this.displayString);
             super.drawButton(mc, mouseX,mouseY,partialTicks);
 
         }

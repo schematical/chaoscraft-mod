@@ -2,6 +2,7 @@ package com.schematical.chaoscraft.entities;
 
 import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.fitness.EntityFitnessRule;
+import com.schematical.chaosnet.model.ChaosNetException;
 
 /**
  * Created by user1a on 1/4/19.
@@ -17,6 +18,9 @@ public class EntityFitnessScoreEvent {
         worldEvent = event;
         score = _score;
         fitnessRule = _fitnessRule;
+        if(fitnessRule == null){
+            throw new ChaosNetException("Missing `fitnessRule`");
+        }
     }
     public String toString(){
         return worldEvent.toString() + " - " + score;

@@ -39,6 +39,7 @@ public class BlockPositionInput                                                 
                             if(attributeValue.equals(key)){
                                 _lastValue = 1;
                             }
+
                             /*int blockId = Block.getIdFromBlock(block);
                             if(blockId == Integer.parseInt(attributeValue)){
                                 _lastValue = 1;
@@ -71,5 +72,12 @@ public class BlockPositionInput                                                 
         }
 
     }
+    public String toLongString(){
+        String response = super.toLongString();
+        response += " " + this.attributeId + " " + this.attributeValue;
+        return response;
+
+    }
+
 
 }

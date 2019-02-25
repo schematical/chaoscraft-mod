@@ -87,6 +87,8 @@ public class ChaosCraft
     public static float activationThreshold = .3f;
     public static EntityOrganism adam = null;
     public static List<EntityPlayerMP> observingPlayers = new ArrayList<EntityPlayerMP>();
+    public static double highScore;
+    public static EntityOrganism highScoreOrg;
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
@@ -148,6 +150,11 @@ public class ChaosCraft
     }
     public static void queueSpawn(List<EntityOrganism> _orgsToReport){
         _orgsToReport.forEach((EntityOrganism organism)->{
+            double totalScore = organism.entityFitnessManager.totalScore();
+            if(totalScore > ChaosCraft.highScore){
+                ChaosCraft.highScore = totalScore;
+                ChaosCraft.highScoreOrg = organism;
+            }
             ChaosCraft.orgsToReport.add(organism);
         });
         if(thread != null){
@@ -317,9 +324,10 @@ public class ChaosCraft
                         entityOrganism.attachOrganism(organism);
                         entityOrganism.attachNNetRaw(nNetRaw);
                         entityOrganism.setCustomNameTag(organism.getName() + " - " + organism.getGeneration());
+                        entityOrganism.setDesiredYaw(Math.random() * 360);
                         BlockPos pos = rick.getPosition();
-                        int range = 10;
-                        int minRange = 3;
+                        int range = 20;
+                        int minRange = 5;
                         int yRange = 1;
                         Vec3d rndPos = null;
                         int saftyCatch = 0;
@@ -328,10 +336,22 @@ public class ChaosCraft
                                         saftyCatch < 10
                                 ) {
                             saftyCatch++;
+                            double xPos = Math.floor((Math.random() * (range) * 2) - range);
+                            if(xPos > 0){
+                                xPos += minRange;
+                            }else{
+                                xPos -= minRange;
+                            }
+                            double zPos =Math.floor((Math.random() * (range) * 2) - range);
+                            if(zPos > 0){
+                                zPos += minRange;
+                            }else{
+                                zPos -= minRange;
+                            }
                             rndPos = new Vec3d(
-                                    pos.getX() + Math.floor((Math.random() * (minRange + range) * 2) - range),
+                                    pos.getX() + xPos,
                                     pos.getY() + Math.floor((Math.random() * yRange)),
-                                    pos.getZ() + Math.floor((Math.random() * (minRange + range) * 2) - range)
+                                    pos.getZ() + zPos
                             );
                             entityOrganism.setPosition(
                                     rndPos.x,
@@ -375,13 +395,12 @@ public class ChaosCraft
             if (stats != null) {
                 message += "Gen Progress: " + stats.getGenProgress() + "\n";
             } else {
-                message += "MISSING STATS";
+                message += "MISSING STATS \n";
             }
         }
-        //message += "Spawned So Far: " + ChaosCraft.lastResponse.getStats().getOrgsSpawnedSoFar() + "\n";
-        //message += "Reported So Far: " + ChaosCraft.lastResponse.getStats().getOrgsReportedSoFar() + "\n";
-        //message += "Total: " + ChaosCraft.lastResponse.getStats().getTotalOrgsPerGen() + "\n";
-        //message += "Ticks Since Last Spawn: " + ticksSinceLastSpawn + "\n";
+        if(ChaosCraft.highScoreOrg != null){
+            message += "High Score: " + ChaosCraft.highScore + " - " + ChaosCraft.highScoreOrg.getCCNamespace() + "\n";
+        }
         message += "Orgs in memory: " + ChaosCraft.organisims.size() + "\n";
         topLeftMessage = message;
 

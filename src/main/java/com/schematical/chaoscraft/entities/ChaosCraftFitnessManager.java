@@ -16,15 +16,18 @@ import java.util.*;
 public class ChaosCraftFitnessManager {
     protected List<EntityFitnessRule> rules = new ArrayList<EntityFitnessRule>();
 
-    public EntityFitnessScoreEvent testEntityFitnessEvent(EntityOrganism entityOrganism, CCWorldEvent event){
+    public List<EntityFitnessScoreEvent> testEntityFitnessEvent(EntityOrganism entityOrganism, CCWorldEvent event){
+        List<EntityFitnessScoreEvent> scoreEvents = new ArrayList<EntityFitnessScoreEvent>();
         EntityFitnessScoreEvent scoreEvent = null;
         for (EntityFitnessRule rule: rules) {
-            if(scoreEvent == null) {
-                scoreEvent = rule.testWorldEvent(event);
+            scoreEvent = rule.testWorldEvent(event);
+            if(scoreEvent != null) {
+                scoreEvents.add(scoreEvent);
             }
+
         }
 
-        return scoreEvent;
+        return scoreEvents;
     }
 
     public void parseData(JSONArray rulesJSON){

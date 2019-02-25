@@ -4,6 +4,7 @@ import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.entities.EntityFitnessScoreEvent;
 import com.schematical.chaoscraft.entities.EntityOrganism;
 import com.schematical.chaoscraft.events.CCWorldEvent;
+import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.util.text.TextComponentString;
 
 import java.util.ArrayList;
@@ -25,12 +26,19 @@ public class EntityFitnessManager {
     public void test(CCWorldEvent event){
 
 
-        EntityFitnessScoreEvent scoreEvent = ChaosCraft.fitnessManager.testEntityFitnessEvent(this.entityOrganism, event);
-        if(scoreEvent != null){
-
+        List<EntityFitnessScoreEvent> _scoreEvents = ChaosCraft.fitnessManager.testEntityFitnessEvent(this.entityOrganism, event);
+        for(EntityFitnessScoreEvent scoreEvent : _scoreEvents){
 
             Integer numOfOccurences = 0;
-            if(occurences.containsKey(scoreEvent.fitnessRule.id)) {
+
+            if(scoreEvent.fitnessRule == null){
+                throw new ChaosNetException("`scoreEvent.fitnessRule` is `null`");
+            }
+            if(
+                occurences.containsKey(
+                    scoreEvent.fitnessRule.id
+                )
+            ) {
 
                 numOfOccurences = occurences.get(scoreEvent.fitnessRule.id);
             }
