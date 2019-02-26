@@ -2,6 +2,7 @@ package com.schematical.chaoscraft.ai.inputs;
 
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.CCAttributeId;
+import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
 import com.schematical.chaoscraft.ai.InputNeuron;
 import com.schematical.chaoscraft.ai.biology.BiologyBase;
 import com.schematical.chaoscraft.ai.biology.Eye;
@@ -54,9 +55,8 @@ public class IsLookingAtInput extends InputNeuron {
                             rayTraceResult.getBlockPos()
                     ).getBlock();
 
-                    ResourceLocation regeistryName = block.getRegistryName();
-                    String key = regeistryName.getResourceDomain() + ":" + regeistryName.getResourcePath();
-                    if(attributeValue.equals(key)){
+                    CCObservableAttributeManager.CCObserviableAttributeCollection attributeCollection = nNet.entity.observableAttributeManager.Observe(block);
+                    if(attributeValue.equals(attributeCollection.resourceId)){
                         _lastValue = 1;
                     }
                     /*int blockId = Block.getIdFromBlock(block);
@@ -75,11 +75,10 @@ public class IsLookingAtInput extends InputNeuron {
 
 
                 for (EntityLiving target : entities) {
-                    ResourceLocation resourceLocation = EntityRegistry.getEntry(target.getClass()).getRegistryName();
-                    String key = resourceLocation.getResourceDomain() + ":" + resourceLocation.getResourcePath();
+                    CCObservableAttributeManager.CCObserviableAttributeCollection attributeCollection = nNet.entity.observableAttributeManager.Observe(target);
                     if(
-                        key == this.attributeValue &&
-                        target != nNet.entity
+                        attributeCollection.resourceId == this.attributeValue &&
+                        !target.equals(nNet.entity)
                     ) {
 
 

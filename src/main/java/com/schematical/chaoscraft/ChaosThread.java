@@ -24,6 +24,7 @@ public class ChaosThread implements Runnable {
         request.setSession(ChaosCraft.config.sessionNamespace);
 
         TrainingRoomSessionNextRequest trainingRoomSessionNextRequest = new TrainingRoomSessionNextRequest();
+        Collection<ObservedAttributesElement> newAttributes = new ArrayList<ObservedAttributesElement>();
 
         Collection<TrainingRoomSessionNextReport> report = new ArrayList<TrainingRoomSessionNextReport>();
         if(ChaosCraft.orgsToReport != null) {
@@ -38,15 +39,16 @@ public class ChaosThread implements Runnable {
                         ChaosCraft.logger.info(organism.getCCNamespace() + " has already attempted a report");
                     }
                     organism.hasAttemptedReport = true;
+                    newAttributes.addAll(organism.observableAttributeManager.newAttributes);
                 }
                 namespaces += namespace + "    ";
             }
 
         }
-        //ChaosCraft.logger.info("GETTING getNextOrgs: " + ((ChaosCraft.orgsToReport != null) ? ChaosCraft.orgsToReport.size() : "") + " - " + namespaces + " - Ticks: " + ChaosCraft.ticksSinceLastSpawn);
 
         trainingRoomSessionNextRequest.setReport(report);
         trainingRoomSessionNextRequest.setNNetRaw(true);
+        trainingRoomSessionNextRequest.setObservedAttributes(newAttributes);
         ChaosCraft.lastResponse = null;
 
         try {

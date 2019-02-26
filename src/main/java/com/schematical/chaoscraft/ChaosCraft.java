@@ -6,6 +6,7 @@ import com.amazonaws.opensdk.config.ConnectionConfiguration;
 import com.amazonaws.opensdk.config.TimeoutConfiguration;
 
 import com.google.common.collect.Sets;
+import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
 import com.schematical.chaoscraft.commands.CommandChaosCraftObserve;
 import com.schematical.chaoscraft.entities.ChaosCraftFitnessManager;
 import com.schematical.chaoscraft.entities.EntityEvilRabbit;
@@ -286,7 +287,6 @@ public class ChaosCraft
         return ChaosCraft.spawnOrgs(null);
     }
     public static List<EntityOrganism> spawnOrgs(List<Organism> organismList){
-
         List<EntityOrganism> spawnedEntityOrganisms = new ArrayList<EntityOrganism>();
         World world = rick.getEntityWorld();
         String generation = "-1";
@@ -323,6 +323,27 @@ public class ChaosCraft
                         EntityOrganism entityOrganism = new EntityOrganism(world, organism.getNamespace());
                         entityOrganism.attachOrganism(organism);
                         entityOrganism.attachNNetRaw(nNetRaw);
+                        entityOrganism.observableAttributeManager = new CCObservableAttributeManager(organism);
+                        TaxonomicRank taxonomicRank = null;
+                        for(TaxonomicRank _taxonomicRank: ChaosCraft.lastResponse.getSpecies()){
+                            if(_taxonomicRank.getNamespace() == organism.getSpeciesNamespace()){
+                                taxonomicRank = _taxonomicRank;
+                            }
+                        }
+                        if(taxonomicRank == null){
+                            throw new ChaosNetException("Could not find species: " + organism.getSpeciesNamespace());
+                        }
+                        try {
+                            JSONParser parser = new JSONParser();
+                            JSONObject jsonObject = (JSONObject)parser.parse(
+                                taxonomicRank.getObservedAttributesRaw()
+                            );
+                            entityOrganism.observableAttributeManager.parseData(jsonObject);
+                        }catch(Exception exeception){
+                            throw new ChaosNetException("Invalid `species.observedAttributes` JSON Found: " + taxonomicRank.getObservedAttributesRaw() + "\n\n-- " + exeception.getMessage());
+                        }
+
+
                         entityOrganism.setCustomNameTag(organism.getName() + " - " + organism.getGeneration());
                         entityOrganism.setDesiredYaw(Math.random() * 360);
                         BlockPos pos = rick.getPosition();
@@ -332,9 +353,9 @@ public class ChaosCraft
                         Vec3d rndPos = null;
                         int saftyCatch = 0;
                         while (
-                                rndPos == null &&
-                                        saftyCatch < 10
-                                ) {
+                            rndPos == null &&
+                            saftyCatch < 10
+                        ) {
                             saftyCatch++;
                             double xPos = Math.floor((Math.random() * (range) * 2) - range);
                             if(xPos > 0){
@@ -349,9 +370,9 @@ public class ChaosCraft
                                 zPos -= minRange;
                             }
                             rndPos = new Vec3d(
-                                    pos.getX() + xPos,
-                                    pos.getY() + Math.floor((Math.random() * yRange)),
-                                    pos.getZ() + zPos
+                                pos.getX() + xPos,
+                                pos.getY() + Math.floor((Math.random() * yRange)),
+                                pos.getZ() + zPos
                             );
                             entityOrganism.setPosition(
                                     rndPos.x,

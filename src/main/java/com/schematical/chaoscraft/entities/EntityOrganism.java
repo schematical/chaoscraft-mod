@@ -13,6 +13,7 @@ import com.schematical.chaoscraft.fitness.EntityFitnessManager;
 import com.schematical.chaoscraft.gui.CCOrgDetailView;
 import com.schematical.chaoscraft.gui.CCOrgInventoryView;
 import com.schematical.chaoscraft.inventory.InventoryOrganism;
+import com.schematical.chaosnet.model.ChaosNetException;
 import com.schematical.chaosnet.model.NNetRaw;
 import com.schematical.chaosnet.model.Organism;
 import net.minecraft.block.Block;
@@ -31,8 +32,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -44,6 +48,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.ItemStackHandler;
 import org.json.simple.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -73,6 +78,7 @@ public class EntityOrganism extends EntityLiving {
     public boolean refreshRender = false;
     protected String skin = "chaoscraft:morty.png";
     public InventoryOrganism inventory;
+    public CCObservableAttributeManager observableAttributeManager;
 
     public EntityOrganism(World worldIn) {
         this(worldIn, "EntityOrganism");
@@ -241,6 +247,93 @@ public class EntityOrganism extends EntityLiving {
     public void setSkin(String _skin) {
         this.skin = _skin;
         this.refreshRender = true;
+    }
+
+    public boolean canCraft(IRecipe recipe) {
+        //Check to see if they have the items in inventory for that
+        ItemStackHandler itemStackHandler = nNet.entity.getItemStack();
+        int slots = itemStackHandler.getSlots();
+        NonNullList<Ingredient> ingredients = recipe.getIngredients();
+
+        List<ItemStack> stacks = new ArrayList<ItemStack>();
+        List<Integer> usedSlots = new ArrayList<Integer>();
+        for(Ingredient ingredient : ingredients){
+            boolean containsItem = false;
+            for(int i = 0; i < slots; i++) {
+                ItemStack itemStack = itemStackHandler.getStackInSlot(i);
+                if(itemStack.isEmpty()){
+
+                }else {
+                    boolean itWorks = ingredient.apply(itemStack);
+                    if (itWorks) {
+                        containsItem = true;
+                        usedSlots.add(i);
+                    }
+                }
+            }
+            if(!containsItem){
+                return false;
+            }
+        }
+
+        return true;
+    }
+    public boolean craft(IRecipe recipe) {
+        //Check to see if they have the items in inventory for that
+        ItemStackHandler itemStackHandler = nNet.entity.getItemStack();
+        int slots = itemStackHandler.getSlots();
+        int emptySlot = -1;
+        NonNullList<Ingredient> ingredients = recipe.getIngredients();
+
+        List<ItemStack> stacks = new ArrayList<ItemStack>();
+        List<Integer> usedSlots = new ArrayList<Integer>();
+        for(Ingredient ingredient : ingredients){
+            boolean containsItem = false;
+            for(int i = 0; i < slots; i++) {
+                ItemStack itemStack = itemStackHandler.getStackInSlot(i);
+                if(itemStack.isEmpty()){
+                    emptySlot = i;
+                }else {
+                    boolean itWorks = ingredient.apply(itemStack);
+                    if (itWorks) {
+                        containsItem = true;
+                        usedSlots.add(i);
+                    }
+                }
+            }
+            if(!containsItem){
+                return false;
+            }
+        }
+        for(Integer slot: usedSlots){
+            itemStackHandler.extractItem(slot, 1, false);
+        }
+        ItemStack outputStack = recipe.getRecipeOutput();
+        if(emptySlot != -1) {
+            itemStackHandler.insertItem(emptySlot, outputStack, false);
+        }else{
+            throw new ChaosNetException("TODO: Code how to drop this when stack is full");
+        }
+        return true;
+    }
+    public int getEmptyInventorySlot(){
+        int emptySlot = -1;
+        List<Integer> usedSlots = new ArrayList<Integer>();
+        ItemStackHandler itemStackHandler = nNet.entity.getItemStack();
+        int slots = itemStackHandler.getSlots();
+        for(int i = 0; i < slots; i++) {
+            ItemStack itemStack = itemStackHandler.getStackInSlot(i);
+            if(itemStack.isEmpty()){
+                emptySlot = i;
+            }
+        }
+
+        if(usedSlots.size() == 0){
+
+            return -1;
+        }
+        return emptySlot;
+
     }
 
     public static class EntityOrganismRenderer extends RenderLiving<EntityOrganism> {
@@ -424,9 +517,13 @@ public class EntityOrganism extends EntityLiving {
             item.setDead();
         }
 
+        nNet.entity.observableAttributeManager.Observe(worldEventItem);
+
         CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEventType.ITEM_COLLECTED);
         worldEvent.item = worldEventItem;
         entityFitnessManager.test(worldEvent);
+        //TODO: Recheck what you can craft
+        nNet.entity.observableAttributeManager.ObserveCraftableRecipes(this);
 
 
     }

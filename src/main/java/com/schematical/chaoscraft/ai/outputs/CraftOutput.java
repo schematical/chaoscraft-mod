@@ -49,53 +49,17 @@ public class CraftOutput extends OutputNeuron {
         if(nNet.entity.getDebug()) {
             //ChaosCraft.logger.info(nNet.entity.getCCNamespace() + " Attempting to Craft: " + recipe.getRegistryName() + " - " + recipe.getRecipeOutput().getDisplayName());
         }
-        //Check to see if they have the items in inventory for that
-        ItemStackHandler itemStackHandler = nNet.entity.getItemStack();
-        int slots = itemStackHandler.getSlots();
-        NonNullList<Ingredient> ingredients = recipe.getIngredients();
-        int emptySlot = -1;
-        List<ItemStack> stacks = new ArrayList<ItemStack>();
-        List<Integer> usedSlots = new ArrayList<Integer>();
-        for(Ingredient ingredient : ingredients){
-            boolean containsItem = false;
-            for(int i = 0; i < slots; i++) {
-                ItemStack itemStack = itemStackHandler.getStackInSlot(i);
-                if(itemStack.isEmpty()){
-                    emptySlot = i;
-                }else {
-                    boolean itWorks = ingredient.apply(itemStack);
-                    if (itWorks) {
-                        containsItem = true;
-                        usedSlots.add(i);
-                    }
-                }
-            }
-            if(!containsItem){
-                return;
-            }
-        }
-        if(usedSlots.size() == 0){
-            //Looks like a fake recipe kinda
+        if(!nNet.entity.canCraft(recipe)){
             return;
         }
-        if(emptySlot == -1){
-            //if(itemStackHandler.getSlots() > slots){
-            emptySlot = slots + 1;
-            //}
-        }
+        int emptySlot = nNet.entity.getEmptyInventorySlot();
+
         //I guess we have the ingredients
         ItemStack outputStack = recipe.getRecipeOutput();
         if(nNet.entity.getDebug()) {
             ChaosCraft.logger.info(nNet.entity.getCCNamespace() + " Crafted: " + outputStack.getDisplayName());
         }
-        for(Integer slot: usedSlots){
-            itemStackHandler.extractItem(slot, 1, false);
-        }
-        if(emptySlot != -1) {
-            itemStackHandler.insertItem(emptySlot, outputStack, false);
-        }else{
-            throw new ChaosNetException("TODO: Code how to drop this when stack is full");
-        }
+
         CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEventType.CRAFT);
         worldEvent.item = outputStack.getItem();
         nNet.entity.entityFitnessManager.test(worldEvent);

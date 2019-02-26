@@ -1,7 +1,105 @@
 package com.schematical.chaoscraft.ai;
 
+import com.schematical.chaoscraft.entities.EntityOrganism;
+import com.schematical.chaosnet.model.ObservedAttributesElement;
+import com.schematical.chaosnet.model.Organism;
+import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
+import net.minecraft.item.Item;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
+
 /**
  * Created by user1a on 2/25/19.
  */
 public class CCObservableAttributeManager {
+    protected Organism organism;
+
+    public List<ObservedAttributesElement> newAttributes = new ArrayList<ObservedAttributesElement>();
+    public HashMap<String, List<String>> attributeMap = new HashMap<String, List<String>>();
+    public CCObservableAttributeManager(Organism _organism){
+        this.organism = _organism;
+    }
+    public boolean TestUnique(String attributeId, String attributeValue){
+        List<String> valueMap = null;
+        if(!attributeMap.containsKey(attributeId)){
+            valueMap = new ArrayList<String>();
+            attributeMap.put(attributeId, valueMap);
+        }else{
+            valueMap = attributeMap.get(attributeId);
+        }
+        if(!valueMap.contains(attributeValue)){
+            valueMap.add(attributeValue);
+            ObservedAttributesElement newAttribute = new ObservedAttributesElement();
+            newAttribute.setAttributeId(attributeId);
+            newAttribute.setAttributeValue(attributeValue);
+            newAttribute.setSpecies(organism.getSpeciesNamespace());
+            newAttributes.add(newAttribute);
+            return true;
+        }
+        return false;
+    }
+    public CCObserviableAttributeCollection Observe(Block block){
+        CCObserviableAttributeCollection atts = new CCObserviableAttributeCollection();
+        atts.resourceId = block.getRegistryName().toString();
+        TestUnique(CCAttributeId.BLOCK_ID, atts.resourceId);
+        return atts;
+
+    }
+    public CCObserviableAttributeCollection Observe(Item item){
+        CCObserviableAttributeCollection atts = new CCObserviableAttributeCollection();
+        atts.resourceId = item.getRegistryName().toString();
+        TestUnique(CCAttributeId.ITEM_ID, atts.resourceId);
+        return atts;
+    }
+    public CCObserviableAttributeCollection Observe(Entity entity){
+        CCObserviableAttributeCollection atts = new CCObserviableAttributeCollection();
+        atts.resourceId = EntityRegistry.getEntry(entity.getClass()).getRegistryName().toString();
+        TestUnique(CCAttributeId.ITEM_ID, atts.resourceId);
+        return atts;
+    }
+    public CCObserviableAttributeCollection Observe(IRecipe recipe){
+        CCObserviableAttributeCollection atts = new CCObserviableAttributeCollection();
+        atts.resourceId = recipe.getRegistryName().toString();
+        TestUnique(CCAttributeId.RECIPE_ID, atts.resourceId);
+        return atts;
+    }
+
+    public void ObserveCraftableRecipes(EntityOrganism entityOrganism) {
+        //TODO: Go through each craftable recipe and figure out what it can craft
+        List<IRecipe> craftableRecipes = new ArrayList<IRecipe>();
+        for (IRecipe irecipe : CraftingManager.REGISTRY)
+        {
+            if(entityOrganism.canCraft(irecipe)){
+                Observe(irecipe);
+            }
+        }
+    }
+
+
+    public class CCObserviableAttributeCollection{
+        public String resourceId;
+    }
+    public void parseData(JSONObject jsonObject){
+        Set<String> attributeIds = jsonObject.keySet();
+        for(String attributeId : attributeIds){
+            JSONArray jsonArray = (JSONArray) jsonObject.get(attributeId);
+            ArrayList<String> attributeValues = new ArrayList<String>();
+            for(String attributeValue : attributeValues){
+                attributeValues.add(attributeValue);
+            }
+            attributeMap.put(attributeId, attributeValues);
+        }
+
+    }
+
 }
