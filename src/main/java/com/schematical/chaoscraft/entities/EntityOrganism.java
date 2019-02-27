@@ -282,34 +282,45 @@ public class EntityOrganism extends EntityLiving {
         //Check to see if they have the items in inventory for that
         ItemStackHandler itemStackHandler = nNet.entity.getItemStack();
         int slots = itemStackHandler.getSlots();
+
         NonNullList<Ingredient> ingredients = recipe.getIngredients();
         if(ingredients.size() == 0){
             return false;
         }
+        //ChaosCraft.logger.info("Testing: " + recipe.getRegistryName().toString());
         List<ItemStack> stacks = new ArrayList<ItemStack>();
-        List<Integer> usedSlots = new ArrayList<Integer>();
+        if(recipe.getRegistryName().toString().equals("minecraft:crafting_table")){
+            ChaosCraft.logger.info("Testing: " + recipe.getRegistryName().toString());
+        }
         for(Ingredient ingredient : ingredients){
             boolean containsItem = false;
             for(int i = 0; i < slots; i++) {
                 ItemStack itemStack = itemStackHandler.getStackInSlot(i);
-                if(itemStack.isEmpty()){
-
-                }else {
+                if(!itemStack.isEmpty()){
                     boolean itWorks = ingredient.apply(itemStack);
                     if (itWorks) {
                         containsItem = true;
-                        usedSlots.add(i);
+
                     }
                 }
             }
             if(!containsItem){
+                ItemStack[] missingStacks = ingredient.getMatchingStacks();
+                String missing = "";
+                for(ItemStack missingStack : missingStacks){
+                    missing += missingStack.getDisplayName() + ", ";
+                }
+                if(recipe.getRegistryName().toString().equals("minecraft:crafting_table")){
+                    ChaosCraft.logger.info(recipe.getRegistryName().toString() + "Failed Missing: "  + missing);
+                }
+
                 return false;
             }
         }
-
+        ChaosCraft.logger.info("Success!: " + recipe.getRegistryName().toString());
         return true;
     }
-    public boolean craft(IRecipe recipe) {
+    public ItemStack craft(IRecipe recipe) {
         //Check to see if they have the items in inventory for that
         ItemStackHandler itemStackHandler = nNet.entity.getItemStack();
         int slots = itemStackHandler.getSlots();
@@ -333,7 +344,7 @@ public class EntityOrganism extends EntityLiving {
                 }
             }
             if(!containsItem){
-                return false;
+                return null;
             }
         }
         for(Integer slot: usedSlots){
@@ -345,7 +356,8 @@ public class EntityOrganism extends EntityLiving {
         }else{
             throw new ChaosNetException("TODO: Code how to drop this when stack is full");
         }
-        return true;
+        observableAttributeManager.ObserveCraftableRecipes(this);
+        return outputStack;
     }
     public int getEmptyInventorySlot(){
         int emptySlot = -1;

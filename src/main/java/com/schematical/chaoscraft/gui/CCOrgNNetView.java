@@ -240,7 +240,7 @@ public class CCOrgNNetView extends GuiScreen {
         public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks)
         {
             this.displayString = neuron.toString();
-            ChaosCraft.logger.info("CCGUINeuronDisplayButton.drawButton " + this.displayString);
+            //ChaosCraft.logger.info("CCGUINeuronDisplayButton.drawButton " + this.displayString);
             super.drawButton(mc, mouseX,mouseY,partialTicks);
 
         }

@@ -52,12 +52,9 @@ public class CraftOutput extends OutputNeuron {
         if(!nNet.entity.canCraft(recipe)){
             return;
         }
-        int emptySlot = nNet.entity.getEmptyInventorySlot();
-
-        //I guess we have the ingredients
-        ItemStack outputStack = recipe.getRecipeOutput();
-        if(nNet.entity.getDebug()) {
-            ChaosCraft.logger.info(nNet.entity.getCCNamespace() + " Crafted: " + outputStack.getDisplayName());
+        ItemStack outputStack = nNet.entity.craft(recipe);
+        if(outputStack == null){
+            throw new ChaosNetException("Something went wrong crafting: " + recipe.getRegistryName().toString());
         }
 
         CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEventType.CRAFT);

@@ -93,7 +93,7 @@ public class CCObservableAttributeManager {
 
     public void ObserveCraftableRecipes(EntityOrganism entityOrganism) {
         //TODO: Go through each craftable recipe and figure out what it can craft
-        List<IRecipe> craftableRecipes = new ArrayList<IRecipe>();
+        //List<IRecipe> craftableRecipes = new ArrayList<IRecipe>();
         for (IRecipe irecipe : CraftingManager.REGISTRY)
         {
             if(entityOrganism.canCraft(irecipe)){
