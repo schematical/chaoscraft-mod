@@ -1,6 +1,7 @@
 package com.schematical.chaoscraft.ai;
 
 import com.schematical.chaoscraft.entities.EntityOrganism;
+import com.schematical.chaosnet.model.ChaosNetException;
 import com.schematical.chaosnet.model.ObservedAttributesElement;
 import com.schematical.chaosnet.model.Organism;
 import net.minecraft.block.Block;
@@ -9,6 +10,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -65,7 +67,18 @@ public class CCObservableAttributeManager {
     }
     public CCObserviableAttributeCollection Observe(Entity entity){
         CCObserviableAttributeCollection atts = new CCObserviableAttributeCollection();
-        atts.resourceId = EntityRegistry.getEntry(entity.getClass()).getRegistryName().toString();
+        if(entity == null){
+            throw new ChaosNetException("Entity is null");
+        }
+        EntityEntry entityEntry = EntityRegistry.getEntry(entity.getClass());
+        if(entityEntry == null){
+            throw new ChaosNetException("EntityEntry is null");
+        }
+        ResourceLocation resourceLocation = entityEntry.getRegistryName();
+        if(resourceLocation == null){
+            throw new ChaosNetException("ResourceLocation is null");
+        }
+        atts.resourceId = resourceLocation.toString();
         atts.resourceType = CCResourceType.ENTITY;
         TestUnique(CCAttributeId.ENTITY_ID, atts.resourceId);
         return atts;

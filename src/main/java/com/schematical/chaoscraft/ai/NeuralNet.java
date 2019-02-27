@@ -37,6 +37,9 @@ public class NeuralNet {
             NeuronBase neuronBase = iterator.next().getValue();
             neuronBase.reset();
         }
+        for(BiologyBase biologyBase: biology.values()){
+            biologyBase.reset();
+        }
         iterator = neurons.entrySet().iterator();
         List<OutputNeuron> outputs = new ArrayList<OutputNeuron>();
         while (iterator.hasNext()) {
@@ -68,6 +71,7 @@ public class NeuralNet {
                 Class cls = Class.forName(fullClassName);
                 BiologyBase biologyBase = (BiologyBase) cls.newInstance();
                 biologyBase.parseData(outputBaseJSON);
+                biologyBase.entity = this.entity;
                 biology.put(biologyBase.id, biologyBase);
             }
 

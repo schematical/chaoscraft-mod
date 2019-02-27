@@ -209,7 +209,7 @@ public class EntityOrganism extends EntityLiving {
 
     private void observationHack() {
         this.ticksSinceObservationHack += 1;
-        if(this.ticksSinceObservationHack < 1000){
+        if(this.ticksSinceObservationHack < 100){
             return;
         }
         this.ticksSinceObservationHack = 0;

@@ -9,12 +9,17 @@ import org.json.simple.JSONObject;
 public class BlockPositionSensor extends BiologyBase{
     public int index;
     public PositionRange positionRange;
+    public boolean _cached = false;
     @Override
     public void parseData(JSONObject jsonObject){
-        index = Integer.parseInt(jsonObject.get("index").toString());
+        super.parseData(jsonObject);
 
         positionRange = new PositionRange();
         positionRange.parseData((JSONObject) jsonObject.get("positionRange"));
+    }
+    @Override
+    public void reset() {
+        _cached = false;
     }
 
 }

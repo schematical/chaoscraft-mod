@@ -39,10 +39,6 @@ public class BlockPositionInput                                                 
                                 _lastValue = 1;
                             }
 
-                            /*int blockId = Block.getIdFromBlock(block);
-                            if(blockId == Integer.parseInt(attributeValue)){
-                                _lastValue = 1;
-                            }*/
                         break;
                     }
                 }
@@ -55,20 +51,13 @@ public class BlockPositionInput                                                 
         super.parseData(jsonObject);
         attributeId = jsonObject.get("attributeId").toString();
         attributeValue = jsonObject.get("attributeValue").toString();
-        for(int i = 0; i < nNet.biology.size(); i++){
-            BiologyBase biologyBase = nNet.biology.get(i);
-            if(biologyBase instanceof BlockPositionSensor){
-                BlockPositionSensor blockPositionSensorTmp = (BlockPositionSensor) biologyBase;
-                JSONObject eyeData = (JSONObject)jsonObject.get("blockPositionSensor");
-                int eyeIndex = Integer.parseInt(eyeData.get("index").toString());
-                if(blockPositionSensorTmp.index == eyeIndex){
-                    blockPositionSensor = blockPositionSensorTmp;
-                }
-            }
+        String blockPositionSensorId = jsonObject.get("blockPositionSensor").toString();
+
+        if(!nNet.biology.containsKey(blockPositionSensorId)){
+            Debug.error("Invalid BlockPositionSensor Id: " +blockPositionSensorId);
         }
-        if(blockPositionSensor == null){
-            Debug.error("Invalid BlockPositionSensor Index: " + jsonObject.get("index"));
-        }
+
+        blockPositionSensor = (BlockPositionSensor)nNet.biology.get(blockPositionSensorId);
 
     }
     public String toLongString(){

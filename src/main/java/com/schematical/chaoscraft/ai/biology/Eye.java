@@ -28,11 +28,8 @@ public class Eye  extends BiologyBase{
     public ArrayList<CCObserviableAttributeCollection> seenEntities = new ArrayList<CCObserviableAttributeCollection>();
     public ArrayList<CCObserviableAttributeCollection> seenBlocks = new ArrayList<CCObserviableAttributeCollection>();
     public boolean _cached = false;
-    public EntityOrganism entity;
-    public void reset(){
-        seenEntities.clear();
-        seenBlocks.clear();
-    }
+
+
     public ArrayList<CCObserviableAttributeCollection> canSeenBlocks(){
         if(_cached){
             return seenBlocks;
@@ -81,10 +78,17 @@ public class Eye  extends BiologyBase{
     }
     @Override
     public void parseData(JSONObject jsonObject){
+        super.parseData(jsonObject);
         index = Integer.parseInt(jsonObject.get("index").toString());
 
         pitch = Float.parseFloat(jsonObject.get("pitch").toString());
         yaw = Float.parseFloat(jsonObject.get("yaw").toString());
+    }
+    @Override
+    public void reset() {
+        seenEntities.clear();
+        seenBlocks.clear();
+        _cached = false;
     }
 
 }

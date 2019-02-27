@@ -11,6 +11,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.math.RayTraceResult;
 import org.json.simple.JSONObject;
+import scala.actors.Debug;
 
 import java.util.List;
 
@@ -61,9 +62,15 @@ public class IsLookingAtInput extends InputNeuron {
     @Override
     public void parseData(JSONObject jsonObject){
         super.parseData(jsonObject);
-        eyeId = jsonObject.get("eyeId").toString();
+
         attributeId = jsonObject.get("attributeId").toString();
         attributeValue = jsonObject.get("attributeValue").toString();
+        eyeId = jsonObject.get("eye").toString();
+
+        if(!nNet.biology.containsKey(eyeId)){
+            Debug.error("Invalid Eye Id: " +eyeId);
+        }
+        eye = (Eye)nNet.biology.get(eyeId);
 
     }
     public String toLongString(){
