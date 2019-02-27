@@ -50,6 +50,7 @@ public class CCObservableAttributeManager {
     }
     public CCObserviableAttributeCollection Observe(Block block){
         CCObserviableAttributeCollection atts = new CCObserviableAttributeCollection();
+        atts.resourceType = CCResourceType.BLOCK;
         atts.resourceId = block.getRegistryName().toString();
         TestUnique(CCAttributeId.BLOCK_ID, atts.resourceId);
         return atts;
@@ -57,6 +58,7 @@ public class CCObservableAttributeManager {
     }
     public CCObserviableAttributeCollection Observe(Item item){
         CCObserviableAttributeCollection atts = new CCObserviableAttributeCollection();
+        atts.resourceType = CCResourceType.ITEM;
         atts.resourceId = item.getRegistryName().toString();
         TestUnique(CCAttributeId.ITEM_ID, atts.resourceId);
         return atts;
@@ -64,11 +66,13 @@ public class CCObservableAttributeManager {
     public CCObserviableAttributeCollection Observe(Entity entity){
         CCObserviableAttributeCollection atts = new CCObserviableAttributeCollection();
         atts.resourceId = EntityRegistry.getEntry(entity.getClass()).getRegistryName().toString();
-        TestUnique(CCAttributeId.ITEM_ID, atts.resourceId);
+        atts.resourceType = CCResourceType.ENTITY;
+        TestUnique(CCAttributeId.ENTITY_ID, atts.resourceId);
         return atts;
     }
     public CCObserviableAttributeCollection Observe(IRecipe recipe){
         CCObserviableAttributeCollection atts = new CCObserviableAttributeCollection();
+        atts.resourceType = CCResourceType.RECIPE;
         atts.resourceId = recipe.getRegistryName().toString();
         TestUnique(CCAttributeId.RECIPE_ID, atts.resourceId);
         return atts;
@@ -86,9 +90,7 @@ public class CCObservableAttributeManager {
     }
 
 
-    public class CCObserviableAttributeCollection{
-        public String resourceId;
-    }
+
     public void parseData(JSONObject jsonObject){
         Set<String> attributeIds = jsonObject.keySet();
         for(String attributeId : attributeIds){

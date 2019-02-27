@@ -7,6 +7,7 @@ package com.schematical.chaoscraft.entities;
 
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.*;
+import com.schematical.chaoscraft.ai.biology.BiologyBase;
 import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.events.CCWorldEventType;
 import com.schematical.chaoscraft.fitness.EntityFitnessManager;
@@ -49,6 +50,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -67,6 +69,7 @@ public class EntityOrganism extends EntityLiving {
     protected int miningTicks = 0;
     protected int selectedItemIndex = 0;
     protected float maxLifeSeconds = 30;
+    protected int ticksSinceObservationHack = 0;
 
     public boolean hasAttemptedReport = false;
     public boolean hasFinishedReport = false;
@@ -79,6 +82,7 @@ public class EntityOrganism extends EntityLiving {
     protected String skin = "chaoscraft:morty.png";
     public InventoryOrganism inventory;
     public CCObservableAttributeManager observableAttributeManager;
+    public HashMap<String, BiologyBase> inputs = new HashMap<String, BiologyBase>();
 
     public EntityOrganism(World worldIn) {
         this(worldIn, "EntityOrganism");
@@ -129,20 +133,20 @@ public class EntityOrganism extends EntityLiving {
 
              org.json.simple.parser.JSONParser parser = new org.json.simple.parser.JSONParser();
              obj = (JSONObject) parser.parse(
-                     nNetString
+                 nNetString
              );
              nNet = new NeuralNet();
              nNet.attachEntity(this);
              nNet.parseData(obj);
 
-             //this.tasks.addTask(2, new AIFindExistingOrganisims(this, EntityOrganism.class));
-
          } catch (Exception e) {
              e.printStackTrace();
          }
      }
+
      public void attachOrganism(Organism _organism){
          organism = _organism;
+
      }
     public boolean getDebug(){
          return this.debug;
@@ -157,14 +161,13 @@ public class EntityOrganism extends EntityLiving {
     public void onUpdate(){
 
 
-        List<EntityItem> items = this.world.getEntitiesWithinAABB(EntityItem.class, this.getEntityBoundingBox().grow(2.0D, 1.0D, 2.0D));
 
-        for (EntityItem item : items) {
-            pickupItem(item);
-        }
         if(!world.isRemote){
             //Tick neural net
-            if(this.nNet != null) {
+            if(
+                this.nNet != null &&
+                this.nNet.ready
+            ) {
                 List<OutputNeuron> outputs = this.nNet.evaluate();
                 Iterator<OutputNeuron> iterator = outputs.iterator();
                 while (iterator.hasNext()) {
@@ -172,14 +175,21 @@ public class EntityOrganism extends EntityLiving {
                     outputNeuron.execute();
 
                 }
-            }
+                List<EntityItem> items = this.world.getEntitiesWithinAABB(EntityItem.class, this.getEntityBoundingBox().grow(2.0D, 1.0D, 2.0D));
 
-            double yOffset = Math.sin(Math.toRadians(desiredPitch));
-            double zOffset = Math.cos(Math.toRadians(this.desiredYaw)) * Math.cos(Math.toRadians(desiredPitch));
-            double xOffset = Math.sin(Math.toRadians(this.desiredYaw)) * Math.cos(Math.toRadians(desiredPitch));
-            this.getLookHelper().setLookPosition(posX + xOffset, posY + this.getEyeHeight() + yOffset, posZ + zOffset, 360, 360);
-            this.renderYawOffset = 0;
-            this.setRotation(this.rotationYaw, this.rotationPitch);
+                for (EntityItem item : items) {
+                    pickupItem(item);
+                }
+
+
+                double yOffset = Math.sin(Math.toRadians(desiredPitch));
+                double zOffset = Math.cos(Math.toRadians(this.desiredYaw)) * Math.cos(Math.toRadians(desiredPitch));
+                double xOffset = Math.sin(Math.toRadians(this.desiredYaw)) * Math.cos(Math.toRadians(desiredPitch));
+                this.getLookHelper().setLookPosition(posX + xOffset, posY + this.getEyeHeight() + yOffset, posZ + zOffset, 360, 360);
+                this.renderYawOffset = 0;
+                this.setRotation(this.rotationYaw, this.rotationPitch);
+                this.observationHack();
+            }
 
         }
         super.onUpdate();
@@ -194,23 +204,42 @@ public class EntityOrganism extends EntityLiving {
                 return;
             }
 
-
-
-
         }
     }
 
-    @Override
-    public void onLivingUpdate()
-    {
-        if (!this.world.isRemote)
-        {
+    private void observationHack() {
+        this.ticksSinceObservationHack += 1;
+        if(this.ticksSinceObservationHack < 1000){
+            return;
+        }
+        this.ticksSinceObservationHack = 0;
 
+        //Find blocks
+        Vec3d vec3d = this.getPositionVector();
+        int RANGE = 3;
+        for(double x = vec3d.x - RANGE; x < vec3d.x + RANGE; x++){
+            for(double y = vec3d.y - RANGE; y < vec3d.y + RANGE; y++){
+                for(double z = vec3d.z - RANGE; z < vec3d.z + RANGE; z++){
+                    IBlockState blockState = world.getBlockState(
+                        new BlockPos(x, y, z)
+                    );
+                    Block block = blockState.getBlock();
+                    observableAttributeManager.Observe(block);
+                }
+            }
         }
 
-        super.onLivingUpdate();
-
+        //Find entities
+        List<Entity> entities = world.getEntitiesWithinAABB(
+            Entity.class,
+            this.getEntityBoundingBox().grow(RANGE)
+        );
+        for(Entity entity: entities){
+            observableAttributeManager.Observe(entity);
+        }
     }
+
+
     public void jump(){
         if (this.onGround)
         {
@@ -254,7 +283,9 @@ public class EntityOrganism extends EntityLiving {
         ItemStackHandler itemStackHandler = nNet.entity.getItemStack();
         int slots = itemStackHandler.getSlots();
         NonNullList<Ingredient> ingredients = recipe.getIngredients();
-
+        if(ingredients.size() == 0){
+            return false;
+        }
         List<ItemStack> stacks = new ArrayList<ItemStack>();
         List<Integer> usedSlots = new ArrayList<Integer>();
         for(Ingredient ingredient : ingredients){
@@ -517,8 +548,9 @@ public class EntityOrganism extends EntityLiving {
             item.setDead();
         }
 
-        nNet.entity.observableAttributeManager.Observe(worldEventItem);
-
+        if(observableAttributeManager != null) {
+            observableAttributeManager.Observe(worldEventItem);
+        }
         CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEventType.ITEM_COLLECTED);
         worldEvent.item = worldEventItem;
         entityFitnessManager.test(worldEvent);

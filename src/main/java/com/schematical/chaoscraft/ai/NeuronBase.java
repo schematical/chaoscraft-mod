@@ -20,6 +20,7 @@ public abstract class NeuronBase extends InnovationBase {
     public NeuralNet nNet;
     public float _lastValue;
     protected boolean hasBeenEvaluated = false;
+
     public List<NeuronDep> dependencies = new ArrayList<NeuronDep>();
     public abstract String _base_type();
 
@@ -39,6 +40,7 @@ public abstract class NeuronBase extends InnovationBase {
             }
             this.dependencies.add(neuronDep);
         }
+
     }
     public void reset(){
         hasBeenEvaluated = false;
@@ -54,6 +56,10 @@ public abstract class NeuronBase extends InnovationBase {
         }
         float totalScore = 0;
         for(NeuronDep neuronDep :dependencies){
+            if(neuronDep.depNeuron == null){
+                String orgNamespace = nNet.entity.getCCNamespace();
+                throw new ChaosNetException("Missing `neuronDep.depNeuron` : " + orgNamespace + " " + neuronDep.depNeuronId);
+            }
             neuronDep._lastValue = neuronDep.weight *
                     neuronDep.depNeuron.evaluate();
             totalScore += neuronDep._lastValue;

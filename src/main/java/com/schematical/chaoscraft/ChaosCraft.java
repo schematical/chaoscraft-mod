@@ -325,22 +325,34 @@ public class ChaosCraft
                         entityOrganism.attachNNetRaw(nNetRaw);
                         entityOrganism.observableAttributeManager = new CCObservableAttributeManager(organism);
                         TaxonomicRank taxonomicRank = null;
+                        if(ChaosCraft.lastResponse == null){
+                            throw new ChaosNetException("`ChaosCraft.lastResponse` is `null`");
+                        }
                         for(TaxonomicRank _taxonomicRank: ChaosCraft.lastResponse.getSpecies()){
-                            if(_taxonomicRank.getNamespace() == organism.getSpeciesNamespace()){
+                            //ChaosCraft.logger.info(_taxonomicRank.getNamespace() + " == " + organism.getSpeciesNamespace());
+                            if(_taxonomicRank.getNamespace().equals(organism.getSpeciesNamespace())){
                                 taxonomicRank = _taxonomicRank;
                             }
                         }
                         if(taxonomicRank == null){
                             throw new ChaosNetException("Could not find species: " + organism.getSpeciesNamespace());
                         }
-                        try {
-                            JSONParser parser = new JSONParser();
-                            JSONObject jsonObject = (JSONObject)parser.parse(
-                                taxonomicRank.getObservedAttributesRaw()
-                            );
-                            entityOrganism.observableAttributeManager.parseData(jsonObject);
-                        }catch(Exception exeception){
-                            throw new ChaosNetException("Invalid `species.observedAttributes` JSON Found: " + taxonomicRank.getObservedAttributesRaw() + "\n\n-- " + exeception.getMessage());
+                        String observedAttributesRaw = taxonomicRank.getObservedAttributesRaw();
+                        if(
+                                observedAttributesRaw == null ||
+                                observedAttributesRaw.length() == 0
+                        ){
+
+                        }else {
+                            try {
+                                JSONParser parser = new JSONParser();
+                                JSONObject jsonObject = (JSONObject) parser.parse(
+                                        taxonomicRank.getObservedAttributesRaw()
+                                );
+                                entityOrganism.observableAttributeManager.parseData(jsonObject);
+                            } catch (Exception exeception) {
+                                throw new ChaosNetException("Invalid `species.observedAttributes` JSON Found: " + taxonomicRank.getObservedAttributesRaw() + "\n\n-- " + exeception.getMessage());
+                            }
                         }
 
 

@@ -2,6 +2,7 @@ package com.schematical.chaoscraft.ai.inputs;
 
 import com.schematical.chaoscraft.ai.CCAttributeId;
 import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
+import com.schematical.chaoscraft.ai.CCObserviableAttributeCollection;
 import com.schematical.chaoscraft.ai.InputNeuron;
 import com.schematical.chaoscraft.util.PositionRange;
 import com.schematical.chaosnet.model.ChaosNetException;
@@ -22,7 +23,7 @@ public class HasEquippedInput extends InputNeuron {
     public float evaluate(){
         ItemStack itemStack = nNet.entity.getHeldItemMainhand();
         Item testItem = itemStack.getItem();
-        CCObservableAttributeManager.CCObserviableAttributeCollection attributeCollection = nNet.entity.observableAttributeManager.Observe(testItem);
+        CCObserviableAttributeCollection attributeCollection = nNet.entity.observableAttributeManager.Observe(testItem);
         switch(attributeId) {
             case(CCAttributeId.ITEM_ID):
 

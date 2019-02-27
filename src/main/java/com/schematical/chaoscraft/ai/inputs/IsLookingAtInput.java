@@ -3,21 +3,14 @@ package com.schematical.chaoscraft.ai.inputs;
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.CCAttributeId;
 import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
+import com.schematical.chaoscraft.ai.CCObserviableAttributeCollection;
 import com.schematical.chaoscraft.ai.InputNeuron;
-import com.schematical.chaoscraft.ai.biology.BiologyBase;
+import com.schematical.chaoscraft.ai.biology.BlockPositionSensor;
 import com.schematical.chaoscraft.ai.biology.Eye;
-import com.schematical.chaoscraft.gui.ChaosCraftGUI;
-import com.schematical.chaoscraft.util.PositionRange;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.fml.common.registry.EntityEntry;
-import net.minecraftforge.fml.common.registry.EntityRegistry;
 import org.json.simple.JSONObject;
-import scala.actors.Debug;
 
 import java.util.List;
 
@@ -30,6 +23,7 @@ public class IsLookingAtInput extends InputNeuron {
     public String attributeId;
     public String attributeValue;
     public Eye eye;
+    private String eyeId;
 
     //public PositionRange positionRange;
 
@@ -40,55 +34,22 @@ public class IsLookingAtInput extends InputNeuron {
             //ChaosCraft.logger.info("Debugging...");
         }
 
-        RayTraceResult rayTraceResult = nNet.entity.rayTraceBlocks(MAX_DISTANCE);
-        if(rayTraceResult == null){
-            return _lastValue;
-        }
+        List<CCObserviableAttributeCollection> attributeCollections = null;
         switch(attributeId){
             case(CCAttributeId.BLOCK_ID):
-
-                /*if(!nNet.entity.world.isRemote) {
-                    ChaosCraftGUI.drawDebugLine(nNet.entity, rayTraceResult);
-                }*/
-                if(rayTraceResult != null) {
-                    Block block = nNet.entity.world.getBlockState(
-                            rayTraceResult.getBlockPos()
-                    ).getBlock();
-
-                    CCObservableAttributeManager.CCObserviableAttributeCollection attributeCollection = nNet.entity.observableAttributeManager.Observe(block);
-                    if(attributeValue.equals(attributeCollection.resourceId)){
-                        _lastValue = 1;
+                attributeCollections = eye.canSeenBlocks();
+                for(CCObserviableAttributeCollection attributeCollection: attributeCollections) {
+                    if (attributeValue.equals(attributeCollection.resourceId)) {
+                        _lastValue = 1;//TODO: Add distance?
                     }
-                    /*int blockId = Block.getIdFromBlock(block);
-                    if (blockId == Integer.parseInt(attributeValue)) {
-                        _lastValue = 1;
-                    }*/
                 }
+
             break;
             case(CCAttributeId.ENTITY_ID):
-
-                List<EntityLiving> entities =  nNet.entity.world.getEntitiesWithinAABB(EntityLiving.class,  nNet.entity.getEntityBoundingBox().grow(MAX_DISTANCE, MAX_DISTANCE, MAX_DISTANCE));
-                //
-
-
-
-
-
-                for (EntityLiving target : entities) {
-                    CCObservableAttributeManager.CCObserviableAttributeCollection attributeCollection = nNet.entity.observableAttributeManager.Observe(target);
-                    if(
-                        attributeCollection.resourceId == this.attributeValue &&
-                        !target.equals(nNet.entity)
-                    ) {
-
-
-                        rayTraceResult = nNet.entity.isEntityInLineOfSight(target, 3d);
-                        if (rayTraceResult != null) {
-                            _lastValue = 1;
-                            if (nNet.entity.getDebug()) {
-                                ChaosCraft.logger.info(nNet.entity.getCCNamespace() + "IsLookingAt: " + target.getName());
-                            }
-                        }
+                attributeCollections = eye.canSeenEntities();
+                for(CCObserviableAttributeCollection attributeCollection: attributeCollections) {
+                    if (attributeValue.equals(attributeCollection.resourceId)) {
+                        _lastValue = 1;//TODO: Add distance?
                     }
                 }
 
@@ -100,14 +61,14 @@ public class IsLookingAtInput extends InputNeuron {
     @Override
     public void parseData(JSONObject jsonObject){
         super.parseData(jsonObject);
+        eyeId = jsonObject.get("eyeId").toString();
         attributeId = jsonObject.get("attributeId").toString();
         attributeValue = jsonObject.get("attributeValue").toString();
-
 
     }
     public String toLongString(){
         String response = super.toLongString();
-        response += " " + this.attributeId + " " + this.attributeValue;
+        response += " " + this.attributeId + " " + this.attributeValue + " E" + this.eyeId;
         return response;
 
     }

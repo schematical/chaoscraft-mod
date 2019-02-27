@@ -1,19 +1,9 @@
 package com.schematical.chaoscraft.ai.outputs;
 
-import com.schematical.chaoscraft.ChaosCraft;
-import com.schematical.chaoscraft.Enum;
 import com.schematical.chaoscraft.ai.OutputNeuron;
-import com.schematical.chaoscraft.ai.biology.BiologyBase;
-import com.schematical.chaoscraft.ai.biology.Eye;
-import com.schematical.chaosnet.model.ChaosNetException;
-import net.minecraft.block.Block;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
-import org.json.simple.JSONObject;
-import scala.actors.Debug;
 
 /**
  * Created by user1a on 12/8/18.

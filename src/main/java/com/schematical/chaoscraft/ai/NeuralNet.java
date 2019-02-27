@@ -20,7 +20,8 @@ public class NeuralNet {
     public int neuronEvalDepth = -1;
     public EntityOrganism entity;
     public HashMap<String, NeuronBase> neurons = new HashMap<String, NeuronBase>();
-    public List<BiologyBase> biology = new ArrayList<BiologyBase>();
+    public HashMap<String, BiologyBase> biology = new HashMap<String, BiologyBase>();
+    public boolean ready = false;
 
     public NeuralNet() {
 
@@ -54,8 +55,8 @@ public class NeuralNet {
     public void parseData(JSONObject jsonObject){
         try {
 
-            JSONArray eyes = (JSONArray) ((JSONObject)jsonObject.get("biology")).get("Eye");
-            Iterator<JSONObject> iterator = eyes.iterator();
+            JSONArray jsonBiology = ((JSONArray)jsonObject.get("biology"));
+            Iterator<JSONObject> iterator = jsonBiology.iterator();
             while (iterator.hasNext()) {
                 JSONObject outputBaseJSON = iterator.next();
 
@@ -67,7 +68,7 @@ public class NeuralNet {
                 Class cls = Class.forName(fullClassName);
                 BiologyBase biologyBase = (BiologyBase) cls.newInstance();
                 biologyBase.parseData(outputBaseJSON);
-                biology.add(biologyBase);
+                biology.put(biologyBase.id, biologyBase);
             }
 
 
@@ -96,6 +97,7 @@ public class NeuralNet {
                 NeuronBase neuronBase = iterator2.next().getValue();
                 neuronBase.populate();
             }
+            ready = true;
         }/* catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -104,7 +106,13 @@ public class NeuralNet {
             e.printStackTrace();
         }*/catch(Exception e){
             e.printStackTrace();
-            //throw new ChaosNetException(e.getMessage());
+            throw new ChaosNetException(e.getMessage() + " -Look above for Stacktrace");
         }
+    }
+    public BiologyBase getBiology(String id){
+        if(!biology.containsKey(id)){
+            return null;
+        }
+        return biology.get(id);
     }
 }
