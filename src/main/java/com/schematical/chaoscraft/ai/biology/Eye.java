@@ -70,7 +70,9 @@ public class Eye  extends BiologyBase{
             RayTraceResult rayTraceResult = target.getEntityBoundingBox().calculateIntercept(vec3d, vec3d2);
             if (rayTraceResult != null) {
                 CCObserviableAttributeCollection attributeCollection = entity.observableAttributeManager.Observe(target);
-                seenEntities.add(attributeCollection);
+                if(attributeCollection != null) {
+                    seenEntities.add(attributeCollection);
+                }
             }
         }
         _cached = true;

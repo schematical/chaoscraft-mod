@@ -72,7 +72,8 @@ public class CCObservableAttributeManager {
         }
         EntityEntry entityEntry = EntityRegistry.getEntry(entity.getClass());
         if(entityEntry == null){
-            throw new ChaosNetException("EntityEntry is null");
+            return null;
+            //throw new ChaosNetException("EntityEntry is null");
         }
         ResourceLocation resourceLocation = entityEntry.getRegistryName();
         if(resourceLocation == null){
