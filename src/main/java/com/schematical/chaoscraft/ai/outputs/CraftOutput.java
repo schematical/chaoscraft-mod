@@ -46,6 +46,9 @@ public class CraftOutput extends OutputNeuron {
     }
     @Override
     public void execute() {
+        if(this._lastValue <= .5){
+            return;
+        }
         if(nNet.entity.getDebug()) {
             //ChaosCraft.logger.info(nNet.entity.getCCNamespace() + " Attempting to Craft: " + recipe.getRegistryName() + " - " + recipe.getRecipeOutput().getDisplayName());
         }

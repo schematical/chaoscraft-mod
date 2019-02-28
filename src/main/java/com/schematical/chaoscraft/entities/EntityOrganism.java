@@ -12,7 +12,6 @@ import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.events.CCWorldEventType;
 import com.schematical.chaoscraft.fitness.EntityFitnessManager;
 import com.schematical.chaoscraft.gui.CCOrgDetailView;
-import com.schematical.chaoscraft.gui.CCOrgInventoryView;
 import com.schematical.chaoscraft.inventory.InventoryOrganism;
 import com.schematical.chaosnet.model.ChaosNetException;
 import com.schematical.chaosnet.model.NNetRaw;
@@ -318,7 +317,7 @@ public class EntityOrganism extends EntityLiving {
                 return false;
             }
         }
-        ChaosCraft.logger.info("Success!: " + recipe.getRegistryName().toString());
+        //ChaosCraft.logger.info("Success!: " + recipe.getRegistryName().toString());
         return true;
     }
     public ItemStack craft(IRecipe recipe) {
@@ -354,10 +353,12 @@ public class EntityOrganism extends EntityLiving {
         ItemStack outputStack = recipe.getRecipeOutput();
         if(emptySlot != -1) {
             itemStackHandler.insertItem(emptySlot, outputStack, false);
+            observableAttributeManager.ObserveCraftableRecipes(this);
         }else{
-            throw new ChaosNetException("TODO: Code how to drop this when stack is full");
+            dropItem(outputStack.getItem(), outputStack.getCount());
+            outputStack.setCount(0);
         }
-        observableAttributeManager.ObserveCraftableRecipes(this);
+
         return outputStack;
     }
     public int getEmptyInventorySlot(){
@@ -378,6 +379,58 @@ public class EntityOrganism extends EntityLiving {
         }
         return emptySlot;
 
+    }
+
+    public ItemStack equip(String resourceId) {
+        ItemStackHandler itemStackHandler = nNet.entity.getItemStack();
+        int slots = itemStackHandler.getSlots();
+        for(int i = 0; i < slots; i++) {
+            ItemStack itemStack = itemStackHandler.getStackInSlot(i);
+            if(!itemStack.isEmpty()){
+                CCObserviableAttributeCollection observiableAttributeCollection = observableAttributeManager.Observe(itemStack.getItem());
+                if(
+                    observiableAttributeCollection != null &&
+                    observiableAttributeCollection.resourceId.equals(resourceId)
+                ){
+                    this.setHeldItem(EnumHand.MAIN_HAND, itemStack);
+                    return itemStack;
+                }
+            }
+        }
+        return null;
+    }
+
+    public ItemStack tossEquippedStack() {
+        ItemStack itemStack = getHeldItem(EnumHand.MAIN_HAND);
+        if(
+            itemStack == null ||
+            itemStack.isEmpty()
+        ){
+            return null;
+        }
+        Vec3d itemVec3d = null;
+        ChaosCraft.logger.info(this.getCCNamespace() + " - Tossing: " + itemStack.getDisplayName());
+
+
+        //Place these in the real world
+        if (itemVec3d == null) {
+            Vec3d vec3d = this.getPositionEyes(1);
+            Vec3d vec3d1 = this.getLook(1);
+            itemVec3d = vec3d.add(
+                new Vec3d(
+                    vec3d1.x * 5d,
+                    vec3d1.y * 5d,
+                    vec3d1.z * 5d
+                )
+            );
+        }
+
+        EntityItem entityItem = new EntityItem(world, itemVec3d.x, itemVec3d.y, itemVec3d.z);
+        entityItem.setItem(itemStack);
+        world.spawnEntity(entityItem);
+        this.setHeldItem(EnumHand.MAIN_HAND, ItemStack.EMPTY);
+
+        return itemStack;
     }
 
     public static class EntityOrganismRenderer extends RenderLiving<EntityOrganism> {
@@ -545,7 +598,7 @@ public class EntityOrganism extends EntityLiving {
 
     private void pickupItem(EntityItem item) {
         if (item.cannotPickup()) return;
-
+        ChaosCraft.logger.info(this.getCCNamespace() + " - Picked up: " + item.getName());
         ItemStack stack = item.getItem();
 
         Item worldEventItem = stack.getItem();
