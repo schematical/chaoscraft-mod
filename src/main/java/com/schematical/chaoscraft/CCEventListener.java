@@ -28,6 +28,10 @@ public class CCEventListener {
     public static void onWorldTickEvent(TickEvent.WorldTickEvent worldTickEvent){
         ChaosCraft.ticksSinceLastSpawn += 1;
 
+        if(ChaosCraft.rick != null && ChaosCraft.rick.isDead){
+            ChaosCraft.rick = null;
+            ChaosCraft.spawnRick(worldTickEvent.world, ChaosCraft.rickPos);
+        }
         Iterator<EntityOrganism> iterator = ChaosCraft.organisims.iterator();
 
         while(iterator.hasNext()){
@@ -53,15 +57,15 @@ public class CCEventListener {
         if(ChaosCraft.consecutiveErrorCount > 5){
             throw new ChaosNetException("ChaosCraft.consecutiveErrorCount > 5");
         }
-        //ChaosCraft.organisims.removeIf((org)-> org.isDead);
+        
         if(ChaosCraft.organisims.size() > 0) {
             for (EntityPlayerMP observingPlayer : ChaosCraft.observingPlayers) {
                 Entity entity = observingPlayer.getSpectatingEntity();
                 if (
-                        entity.equals(observingPlayer) ||
-                                entity == null ||
-                                entity.isDead
-                        ) {
+                    entity.equals(observingPlayer) ||
+                    entity == null ||
+                    entity.isDead
+                ) {
                     int index = (int) Math.floor(ChaosCraft.organisims.size() * Math.random());
                     EntityOrganism orgToObserve = ChaosCraft.organisims.get(index);
                     observingPlayer.setSpectatingEntity(orgToObserve);

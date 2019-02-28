@@ -52,6 +52,7 @@ public class CraftOutput extends OutputNeuron {
         if(!nNet.entity.canCraft(recipe)){
             return;
         }
+        ChaosCraft.logger.info("Attempting to Craft: " + recipe.getRegistryName().toString());
         ItemStack outputStack = nNet.entity.craft(recipe);
         if(outputStack == null){
             throw new ChaosNetException("Something went wrong crafting: " + recipe.getRegistryName().toString());
@@ -60,6 +61,9 @@ public class CraftOutput extends OutputNeuron {
         CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEventType.CRAFT);
         worldEvent.item = outputStack.getItem();
         nNet.entity.entityFitnessManager.test(worldEvent);
+        //TODO: Move this to a GUI thing.
+        String message = nNet.entity.getCCNamespace() +" Crafted " + this.toLongString();
+        ChaosCraft.chat(message);
     }
     @Override
     public void parseData(JSONObject jsonObject){

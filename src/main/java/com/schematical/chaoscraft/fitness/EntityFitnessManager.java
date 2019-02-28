@@ -51,9 +51,7 @@ public class EntityFitnessManager {
             if(scoreEvent.life != 0) {
                 entityOrganism.adjustMaxLife(scoreEvent.life);
             }
-            //TODO: Move this to a GUI thing.
-            String message = entityOrganism.getCCNamespace() +" SCORED: " + scoreEvent.toString() + " - Current Score: " + this.totalScore();
-            ChaosCraft.chat(message);
+
 
         }
     }

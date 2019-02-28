@@ -55,6 +55,7 @@ public class EntityRick extends EntityLiving {
     @Override
     public void onUpdate()
     {
+        ChaosCraft.rickPos = this.getPosition();
         super.onUpdate();
 
     }

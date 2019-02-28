@@ -90,6 +90,8 @@ public class ChaosCraft
     public static List<EntityPlayerMP> observingPlayers = new ArrayList<EntityPlayerMP>();
     public static double highScore;
     public static EntityOrganism highScoreOrg;
+    public static BlockPos rickPos;
+
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
@@ -467,11 +469,11 @@ public class ChaosCraft
         }
 
         if (!world.isRemote) {
-
+            ChaosCraft.rickPos = pos;
             EntityRick rick = new EntityRick(world, "Rick");
             rick.setCustomNameTag("Rick");
 
-            rick.setPosition(pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1);
+            rick.setPosition(ChaosCraft.rickPos.getX(), ChaosCraft.rickPos.getY(),ChaosCraft.rickPos.getZ());
 
             world.spawnEntity(rick);
             ChaosCraft.rick = rick;

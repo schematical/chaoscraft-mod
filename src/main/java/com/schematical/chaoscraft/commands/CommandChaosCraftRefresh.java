@@ -42,6 +42,7 @@ public class CommandChaosCraftRefresh extends CommandBase {
 
     public void execute(MinecraftServer p_execute_1_, ICommandSender p_execute_2_, String[] p_execute_3_) throws CommandException {
         if(ChaosCraft.rick == null || ChaosCraft.rick.isDead) {
+            ChaosCraft.rick = null;
             World world = p_execute_1_.getEntityWorld();
             if (!world.isRemote) {
                 p_execute_2_.sendMessage(

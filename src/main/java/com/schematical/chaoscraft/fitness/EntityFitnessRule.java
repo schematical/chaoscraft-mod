@@ -77,7 +77,7 @@ public class EntityFitnessRule {
 
                    resourceLocation = event.block.getRegistryName();
                    String blockId = resourceLocation.getResourceDomain() + ":" + resourceLocation.getResourcePath();
-                   ChaosCraft.logger.info("Testing: " + blockId);
+                   //ChaosCraft.logger.info("Testing: " + blockId);
                    if(!attributeValue.contains(blockId)){
                        return null;
                    }
