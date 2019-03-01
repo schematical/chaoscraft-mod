@@ -58,6 +58,7 @@ public class CommandChaosCraftSessionStart extends CommandBase {
 
 
         ChaosCraft.startTrainingSession();
+        ChaosCraft.loadFitnessFunctions();
         ChaosCraft.config.save();
         p_execute_2_.sendMessage(
             new TextComponentString("Successfully started a session - " + ChaosCraft.config.sessionNamespace)

@@ -128,8 +128,10 @@ public class ChaosCraft
 
         auth();
 
-        startTrainingSession();
-        loadFitnessFunctions();
+        if(config.accessToken!=null) {
+            startTrainingSession();
+            loadFitnessFunctions();
+        }
 
 
 
