@@ -49,7 +49,7 @@ public class ChaosThread implements Runnable {
         trainingRoomSessionNextRequest.setReport(report);
         trainingRoomSessionNextRequest.setNNetRaw(true);
         trainingRoomSessionNextRequest.setObservedAttributes(newAttributes);
-        ChaosCraft.lastResponse = null;
+
 
         try {
             request.setTrainingRoomSessionNextRequest(trainingRoomSessionNextRequest);
