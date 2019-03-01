@@ -295,7 +295,8 @@ public class ChaosCraft
         World world = rick.getEntityWorld();
         String generation = "-1";
         if(!world.isRemote) {
-            if(organismList != null) {
+
+            if(organismList != null && ChaosCraft.lastResponse != null) {
                 for (int i = 0; i < organismList.size(); i++) {
                     Organism organism = organismList.get(i);
                     generation =  organism.getGeneration().toString();

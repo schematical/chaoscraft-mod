@@ -78,6 +78,7 @@ public class EntityOrganism extends EntityLiving {
     protected double desiredYaw;
     protected boolean debug = false;
     public boolean refreshRender = false;
+    public int equippedSlot;
     protected String skin = "chaoscraft:morty.png";
     public InventoryOrganism inventory;
     public CCObservableAttributeManager observableAttributeManager;
@@ -322,7 +323,7 @@ public class EntityOrganism extends EntityLiving {
     }
     public ItemStack craft(IRecipe recipe) {
         //Check to see if they have the items in inventory for that
-        ItemStackHandler itemStackHandler = nNet.entity.getItemStack();
+        ItemStackHandler itemStackHandler = getItemStack();
         int slots = itemStackHandler.getSlots();
         int emptySlot = -1;
         NonNullList<Ingredient> ingredients = recipe.getIngredients();
@@ -382,7 +383,8 @@ public class EntityOrganism extends EntityLiving {
     }
 
     public ItemStack equip(String resourceId) {
-        ItemStackHandler itemStackHandler = nNet.entity.getItemStack();
+
+        ItemStackHandler itemStackHandler = getItemStack();
         int slots = itemStackHandler.getSlots();
         for(int i = 0; i < slots; i++) {
             ItemStack itemStack = itemStackHandler.getStackInSlot(i);
@@ -393,6 +395,7 @@ public class EntityOrganism extends EntityLiving {
                     observiableAttributeCollection.resourceId.equals(resourceId)
                 ){
                     this.setHeldItem(EnumHand.MAIN_HAND, itemStack);
+                    equippedSlot = i;
                     return itemStack;
                 }
             }
@@ -412,23 +415,24 @@ public class EntityOrganism extends EntityLiving {
         ChaosCraft.logger.info(this.getCCNamespace() + " - Tossing: " + itemStack.getDisplayName());
 
 
-        //Place these in the real world
-        if (itemVec3d == null) {
-            Vec3d vec3d = this.getPositionEyes(1);
-            Vec3d vec3d1 = this.getLook(1);
-            itemVec3d = vec3d.add(
-                new Vec3d(
-                    vec3d1.x * 5d,
-                    vec3d1.y * 5d,
-                    vec3d1.z * 5d
-                )
-            );
-        }
 
+        Vec3d vec3d = this.getPositionEyes(1);
+        Vec3d vec3d1 = this.getLook(1);
+        itemVec3d = vec3d.add(
+            new Vec3d(
+                vec3d1.x * 5d,
+                vec3d1.y * 5d,
+                vec3d1.z * 5d
+            )
+        );
+
+        itemHandler.extractItem(equippedSlot, itemStack.getCount(), false);
+        equippedSlot = -1;
+        this.setHeldItem(EnumHand.MAIN_HAND, ItemStack.EMPTY);
         EntityItem entityItem = new EntityItem(world, itemVec3d.x, itemVec3d.y, itemVec3d.z);
         entityItem.setItem(itemStack);
         world.spawnEntity(entityItem);
-        this.setHeldItem(EnumHand.MAIN_HAND, ItemStack.EMPTY);
+
 
         return itemStack;
     }
@@ -605,6 +609,7 @@ public class EntityOrganism extends EntityLiving {
         //inventory.addItemStackToInventory(stack);
         for (int i = 0; i < this.itemHandler.getSlots() && !stack.isEmpty(); i++) {
             this.setHeldItem(EnumHand.MAIN_HAND, stack);
+            equippedSlot = i;
             stack = this.itemHandler.insertItem(i, stack, false);
             this.selectedItemIndex = i;
 
