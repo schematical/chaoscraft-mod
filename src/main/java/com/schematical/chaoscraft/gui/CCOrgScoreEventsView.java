@@ -20,7 +20,7 @@ import java.util.List;
  */
 public class CCOrgScoreEventsView extends GuiScreen {
     final String VIEW_ORG_DETAIL_ACTION = "VIEW_ORG_DETAIL_ACTION";
-    final ResourceLocation texture = new ResourceLocation(ChaosCraft.MODID, "book.png");
+    final ResourceLocation texture = new ResourceLocation(ChaosCraft.MODID, "textures/gui/book.png");
     int guiWidth = 175;
     int guiHeight = 228;
     List<GuiButton> buttons = new ArrayList<GuiButton>();

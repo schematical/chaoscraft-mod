@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 
 import java.io.IOException;
@@ -21,7 +22,7 @@ public class CCOrgDetailView extends GuiScreen {
     private static final String CLOSE = "CLOSE";
     private static final String SHOW_SCORE_EVENTS = "SHOW_SCORE_EVENTS";
 
-    private final ResourceLocation texture = new ResourceLocation(ChaosCraft.MODID, "book.png");
+    private final ResourceLocation texture = new ResourceLocation(ChaosCraft.MODID, "textures/gui/book.png");
     int guiWidth = 175;
     int guiHeight = 228;
     private int guiLeft;
@@ -47,7 +48,7 @@ public class CCOrgDetailView extends GuiScreen {
         this.drawTexturedModalRect(centerX, centerY, 0, 0, guiWidth, guiHeight);
 
         String title = this.entityOrganism.getName();
-        fontRenderer.drawString(title, (width / 2) - fontRenderer.getStringWidth(title), centerY + 10, 0x000000);
+        fontRenderer.drawString(title, this.guiLeft + (this.guiWidth - this.fontRenderer.getStringWidth(title))/2, this.guiTop + 10, 0x000000);
 
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
@@ -75,7 +76,7 @@ public class CCOrgDetailView extends GuiScreen {
                         this.guiTop + this.guiHeight - (buttonHeight + 10),
                         buttonWidth,
                         buttonHeight,
-                        "Close",
+                        I18n.format(ChaosCraft.MODID+".gui.close"),
                         CLOSE
                 )
         );
@@ -87,7 +88,7 @@ public class CCOrgDetailView extends GuiScreen {
                         this.guiTop + (buttonHeight + 10) * ID,
                         buttonWidth,
                         buttonHeight,
-                        "Score Events",
+                        I18n.format(ChaosCraft.MODID+".gui.open.score_events"),
                         SHOW_SCORE_EVENTS,
                         entityOrganism
                 )
@@ -101,7 +102,7 @@ public class CCOrgDetailView extends GuiScreen {
                         this.guiTop + (buttonHeight + 10) * ID,
                         buttonWidth,
                         buttonHeight,
-                        "NNet",
+                        I18n.format(ChaosCraft.MODID+".gui.open.nnet"),
                         SHOW_NNET,
                         entityOrganism
                 )
@@ -115,7 +116,7 @@ public class CCOrgDetailView extends GuiScreen {
                         this.guiTop + (buttonHeight + 10) * ID,
                         buttonWidth,
                         buttonHeight,
-                        "Inventory",
+                        I18n.format(ChaosCraft.MODID+".gui.open.inventory"),
                         SHOW_INVENTORY,
                         entityOrganism
                 )

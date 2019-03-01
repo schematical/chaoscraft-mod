@@ -26,7 +26,7 @@ import java.util.List;
  */
 public class CCOrgNNetView extends GuiScreen {
     final String VIEW_NEURON_DETAIL_ACTION = "VIEW_NEURON_DETAIL_ACTION";
-    final ResourceLocation texture = new ResourceLocation(ChaosCraft.MODID, "book.png");
+    final ResourceLocation texture = new ResourceLocation(ChaosCraft.MODID, "textures/gui/book.png");
     int guiWidth = 175;
     int guiHeight = 228;
     List<CCGUINeuronDisplayButton> buttons = new ArrayList<CCGUINeuronDisplayButton>();
