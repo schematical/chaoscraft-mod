@@ -683,6 +683,10 @@ public class EntityOrganism extends EntityLiving {
         CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEventType.BLOCK_PLACED);
         worldEvent.block = block;
         entityFitnessManager.test(worldEvent);
+        if(block.getRegistryName().toString().equals("minecraft:crafting_table")){
+            String message = nNet.entity.getCCNamespace() +" Placed Block " + block.getRegistryName();
+            ChaosCraft.chat(message);
+        }
 
     }
 

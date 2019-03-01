@@ -35,6 +35,7 @@ import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.GameType;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -88,7 +89,7 @@ public class ChaosCraft
     public static float activationThreshold = .3f;
     public static EntityOrganism adam = null;
     public static List<EntityPlayerMP> observingPlayers = new ArrayList<EntityPlayerMP>();
-    public static double highScore;
+    public static double highScore = -99999;
     public static EntityOrganism highScoreOrg;
     public static BlockPos rickPos;
 
@@ -486,6 +487,17 @@ public class ChaosCraft
 
 
     }
+
+    public static void toggleObservingPlayer(EntityPlayerMP player) {
+        if(ChaosCraft.observingPlayers.contains(player)){
+            ChaosCraft.observingPlayers.remove(player);
+            player.setGameType(GameType.CREATIVE);
+        }else {
+            player.setGameType(GameType.SPECTATOR);
+            ChaosCraft.observingPlayers.add(player);
+        }
+    }
+
     public class ChaosNetSigner implements ChaosnetCognitoUserPool {
         @Override
         public String generateToken(ImmutableRequest<?> immutableRequest) {

@@ -24,25 +24,13 @@ public class PlaceBlockOutput extends OutputNeuron {
         if(rayTraceResult == null){
             return;
         }
-       /* Block block = null;
-        switch(attributeId){
-            case(Enum.BLOCK_ID):
-                block = Block.getBlockFromName(attributeValue);
-                if(block == null){
-                   ChaosCraft.logger.error("Cannot find block from `Block.getBlockFromName('" + attributeValue + "');");
-                    return;
-                }
-                //block = Block.getBlockById(Integer.parseInt(attributeValue));
-            break;
-            default:
-                ChaosCraft.logger.error("Invalid `attributeId`: " + attributeId);
-                return;
-        }*/
+
 
         Vec3i vec3i = rayTraceResult.sideHit.getDirectionVec();
         BlockPos destBlockPos = rayTraceResult.getBlockPos().add(vec3i);
 
         nNet.entity.placeBlock(destBlockPos);
+
     }
     /*@Override
     public void parseData(JSONObject jsonObject){

@@ -14,8 +14,7 @@ public class ChaosThread implements Runnable {
 
     public void run(){
 
-   /* }
-    public void getNextOrgs(List<EntityOrganism> organismList){*/
+
         String namespaces = "";
 
         PostUsernameTrainingroomsTrainingroomSessionsSessionNextRequest request = new PostUsernameTrainingroomsTrainingroomSessionsSessionNextRequest();

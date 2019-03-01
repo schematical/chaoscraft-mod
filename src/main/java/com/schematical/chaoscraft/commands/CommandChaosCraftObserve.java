@@ -68,9 +68,7 @@ public class CommandChaosCraftObserve extends CommandBase{
         }
 
 
-        player.setGameType(GameType.SPECTATOR);
-
-        ChaosCraft.observingPlayers.add(player);
+        ChaosCraft.toggleObservingPlayer(player);
 
     }
 

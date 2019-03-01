@@ -45,6 +45,5 @@ cp target/ChaosNet-1.0-SNAPSHOT.jar  ~/IdeaProjects/chaoscraft/libs/ChaosNet-1.0
 /tp @e[type=chaoscraft:rick] @p
 ```
 
-/tp @p @e[type=chaoscraft:rick]
 
 /tp @e[type=chaoscraft:adam-0] @p

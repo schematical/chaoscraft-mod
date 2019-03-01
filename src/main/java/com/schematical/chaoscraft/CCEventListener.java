@@ -1,5 +1,6 @@
 package com.schematical.chaoscraft;
 
+import com.google.common.base.Predicate;
 import com.schematical.chaoscraft.entities.EntityOrganism;
 import com.schematical.chaoscraft.gui.CCKeyBinding;
 import com.schematical.chaoscraft.gui.CCOrgListView;
@@ -17,7 +18,9 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by user1a on 1/6/19.
@@ -107,6 +110,17 @@ public class CCEventListener {
                         CCOrgListView view = new CCOrgListView();
 
                         Minecraft.getMinecraft().displayGuiScreen(view);
+                    break;
+                    case(CCKeyBinding.OBSERVER_MODE):
+                        List<EntityPlayerMP> players = Minecraft.getMinecraft().world.<EntityPlayerMP>getPlayers(EntityPlayerMP.class, new Predicate<EntityPlayerMP>() {
+                            @Override
+                            public boolean apply(@Nullable EntityPlayerMP input) {
+                                return true;
+                            }
+                        });
+                        for(EntityPlayerMP player: players){
+                            ChaosCraft.toggleObservingPlayer(player);
+                        }
                     break;
                 }
 
