@@ -34,7 +34,21 @@ public class Eye  extends BiologyBase{
         if(_cached){
             return seenBlocks;
         }
-        RayTraceResult rayTraceResult = entity.rayTraceBlocks(maxDistance);
+        Vec3d vec3d = entity.getPositionEyes(1);
+        Vec3d vec3d1 = entity.getLook(1);
+        vec3d = vec3d.rotatePitch(this.pitch);
+        vec3d = vec3d.rotateYaw(this.yaw);
+        Vec3d vec3d2 = vec3d.add(
+            new Vec3d(
+                vec3d1.x * maxDistance,
+                vec3d1.y * maxDistance,
+                vec3d1.z * maxDistance
+            )
+        );
+
+
+        RayTraceResult rayTraceResult = entity.world.rayTraceBlocks(vec3d, vec3d2, false, false, false);
+
         if(rayTraceResult != null) {
             IBlockState blockState = entity.world.getBlockState(
                 rayTraceResult.getBlockPos()
@@ -58,6 +72,8 @@ public class Eye  extends BiologyBase{
 
 
             Vec3d vec3d = entity.getPositionEyes(1);
+            vec3d = vec3d.rotatePitch(this.pitch);
+            vec3d = vec3d.rotateYaw(this.yaw);
             Vec3d vec3d1 = entity.getLook(1);
             Vec3d vec3d2 = vec3d.add(
                 new Vec3d(

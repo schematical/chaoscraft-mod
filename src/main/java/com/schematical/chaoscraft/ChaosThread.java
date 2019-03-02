@@ -80,9 +80,12 @@ public class ChaosThread implements Runnable {
             }
             ChaosCraft.chat("ChaosThread `/next` Error: " + exeception.getMessage() + " - statusCode: " + statusCode);
             ChaosCraft.thread = null;
-            
 
+        }catch(Exception exeception){
+            ChaosCraft.consecutiveErrorCount += 1;
 
+            ChaosCraft.chat("ChaosThread `/next` Error: " + exeception.getMessage() + " - exception type: " + exeception.getClass().getName());
+            ChaosCraft.thread = null;
 
         }
 
