@@ -57,7 +57,9 @@ public class CCOrgDetailView extends GuiScreen {
     public void initGui() {
         this.guiLeft = (this.width - this.guiWidth) / 2;
         this.guiTop = (this.height - this.guiHeight) / 2;
+
         initializeButtons();
+
         super.initGui();
     }
 

@@ -40,10 +40,10 @@ public class CCOrgScoreEventsView extends GuiScreen {
         int centerY = (height / 2) - guiHeight / 2;
 
         Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
-        drawTexturedModalRect(centerX, centerY, 0, 0, guiWidth, guiHeight);
+        this.drawTexturedModalRect(centerX, centerY, 0, 0, guiWidth, guiHeight);
 
         String title = entityOrganism.getName() + " Score Events";
-        fontRenderer.drawString(title, (width / 2) - fontRenderer.getStringWidth(title), centerY + 10, 0x000000);
+        fontRenderer.drawString(title, this.guiLeft + (this.guiWidth - this.fontRenderer.getStringWidth(title))/2, this.guiTop + 10, 0x000000);
 
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
@@ -53,12 +53,12 @@ public class CCOrgScoreEventsView extends GuiScreen {
         this.guiLeft = (this.width - this.guiWidth) / 2;
         this.guiTop = (this.height - this.guiHeight) / 2;
 
-        updateButtons();
+        initializeButtons();
 
         super.initGui();
     }
 
-    public void updateButtons() {
+    public void initializeButtons() {
         buttonList.clear();
         int ID = 0;
         buttonList.add(
