@@ -49,6 +49,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.ItemStackHandler;
 import org.json.simple.JSONObject;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -370,7 +371,8 @@ public class EntityOrganism extends EntityLiving {
     /**
      * Called when the mob's health reaches 0.
      */
-    public void onDeath(DamageSource cause)
+    @Override
+    public void onDeath(@Nonnull DamageSource cause)
     {
         super.onDeath(cause);
 
@@ -384,6 +386,10 @@ public class EntityOrganism extends EntityLiving {
                     this.dropItem(itemStack.getItem(), itemStack.getCount());
                     this.itemHandler.extractItem(i, itemStack.getCount(), false);
                 }
+            }
+
+            if (world.getMinecraftServer() != null) {
+                world.getMinecraftServer().getPlayerList().sendMessage(cause.getDeathMessage(this));
             }
 
 
