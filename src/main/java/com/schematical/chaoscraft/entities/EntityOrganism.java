@@ -29,6 +29,7 @@ import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -157,10 +158,13 @@ public class EntityOrganism extends EntityLiving {
     public float getAgeSeconds(){
         return (this.world.getWorldTime() - spawnTime)  / 20;
     }
+
     @Override
     public void onUpdate(){
 
-
+        if(getDebug()){
+            int i = 0;
+        }
 
         if(!world.isRemote){
             //Tick neural net
@@ -175,6 +179,7 @@ public class EntityOrganism extends EntityLiving {
                     outputNeuron.execute();
 
                 }
+
                 List<EntityItem> items = this.world.getEntitiesWithinAABB(EntityItem.class, this.getEntityBoundingBox().grow(2.0D, 1.0D, 2.0D));
 
                 for (EntityItem item : items) {
@@ -359,13 +364,35 @@ public class EntityOrganism extends EntityLiving {
             dropItem(outputStack.getItem(), outputStack.getCount());
             outputStack.setCount(0);
         }
-
+        ChaosCraft.logger.info(this.getCCNamespace() + " - Crafted: " + outputStack.getDisplayName());
         return outputStack;
+    }
+    /**
+     * Called when the mob's health reaches 0.
+     */
+    public void onDeath(DamageSource cause)
+    {
+        super.onDeath(cause);
+
+        if (!this.world.isRemote)
+        {
+
+            int slots = this.itemHandler.getSlots();
+            for(int i = 0; i < slots; i++) {
+                ItemStack itemStack = this.itemHandler.getStackInSlot(i);
+                if(!itemStack.isEmpty()){
+                    this.dropItem(itemStack.getItem(), itemStack.getCount());
+                    this.itemHandler.extractItem(i, itemStack.getCount(), false);
+                }
+            }
+
+
+        }
     }
     public int getEmptyInventorySlot(){
         int emptySlot = -1;
         List<Integer> usedSlots = new ArrayList<Integer>();
-        ItemStackHandler itemStackHandler = nNet.entity.getItemStack();
+        ItemStackHandler itemStackHandler = getItemStack();
         int slots = itemStackHandler.getSlots();
         for(int i = 0; i < slots; i++) {
             ItemStack itemStack = itemStackHandler.getStackInSlot(i);
@@ -678,7 +705,7 @@ public class EntityOrganism extends EntityLiving {
         this.itemHandler.extractItem(slot, 1, false);
         swingArm(EnumHand.MAIN_HAND);
 
-
+        ChaosCraft.logger.info(this.getCCNamespace() + " - PlacedBlock up: " + block.getRegistryName());
         world.setBlockState(blockPos, block.getDefaultState());
         CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEventType.BLOCK_PLACED);
         worldEvent.block = block;

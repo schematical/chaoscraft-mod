@@ -330,90 +330,101 @@ public class ChaosCraft
                         entityOrganism.attachOrganism(organism);
                         entityOrganism.attachNNetRaw(nNetRaw);
                         entityOrganism.observableAttributeManager = new CCObservableAttributeManager(organism);
-                        TaxonomicRank taxonomicRank = null;
-                        if(ChaosCraft.lastResponse == null){
-                            throw new ChaosNetException("`ChaosCraft.lastResponse` is `null`");
-                        }
-                        for(TaxonomicRank _taxonomicRank: ChaosCraft.lastResponse.getSpecies()){
-                            //ChaosCraft.logger.info(_taxonomicRank.getNamespace() + " == " + organism.getSpeciesNamespace());
-                            if(_taxonomicRank.getNamespace().equals(organism.getSpeciesNamespace())){
-                                taxonomicRank = _taxonomicRank;
+                        if(!organism.getName().equals("adam")){
+                            TaxonomicRank taxonomicRank = null;
+                            if (ChaosCraft.lastResponse == null) {
+                                throw new ChaosNetException("`ChaosCraft.lastResponse` is `null`");
+                            }
+                            for (TaxonomicRank _taxonomicRank : ChaosCraft.lastResponse.getSpecies()) {
+                                //ChaosCraft.logger.info(_taxonomicRank.getNamespace() + " == " + organism.getSpeciesNamespace());
+                                if (_taxonomicRank.getNamespace().equals(organism.getSpeciesNamespace())) {
+                                    taxonomicRank = _taxonomicRank;
+                                }
+                            }
+                            if (taxonomicRank == null) {
+                                throw new ChaosNetException("Could not find species: " + organism.getSpeciesNamespace());
+                            }
+                            String observedAttributesRaw = taxonomicRank.getObservedAttributesRaw();
+                            if (
+                                    observedAttributesRaw == null ||
+                                            observedAttributesRaw.length() == 0
+                                    ) {
+
+                            } else {
+                                try {
+                                    JSONParser parser = new JSONParser();
+                                    JSONObject jsonObject = (JSONObject) parser.parse(
+                                            taxonomicRank.getObservedAttributesRaw()
+                                    );
+                                    entityOrganism.observableAttributeManager.parseData(jsonObject);
+                                } catch (Exception exeception) {
+                                    throw new ChaosNetException("Invalid `species.observedAttributes` JSON Found: " + taxonomicRank.getObservedAttributesRaw() + "\n\n-- " + exeception.getMessage());
+                                }
                             }
                         }
-                        if(taxonomicRank == null){
-                            throw new ChaosNetException("Could not find species: " + organism.getSpeciesNamespace());
-                        }
-                        String observedAttributesRaw = taxonomicRank.getObservedAttributesRaw();
-                        if(
-                                observedAttributesRaw == null ||
-                                observedAttributesRaw.length() == 0
-                        ){
-
-                        }else {
-                            try {
-                                JSONParser parser = new JSONParser();
-                                JSONObject jsonObject = (JSONObject) parser.parse(
-                                        taxonomicRank.getObservedAttributesRaw()
-                                );
-                                entityOrganism.observableAttributeManager.parseData(jsonObject);
-                            } catch (Exception exeception) {
-                                throw new ChaosNetException("Invalid `species.observedAttributes` JSON Found: " + taxonomicRank.getObservedAttributesRaw() + "\n\n-- " + exeception.getMessage());
-                            }
-                        }
-
 
                         entityOrganism.setCustomNameTag(organism.getName() + " - " + organism.getGeneration());
-                        entityOrganism.setDesiredYaw(Math.random() * 360);
+
                         BlockPos pos = rick.getPosition();
-                        int range = 20;
-                        int minRange = 5;
-                        int yRange = 1;
-                        Vec3d rndPos = null;
-                        int saftyCatch = 0;
-                        while (
-                            rndPos == null &&
-                            saftyCatch < 10
-                        ) {
-                            saftyCatch++;
-                            double xPos = Math.floor((Math.random() * (range) * 2) - range);
-                            if(xPos > 0){
-                                xPos += minRange;
-                            }else{
-                                xPos -= minRange;
-                            }
-                            double zPos =Math.floor((Math.random() * (range) * 2) - range);
-                            if(zPos > 0){
-                                zPos += minRange;
-                            }else{
-                                zPos -= minRange;
-                            }
-                            rndPos = new Vec3d(
-                                pos.getX() + xPos,
-                                pos.getY() + Math.floor((Math.random() * yRange)),
-                                pos.getZ() + zPos
-                            );
+                        if(organism.getName().equals("adam")) {
+
                             entityOrganism.setPosition(
-                                    rndPos.x,
-                                    rndPos.y,
-                                    rndPos.z
+                                pos.getX(),
+                                pos.getY() + 2,
+                                pos.getZ()
                             );
 
-                            if (!entityOrganism.getCanSpawnHere()) {
-                                rndPos = null;
-                            }else {
-                                BlockPos blockPos = new BlockPos(rndPos);
-                            /*if(!rick.world.getWorldBorder().contains(blockPos)){
-                                rndPos = null;
-                            }*/
-                                IBlockState state = world.getBlockState(blockPos);
-                                Material material = state.getMaterial();
-                                if (
-                                    !(
-                                        material == Material.WATER ||
-                                        material == Material.AIR
-                                    )
-                                ) {
+                        }else{
+                            int range = 20;
+                            int minRange = 5;
+                            int yRange = 1;
+                            Vec3d rndPos = null;
+                            int saftyCatch = 0;
+                            while (
+                                    rndPos == null &&
+                                    saftyCatch < 10
+                            ) {
+                                saftyCatch++;
+                                double xPos = Math.floor((Math.random() * (range) * 2) - range);
+                                if (xPos > 0) {
+                                    xPos += minRange;
+                                } else {
+                                    xPos -= minRange;
+                                }
+                                double zPos = Math.floor((Math.random() * (range) * 2) - range);
+                                if (zPos > 0) {
+                                    zPos += minRange;
+                                } else {
+                                    zPos -= minRange;
+                                }
+                                rndPos = new Vec3d(
+                                    pos.getX() + xPos,
+                                    pos.getY() + Math.floor((Math.random() * yRange)),
+                                    pos.getZ() + zPos
+                                );
+                                entityOrganism.setPositionAndRotation(
+                                    rndPos.x,
+                                    rndPos.y,
+                                    rndPos.z,
+                                    (float) Math.random() * 360,
+                                    (float)Math.random() * 360
+                                );
+
+                                if (!entityOrganism.getCanSpawnHere()) {
                                     rndPos = null;
+                                } else {
+                                    BlockPos blockPos = new BlockPos(rndPos);
+
+                                    IBlockState state = world.getBlockState(blockPos);
+                                    Material material = state.getMaterial();
+                                    if (
+                                        !(
+                                            material == Material.WATER ||
+                                            material == Material.AIR
+                                        )
+                                    ) {
+                                        rndPos = null;
+                                    }
                                 }
                             }
                         }

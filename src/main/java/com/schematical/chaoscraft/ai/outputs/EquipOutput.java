@@ -9,6 +9,7 @@ import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import org.json.simple.JSONObject;
 
@@ -28,9 +29,13 @@ public class EquipOutput extends OutputNeuron {
         if(nNet.entity.getDebug()) {
             //ChaosCraft.logger.info(nNet.entity.getCCNamespace() + " Attempting to Craft: " + recipe.getRegistryName() + " - " + recipe.getRecipeOutput().getDisplayName());
         }
+        ItemStack currHeldItem = nNet.entity.getHeldItem(EnumHand.MAIN_HAND);
         ItemStack itemStack = null;
         switch(attributeId){
             case(CCAttributeId.ITEM_ID):
+                if(currHeldItem.getItem().getRegistryName().toString().equals(attributeValue)){
+                    return;//It is already equipped
+                }
                 itemStack = nNet.entity.equip(attributeValue);
             break;
             default:
@@ -43,9 +48,10 @@ public class EquipOutput extends OutputNeuron {
         CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEventType.EQUIP);
         worldEvent.item = itemStack.getItem();
         nNet.entity.entityFitnessManager.test(worldEvent);
-
+        String message = nNet.entity.getCCNamespace() +" Equipped " + this.toLongString();
+        ChaosCraft.logger.info(message);
         if(itemStack.getItem().getRegistryName().toString().equals("minecraft:crafting_table")){
-            String message = nNet.entity.getCCNamespace() + " Equipped " + itemStack.getItem().getRegistryName();
+            //String message = nNet.entity.getCCNamespace() + " Equipped " + itemStack.getItem().getRegistryName();
             ChaosCraft.chat(message);
         }
 

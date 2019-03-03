@@ -99,8 +99,8 @@ public class Eye  extends BiologyBase{
         super.parseData(jsonObject);
         index = Integer.parseInt(jsonObject.get("index").toString());
 
-        pitch = Float.parseFloat(jsonObject.get("pitch").toString());
-        yaw = Float.parseFloat(jsonObject.get("yaw").toString());
+        pitch = (float)Math.toRadians(Float.parseFloat(jsonObject.get("pitch").toString()));
+        yaw = (float)Math.toRadians(Float.parseFloat(jsonObject.get("yaw").toString()));
     }
     @Override
     public void reset() {

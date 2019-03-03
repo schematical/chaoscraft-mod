@@ -1,7 +1,7 @@
 {
   "trainingRoomNamespace": "test-3",
   "namespace": "species-testman-wookie-adam-0",
-  "name": "adam-0",
+  "name": "adam",
   "generation": 0,
   "naturalGeneration": 0,
   "owner_username": "testman",
@@ -53,8 +53,10 @@
         "id": "neuron-5"
       },
       {
-        "$TYPE": "AttackOutput",
+        "$TYPE": "EquipOutput",
         "_base_type": "output",
+        "attributeId":"ITEM_ID",
+        "attributeValue":"minecraft:crafting_table",
         "dependencies": [
           {
             "neuronId": "neuron-2",
@@ -64,75 +66,123 @@
         "id": "neuron-6"
       }
     ],
-    "biology": {
-      "Eye": [
-        {
-          "$TYPE": "Eye",
-          "$COUNT": 5,
-          "index": "0",
-          "positionRange": {
-            "minX": -4,
-            "minY": 0,
-            "minZ": 9,
-            "maxX": -1,
-            "maxY": 4,
-            "maxZ": 10
-          }
+    "biology": [
+      {
+        "$TYPE": "Eye",
+        "$COUNT": 5,
+        "index": "0",
+        "pitch": "-17",
+        "yaw": "-164",
+        "maxDistance": "5",
+        "id": "Eye_0"
+      },
+      {
+        "$TYPE": "Eye",
+        "$COUNT": 5,
+        "index": "1",
+        "pitch": "-58",
+        "yaw": "108",
+        "maxDistance": "3",
+        "id": "Eye_1"
+      },
+      {
+        "$TYPE": "Eye",
+        "$COUNT": 5,
+        "index": "2",
+        "pitch": "-34",
+        "yaw": "84",
+        "maxDistance": "1",
+        "id": "Eye_2"
+      },
+      {
+        "$TYPE": "Eye",
+        "$COUNT": 5,
+        "index": "3",
+        "pitch": "-5",
+        "yaw": "130",
+        "maxDistance": "3",
+        "id": "Eye_3"
+      },
+      {
+        "$TYPE": "Eye",
+        "$COUNT": 5,
+        "index": "4",
+        "pitch": "70",
+        "yaw": "169",
+        "maxDistance": "1",
+        "id": "Eye_4"
+      },
+      {
+        "$TYPE": "BlockPositionSensor",
+        "$COUNT": 5,
+        "index": "0",
+        "positionRange": {
+          "minX": 6,
+          "minY": 1,
+          "minZ": -7,
+          "maxX": 9,
+          "maxY": 7,
+          "maxZ": 7
         },
-        {
-          "$TYPE": "Eye",
-          "$COUNT": 5,
-          "index": "1",
-          "positionRange": {
-            "minX": 4,
-            "minY": -1,
-            "minZ": -6,
-            "maxX": 5,
-            "maxY": 1,
-            "maxZ": 2
-          }
+        "id": "BlockPositionSensor_0"
+      },
+      {
+        "$TYPE": "BlockPositionSensor",
+        "$COUNT": 5,
+        "index": "1",
+        "positionRange": {
+          "minX": -5,
+          "minY": -9,
+          "minZ": 5,
+          "maxX": 1,
+          "maxY": 9,
+          "maxZ": 9
         },
-        {
-          "$TYPE": "Eye",
-          "$COUNT": 5,
-          "index": "2",
-          "positionRange": {
-            "minX": 1,
-            "minY": 7,
-            "minZ": 9,
-            "maxX": 3,
-            "maxY": 9,
-            "maxZ": 10
-          }
+        "id": "BlockPositionSensor_1"
+      },
+      {
+        "$TYPE": "BlockPositionSensor",
+        "$COUNT": 5,
+        "index": "2",
+        "positionRange": {
+          "minX": 2,
+          "minY": 6,
+          "minZ": -1,
+          "maxX": 4,
+          "maxY": 9,
+          "maxZ": 7
         },
-        {
-          "$TYPE": "Eye",
-          "$COUNT": 5,
-          "index": "3",
-          "positionRange": {
-            "minX": 7,
-            "minY": -7,
-            "minZ": -8,
-            "maxX": 8,
-            "maxY": 5,
-            "maxZ": 1
-          }
+        "id": "BlockPositionSensor_2"
+      },
+      {
+        "$TYPE": "BlockPositionSensor",
+        "$COUNT": 5,
+        "index": "3",
+        "positionRange": {
+          "minX": -8,
+          "minY": -1,
+          "minZ": -2,
+          "maxX": -5,
+          "maxY": 2,
+          "maxZ": 2
         },
-        {
-          "$TYPE": "Eye",
-          "$COUNT": 5,
-          "index": "4",
-          "positionRange": {
-            "minX": 8,
-            "minY": -7,
-            "minZ": -6,
-            "maxX": 9,
-            "maxY": -3,
-            "maxZ": -4
-          }
-        }
-      ]
-    }
+        "id": "BlockPositionSensor_3"
+      },
+      {
+        "$TYPE": "BlockPositionSensor",
+        "$COUNT": 5,
+        "index": "4",
+        "positionRange": {
+          "minX": 7,
+          "minY": -9,
+          "minZ": -4,
+          "maxX": 9,
+          "maxY": -5,
+          "maxZ": 8
+        },
+        "id": "BlockPositionSensor_4"
+      }
+    ]
   },
   "score": 0,
   "ttl": 1550700955.809
