@@ -22,6 +22,11 @@ AWS APIGateway Build Commands(I Now have a script for this).
 mvn clean package -Pstandalone-jar
 cp target/ChaosNet-1.0-SNAPSHOT.jar  ~/IdeaProjects/chaoscraft/libs/ChaosNet-1.0-SNAPSHOT.jar
 
+
+### Get Time of day:
+
+World#getWorldTime() % 24000
+
 ###Stop Mobs from Spawning:
 ```
 /gamerule doMobSpawning false

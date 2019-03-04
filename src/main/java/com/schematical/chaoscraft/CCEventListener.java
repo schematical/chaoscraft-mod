@@ -9,8 +9,13 @@ import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
+import net.minecraft.entity.monster.EntityEnderman;
+import net.minecraft.entity.monster.EntityMob;
+import net.minecraft.entity.monster.EntityPigZombie;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
@@ -132,6 +137,22 @@ public class CCEventListener {
         }
 
 
+    }
+    @SubscribeEvent
+    public static void spawnEvent(EntityJoinWorldEvent event) {
+        /*
+        if (event.getEntity() instanceof EntityMob) {
+            EntityMob mob = (EntityMob) event.getEntity();
+
+            if (!(mob instanceof EntityPigZombie)) {
+                if (mob instanceof EntityEnderman) {
+
+                } else {
+                    mob.targetTasks.addTask(2, new EntityAINearestAttackableTarget<>(mob, EntityOrganism.class, true));
+                }
+            }
+        }
+        */
     }
 
 }

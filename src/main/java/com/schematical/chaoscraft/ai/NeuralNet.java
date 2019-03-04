@@ -44,7 +44,7 @@ public class NeuralNet {
         List<OutputNeuron> outputs = new ArrayList<OutputNeuron>();
         while (iterator.hasNext()) {
             NeuronBase neuronBase = iterator.next().getValue();
-            if(neuronBase._base_type() == com.schematical.chaoscraft.Enum.OUTPUT){
+            if(neuronBase._base_type().equals(com.schematical.chaoscraft.Enum.OUTPUT)){
                 OutputNeuron outputNeuron = (OutputNeuron)neuronBase;
                 neuronEvalDepth = 0;
                 float _last_value = outputNeuron.evaluate();
