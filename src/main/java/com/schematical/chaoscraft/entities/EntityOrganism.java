@@ -207,6 +207,7 @@ public class EntityOrganism extends EntityLiving {
                 getAgeSeconds() > maxLifeSeconds ||
                 this.spawnHash != ChaosCraft.spawnHash
             ) {
+                this.dropInventory();
                 //ChaosCraft.logger.info("Killing: " + this.getName() + " - AGE: " + age + " - maxLifeSeconds: " + maxLifeSeconds + " - Score: " + this.entityFitnessManager.totalScore());
                 this.setDead();
                 return;
@@ -377,7 +378,19 @@ public class EntityOrganism extends EntityLiving {
     public void onDeath(@Nonnull DamageSource cause)
     {
         super.onDeath(cause);
+        if (!this.world.isRemote)
+        {
 
+            dropInventory();
+            if (world.getMinecraftServer() != null) {
+                world.getMinecraftServer().getPlayerList().sendMessage(cause.getDeathMessage(this));
+            }
+
+
+        }
+
+    }
+    public void dropInventory(){
         if (!this.world.isRemote)
         {
 
@@ -389,12 +402,6 @@ public class EntityOrganism extends EntityLiving {
                     this.itemHandler.extractItem(i, itemStack.getCount(), false);
                 }
             }
-
-            if (world.getMinecraftServer() != null) {
-                world.getMinecraftServer().getPlayerList().sendMessage(cause.getDeathMessage(this));
-            }
-
-
         }
     }
     public int getEmptyInventorySlot(){
