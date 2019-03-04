@@ -12,7 +12,6 @@ import com.schematical.chaoscraft.entities.ChaosCraftFitnessManager;
 import com.schematical.chaoscraft.entities.EntityEvilRabbit;
 import com.schematical.chaoscraft.entities.EntityOrganism;
 import com.schematical.chaoscraft.entities.EntityRick;
-import com.schematical.chaoscraft.gui.CCMainOverlay;
 import com.schematical.chaoscraft.proxies.IProxy;
 
 import com.schematical.chaosnet.ChaosNet;
