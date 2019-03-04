@@ -104,7 +104,7 @@ public class CCOrgNNetView extends GuiScreen {
         updateButtons();
         for(CCGUINeuronDisplayButton button: buttons) {
             List<String> text = new ArrayList<String>();
-            text.add(button.neuron.toString());
+            text.add(button.neuron.toLongString());
             drawTooltip(text, mouseX, mouseY, button.x, button.y, button.width, button.height);
         }
 
