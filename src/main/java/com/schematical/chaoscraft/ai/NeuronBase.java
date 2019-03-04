@@ -17,6 +17,9 @@ import java.util.Set;
 public abstract class NeuronBase extends InnovationBase {
 
     public String id;
+    public int x;
+    public int y;
+
     public NeuralNet nNet;
     public float _lastValue;
     protected boolean hasBeenEvaluated = false;
@@ -94,5 +97,10 @@ public abstract class NeuronBase extends InnovationBase {
         response += " " + (Math.round(this._lastValue * 100) / 100);
         response += " " + (Math.round(this._lastValue * 100) / 100);
         return response;
+    }
+
+    public void setcoords(int thisX, int thisY) {
+        x = thisX;
+        y = thisY;
     }
 }
