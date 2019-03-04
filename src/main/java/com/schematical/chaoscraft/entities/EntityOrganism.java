@@ -6,14 +6,16 @@ package com.schematical.chaoscraft.entities;
 
 
 import com.schematical.chaoscraft.ChaosCraft;
-import com.schematical.chaoscraft.ai.*;
+import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
+import com.schematical.chaoscraft.ai.CCObserviableAttributeCollection;
+import com.schematical.chaoscraft.ai.NeuralNet;
+import com.schematical.chaoscraft.ai.OutputNeuron;
 import com.schematical.chaoscraft.ai.biology.BiologyBase;
 import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.events.CCWorldEventType;
 import com.schematical.chaoscraft.fitness.EntityFitnessManager;
 import com.schematical.chaoscraft.gui.CCOrgDetailView;
 import com.schematical.chaoscraft.inventory.InventoryOrganism;
-import com.schematical.chaosnet.model.ChaosNetException;
 import com.schematical.chaosnet.model.NNetRaw;
 import com.schematical.chaosnet.model.Organism;
 import net.minecraft.block.Block;
@@ -530,8 +532,7 @@ public class EntityOrganism extends EntityLiving {
     @SideOnly(Side.CLIENT)
     public boolean processInteract(EntityPlayer player, EnumHand hand)
     {
-        CCOrgDetailView view = new CCOrgDetailView();
-        view.setEntityOrganism(this);
+        CCOrgDetailView view = new CCOrgDetailView(this);
         Minecraft.getMinecraft().displayGuiScreen(view);
         return true;
     }

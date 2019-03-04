@@ -2,7 +2,6 @@ package com.schematical.chaoscraft.gui;
 
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.NeuronBase;
-import com.schematical.chaoscraft.entities.EntityFitnessScoreEvent;
 import com.schematical.chaoscraft.entities.EntityOrganism;
 import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.client.Minecraft;
@@ -13,7 +12,6 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
@@ -26,7 +24,7 @@ import java.util.List;
  */
 public class CCOrgNNetView extends GuiScreen {
     final String VIEW_NEURON_DETAIL_ACTION = "VIEW_NEURON_DETAIL_ACTION";
-    final ResourceLocation texture = new ResourceLocation(ChaosCraft.MODID, "book.png");
+    final ResourceLocation texture = new ResourceLocation(ChaosCraft.MODID, "textures/gui/book.png");
     int guiWidth = 175;
     int guiHeight = 228;
     List<CCGUINeuronDisplayButton> buttons = new ArrayList<CCGUINeuronDisplayButton>();
@@ -150,7 +148,7 @@ public class CCOrgNNetView extends GuiScreen {
             );
             button.neuron = neuron;
             button.entity = entityOrganism;
-            button.action = VIEW_NEURON_DETAIL_ACTION;
+            button.action = CCGuiBase.ButtonAction.VIEW_NEURON_DETAIL_ACTION;
             btnCount += 1;
             buttons.add(button);
 
@@ -173,9 +171,8 @@ public class CCOrgNNetView extends GuiScreen {
         if(button instanceof  CCGuiButton){
             CCGuiButton ccButton = (CCGuiButton) button;
             switch (ccButton.action){
-                case(VIEW_NEURON_DETAIL_ACTION):
-                    CCOrgDetailView view = new CCOrgDetailView();
-                    view.setEntityOrganism(ccButton.getEntity());
+                case VIEW_NEURON_DETAIL_ACTION:
+                    CCOrgDetailView view = new CCOrgDetailView(ccButton.entity);
                     mc.displayGuiScreen(view);
                     return;
             }
@@ -185,7 +182,7 @@ public class CCOrgNNetView extends GuiScreen {
                 mc.displayGuiScreen(null);
                 break;
         }
-        //updateButtons();
+        //initializeButtons();
         super.actionPerformed(button);
     }
 
