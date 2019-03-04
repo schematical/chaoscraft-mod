@@ -1,6 +1,7 @@
 package com.schematical.chaoscraft.ai.outputs;
 
 import com.schematical.chaoscraft.ChaosCraft;
+import com.schematical.chaoscraft.ai.CCAttributeId;
 import com.schematical.chaoscraft.ai.OutputNeuron;
 import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.events.CCWorldEventType;
@@ -8,6 +9,7 @@ import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import org.json.simple.JSONObject;
 
@@ -36,6 +38,19 @@ public class CraftOutput extends OutputNeuron {
         }
 
     }
+
+
+
+    @Override
+    public float evaluate(){
+        if(hasBeenEvaluated){
+            return _lastValue;
+        }
+        if(!nNet.entity.canCraft(recipe)){
+            return _lastValue;
+        }
+        return super.evaluate();
+    }
     @Override
     public void execute() {
         if(this._lastValue <= .5){
@@ -44,13 +59,11 @@ public class CraftOutput extends OutputNeuron {
         if(nNet.entity.getDebug()) {
             //ChaosCraft.logger.info(nNet.entity.getCCNamespace() + " Attempting to Craft: " + recipe.getRegistryName() + " - " + recipe.getRecipeOutput().getDisplayName());
         }
-        if(!nNet.entity.canCraft(recipe)){
-            return;
-        }
+
         ChaosCraft.logger.info("Attempting to Craft: " + recipe.getRegistryName().toString());
         ItemStack outputStack = nNet.entity.craft(recipe);
         if(outputStack == null){
-            throw new ChaosNetException("Something went wrong crafting: " + recipe.getRegistryName().toString());
+            throw new ChaosNetException("Something went wrong crafting: " + recipe.getRegistryName().toString() + " this should not be possible with the `evaluate` check above");
         }
 
         CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEventType.CRAFT);

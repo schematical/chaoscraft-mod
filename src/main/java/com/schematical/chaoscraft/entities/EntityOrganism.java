@@ -479,6 +479,25 @@ public class EntityOrganism extends EntityLiving {
         return itemStack;
     }
 
+    public ItemStack getItemStackFromInventory(String resourceId) {
+        int slots = itemHandler.getSlots();
+        for(int i = 0; i < slots; i++) {
+            ItemStack itemStack = itemHandler.getStackInSlot(i);
+            if(!itemStack.isEmpty()){
+                CCObserviableAttributeCollection observiableAttributeCollection = observableAttributeManager.Observe(itemStack.getItem());
+                if(
+                    observiableAttributeCollection != null &&
+                    observiableAttributeCollection.resourceId.equals(resourceId)
+                ){
+                    this.setHeldItem(EnumHand.MAIN_HAND, itemStack);
+                    equippedSlot = i;
+                    return itemStack;
+                }
+            }
+        }
+        return null;
+    }
+
     public static class EntityOrganismRenderer extends RenderLiving<EntityOrganism> {
 
         public EntityOrganismRenderer(RenderManager rendermanagerIn) {

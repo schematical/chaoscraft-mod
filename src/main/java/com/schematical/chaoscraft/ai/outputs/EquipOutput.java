@@ -20,7 +20,28 @@ public class EquipOutput extends OutputNeuron {
 
     protected String attributeId;
     protected String attributeValue;
-
+    @Override
+    public float evaluate(){
+        if(hasBeenEvaluated){
+            return _lastValue;
+        }
+        ItemStack currHeldItem = nNet.entity.getHeldItem(EnumHand.MAIN_HAND);
+        ItemStack itemStack = null;
+        switch(attributeId){
+            case(CCAttributeId.ITEM_ID):
+                if(currHeldItem.getItem().getRegistryName().toString().equals(attributeValue)){
+                    return _lastValue;//It is already equipped
+                }
+                itemStack = nNet.entity.getItemStackFromInventory(attributeValue);
+                break;
+            default:
+                throw new ChaosNetException("Invalid `EquipOutput.attributeId`: " + attributeId);
+        }
+        if(itemStack == null){
+            return _lastValue;
+        }
+        return super.evaluate();
+    }
     @Override
     public void execute() {
         if(this._lastValue <= .5){
@@ -42,7 +63,8 @@ public class EquipOutput extends OutputNeuron {
                 throw new ChaosNetException("Invalid `EquipOutput.attributeId`: " + attributeId);
         }
         if(itemStack == null){
-            return;
+            throw new ChaosNetException("Matt Look Here: This should not be possible");
+            //return;
         }
 
         CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEventType.EQUIP);
