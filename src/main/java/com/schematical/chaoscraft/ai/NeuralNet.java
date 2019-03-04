@@ -30,6 +30,7 @@ public class NeuralNet {
         this.entity = entity;
     }
     public List<OutputNeuron> evaluate(){
+        HashMap<String, OutputGroupResult> outputGroupResults = new HashMap<String, OutputGroupResult>();
         //Iterate through output neurons
         Iterator<Map.Entry<String, NeuronBase>> iterator = neurons.entrySet().iterator();
 
@@ -48,11 +49,35 @@ public class NeuralNet {
                 OutputNeuron outputNeuron = (OutputNeuron)neuronBase;
                 neuronEvalDepth = 0;
                 float _last_value = outputNeuron.evaluate();
+                switch (outputNeuron._outputGroup){
+                    case(OutputNeuron.OUPUT_GROUP_NONE):
+                        outputs.add(outputNeuron);
+                    break;
+                    default:
+                        if(!outputGroupResults.containsKey(outputNeuron._outputGroup)){
+                            OutputGroupResult outputGroupResult = new OutputGroupResult();
+                            outputGroupResult.highNeuron = outputNeuron;
+                            outputGroupResult.highScore = outputNeuron._lastValue;
+                            outputGroupResults.put(outputNeuron._outputGroup, outputGroupResult);
+                        }else{
+                            OutputGroupResult outputGroupResult = outputGroupResults.get(outputNeuron._outputGroup);
+                            if(outputGroupResult.highScore < outputNeuron._lastValue){
+                                outputGroupResult.highNeuron = outputNeuron;
+                                outputGroupResult.highScore = outputNeuron._lastValue;
+                            }
+                        }
+                    break;
+                }
 
-                outputs.add(outputNeuron);
             }
 
         }
+        Iterator<OutputGroupResult> outputGroupResultIterator = outputGroupResults.values().iterator();
+        while(outputGroupResultIterator.hasNext()){
+            OutputGroupResult outputGroupResult = outputGroupResultIterator.next();
+            outputs.add(outputGroupResult.highNeuron);
+        }
+
         return outputs;
     }
     public void parseData(JSONObject jsonObject){
@@ -118,5 +143,9 @@ public class NeuralNet {
             return null;
         }
         return biology.get(id);
+    }
+    private class OutputGroupResult{
+        public float highScore;
+        public OutputNeuron highNeuron;
     }
 }
