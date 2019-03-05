@@ -70,7 +70,7 @@ public class CCOrgBiologyListView extends CCGuiBase {
                 Eye eye = (Eye) biologyBase;
                 //this.displayString += " - ";
                 ArrayList<CCObserviableAttributeCollection> attributeCollections =  eye.canSeenBlocks();
-                attributeCollections.addAll(eye.canSeenEntities());
+                //attributeCollections.addAll(eye.canSeenEntities());
                 for(CCObserviableAttributeCollection attributeCollection: attributeCollections){
                     this.displayString += attributeCollection.resourceId + " ";
                 }

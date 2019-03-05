@@ -27,11 +27,11 @@ public class Eye  extends BiologyBase{
     public float maxDistance;
     public ArrayList<CCObserviableAttributeCollection> seenEntities = new ArrayList<CCObserviableAttributeCollection>();
     public ArrayList<CCObserviableAttributeCollection> seenBlocks = new ArrayList<CCObserviableAttributeCollection>();
-    public boolean _cached = false;
-
+    public boolean _blocksCached = false;
+    public boolean _entitiesCached = false;
 
     public ArrayList<CCObserviableAttributeCollection> canSeenBlocks(){
-        if(_cached){
+        if(_blocksCached){
             return seenBlocks;
         }
         Vec3d vec3d = entity.getPositionEyes(1);
@@ -58,12 +58,12 @@ public class Eye  extends BiologyBase{
             CCObserviableAttributeCollection attributeCollection = entity.observableAttributeManager.Observe(block);
             seenBlocks.add(attributeCollection);
         }
-        _cached = true;
+        _blocksCached = true;
         return seenBlocks;
 
     }
     public ArrayList<CCObserviableAttributeCollection> canSeenEntities(){
-        if(_cached){
+        if(_entitiesCached){
             return seenEntities;
         }
         List<EntityLiving> entities =  entity.world.getEntitiesWithinAABB(EntityLiving.class,  entity.getEntityBoundingBox().grow(maxDistance, maxDistance, maxDistance));
@@ -72,16 +72,17 @@ public class Eye  extends BiologyBase{
 
 
             Vec3d vec3d = entity.getPositionEyes(1);
-            vec3d = vec3d.rotatePitch(this.pitch);
-            vec3d = vec3d.rotateYaw(this.yaw);
             Vec3d vec3d1 = entity.getLook(1);
+            vec3d1 = vec3d1.rotatePitch(this.pitch);
+            vec3d1 = vec3d1.rotateYaw(this.yaw);
             Vec3d vec3d2 = vec3d.add(
                 new Vec3d(
-                vec3d1.x * maxDistance,
-                vec3d1.y * maxDistance,
-                vec3d1.z * maxDistance
+                    vec3d1.x * maxDistance,
+                    vec3d1.y * maxDistance,
+                    vec3d1.z * maxDistance
                 )
             );
+
 
             RayTraceResult rayTraceResult = target.getEntityBoundingBox().calculateIntercept(vec3d, vec3d2);
             if (rayTraceResult != null) {
@@ -91,7 +92,7 @@ public class Eye  extends BiologyBase{
                 }
             }
         }
-        _cached = true;
+        _entitiesCached = true;
         return seenEntities;
     }
     @Override
@@ -101,12 +102,14 @@ public class Eye  extends BiologyBase{
 
         pitch = (float)Math.toRadians(Float.parseFloat(jsonObject.get("pitch").toString()));
         yaw = (float)Math.toRadians(Float.parseFloat(jsonObject.get("yaw").toString()));
+        maxDistance = Float.parseFloat(jsonObject.get("maxDistance").toString());
     }
     @Override
     public void reset() {
         seenEntities.clear();
         seenBlocks.clear();
-        _cached = false;
+        _blocksCached = false;
+        _entitiesCached = false;
     }
 
 }
