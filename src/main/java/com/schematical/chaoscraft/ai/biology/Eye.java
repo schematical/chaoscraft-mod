@@ -36,8 +36,8 @@ public class Eye  extends BiologyBase{
         }
         Vec3d vec3d = entity.getPositionEyes(1);
         Vec3d vec3d1 = entity.getLook(1);
-        vec3d = vec3d.rotatePitch(this.pitch);
-        vec3d = vec3d.rotateYaw(this.yaw);
+        vec3d1 = vec3d1.rotatePitch(this.pitch);
+        vec3d1 = vec3d1.rotateYaw(this.yaw);
         Vec3d vec3d2 = vec3d.add(
             new Vec3d(
                 vec3d1.x * maxDistance,
