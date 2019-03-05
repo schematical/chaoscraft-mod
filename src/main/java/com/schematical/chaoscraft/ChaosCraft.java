@@ -88,6 +88,7 @@ public class ChaosCraft
     public static float activationThreshold = .3f;
     public static EntityOrganism adam = null;
     public static List<EntityPlayerMP> observingPlayers = new ArrayList<EntityPlayerMP>();
+    public static EntityOrganism observingOrg = null;
     public static double highScore = -99999;
     public static EntityOrganism highScoreOrg;
     public static BlockPos rickPos;
@@ -502,9 +503,16 @@ public class ChaosCraft
         if(ChaosCraft.observingPlayers.contains(player)){
             ChaosCraft.observingPlayers.remove(player);
             player.setGameType(GameType.CREATIVE);
+            chat("Leaving observing mode");
         }else {
             player.setGameType(GameType.SPECTATOR);
             ChaosCraft.observingPlayers.add(player);
+        }
+    }
+
+    public static void setObservingOrg(EntityOrganism org) {
+        if (ChaosCraft.observingOrg != org) {
+            ChaosCraft.observingOrg = org;
         }
     }
 

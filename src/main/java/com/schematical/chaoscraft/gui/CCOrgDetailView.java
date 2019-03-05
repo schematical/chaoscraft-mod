@@ -24,12 +24,13 @@ public class CCOrgDetailView extends CCGuiBase {
         int ID = super.initializeButtons();
         int buttonWidth = 100;
         int buttonHeight = 20;
+        int buttonsGap = 5;
 
         buttonList.add(
                 new CCGuiButton(
                         ID++,
                         this.guiLeft + (this.guiWidth / 2) - buttonWidth / 2,
-                        this.guiTop + (buttonHeight + 10) * ID,
+                        this.guiTop + (buttonHeight + buttonsGap) * ID,
                         buttonWidth,
                         buttonHeight,
                         I18n.format(ChaosCraft.MODID + ".gui.open.score_events"),
@@ -43,7 +44,7 @@ public class CCOrgDetailView extends CCGuiBase {
                 new CCGuiButton(
                         ID++,
                         this.guiLeft + (this.guiWidth / 2) - buttonWidth / 2,
-                        this.guiTop + (buttonHeight + 10) * ID,
+                        this.guiTop + (buttonHeight + buttonsGap) * ID,
                         buttonWidth,
                         buttonHeight,
                         I18n.format(ChaosCraft.MODID + ".gui.open.nnet"),
@@ -57,7 +58,7 @@ public class CCOrgDetailView extends CCGuiBase {
                 new CCGuiButton(
                         ID++,
                         this.guiLeft + (this.guiWidth / 2) - buttonWidth / 2,
-                        this.guiTop + (buttonHeight + 10) * ID,
+                        this.guiTop + (buttonHeight + buttonsGap) * ID,
                         buttonWidth,
                         buttonHeight,
                         I18n.format(ChaosCraft.MODID + ".gui.open.inventory"),
@@ -70,11 +71,24 @@ public class CCOrgDetailView extends CCGuiBase {
             new CCGuiButton(
                 ID++,
                 this.guiLeft + (this.guiWidth / 2) - buttonWidth / 2,
-                this.guiTop + (buttonHeight + 10) * ID,
+                this.guiTop + (buttonHeight + buttonsGap) * ID,
                 buttonWidth,
                 buttonHeight,
                 I18n.format(ChaosCraft.MODID + ".gui.open.biology"),
                 ButtonAction.VIEW_BIOLOGY_LIST_ACTION,
+                entityOrganism
+            )
+        );
+
+        buttonList.add(
+            new CCGuiButton(
+                ID++,
+                this.guiLeft + (this.guiWidth / 2) - buttonWidth / 2,
+                this.guiTop + (buttonHeight + buttonsGap) * ID,
+                buttonWidth,
+                buttonHeight,
+                I18n.format(ChaosCraft.MODID + ".gui.open.observe"),
+                ButtonAction.OBSERVE_ORG,
                 entityOrganism
             )
         );

@@ -74,9 +74,14 @@ public class CCEventListener {
                     entity == null ||
                     entity.isDead
                 ) {
-                    int index = (int) Math.floor(ChaosCraft.organisims.size() * Math.random());
-                    EntityOrganism orgToObserve = ChaosCraft.organisims.get(index);
+                    EntityOrganism orgToObserve = ChaosCraft.observingOrg;
+                    if (orgToObserve == null || orgToObserve.isDead) {
+                        ChaosCraft.setObservingOrg(null);
+                        int index = (int) Math.floor(ChaosCraft.organisims.size() * Math.random());
+                        orgToObserve = ChaosCraft.organisims.get(index);
+                    }
                     observingPlayer.setSpectatingEntity(orgToObserve);
+                    ChaosCraft.chat("Observing " + orgToObserve.getName());
                 }
             }
         }

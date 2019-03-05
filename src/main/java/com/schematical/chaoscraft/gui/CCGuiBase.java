@@ -6,9 +6,11 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ResourceLocation;
 
 import java.io.IOException;
+import java.util.List;
 
 public abstract class CCGuiBase extends GuiScreen {
 
@@ -20,7 +22,8 @@ public abstract class CCGuiBase extends GuiScreen {
         VIEW_ORG_DETAIL_ACTION,
         VIEW_NEURON_DETAIL_ACTION,
         VIEW_BIOLOGY_LIST_ACTION,
-        VIEW_BIOLOGY_DETAIL_ACTION
+        VIEW_BIOLOGY_DETAIL_ACTION,
+        OBSERVE_ORG
     }
 
     private final String title;
@@ -122,6 +125,14 @@ public abstract class CCGuiBase extends GuiScreen {
             case VIEW_BIOLOGY_DETAIL_ACTION:
                 view = new CCOrgBiologyDetailView(ccButton.entity, ((CCOrgBiologyListView.CCBiologyDetailButton) ccButton).biologyBase);
                 mc.displayGuiScreen(view);
+                return;
+            case OBSERVE_ORG:
+                ChaosCraft.setObservingOrg(ccButton.entity);
+                List<EntityPlayerMP> players = ChaosCraft.rick.world.getMinecraftServer().getPlayerList().getPlayers();
+                for(EntityPlayerMP player: players){
+                    ChaosCraft.toggleObservingPlayer(player);
+                }
+                mc.displayGuiScreen(null);
                 return;
             default:
                 super.actionPerformed(button);
