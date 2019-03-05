@@ -32,7 +32,7 @@ public class CCOrgBiologyListView extends CCGuiBase {
         int ID = super.initializeButtons();
 
         int buttonWidth = 150;
-        int buttonHeight = 10;
+        int buttonHeight = 20;
         Iterator<BiologyBase> biologysIterator = this.entityOrganism.getNNet().biology.values().iterator();
         while(biologysIterator.hasNext()) {
             BiologyBase biologyBase = biologysIterator.next();
@@ -69,11 +69,17 @@ public class CCOrgBiologyListView extends CCGuiBase {
             if(biologyBase instanceof Eye){
                 Eye eye = (Eye) biologyBase;
                 //this.displayString += " - ";
+                eye.reset();
                 ArrayList<CCObserviableAttributeCollection> attributeCollections =  eye.canSeenBlocks();
-                //attributeCollections.addAll(eye.canSeenEntities());
+                attributeCollections.addAll(eye.canSeenEntities());
                 for(CCObserviableAttributeCollection attributeCollection: attributeCollections){
                     this.displayString += attributeCollection.resourceId + " ";
                 }
+               /* this.displayString +=  "\n";
+                ArrayList<CCObserviableAttributeCollection> attributeCollections2 =  eye.canSeenEntities();
+                for(CCObserviableAttributeCollection attributeCollection: attributeCollections2){
+                    this.displayString += attributeCollection.resourceId + " ";
+                }*/
             }else if(biologyBase instanceof BlockPositionSensor){
                 /*BlockPositionSensor blockPositionSensor = (BlockPositionSensor) biologyBase;
                 //this.displayString += " - ";

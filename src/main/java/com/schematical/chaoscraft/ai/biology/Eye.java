@@ -10,6 +10,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import org.json.simple.JSONObject;
@@ -66,29 +68,34 @@ public class Eye  extends BiologyBase{
         if(_entitiesCached){
             return seenEntities;
         }
-        List<EntityLiving> entities =  entity.world.getEntitiesWithinAABB(EntityLiving.class,  entity.getEntityBoundingBox().grow(maxDistance, maxDistance, maxDistance));
+        AxisAlignedBB grownBox = entity.getEntityBoundingBox().grow(maxDistance, maxDistance, maxDistance);
+        List<Entity> entities =  entity.world.getEntitiesWithinAABB(EntityLiving.class,  grownBox);
+        entities.addAll(entity.world.getEntitiesWithinAABB(EntityItem.class,  grownBox));
 
-        for (EntityLiving target : entities) {
+        for (Entity target : entities) {
 
-
-            Vec3d vec3d = entity.getPositionEyes(1);
-            Vec3d vec3d1 = entity.getLook(1);
-            vec3d1 = vec3d1.rotatePitch(this.pitch);
-            vec3d1 = vec3d1.rotateYaw(this.yaw);
-            Vec3d vec3d2 = vec3d.add(
-                new Vec3d(
+            if(!target.equals(entity)) {
+                Vec3d vec3d = entity.getPositionEyes(1);
+                Vec3d vec3d1 = entity.getLook(1);
+                vec3d1 = vec3d1.rotatePitch(this.pitch);
+                vec3d1 = vec3d1.rotateYaw(this.yaw);
+                Vec3d vec3d2 = vec3d.add(
+                    new Vec3d(
                     vec3d1.x * maxDistance,
                     vec3d1.y * maxDistance,
                     vec3d1.z * maxDistance
-                )
-            );
+                    )
+                );
 
 
-            RayTraceResult rayTraceResult = target.getEntityBoundingBox().calculateIntercept(vec3d, vec3d2);
-            if (rayTraceResult != null) {
-                CCObserviableAttributeCollection attributeCollection = entity.observableAttributeManager.Observe(target);
-                if(attributeCollection != null) {
-                    seenEntities.add(attributeCollection);
+                RayTraceResult rayTraceResult = target.getEntityBoundingBox().calculateIntercept(vec3d, vec3d2);
+                if (rayTraceResult != null) {
+
+                    CCObserviableAttributeCollection attributeCollection = entity.observableAttributeManager.Observe(target);
+                    if (attributeCollection != null) {
+                        //ChaosCraft.logger.info(entity.getCCNamespace() + " can see " + attributeCollection.resourceId);
+                        seenEntities.add(attributeCollection);
+                    }
                 }
             }
         }
