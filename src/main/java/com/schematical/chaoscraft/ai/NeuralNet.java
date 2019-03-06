@@ -50,7 +50,7 @@ public class NeuralNet {
                 neuronEvalDepth = 0;
                 float _last_value = outputNeuron.evaluate();
                 switch (outputNeuron._outputGroup){
-                    case(OutputNeuron.OUPUT_GROUP_NONE):
+                    case(OutputNeuron.OUTPUT_GROUP_NONE):
                         outputs.add(outputNeuron);
                     break;
                     default:

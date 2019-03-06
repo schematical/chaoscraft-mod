@@ -454,7 +454,7 @@ public class EntityOrganism extends EntityLiving {
             return null;
         }
         Vec3d itemVec3d = null;
-        ChaosCraft.logger.info(this.getCCNamespace() + " - Tossing: " + itemStack.getDisplayName());
+        ChaosCraft.logger.info(this.getCCNamespace() + " - Tossing: " + itemStack.getItem().getRegistryName());
 
 
 
@@ -662,7 +662,7 @@ public class EntityOrganism extends EntityLiving {
 
     private void pickupItem(EntityItem item) {
         if (item.cannotPickup()) return;
-        ChaosCraft.logger.info(this.getCCNamespace() + " - Picked up: " + item.getName());
+        ChaosCraft.logger.info(this.getCCNamespace() + " - Picked up: " + item.getItem().getItem().getRegistryName());
         ItemStack stack = item.getItem();
 
         Item worldEventItem = stack.getItem();
@@ -738,7 +738,7 @@ public class EntityOrganism extends EntityLiving {
         this.itemHandler.extractItem(slot, 1, false);
         swingArm(EnumHand.MAIN_HAND);
 
-        ChaosCraft.logger.info(this.getCCNamespace() + " - PlacedBlock up: " + block.getRegistryName());
+        ChaosCraft.logger.info(this.getCCNamespace() + " - PlacedBlock: " + block.getRegistryName());
         world.setBlockState(blockPos, block.getDefaultState());
         CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEventType.BLOCK_PLACED);
         worldEvent.block = block;

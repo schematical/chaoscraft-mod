@@ -70,7 +70,7 @@ public class CraftOutput extends OutputNeuron {
         worldEvent.item = outputStack.getItem();
         nNet.entity.entityFitnessManager.test(worldEvent);
         //TODO: Move this to a GUI thing.
-        String message = nNet.entity.getCCNamespace() +" Crafted " + this.toLongString();
+        String message = nNet.entity.getCCNamespace() +" Crafted Recipe: " + recipe.getRegistryName().toString() + " - Item: " + worldEvent.item.getRegistryName();
         ChaosCraft.chat(message);
     }
     @Override
