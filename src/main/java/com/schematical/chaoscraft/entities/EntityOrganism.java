@@ -13,6 +13,7 @@ import com.schematical.chaoscraft.ai.OutputNeuron;
 import com.schematical.chaoscraft.ai.biology.BiologyBase;
 import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.events.CCWorldEventType;
+import com.schematical.chaoscraft.events.OrgEvent;
 import com.schematical.chaoscraft.fitness.EntityFitnessManager;
 import com.schematical.chaoscraft.gui.CCOrgDetailView;
 import com.schematical.chaoscraft.inventory.InventoryOrganism;
@@ -46,6 +47,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.ItemStackHandler;
@@ -87,6 +89,7 @@ public class EntityOrganism extends EntityLiving {
     public InventoryOrganism inventory;
     public CCObservableAttributeManager observableAttributeManager;
     public HashMap<String, BiologyBase> inputs = new HashMap<String, BiologyBase>();
+    public List<OrgEvent> events = new ArrayList<OrgEvent>();
 
     public EntityOrganism(World worldIn) {
         this(worldIn, "EntityOrganism");
@@ -163,6 +166,20 @@ public class EntityOrganism extends EntityLiving {
     }
 
     @Override
+    public boolean attackEntityFrom(DamageSource source, float amount)
+    {
+        if(!world.isRemote){
+            CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.HEALTH_CHANGE);
+            worldEvent.entity = this;
+            worldEvent.amount = -1 * (amount/this.getMaxHealth());
+            entityFitnessManager.test(worldEvent);
+            events.add(new OrgEvent(worldEvent, OrgEvent.DEFAULT_TTL));
+        }
+        return super.attackEntityFrom(source, amount);
+    }
+
+
+    @Override
     public void onUpdate(){
 
         if(getDebug()){
@@ -197,6 +214,14 @@ public class EntityOrganism extends EntityLiving {
                 this.renderYawOffset = 0;
                 this.setRotation(this.rotationYaw, this.rotationPitch);
                 this.observationHack();
+                Iterator<OrgEvent> eventIterator = events.iterator();
+                while(eventIterator.hasNext()){
+                    OrgEvent event = eventIterator.next();
+                    int eventTTL = event.tick();
+                    if(eventTTL <= 0){
+                        eventIterator.remove();
+                    }
+                }
             }
 
         }
@@ -648,7 +673,7 @@ public class EntityOrganism extends EntityLiving {
                 state.getBlock().dropBlockAsItem(world, pos, state, 0);
 
             }
-            CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEventType.BLOCK_MINED);
+            CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.BLOCK_MINED);
             worldEvent.block = state.getBlock();
             entityFitnessManager.test(worldEvent);
         }
@@ -682,7 +707,7 @@ public class EntityOrganism extends EntityLiving {
         if(observableAttributeManager != null) {
             observableAttributeManager.Observe(worldEventItem);
         }
-        CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEventType.ITEM_COLLECTED);
+        CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.ITEM_COLLECTED);
         worldEvent.item = worldEventItem;
         entityFitnessManager.test(worldEvent);
         //TODO: Recheck what you can craft
@@ -740,7 +765,7 @@ public class EntityOrganism extends EntityLiving {
 
         ChaosCraft.logger.info(this.getCCNamespace() + " - PlacedBlock: " + block.getRegistryName());
         world.setBlockState(blockPos, block.getDefaultState());
-        CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEventType.BLOCK_PLACED);
+        CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.BLOCK_PLACED);
         worldEvent.block = block;
         entityFitnessManager.test(worldEvent);
         if(block.getRegistryName().toString().equals("minecraft:crafting_table")){
@@ -818,7 +843,7 @@ public class EntityOrganism extends EntityLiving {
 
             this.applyEnchantments(this, entityIn);
 
-            CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEventType.ENTITY_ATTACKED);
+            CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.ENTITY_ATTACKED);
             worldEvent.entity = entityIn;
             entityFitnessManager.test(worldEvent);
         }
