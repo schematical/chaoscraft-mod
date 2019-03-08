@@ -17,6 +17,7 @@ import com.schematical.chaoscraft.events.OrgEvent;
 import com.schematical.chaoscraft.fitness.EntityFitnessManager;
 import com.schematical.chaoscraft.gui.CCOrgDetailView;
 import com.schematical.chaoscraft.inventory.InventoryOrganism;
+import com.schematical.chaoscraft.proxies.CCIMessage;
 import com.schematical.chaosnet.model.NNetRaw;
 import com.schematical.chaosnet.model.Organism;
 import net.minecraft.block.Block;
@@ -32,6 +33,7 @@ import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -51,6 +53,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.ItemStackHandler;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import javax.annotation.Nonnull;
@@ -90,6 +93,7 @@ public class EntityOrganism extends EntityLiving {
     public CCObservableAttributeManager observableAttributeManager;
     public HashMap<String, BiologyBase> inputs = new HashMap<String, BiologyBase>();
     public List<OrgEvent> events = new ArrayList<OrgEvent>();
+    public EntityPlayerMP observingPlayer;
 
     public EntityOrganism(World worldIn) {
         this(worldIn, "EntityOrganism");
@@ -194,9 +198,32 @@ public class EntityOrganism extends EntityLiving {
             ) {
                 List<OutputNeuron> outputs = this.nNet.evaluate();
                 Iterator<OutputNeuron> iterator = outputs.iterator();
+                JSONObject jsonObject = null;
+                JSONArray outputValues = null;
+                if(observingPlayer != null) {
+                    jsonObject = new JSONObject();
+                    outputValues = new JSONArray();
+                }
                 while (iterator.hasNext()) {
+
                     OutputNeuron outputNeuron = iterator.next();
                     outputNeuron.execute();
+
+                    if(observingPlayer != null){
+                        JSONObject neuronOutput = new JSONObject();
+                        neuronOutput.put("summary", outputNeuron.toLongString());
+                        neuronOutput.put("_lastValue", outputNeuron._lastValue);
+                        outputValues.add( neuronOutput);
+
+                    }
+
+
+                }
+                if(observingPlayer != null) {
+                    jsonObject.put("namespace", this.organism.getNamespace());
+                    jsonObject.put("score", this.entityFitnessManager.totalScore());
+                    jsonObject.put("outputs", outputValues);
+                    ChaosCraft.networkWrapper.sendTo(new CCIMessage(jsonObject), (EntityPlayerMP) observingPlayer);
 
                 }
 
@@ -521,6 +548,10 @@ public class EntityOrganism extends EntityLiving {
             }
         }
         return null;
+    }
+
+    public void setObserving(EntityPlayerMP observingPlayer) {
+        this.observingPlayer = observingPlayer;
     }
 
     public static class EntityOrganismRenderer extends RenderLiving<EntityOrganism> {

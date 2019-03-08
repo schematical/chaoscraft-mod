@@ -46,6 +46,8 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -91,6 +93,7 @@ public class ChaosCraft
     public static double highScore = -99999;
     public static EntityOrganism highScoreOrg;
     public static BlockPos rickPos;
+    public static SimpleNetworkWrapper networkWrapper;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
