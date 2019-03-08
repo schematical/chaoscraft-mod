@@ -59,7 +59,7 @@ public class EntityFitnessRule {
     }
 
     public EntityFitnessScoreEvent testWorldEvent(CCWorldEvent event) {
-        if(!eventType.equals(event.eventType)) {
+        if(!eventType.equals(event.eventType.toString())) {
             return null;
         }
 
@@ -111,7 +111,8 @@ public class EntityFitnessRule {
            }
         }
 
-        EntityFitnessScoreEvent scoreEvent  = new EntityFitnessScoreEvent(event, scoreEffect, this);
+        int _scoreEffect = (int) Math.round(event.amount * scoreEffect);
+        EntityFitnessScoreEvent scoreEvent  = new EntityFitnessScoreEvent(event, _scoreEffect, this);
         scoreEvent.life = lifeEffect;
 
         return scoreEvent;

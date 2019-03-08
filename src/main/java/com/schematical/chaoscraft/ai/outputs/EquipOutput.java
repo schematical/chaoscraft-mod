@@ -67,7 +67,7 @@ public class EquipOutput extends OutputNeuron {
             //return;
         }
 
-        CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEventType.EQUIP);
+        CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.EQUIP);
         worldEvent.item = itemStack.getItem();
         nNet.entity.entityFitnessManager.test(worldEvent);
         String message = nNet.entity.getCCNamespace() +" Equipped " + this.toLongString();

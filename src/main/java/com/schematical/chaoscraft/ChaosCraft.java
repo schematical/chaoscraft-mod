@@ -46,6 +46,8 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -91,6 +93,7 @@ public class ChaosCraft
     public static double highScore = -99999;
     public static EntityOrganism highScoreOrg;
     public static BlockPos rickPos;
+    public static SimpleNetworkWrapper networkWrapper;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
@@ -374,89 +377,9 @@ public class ChaosCraft
                             );
 
                         }else{
-                            int range = 40;
-                            int minRange = 5;
-                            int yRange = 20;
-                            Vec3d rndPos = null;
-                            int saftyCatch = 0;
-                            int saftyMax = 10;
-                            while (
-                                    rndPos == null &&
-                                    saftyCatch < saftyMax
-                            ) {
-                                saftyCatch++;
-                                double xPos = Math.floor((Math.random() * (range) * 2) - range);
-                                if (xPos > 0) {
-                                    xPos += minRange;
-                                } else {
-                                    xPos -= minRange;
-                                }
-                                double zPos = Math.floor((Math.random() * (range) * 2) - range);
-                                if (zPos > 0) {
-                                    zPos += minRange;
-                                } else {
-                                    zPos -= minRange;
-                                }
-                                rndPos = new Vec3d(
-                                    pos.getX() + xPos,
-                                    pos.getY() + Math.floor((Math.random() * yRange)),
-                                    pos.getZ() + zPos
-                                );
-                                if (!entityOrganism.getCanSpawnHere()) {
-                                    rndPos = null;
-                                } else {
-                                    BlockPos blockPos = new BlockPos(rndPos);
+                           placeEntity(pos, entityOrganism);
 
-                                    IBlockState state = world.getBlockState(blockPos);
-                                    Material material = state.getMaterial();
-                                    if (
-                                        !(
-                                            material == Material.WATER ||
-                                            material == Material.AIR
-                                        )
-                                    ) {
-                                        rndPos = null;
-                                    }else{
-                                        int saftyCatch2 = 0;
-                                        Vec3d lastPos = null;
-                                        boolean foundBottom = false;
-                                        int saftyMax2 = 40;
-                                        while(
-                                            saftyCatch2 < saftyMax2 &&
-                                            !foundBottom
-                                        ){
-                                            saftyCatch2 += 1;
-                                            lastPos = rndPos;
-                                            rndPos = new Vec3d(lastPos.x, lastPos.y - 1, lastPos.z);
-                                            blockPos = new BlockPos(rndPos);
 
-                                            state = world.getBlockState(blockPos);
-                                            material = state.getMaterial();
-                                            if (material != Material.AIR){
-                                                rndPos = lastPos;
-                                                foundBottom = true;
-                                            }
-                                        }
-                                        if(saftyCatch2 >= saftyMax2){
-                                            throw new ChaosNetException("Could not find good spawn pos after " + saftyCatch2 + " attempts");
-                                        }
-                                    }
-                                }
-
-                            }
-                            if(saftyCatch == saftyMax){
-                                throw new ChaosNetException("Could not find good spawn pos after " + saftyCatch + " attempts");
-                            }
-                            if(rndPos == null){
-                                throw new ChaosNetException("This should be impossible");
-                            }
-                            entityOrganism.setPositionAndRotation(
-                                    rndPos.x,
-                                    rndPos.y,
-                                    rndPos.z,
-                                    (float) Math.random() * 360,
-                                    (float)Math.random() * 360
-                            );
                         }
 
                         entityOrganism.setSpawnHash(ChaosCraft.spawnHash);
@@ -485,6 +408,99 @@ public class ChaosCraft
         topLeftMessage = message;
 
         return spawnedEntityOrganisms;
+    }
+    public static void placeEntity(BlockPos pos, EntityOrganism entityOrganism){
+        int range = 40;
+        int minRange = 5;
+        int yRange = 20;
+        Vec3d rndPos = null;
+        int saftyCatch = 0;
+        int saftyMax = 10;
+        while (
+                rndPos == null &&
+                        saftyCatch < saftyMax
+                ) {
+            saftyCatch++;
+            double xPos = Math.floor((Math.random() * (range) * 2) - range);
+            if (xPos > 0) {
+                xPos += minRange;
+            } else {
+                xPos -= minRange;
+            }
+            double zPos = Math.floor((Math.random() * (range) * 2) - range);
+            if (zPos > 0) {
+                zPos += minRange;
+            } else {
+                zPos -= minRange;
+            }
+            rndPos = new Vec3d(
+                    pos.getX() + xPos,
+                    pos.getY() + Math.floor((Math.random() * yRange)),
+                    pos.getZ() + zPos
+            );
+            if (!entityOrganism.getCanSpawnHere()) {
+                rndPos = null;
+            } else {
+                BlockPos blockPos = new BlockPos(rndPos);
+
+                IBlockState state = entityOrganism.world.getBlockState(blockPos);
+                Material material = state.getMaterial();
+                if (
+                    !(
+                        material == Material.WATER ||
+                        material == Material.AIR
+                    )
+                ) {
+                    rndPos = null;
+                }else{
+                    int saftyCatch2 = 0;
+                    Vec3d lastPos = null;
+                    boolean foundBottom = false;
+                    int saftyMax2 = 40;
+                    while(
+                            saftyCatch2 < saftyMax2 &&
+                            !foundBottom
+                    ){
+                        saftyCatch2 += 1;
+                        lastPos = rndPos;
+                        rndPos = new Vec3d(lastPos.x, lastPos.y - 1, lastPos.z);
+                        blockPos = new BlockPos(rndPos);
+
+                        state = entityOrganism.world.getBlockState(blockPos);
+                        material = state.getMaterial();
+                        if (material != Material.AIR){
+                            rndPos = lastPos;
+                            foundBottom = true;
+                        }
+                    }
+                    if(saftyCatch2 >= saftyMax2){
+                        throw new ChaosNetException("Could not find good spawn pos after " + saftyCatch2 + " attempts");
+                    }
+                }
+            }
+            if(rndPos != null){
+                entityOrganism.setPositionAndRotation(
+                    rndPos.x,
+                    rndPos.y,
+                    rndPos.z,
+                    (float) Math.random() * 360,
+                    (float)Math.random() * 360
+                );
+
+                if(entityOrganism.isEntityInsideOpaqueBlock()){
+                    rndPos = null;
+                }
+            }
+
+
+        }
+        if(saftyCatch == saftyMax){
+            throw new ChaosNetException("Could not find good spawn pos after " + saftyCatch + " attempts");
+        }
+        if(rndPos == null){
+            throw new ChaosNetException("This should be impossible");
+        }
+
     }
     public static void chat(String message){
         PlayerList players =  rick.world.getMinecraftServer().getPlayerList();
