@@ -21,9 +21,9 @@ public abstract class CCGuiBase extends GuiScreen {
         VIEW_NEURON_DETAIL_ACTION
     }
 
-    private final String title;
+    final String title;
     final int guiWidth, guiHeight;
-    private final ResourceLocation texture;
+    final ResourceLocation texture;
 
     int guiLeft;
     int guiTop;
