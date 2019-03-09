@@ -18,7 +18,9 @@ public abstract class CCGuiBase extends GuiScreen {
         SHOW_INVENTORY,
         SHOW_SCORE_EVENTS,
         VIEW_ORG_DETAIL_ACTION,
-        VIEW_NEURON_DETAIL_ACTION
+        VIEW_NEURON_DETAIL_ACTION,
+        VIEW_BIOLOGY_LIST_ACTION,
+        VIEW_BIOLOGY_DETAIL_ACTION
     }
 
     final String title;
@@ -111,6 +113,14 @@ public abstract class CCGuiBase extends GuiScreen {
                 break;
             case VIEW_ORG_DETAIL_ACTION:
                 view = new CCOrgDetailView(ccButton.entity);
+                mc.displayGuiScreen(view);
+                return;
+            case VIEW_BIOLOGY_LIST_ACTION:
+                view = new CCOrgBiologyListView(ccButton.entity);
+                mc.displayGuiScreen(view);
+                return;
+            case VIEW_BIOLOGY_DETAIL_ACTION:
+                view = new CCOrgBiologyDetailView(ccButton.entity, ((CCOrgBiologyListView.CCBiologyDetailButton) ccButton).biologyBase);
                 mc.displayGuiScreen(view);
                 return;
             default:
