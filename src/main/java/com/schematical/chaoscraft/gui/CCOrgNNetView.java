@@ -47,7 +47,7 @@ public class CCOrgNNetView extends CCGuiBase {
 
         fontRenderer.drawString(title, (width - this.fontRenderer.getStringWidth(title)) / 2, this.guiTop, 0x000000);
 
-        for(GuiButton button : buttonList) {
+        for (GuiButton button : buttonList) {
             if (button instanceof CCGUINeuronDisplayButton) {
                 ((CCGUINeuronDisplayButton) button).drawDependencies();
             }
@@ -90,7 +90,7 @@ public class CCOrgNNetView extends CCGuiBase {
         buttonList.add(
                 new CCGuiButton(
                         ID++,
-                        ((this.width)/ 2) - buttonWidth/2,
+                        ((this.width) / 2) - buttonWidth / 2,
                         this.guiTop + (this.height - guiTop) - (buttonHeight + 15),
                         buttonWidth,
                         buttonHeight,
@@ -102,41 +102,48 @@ public class CCOrgNNetView extends CCGuiBase {
         List<OutputNeuron> outputs = new ArrayList<>();
         List<InputNeuron> inputs = new ArrayList<>();
 
-        for(NeuronBase neuronBase : entityOrganism.getNNet().neurons.values()) {
-            if(neuronBase instanceof OutputNeuron) {
+        HashMap<NeuronBase, CCNeuronInformation> neuronInformation = new HashMap<>();
+
+        for (NeuronBase neuronBase : entityOrganism.getNNet().neurons.values()) {
+            if (neuronBase instanceof OutputNeuron) {
                 outputs.add((OutputNeuron) neuronBase);
             } else if (neuronBase instanceof InputNeuron) {
                 inputs.add((InputNeuron) neuronBase);
             }
+
+            neuronInformation.put(neuronBase, new CCNeuronInformation());
         }
 
         for (int i = 0; i < outputs.size(); i++) {
             OutputNeuron output = outputs.get(i);
-            output.y = (height / outputs.size()) * i + (height / outputs.size()) / 2;
+            CCNeuronInformation information = neuronInformation.get(output);
+            information.y = (height / outputs.size()) * i + (height / outputs.size()) / 2;
 
-            output.setDistanceFromIO(0, width, height, buttonHeight);
-            output.x = width - (buttonWidth / 2 + guiLeft);
+            output.setDistanceFromIO(0, width, height, buttonHeight, neuronInformation);
+            information.x = width - (buttonWidth / 2 + guiLeft);
         }
 
         for (int i = 0; i < inputs.size(); i++) {
             InputNeuron input = inputs.get(i);
-            input.x = buttonWidth / 2 + guiLeft;
-            input.y = (height / inputs.size()) * i + (height / inputs.size()) / 2;
+            CCNeuronInformation information = neuronInformation.get(input);
+            information.x = buttonWidth / 2 + guiLeft;
+            information.y = (height / inputs.size()) * i + (height / inputs.size()) / 2;
         }
 
-        HashMap<Float, List<NeuronBase>> layers = new HashMap<>();
+        HashMap<Float, List<CCNeuronInformation>> layers = new HashMap<>();
         for (NeuronBase neuron : entityOrganism.getNNet().neurons.values()) {
+            CCNeuronInformation information = neuronInformation.get(neuron);
             if (!(neuron instanceof InputNeuron || neuron instanceof OutputNeuron)) {
-                if (!layers.containsKey(neuron.layer)) {
-                    layers.put(neuron.layer, new ArrayList<>());
+                if (!layers.containsKey(information.layer)) {
+                    layers.put(information.layer, new ArrayList<>());
                 }
 
-                layers.get(neuron.layer).add(neuron);
+                layers.get(information.layer).add(information);
             }
         }
 
         for (float layer : layers.keySet()) {
-            List<NeuronBase> neuronsInLayer = layers.get(layer);
+            List<CCNeuronInformation> neuronsInLayer = layers.get(layer);
 
             for (int i = 0; i < neuronsInLayer.size(); i++) {
                 neuronsInLayer.get(i).y = (height / neuronsInLayer.size()) * i + (height / neuronsInLayer.size()) / 2;
@@ -146,17 +153,19 @@ public class CCOrgNNetView extends CCGuiBase {
 
         for (NeuronBase neuron : entityOrganism.getNNet().neurons.values()) {
 
+            CCNeuronInformation information = neuronInformation.get(neuron);
             buttonWidth = fontRenderer.getStringWidth(neuron.toString()) + 10;
 
             buttonList.add(new CCGUINeuronDisplayButton(
                             ID++,
-                            neuron.x - buttonWidth / 2,
-                            neuron.y - buttonHeight / 2,
+                            information.x - buttonWidth / 2,
+                            information.y - buttonHeight / 2,
                             buttonWidth,
                             buttonHeight,
                             neuron.toString(),
                             entityOrganism,
-                            neuron
+                            neuron,
+                            neuronInformation
 
                     )
             );
@@ -186,10 +195,12 @@ public class CCOrgNNetView extends CCGuiBase {
 
     public class CCGUINeuronDisplayButton extends CCGuiButton {
         public final NeuronBase neuron;
+        HashMap<NeuronBase, CCNeuronInformation> neuronInformation;
 
-        public CCGUINeuronDisplayButton(int buttonId, int x, int y, int width, int height, String buttonText, EntityOrganism entityOrganism, NeuronBase neuron) {
+        public CCGUINeuronDisplayButton(int buttonId, int x, int y, int width, int height, String buttonText, EntityOrganism entityOrganism, NeuronBase neuron, HashMap<NeuronBase, CCNeuronInformation> neuronInformation) {
             super(buttonId, x, y, width, height, buttonText, ButtonAction.VIEW_NEURON_DETAIL_ACTION, entityOrganism);
             this.neuron = neuron;
+            this.neuronInformation = neuronInformation;
         }
 
         @Override
@@ -198,10 +209,21 @@ public class CCOrgNNetView extends CCGuiBase {
         }
 
         public void drawDependencies() {
+            CCNeuronInformation informationOut = neuronInformation.get(neuron);
             for (NeuronDep dep : neuron.dependencies) {
-                drawLine(neuron.x, neuron.y, dep.depNeuron.x, dep.depNeuron.y, dep.weight < 0 ? (int) (255 * dep.weight * -1) : 0, dep.weight > 0 ? (int) (255 * dep.weight) : 0, 0, 255);
+                CCNeuronInformation informationIn = neuronInformation.get(dep.depNeuron);
+                drawLine(informationOut.x, informationOut.y, informationIn.x, informationIn.y, dep.weight < 0 ? (int) (255 * dep.weight * -1) : 0, dep.weight > 0 ? (int) (255 * dep.weight) : 0, 0, 255);
             }
         }
+    }
+
+    public class CCNeuronInformation {
+        public int x;
+        public int y;
+        public float layer;
+        public int distanceFromOutput;
+        public int distanceFromInput;
+
     }
 
 }
