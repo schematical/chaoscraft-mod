@@ -1,15 +1,14 @@
 package com.schematical.chaoscraft.ai;
 
-import com.google.common.collect.Sets;
-import com.schematical.chaoscraft.ChaosCraft;
+import com.schematical.chaoscraft.gui.CCOrgNNetView;
 import com.schematical.chaosnet.model.ChaosNetException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by user1a on 12/8/18.
@@ -17,8 +16,6 @@ import java.util.Set;
 public abstract class NeuronBase extends InnovationBase {
 
     public String id;
-    public int x;
-    public int y;
 
     public NeuralNet nNet;
     public float _lastValue;
@@ -54,7 +51,7 @@ public abstract class NeuronBase extends InnovationBase {
             return _lastValue;
         }
         nNet.neuronEvalDepth += 1;
-        if(nNet.neuronEvalDepth > 15){
+        if (nNet.neuronEvalDepth > 15) {
             throw new ChaosNetException("Max Eval Depth Hit: " + this.nNet.entity.getCCNamespace() + "   " + this.id);
         }
         float totalScore = 0;
@@ -99,8 +96,29 @@ public abstract class NeuronBase extends InnovationBase {
         return response;
     }
 
-    public void setcoords(int thisX, int thisY) {
-        x = thisX;
-        y = thisY;
+    public void setDistanceFromIO(int distanceFromOutput, int width, int height, int neuronSize, HashMap<NeuronBase, CCOrgNNetView.CCNeuronInformation> neuronInformation) {
+        CCOrgNNetView.CCNeuronInformation information = neuronInformation.get(this);
+        information.distanceFromOutput = distanceFromOutput;
+
+        information.distanceFromInput = 0;
+
+        for (NeuronDep dependency : this.dependencies) {
+            dependency.depNeuron.setDistanceFromIO(distanceFromOutput + 1, width, height, neuronSize, neuronInformation);
+            information.distanceFromInput = Math.max(information.distanceFromInput, neuronInformation.get(dependency.depNeuron).distanceFromInput + 1);
+        }
+
+        if (information.distanceFromInput == 0 && information.distanceFromOutput == 0) {
+            information.x = neuronSize;
+        } else {
+            information.x = (width - neuronSize * 2) / (information.distanceFromInput + information.distanceFromOutput) * information.distanceFromInput + neuronSize;
+        }
+
+        System.out.println(this.getClass() + " is " + (!(this instanceof InputNeuron || this instanceof OutputNeuron)));
+
+        if (!(this instanceof InputNeuron || this instanceof OutputNeuron)) {
+            // this.y = averageY;
+            information.y = (int) (Math.random() * height);
+            information.layer = information.distanceFromInput / (float) (information.distanceFromInput + information.distanceFromOutput);
+        }
     }
 }
