@@ -34,6 +34,22 @@ Currently the majority of people are using is using:
 https://pastebin.com/GwwRkDSM
 
 
+### If you get stuck and keep getting 400 or 500 errors:
+Try running the following:
+```
+/chaoscraft-repair
+```
+
+
+## Other stuff:
+### CurseForge:
+Eventually the mod may live at the following:
+
+https://minecraft.curseforge.com/projects/chaoscraftai
+
+
+
+
 
 ## Matt's SideNotes:
 AWS APIGateway Build Commands(I Now have a script for this).
