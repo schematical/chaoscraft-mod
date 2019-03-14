@@ -400,6 +400,7 @@ public class ChaosCraft
             } else {
                 message += "MISSING STATS \n";
             }
+
         }
         if(ChaosCraft.highScoreOrg != null){
             message += "High Score: " + ChaosCraft.highScore + " - " + ChaosCraft.highScoreOrg.getCCNamespace() + "\n";
@@ -568,6 +569,8 @@ public class ChaosCraft
         event.registerServerCommand(new CommandChaosCraftObserve());
 
     }
+
+
 
 
 

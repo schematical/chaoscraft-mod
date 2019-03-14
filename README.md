@@ -1,7 +1,21 @@
 # chaoscraft-mod
 
 ## Getting Started:
+
+## Clone repo:
+```
+git clone https://github.com/schematical/chaoscraft-mod.git
+```
+
+## Run Gradle:
+I recomend using IntellaJ as an IDE but the ultra quick and dirty start:
+```
+run gradlew runClient in command prompt
+```
+
+
 ### Get Authed:
+Run this command in an open world in MC
 ```
 /chaoscraft-auth {username} {password}
 ```
@@ -9,6 +23,11 @@
 ### Get Started:
 ```
 /chaoscraft-start {trainingRoomOwnerUsername} {trainingRoomNamespace}
+```
+Currently the majority of people are using is using:
+
+```
+/chaoscraft-start schemetical test-3
 ```
 
 ### Additional Helpful Notes for Beginners(Thank You 0xFFFF):
