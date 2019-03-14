@@ -1,15 +1,12 @@
 package com.schematical.chaoscraft.ai.outputs;
 
 import com.schematical.chaoscraft.ChaosCraft;
-import com.schematical.chaoscraft.ai.CCAttributeId;
 import com.schematical.chaoscraft.ai.OutputNeuron;
 import com.schematical.chaoscraft.events.CCWorldEvent;
-import com.schematical.chaoscraft.events.CCWorldEventType;
 import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import org.json.simple.JSONObject;
 
@@ -26,7 +23,7 @@ public class CraftOutput extends OutputNeuron {
         {
 
             ResourceLocation resourceLocation = irecipe.getRegistryName();
-            String key = resourceLocation.getResourceDomain() + ":" + resourceLocation.getResourcePath();
+            String key = resourceLocation.getNamespace() + ":" + resourceLocation.getPath();
             if(recipeId.equals(key)){
                 recipe = irecipe;
             }
