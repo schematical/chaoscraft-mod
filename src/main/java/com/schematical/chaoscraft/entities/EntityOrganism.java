@@ -351,8 +351,9 @@ public class EntityOrganism extends EntityLiving {
             ChaosCraft.logger.info("Testing: " + recipe.getRegistryName().toString());
         }*/
         for(Ingredient ingredient : ingredients){
+            ItemStack[] matchingStacks = ingredient.getMatchingStacks();
             boolean containsItem = false;
-            for(int i = 0; i < slots; i++) {
+            for(int i = 0; i < slots && !containsItem; i++) {
                 ItemStack itemStack = itemStackHandler.getStackInSlot(i);
                 if(!itemStack.isEmpty()){
                     boolean itWorks = ingredient.apply(itemStack);
@@ -363,15 +364,14 @@ public class EntityOrganism extends EntityLiving {
                 }
             }
             if(!containsItem){
-               /*
-                ItemStack[] missingStacks = ingredient.getMatchingStacks();
-                String missing = "";
-                for(ItemStack missingStack : missingStacks){
-                    missing += missingStack.getDisplayName() + ", ";
+                if(this.debug) {
+                    ItemStack[] missingStacks = ingredient.getMatchingStacks();
+                    String missing = "";
+                    for (ItemStack missingStack : missingStacks) {
+                        missing += missingStack.getDisplayName() + ", ";
+                    }
+                    ChaosCraft.logger.info(recipe.getRegistryName().toString() + "Failed Missing: " + missing);
                 }
-                if(recipe.getRegistryName().toString().equals("minecraft:crafting_table")){
-                    ChaosCraft.logger.info(recipe.getRegistryName().toString() + "Failed Missing: "  + missing);
-                }*/
 
                 return false;
             }

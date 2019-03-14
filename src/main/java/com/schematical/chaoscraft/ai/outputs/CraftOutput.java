@@ -43,6 +43,9 @@ public class CraftOutput extends OutputNeuron {
         if(hasBeenEvaluated){
             return _lastValue;
         }
+        if(nNet.entity.getDebug()) {
+            ChaosCraft.logger.info(nNet.entity.getCCNamespace() + " Checking to see if they can Craft: " + recipe.getRegistryName() + " - " + recipe.getRecipeOutput().getDisplayName());
+        }
         if(!nNet.entity.canCraft(recipe)){
             return _lastValue;
         }
@@ -54,7 +57,7 @@ public class CraftOutput extends OutputNeuron {
             return;
         }
         if(nNet.entity.getDebug()) {
-            //ChaosCraft.logger.info(nNet.entity.getCCNamespace() + " Attempting to Craft: " + recipe.getRegistryName() + " - " + recipe.getRecipeOutput().getDisplayName());
+            ChaosCraft.logger.info(nNet.entity.getCCNamespace() + " Attempting to Craft: " + recipe.getRegistryName() + " - " + recipe.getRecipeOutput().getDisplayName());
         }
 
         ChaosCraft.logger.info("Attempting to Craft: " + recipe.getRegistryName().toString());

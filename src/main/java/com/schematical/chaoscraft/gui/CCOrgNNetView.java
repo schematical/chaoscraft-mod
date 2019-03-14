@@ -60,7 +60,7 @@ public class CCOrgNNetView extends CCGuiBase {
         for (GuiButton button : buttonList) {
             if (button instanceof CCGUINeuronDisplayButton) {
                 List<String> text = new ArrayList<String>();
-                text.add(((CCGUINeuronDisplayButton) button).neuron.toString());
+                text.add(((CCGUINeuronDisplayButton) button).neuron.toLongString());
                 drawTooltip(text, mouseX, mouseY, button.x, button.y, button.width, button.height);
             }
         }
