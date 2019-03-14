@@ -5,6 +5,7 @@ package com.schematical.chaoscraft.entities;
  */
 
 
+import com.google.common.collect.Lists;
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
 import com.schematical.chaoscraft.ai.CCObserviableAttributeCollection;
@@ -17,8 +18,10 @@ import com.schematical.chaoscraft.fitness.EntityFitnessManager;
 import com.schematical.chaoscraft.gui.CCOrgDetailView;
 import com.schematical.chaoscraft.inventory.InventoryOrganism;
 import com.schematical.chaoscraft.proxies.CCIMessage;
+import com.schematical.chaosnet.model.ChaosNetException;
 import com.schematical.chaosnet.model.NNetRaw;
 import com.schematical.chaosnet.model.Organism;
+import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -26,6 +29,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.util.RecipeItemHelper;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.EntityAISwimming;
@@ -38,6 +42,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
@@ -338,86 +343,75 @@ public class EntityOrganism extends EntityLiving {
 
     public boolean canCraft(IRecipe recipe) {
         //Check to see if they have the items in inventory for that
-        ItemStackHandler itemStackHandler = nNet.entity.getItemStack();
-        int slots = itemStackHandler.getSlots();
+
 
         NonNullList<Ingredient> ingredients = recipe.getIngredients();
         if(ingredients.size() == 0){
             return false;
         }
+        RecipeItemHelper recipeItemHelper = getRecipeItemHelper();
 
-        List<ItemStack> stacks = new ArrayList<ItemStack>();
-        /*if(recipe.getRegistryName().toString().equals("minecraft:crafting_table")){
-            ChaosCraft.logger.info("Testing: " + recipe.getRegistryName().toString());
-        }*/
-        for(Ingredient ingredient : ingredients){
-            ItemStack[] matchingStacks = ingredient.getMatchingStacks();
-            boolean containsItem = false;
-            for(int i = 0; i < slots && !containsItem; i++) {
-                ItemStack itemStack = itemStackHandler.getStackInSlot(i);
-                if(!itemStack.isEmpty()){
-                    boolean itWorks = ingredient.apply(itemStack);
-                    if (itWorks) {
-                        containsItem = true;
+        boolean result = recipeItemHelper.canCraft(recipe, null);
 
-                    }
-                }
-            }
-            if(!containsItem){
-                if(this.debug) {
-                    ItemStack[] missingStacks = ingredient.getMatchingStacks();
-                    String missing = "";
-                    for (ItemStack missingStack : missingStacks) {
-                        missing += missingStack.getDisplayName() + ", ";
-                    }
-                    ChaosCraft.logger.info(recipe.getRegistryName().toString() + "Failed Missing: " + missing);
-                }
+        return result;
 
-                return false;
-            }
-        }
-        //ChaosCraft.logger.info("Success!: " + recipe.getRegistryName().toString());
-        return true;
     }
-    public ItemStack craft(IRecipe recipe) {
-        //Check to see if they have the items in inventory for that
-        ItemStackHandler itemStackHandler = getItemStack();
-        int slots = itemStackHandler.getSlots();
-        int emptySlot = -1;
-        NonNullList<Ingredient> ingredients = recipe.getIngredients();
+    public RecipeItemHelper getRecipeItemHelper(){
 
-        List<ItemStack> stacks = new ArrayList<ItemStack>();
+        RecipeItemHelper recipeItemHelper = new RecipeItemHelper();
+        int slots = itemHandler.getSlots();
+
+        for(int i = 0; i < slots; i++) {
+            ItemStack itemStack = itemHandler.getStackInSlot(i);
+
+            if(!itemStack.isEmpty()){
+                recipeItemHelper.accountStack(itemStack);
+            }
+        }
+        return recipeItemHelper;
+
+
+    }
+    public ItemStack craft(ShapedRecipes recipe) {
+        //Check to see if they have the items in inventory for that
+        RecipeItemHelper recipeItemHelper = new RecipeItemHelper();
+        int slots = itemHandler.getSlots();
+        int emptySlot = -1;
+
         List<Integer> usedSlots = new ArrayList<Integer>();
-        for(Ingredient ingredient : ingredients){
-            boolean containsItem = false;
-            for(int i = 0; i < slots; i++) {
-                ItemStack itemStack = itemStackHandler.getStackInSlot(i);
-                if(itemStack.isEmpty()){
+        for(Ingredient ingredient: recipe.recipeItems) {
+
+            for (int i = 0; i < slots; i++) {
+                ItemStack itemStack = itemHandler.getStackInSlot(i);
+                if(itemStack.isEmpty()) {
                     emptySlot = i;
-                }else {
-                    boolean itWorks = ingredient.apply(itemStack);
-                    if (itWorks) {
-                        containsItem = true;
-                        usedSlots.add(i);
+                }else{
+                    int packedItem = RecipeItemHelper.pack(itemStack);
+                    IntList ingredientItemIds = ingredient.getValidItemStacksPacked();
+                    if (ingredientItemIds.contains(packedItem)) {
+                        //int amountTaken = recipeItemHelper.tryTake(packedItem, 1);
+                        if (itemHandler.getStackInSlot(i).getCount() < 1) {
+                            throw new ChaosNetException("Cannot get any more of these");
+                        }
+                        itemHandler.extractItem(i, 1, false);
                     }
                 }
+
+
             }
-            if(!containsItem){
-                return null;
-            }
+
         }
-        for(Integer slot: usedSlots){
-            itemStackHandler.extractItem(slot, 1, false);
-        }
-        ItemStack outputStack = recipe.getRecipeOutput();
+
+        ItemStack outputStack = recipe.getRecipeOutput().copy();
+        ChaosCraft.logger.info(this.getCCNamespace() + " - Crafted: " + outputStack.getDisplayName());
         if(emptySlot != -1) {
-            itemStackHandler.insertItem(emptySlot, outputStack, false);
+            itemHandler.insertItem(emptySlot, outputStack, false);
             observableAttributeManager.ObserveCraftableRecipes(this);
         }else{
             dropItem(outputStack.getItem(), outputStack.getCount());
             outputStack.setCount(0);
         }
-        ChaosCraft.logger.info(this.getCCNamespace() + " - Crafted: " + outputStack.getDisplayName());
+
         return outputStack;
     }
     /**
