@@ -12,7 +12,6 @@ import com.schematical.chaoscraft.ai.NeuralNet;
 import com.schematical.chaoscraft.ai.OutputNeuron;
 import com.schematical.chaoscraft.ai.biology.BiologyBase;
 import com.schematical.chaoscraft.events.CCWorldEvent;
-import com.schematical.chaoscraft.events.CCWorldEventType;
 import com.schematical.chaoscraft.events.OrgEvent;
 import com.schematical.chaoscraft.fitness.EntityFitnessManager;
 import com.schematical.chaoscraft.gui.CCOrgDetailView;
@@ -34,7 +33,6 @@ import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -49,7 +47,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.ItemStackHandler;
@@ -694,7 +691,7 @@ public class EntityOrganism extends EntityLiving {
 
             boolean bool = world.setBlockState(pos, net.minecraft.init.Blocks.AIR.getDefaultState(), world.isRemote ? 11 : 3);
             if (bool) {
-                state.getBlock().onBlockDestroyedByPlayer(world, pos, state);
+                state.getBlock().onPlayerDestroy(world, pos, state);
             } else {
                 harvest = false;
             }
