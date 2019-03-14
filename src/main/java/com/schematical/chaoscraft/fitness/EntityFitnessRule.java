@@ -2,20 +2,15 @@ package com.schematical.chaoscraft.fitness;
 
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.Enum;
-import com.schematical.chaoscraft.ai.NeuronDep;
 import com.schematical.chaoscraft.entities.EntityFitnessScoreEvent;
 import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaosnet.model.ChaosNetException;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import java.awt.*;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -76,7 +71,7 @@ public class EntityFitnessRule {
                    }
 
                    resourceLocation = event.block.getRegistryName();
-                   String blockId = resourceLocation.getResourceDomain() + ":" + resourceLocation.getResourcePath();
+                   String blockId = resourceLocation.getNamespace() + ":" + resourceLocation.getPath();
                    //ChaosCraft.logger.info("Testing: " + blockId);
                    if(!attributeValue.contains(blockId)){
                        return null;
@@ -88,7 +83,7 @@ public class EntityFitnessRule {
                    }
 
                    resourceLocation = EntityRegistry.getEntry(event.entity.getClass()).getRegistryName();
-                   String entityId = resourceLocation.getResourceDomain() + ":" + resourceLocation.getResourcePath();
+                   String entityId = resourceLocation.getNamespace() + ":" + resourceLocation.getPath();
                    if(!attributeValue.contains(entityId)){
                        return null;
                    }
@@ -98,7 +93,7 @@ public class EntityFitnessRule {
                        ChaosCraft.logger.error("No `item` to check against!");
                    }
                    resourceLocation = event.item.getRegistryName();
-                   String itemId = resourceLocation.getResourceDomain() + ":" + resourceLocation.getResourcePath();
+                   String itemId = resourceLocation.getNamespace() + ":" + resourceLocation.getPath();
 
 
                    if(!attributeValue.contains(itemId)){
