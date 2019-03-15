@@ -42,8 +42,8 @@ public class UseItemOutput extends OutputNeuron {
         }
 
 
-        Vec3i vec3i = rayTraceResult.sideHit.getDirectionVec();
-        BlockPos destBlockPos = rayTraceResult.getBlockPos().add(vec3i);
+        //Vec3i vec3i = rayTraceResult.sideHit.getDirectionVec();
+        BlockPos destBlockPos = rayTraceResult.getBlockPos();//.add(vec3i);
         ItemStack itemStack = nNet.entity.getHeldItemMainhand();
         if(itemStack == null || itemStack.isEmpty()){
             return;
