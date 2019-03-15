@@ -28,13 +28,12 @@
         "id": "neuron-3"
       },
       {
-        "$TYPE": "CraftOutput",
+        "$TYPE": "UseItemOutput",
         "_base_type": "output",
-        "recipeId":"minecraft:stick",
         "dependencies": [
           {
             "neuronId": "neuron-2",
-            "weight": 0
+            "weight": 1
           }
         ],
         "id": "neuron-4"

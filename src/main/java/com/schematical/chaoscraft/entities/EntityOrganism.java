@@ -6,6 +6,7 @@ package com.schematical.chaoscraft.entities;
 
 
 import com.google.common.collect.Lists;
+import com.mojang.authlib.GameProfile;
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
 import com.schematical.chaoscraft.ai.CCObserviableAttributeCollection;
@@ -67,7 +68,7 @@ import java.util.List;
 public class EntityOrganism extends EntityLiving {
     public final double REACH_DISTANCE = 5.0D;
     private final long spawnTime;
-
+    protected CCPlayerEntityWrapper playerWrapper;
 
     public EntityFitnessManager entityFitnessManager;
     protected Organism organism;
@@ -136,6 +137,14 @@ public class EntityOrganism extends EntityLiving {
      }
      public NeuralNet getNNet(){
         return nNet;
+     }
+     public CCPlayerEntityWrapper getPlayerWrapper(){
+         if(playerWrapper == null){
+             GameProfile gameProfile = new GameProfile(null, this.getCCNamespace());
+             playerWrapper = new CCPlayerEntityWrapper(world, gameProfile);
+             playerWrapper.entityOrganism = this;
+         }
+         return playerWrapper;
      }
      public void attachNNetRaw(NNetRaw nNetRaw){
         String nNetString = nNetRaw.getNNetRaw();
@@ -224,6 +233,8 @@ public class EntityOrganism extends EntityLiving {
                 if(observingPlayer != null) {
                     jsonObject.put("namespace", this.organism.getNamespace());
                     jsonObject.put("score", this.entityFitnessManager.totalScore());
+                    jsonObject.put("age", this.getAgeSeconds());
+                    jsonObject.put("maxAge", this.maxLifeSeconds);
                     jsonObject.put("outputs", outputValues);
                     ChaosCraft.networkWrapper.sendTo(new CCIMessage(jsonObject), (EntityPlayerMP) observingPlayer);
 
