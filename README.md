@@ -26,7 +26,7 @@ To actually run the mod you need to execute this command within MC.
 ```
 /chaoscraft-start {trainingRoomOwnerUsername} {trainingRoomNamespace}
 ```
-Currently the majority of people are using is using:
+Currently the majority of people are using this namespace:
 ```
 /chaoscraft-start schemetical test-3
 ```
