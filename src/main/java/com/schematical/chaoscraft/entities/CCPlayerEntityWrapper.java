@@ -24,6 +24,14 @@ public class CCPlayerEntityWrapper extends EntityPlayer {
         return entityOrganism.getHeldItem(hand);
     }
     @Override
+    public boolean equals(Object object){
+        if(object instanceof EntityOrganism){
+            EntityOrganism comp = (EntityOrganism) object;
+            return comp.equals(entityOrganism);
+        }
+        return super.equals(object);
+    }
+    @Override
     public Vec3d getLook(float partialTicks){
         return this.entityOrganism.getLook(partialTicks);
     }

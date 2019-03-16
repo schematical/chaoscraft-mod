@@ -143,19 +143,18 @@ public class EntityOrganism extends EntityLiving {
              GameProfile gameProfile = new GameProfile(null, this.getCCNamespace());
              playerWrapper = new CCPlayerEntityWrapper(world, gameProfile);
              playerWrapper.entityOrganism = this;
-             playerWrapper.prevRotationPitch = this.prevRotationPitch;
-             playerWrapper.rotationPitch  = this.rotationPitch;
-             playerWrapper.prevRotationYaw  = this.prevRotationYaw;
-             playerWrapper.rotationYaw = this.rotationYaw;
-             playerWrapper.prevPosX  = this.prevPosX;
-             playerWrapper.prevPosY  = this.prevPosY;
-             playerWrapper.prevPosZ  = this.prevPosZ;
-             playerWrapper.posX = this.posX;
-             playerWrapper.posY = this.posY;
-             playerWrapper.posZ = this.posZ;
-             playerWrapper.onGround = this.onGround;
-
          }
+         playerWrapper.prevRotationPitch = this.prevRotationPitch;
+         playerWrapper.rotationPitch  = this.rotationPitch;
+         playerWrapper.prevRotationYaw  = this.prevRotationYaw;
+         playerWrapper.rotationYaw = this.rotationYaw;
+         playerWrapper.prevPosX  = this.prevPosX;
+         playerWrapper.prevPosY  = this.prevPosY;
+         playerWrapper.prevPosZ  = this.prevPosZ;
+         playerWrapper.posX = this.posX;
+         playerWrapper.posY = this.posY;
+         playerWrapper.posZ = this.posZ;
+         playerWrapper.onGround = this.onGround;
          return playerWrapper;
      }
      public void attachNNetRaw(NNetRaw nNetRaw){
