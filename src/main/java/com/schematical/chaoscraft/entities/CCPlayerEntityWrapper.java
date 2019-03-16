@@ -4,6 +4,7 @@ import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 /**
@@ -22,7 +23,10 @@ public class CCPlayerEntityWrapper extends EntityPlayer {
     public ItemStack getHeldItem(EnumHand hand){
         return entityOrganism.getHeldItem(hand);
     }
-
+    @Override
+    public Vec3d getLook(float partialTicks){
+        return this.entityOrganism.getLook(partialTicks);
+    }
     @Override
     public boolean isSpectator() {
         return false;
