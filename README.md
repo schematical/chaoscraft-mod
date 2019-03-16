@@ -8,24 +8,25 @@ git clone https://github.com/schematical/chaoscraft-mod.git
 ```
 
 ## Run Gradle:
-I recomend using IntellaJ as an IDE but the ultra quick and dirty start:
+I recommend using IntelliJ as an IDE but the ultra quick and dirty start is to open up the terminal and type:
 ```
-run gradlew runClient in command prompt
+gradlew runClient
 ```
-
+This will start minecraft and you are ready to go!
 
 ### Get Authed:
-Run this command in an open world in MC
+Before you can get authenticated you need credentials, these will be provided by me in the discord server.
+Afterwards you can run this command in an open world in MC to get authenticated.
 ```
 /chaoscraft-auth {username} {password}
 ```
-
+You will only have to do this once, because it will save your credentials locally.
 ### Get Started:
+To actually run the mod you need to execute this command within MC.
 ```
 /chaoscraft-start {trainingRoomOwnerUsername} {trainingRoomNamespace}
 ```
-Currently the majority of people are using is using:
-
+Currently the majority of people are using this namespace:
 ```
 /chaoscraft-start schemetical test-3
 ```
@@ -39,7 +40,7 @@ Try running the following:
 ```
 /chaoscraft-repair
 ```
-
+This will attempt to repair your build.
 
 ## Other stuff:
 ### CurseForge:
@@ -52,7 +53,7 @@ https://minecraft.curseforge.com/projects/chaoscraftai
 
 
 ## Matt's SideNotes:
-AWS APIGateway Build Commands(I Now have a script for this).
+AWS APIGateway Build Commands (I now have a script for this).
 ```
 mvn clean package -Pstandalone-jar
 cp target/ChaosNet-1.0-SNAPSHOT.jar  ~/IdeaProjects/chaoscraft/libs/ChaosNet-1.0-SNAPSHOT.jar
