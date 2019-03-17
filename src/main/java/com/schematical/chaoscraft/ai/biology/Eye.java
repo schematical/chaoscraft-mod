@@ -72,20 +72,21 @@ public class Eye  extends BiologyBase{
         List<Entity> entities =  entity.world.getEntitiesWithinAABB(EntityLiving.class,  grownBox);
         entities.addAll(entity.world.getEntitiesWithinAABB(EntityItem.class,  grownBox));
 
+        Vec3d vec3d = entity.getPositionEyes(1);
+        Vec3d vec3d1 = entity.getLook(1);
+        vec3d1 = vec3d1.rotatePitch(this.pitch);
+        vec3d1 = vec3d1.rotateYaw(this.yaw);
+        Vec3d vec3d2 = vec3d.add(
+            new Vec3d(
+            vec3d1.x * maxDistance,
+            vec3d1.y * maxDistance,
+            vec3d1.z * maxDistance
+            )
+        );
+
         for (Entity target : entities) {
 
             if(!target.equals(entity)) {
-                Vec3d vec3d = entity.getPositionEyes(1);
-                Vec3d vec3d1 = entity.getLook(1);
-                vec3d1 = vec3d1.rotatePitch(this.pitch);
-                vec3d1 = vec3d1.rotateYaw(this.yaw);
-                Vec3d vec3d2 = vec3d.add(
-                    new Vec3d(
-                    vec3d1.x * maxDistance,
-                    vec3d1.y * maxDistance,
-                    vec3d1.z * maxDistance
-                    )
-                );
 
 
                 RayTraceResult rayTraceResult = target.getEntityBoundingBox().calculateIntercept(vec3d, vec3d2);

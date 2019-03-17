@@ -38,6 +38,8 @@ import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -114,8 +116,13 @@ public class EntityOrganism extends EntityLiving {
 
         spawnTime = world.getWorldTime();
         this.refreshRender = true;
-        this.itemHandler.setSize(8);
-        this.inventory = new InventoryOrganism(this);
+        this.itemHandler.setSize(64);
+        /*this.inventory = new InventoryOrganism(this);
+        ItemStack stack1 = new ItemStack(Items.STICK, 2);
+        this.itemHandler.setStackInSlot(0, stack1);
+
+        ItemStack stack2 = new ItemStack(Blocks.PLANKS, 3);
+        this.itemHandler.setStackInSlot(1, stack2);*/
      }
      public String getCCNamespace(){
         if(this.organism == null){

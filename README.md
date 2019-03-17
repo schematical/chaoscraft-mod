@@ -88,3 +88,10 @@ World#getWorldTime() % 24000
 
 
 /tp @e[type=chaoscraft:adam-0] @p
+
+
+
+
+shift click on a item in creative tab it grabs a max stack for you
+ctrl+q to drop a stack
+

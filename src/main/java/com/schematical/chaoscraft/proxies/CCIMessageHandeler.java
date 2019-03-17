@@ -27,7 +27,7 @@ public class CCIMessageHandeler implements IMessageHandler<CCIMessage, IMessage>
         ChaosCraft.topLeftMessage += "Score: " + payload.get("score") + " - Age: " +  payload.get("age") + " / " + payload.get("maxAge") + "\n";
         while(jsonObjectIterable.hasNext()){
             JSONObject ouputValue = (JSONObject)jsonObjectIterable.next();
-            ChaosCraft.topLeftMessage += ouputValue.get("summary") + " - " + ouputValue.get("_lastValue") + "\n";
+            ChaosCraft.topLeftMessage += ouputValue.get("summary") + " = " + ouputValue.get("_lastValue") + "\n";
         }
 
         // Execute the action on the main server thread by adding it as a scheduled task

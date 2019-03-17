@@ -5,6 +5,7 @@ import com.schematical.chaoscraft.ai.InputNeuron;
 import com.schematical.chaoscraft.util.PositionRange;
 import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.item.Item;
+import net.minecraftforge.items.ItemStackHandler;
 import org.json.simple.JSONObject;
 
 /**
@@ -24,7 +25,9 @@ public class HasInInventoryInput extends InputNeuron {
         if(slot == -1){
             return -1;
         }
-        return 1;
+        ItemStackHandler itemStackHandler = nNet.entity.getItemStack();
+        _lastValue = itemStackHandler.getStackInSlot(slot).getCount() / item.getItemStackLimit(itemStackHandler.getStackInSlot(slot));
+        return _lastValue;
 
     }
     @Override

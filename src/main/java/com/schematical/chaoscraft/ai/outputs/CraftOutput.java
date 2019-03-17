@@ -61,7 +61,7 @@ public class CraftOutput extends OutputNeuron {
             ChaosCraft.logger.info(nNet.entity.getCCNamespace() + " Attempting to Craft: " + recipe.getRegistryName() + " - " + recipe.getRecipeOutput().getDisplayName());
         }
 
-       ChaosCraft.logger.info("Attempting to Craft: " + recipe.getRegistryName().toString());
+       //ChaosCraft.logger.info("Attempting to Craft: " + recipe.getRegistryName().toString());
         ItemStack outputStack = null;
         if(recipe instanceof ShapedRecipes) {
             outputStack = nNet.entity.craft((ShapedRecipes) recipe);
@@ -77,7 +77,8 @@ public class CraftOutput extends OutputNeuron {
         nNet.entity.entityFitnessManager.test(worldEvent);
         //TODO: Move this to a GUI thing.
         String message = nNet.entity.getCCNamespace() +" Crafted Recipe: " + recipe.getRegistryName().toString() + " - Item: " + worldEvent.item.getRegistryName();
-        ChaosCraft.chat(message);
+        //ChaosCraft.chat(message);
+        ChaosCraft.logger.info(message);
     }
     @Override
     public void parseData(JSONObject jsonObject){
