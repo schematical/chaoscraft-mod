@@ -1,4 +1,4 @@
-package com.schematical.chaoscraft.proxies;
+package com.schematical.chaoscraft.networking;
 
 import com.schematical.chaosnet.model.ChaosNetException;
 import io.netty.buffer.ByteBuf;
