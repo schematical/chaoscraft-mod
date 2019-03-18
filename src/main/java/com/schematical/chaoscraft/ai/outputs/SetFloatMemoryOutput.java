@@ -29,7 +29,7 @@ public class SetFloatMemoryOutput extends OutputNeuron {
     @Override
     public void parseData(JSONObject jsonObject){
         super.parseData(jsonObject);
-        memoryId = jsonObject.get("eye").toString();
+        memoryId = jsonObject.get("memoryId").toString();
     }
 
 

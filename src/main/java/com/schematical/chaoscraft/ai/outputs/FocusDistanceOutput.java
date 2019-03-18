@@ -17,18 +17,15 @@ import org.json.simple.JSONObject;
  * Created by user1a on 12/10/18.
  */
 public class FocusDistanceOutput extends OutputNeuron {
-    public static final double MAX_DISTANCE = 3d;
+
     protected AreaOfFocus areaOfFocus;
     @Override
     public void execute() {
-        float reversedValue = Math.abs((this._lastValue * 2)-1);
-        if(reversedValue < ChaosCraft.activationThreshold){
-            return;
-        }
+
         if(areaOfFocus == null){
-            areaOfFocus = (AreaOfFocus)nNet.getBiology("AreaOfFocus1");
+            areaOfFocus = (AreaOfFocus)nNet.getBiology("AreaOfFocus_0");
         }
-        areaOfFocus.setDistance((float)(reversedValue * MAX_DISTANCE));
+        areaOfFocus.setDistance((float)(this._lastValue * areaOfFocus.maxFocusDistance));
 
 
     }

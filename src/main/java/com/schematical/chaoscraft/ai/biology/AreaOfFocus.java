@@ -24,6 +24,7 @@ public class AreaOfFocus extends BiologyBase{
     public int index;
 
     public float currDistance;
+    public float maxFocusDistance;
     public Vec3d currFocusVec;
     public ArrayList<Entity> seenEntities = new ArrayList<Entity>();
     public HashMap<Float, HashMap<Float, HashMap<Float, ArrayList<CCObserviableAttributeCollection>>>> entityCache = new HashMap<Float, HashMap<Float, HashMap<Float, ArrayList<CCObserviableAttributeCollection>>>>();
@@ -131,7 +132,7 @@ public class AreaOfFocus extends BiologyBase{
     public void parseData(JSONObject jsonObject){
         super.parseData(jsonObject);
         index = Integer.parseInt(jsonObject.get("index").toString());
-
+        maxFocusDistance = Integer.parseInt(jsonObject.get("maxFocusDistance").toString());
     }
     @Override
     public void reset() {
