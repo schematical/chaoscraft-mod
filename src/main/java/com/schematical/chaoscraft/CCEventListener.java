@@ -9,13 +9,8 @@ import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
-import net.minecraft.entity.monster.EntityEnderman;
-import net.minecraft.entity.monster.EntityMob;
-import net.minecraft.entity.monster.EntityPigZombie;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
@@ -69,21 +64,13 @@ public class CCEventListener {
         if(ChaosCraft.organisims.size() > 0) {
             for (EntityPlayerMP observingPlayer : ChaosCraft.observingPlayers) {
                 Entity entity = observingPlayer.getSpectatingEntity();
-
                 if (
                     entity.equals(observingPlayer) ||
                     entity == null ||
                     entity.isDead
                 ) {
-                    if(
-                        entity != null &&
-                        entity instanceof EntityOrganism
-                    ){
-                        ((EntityOrganism) entity).setObserving(null);
-                    }
                     int index = (int) Math.floor(ChaosCraft.organisims.size() * Math.random());
                     EntityOrganism orgToObserve = ChaosCraft.organisims.get(index);
-                    orgToObserve.setObserving(observingPlayer);
                     observingPlayer.setSpectatingEntity(orgToObserve);
                 }
             }
@@ -146,23 +133,5 @@ public class CCEventListener {
 
 
     }
-    @SubscribeEvent
-    public static void spawnEvent(EntityJoinWorldEvent event) {
-        /*
-        if (event.getEntity() instanceof EntityMob) {
-            EntityMob mob = (EntityMob) event.getEntity();
-
-            if (!(mob instanceof EntityPigZombie)) {
-                if (mob instanceof EntityEnderman) {
-
-                } else {
-                    mob.targetTasks.addTask(2, new EntityAINearestAttackableTarget<>(mob, EntityOrganism.class, true));
-                }
-            }
-        }
-        */
-    }
-
-
 
 }

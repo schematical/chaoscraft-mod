@@ -10,8 +10,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import org.json.simple.JSONObject;
@@ -29,17 +27,17 @@ public class Eye  extends BiologyBase{
     public float maxDistance;
     public ArrayList<CCObserviableAttributeCollection> seenEntities = new ArrayList<CCObserviableAttributeCollection>();
     public ArrayList<CCObserviableAttributeCollection> seenBlocks = new ArrayList<CCObserviableAttributeCollection>();
-    public boolean _blocksCached = false;
-    public boolean _entitiesCached = false;
+    public boolean _cached = false;
+
 
     public ArrayList<CCObserviableAttributeCollection> canSeenBlocks(){
-        if(_blocksCached){
+        if(_cached){
             return seenBlocks;
         }
         Vec3d vec3d = entity.getPositionEyes(1);
         Vec3d vec3d1 = entity.getLook(1);
-        vec3d1 = vec3d1.rotatePitch(this.pitch);
-        vec3d1 = vec3d1.rotateYaw(this.yaw);
+        vec3d = vec3d.rotatePitch(this.pitch);
+        vec3d = vec3d.rotateYaw(this.yaw);
         Vec3d vec3d2 = vec3d.add(
             new Vec3d(
                 vec3d1.x * maxDistance,
@@ -60,46 +58,40 @@ public class Eye  extends BiologyBase{
             CCObserviableAttributeCollection attributeCollection = entity.observableAttributeManager.Observe(block);
             seenBlocks.add(attributeCollection);
         }
-        _blocksCached = true;
+        _cached = true;
         return seenBlocks;
 
     }
     public ArrayList<CCObserviableAttributeCollection> canSeenEntities(){
-        if(_entitiesCached){
+        if(_cached){
             return seenEntities;
         }
-        AxisAlignedBB grownBox = entity.getEntityBoundingBox().grow(maxDistance, maxDistance, maxDistance);
-        List<Entity> entities =  entity.world.getEntitiesWithinAABB(EntityLiving.class,  grownBox);
-        entities.addAll(entity.world.getEntitiesWithinAABB(EntityItem.class,  grownBox));
+        List<EntityLiving> entities =  entity.world.getEntitiesWithinAABB(EntityLiving.class,  entity.getEntityBoundingBox().grow(maxDistance, maxDistance, maxDistance));
 
-        for (Entity target : entities) {
-
-            if(!target.equals(entity)) {
-                Vec3d vec3d = entity.getPositionEyes(1);
-                Vec3d vec3d1 = entity.getLook(1);
-                vec3d1 = vec3d1.rotatePitch(this.pitch);
-                vec3d1 = vec3d1.rotateYaw(this.yaw);
-                Vec3d vec3d2 = vec3d.add(
-                    new Vec3d(
-                    vec3d1.x * maxDistance,
-                    vec3d1.y * maxDistance,
-                    vec3d1.z * maxDistance
-                    )
-                );
+        for (EntityLiving target : entities) {
 
 
-                RayTraceResult rayTraceResult = target.getEntityBoundingBox().calculateIntercept(vec3d, vec3d2);
-                if (rayTraceResult != null) {
+            Vec3d vec3d = entity.getPositionEyes(1);
+            vec3d = vec3d.rotatePitch(this.pitch);
+            vec3d = vec3d.rotateYaw(this.yaw);
+            Vec3d vec3d1 = entity.getLook(1);
+            Vec3d vec3d2 = vec3d.add(
+                new Vec3d(
+                vec3d1.x * maxDistance,
+                vec3d1.y * maxDistance,
+                vec3d1.z * maxDistance
+                )
+            );
 
-                    CCObserviableAttributeCollection attributeCollection = entity.observableAttributeManager.Observe(target);
-                    if (attributeCollection != null) {
-                        //ChaosCraft.logger.info(entity.getCCNamespace() + " can see " + attributeCollection.resourceId);
-                        seenEntities.add(attributeCollection);
-                    }
+            RayTraceResult rayTraceResult = target.getEntityBoundingBox().calculateIntercept(vec3d, vec3d2);
+            if (rayTraceResult != null) {
+                CCObserviableAttributeCollection attributeCollection = entity.observableAttributeManager.Observe(target);
+                if(attributeCollection != null) {
+                    seenEntities.add(attributeCollection);
                 }
             }
         }
-        _entitiesCached = true;
+        _cached = true;
         return seenEntities;
     }
     @Override
@@ -109,14 +101,12 @@ public class Eye  extends BiologyBase{
 
         pitch = (float)Math.toRadians(Float.parseFloat(jsonObject.get("pitch").toString()));
         yaw = (float)Math.toRadians(Float.parseFloat(jsonObject.get("yaw").toString()));
-        maxDistance = Float.parseFloat(jsonObject.get("maxDistance").toString());
     }
     @Override
     public void reset() {
         seenEntities.clear();
         seenBlocks.clear();
-        _blocksCached = false;
-        _entitiesCached = false;
+        _cached = false;
     }
 
 }

@@ -66,19 +66,6 @@ public class CCOrgDetailView extends CCGuiBase {
                 )
         );
 
-        buttonList.add(
-            new CCGuiButton(
-                ID++,
-                this.guiLeft + (this.guiWidth / 2) - buttonWidth / 2,
-                this.guiTop + (buttonHeight + 10) * ID,
-                buttonWidth,
-                buttonHeight,
-                I18n.format(ChaosCraft.MODID + ".gui.open.biology"),
-                ButtonAction.VIEW_BIOLOGY_LIST_ACTION,
-                entityOrganism
-            )
-        );
-
         return ID;
     }
 

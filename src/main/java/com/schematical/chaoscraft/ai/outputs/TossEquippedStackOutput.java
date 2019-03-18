@@ -41,7 +41,7 @@ public class TossEquippedStackOutput extends OutputNeuron {
         }*/
 
 
-        CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.TOSSED_EQUIPPED_STACK);
+        CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEventType.TOSSED_EQUIPPED_STACK);
         worldEvent.item = itemStack.getItem();
         nNet.entity.entityFitnessManager.test(worldEvent);
 

@@ -28,8 +28,9 @@
         "id": "neuron-3"
       },
       {
-        "$TYPE": "UseItemOutput",
+        "$TYPE": "CraftOutput",
         "_base_type": "output",
+        "recipeId":"minecraft:crafting_table",
         "dependencies": [
           {
             "neuronId": "neuron-2",
@@ -39,9 +40,10 @@
         "id": "neuron-4"
       },
       {
-        "$TYPE": "CraftOutput",
+        "$TYPE": "PlaceBlockOutput",
         "_base_type": "output",
-        "recipeId":"minecraft:wooden_pickaxe",
+        "attributeId":"BLOCK_ID",
+        "attributeValue":"minecraft:crafting_table",
         "dependencies": [
           {
             "neuronId": "neuron-2",
@@ -54,7 +56,7 @@
         "$TYPE": "EquipOutput",
         "_base_type": "output",
         "attributeId":"ITEM_ID",
-        "attributeValue":"minecraft:wooden_pickaxe",
+        "attributeValue":"minecraft:crafting_table",
         "dependencies": [
           {
             "neuronId": "neuron-2",
@@ -185,4 +187,3 @@
   "score": 0,
   "ttl": 1550700955.809
 }
-

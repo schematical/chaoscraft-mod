@@ -111,7 +111,6 @@ public class CommandChaosCraftAdam extends CommandBase{
                 org.setCustomNameTag("adam");
             });
             ChaosCraft.chat("Adam Successfully Spawned!");
-            ChaosCraft.adam = entitys.get(0);
         } catch (Exception e) {
             ChaosCraft.logger.error(e.getMessage());
             e.printStackTrace();

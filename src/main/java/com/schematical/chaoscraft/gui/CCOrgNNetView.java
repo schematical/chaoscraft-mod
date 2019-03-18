@@ -1,68 +1,111 @@
 package com.schematical.chaoscraft.gui;
 
 import com.schematical.chaoscraft.ChaosCraft;
-import com.schematical.chaoscraft.ai.InputNeuron;
+import com.schematical.chaoscraft.ai.NeuralNet;
 import com.schematical.chaoscraft.ai.NeuronBase;
+
 import com.schematical.chaoscraft.ai.NeuronDep;
-import com.schematical.chaoscraft.ai.OutputNeuron;
+import com.schematical.chaoscraft.entities.EntityFitnessScoreEvent;
+
 import com.schematical.chaoscraft.entities.EntityOrganism;
+import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.vector.Quaternion;
 
+import java.awt.*;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-import static org.lwjgl.opengl.GL11.GL_LINE_STRIP;
+import static org.lwjgl.opengl.GL11.*;
 
 /**
  * Created by user1a on 2/21/19.
  */
-public class CCOrgNNetView extends CCGuiBase {
+public class CCOrgNNetView extends GuiScreen {
+    final String VIEW_NEURON_DETAIL_ACTION = "VIEW_NEURON_DETAIL_ACTION";
+    final ResourceLocation texture = new ResourceLocation(ChaosCraft.MODID, "textures/gui/book.png");
+    int guiWidth = 175;
+    int guiHeight = 228;
+    List<CCGUINeuronDisplayButton> buttons = new ArrayList<CCGUINeuronDisplayButton>();
 
-    private final EntityOrganism entityOrganism;
+    GuiButton button1;
+    //GuiButtonTutorial arrow;
+    GuiTextField textBox;
 
-    public CCOrgNNetView(EntityOrganism entityOrganism) {
-        super(entityOrganism.getName() + " NNet " + entityOrganism.getNNet().neurons.size(), new ResourceLocation(ChaosCraft.MODID, "textures/gui/nn_background.png"), 256, 256);
+    final int BUTTON1 = 0, ARROW = 1;
+    String title = "NNet";
 
-        this.entityOrganism = entityOrganism;
-    }
+    int centerX;
+    int centerY;
 
+    public EntityOrganism entityOrganism;
+
+    /*public void setEntityOrganism(EntityOrganism _entityOrganism){
+        this.entityOrganism = _entityOrganism;
+    }*/
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        GlStateManager.color(1, 1, 1, 1);
 
         drawDefaultBackground();
+        title = entityOrganism.getName() + " NNet " + entityOrganism.getNNet().neurons.size();
 
+        Minecraft.getMinecraft().renderEngine.bindTexture(texture);
+
+        centerX = (width / 2) - guiWidth / 2;
+        centerY = (height / 2) - guiHeight / 2;
+
+        //drawTexturedModalRect(centerX, centerY, 0, 0, guiWidth, guiHeight);
+        //drawString(fontRendererObj, "Tutorial", centerX, centerY, 0x6028ff);
         GlStateManager.pushMatrix();
-        float x = (float) width / guiWidth;
-        float y = (float) height / guiHeight;
-        GlStateManager.scale(x, y, 1.0);
-        this.mc.renderEngine.bindTexture(texture);
-        drawModalRectWithCustomSizedTexture(0, 0, 0, 0, guiWidth, guiHeight, guiWidth, guiHeight);
+        {
+            GlStateManager.enableAlpha();
+            GlStateManager.enableBlend();
+            GlStateManager.color(1, 1, 1, 1);
+            Minecraft.getMinecraft().renderEngine.bindTexture(texture);
+            drawTexturedModalRect(centerX, centerY, 0, 0, guiWidth, guiHeight);
+        }
+        GlStateManager.popMatrix();
+        GlStateManager.pushMatrix();
+        {
+            GlStateManager.translate((width / 2) - fontRenderer.getStringWidth(title), centerY + 10, 0);
+
+            fontRenderer.drawString(title, 0, 0, 0x000000);
+        }
         GlStateManager.popMatrix();
 
-        fontRenderer.drawString(title, (width - this.fontRenderer.getStringWidth(title)) / 2, this.guiTop, 0x000000);
-
-        for (GuiButton button : buttonList) {
-            if (button instanceof CCGUINeuronDisplayButton) {
-                ((CCGUINeuronDisplayButton) button).drawDependencies();
-            }
-        }
-
-        for (GuiButton button : buttonList) {
+        button1.drawButton(mc, mouseX, mouseY, partialTicks);
+        for(CCGUINeuronDisplayButton button: buttons){
             button.drawButton(mc, mouseX, mouseY, partialTicks);
         }
+        //arrow.drawButton(mc, mouseX, mouseY);
+        /*ItemStack icon = new ItemStack(Blocks.OBSIDIAN);
+        GlStateManager.pushMatrix();
+        {
+            GlStateManager.translate(centerX, centerY, 0);
+            GlStateManager.scale(2, 2, 2);
+            mc.getRenderItem().renderItemAndEffectIntoGUI(icon, 0, 0);
+        }
+        GlStateManager.popMatrix();*/
+        //textBox.drawTextBox();
 
-        for (GuiButton button : buttonList) {
-            if (button instanceof CCGUINeuronDisplayButton) {
-                List<String> text = new ArrayList<String>();
-                text.add(((CCGUINeuronDisplayButton) button).neuron.toLongString());
-                drawTooltip(text, mouseX, mouseY, button.x, button.y, button.width, button.height);
-            }
+
+
+
+        updateButtons();
+        for(CCGUINeuronDisplayButton button: buttons) {
+            List<String> text = new ArrayList<String>();
+            text.add(button.neuron.toString());
+            drawTooltip(text, mouseX, mouseY, button.x, button.y, button.width, button.height);
         }
 
     }
@@ -75,103 +118,144 @@ public class CCOrgNNetView extends CCGuiBase {
 
     @Override
     public void initGui() {
-        this.guiLeft = 50;
-        this.guiTop = 10;
+        buttonList.clear();
+        buttonList.add(button1 = new GuiButton(BUTTON1, (width / 2) - 100 / 2, height - 40, 100, 20, "Close"));
+        //buttonList.add(arrow = new GuiButtonTutorial(ARROW, 100, 100));
 
-        initializeButtons();
+        textBox = new GuiTextField(0, fontRenderer, 0, 0, 100, 20);
+
+        super.initGui();
     }
 
-    int initializeButtons() {
-        buttonList.clear();
-        int ID = 0;
-        int buttonWidth = 100;
-        int buttonHeight = 20;
+    public void updateButtons() {
+        int btnCount = 1;
+        buttons.clear();
+        int outputY = centerY + 10;
+        int inputY = centerY + 10;
+        int middleY = centerY + 10;
+        NeuralNet net;
+        int r, g, b, a;
+        for(NeuronBase neuron: entityOrganism.getNNet().neurons.values()){
+            CCGUINeuronDisplayButton button;
+            int x = 0;
+            int y = 0;
+            int buttonWidth = 5;
+            int buttonHeight = 10;
 
-        buttonList.add(
-                new CCGuiButton(
-                        ID++,
-                        ((this.width) / 2) - buttonWidth / 2,
-                        this.guiTop + (this.height - guiTop) - (buttonHeight + 15),
-                        buttonWidth,
-                        buttonHeight,
-                        I18n.format(ChaosCraft.MODID + ".gui.close"),
-                        ButtonAction.CLOSE
-                )
-        );
+            switch(neuron._base_type()){
+                case("INPUT"):
+                    x = centerX + 1;
+                    y = inputY;
+                    buttonWidth = 5;
+                    buttonHeight = 10;
+                    inputY += buttonHeight;
 
-        List<OutputNeuron> outputs = new ArrayList<>();
-        List<InputNeuron> inputs = new ArrayList<>();
 
-        HashMap<NeuronBase, CCNeuronInformation> neuronInformation = new HashMap<>();
 
-        for (NeuronBase neuronBase : entityOrganism.getNNet().neurons.values()) {
-            if (neuronBase instanceof OutputNeuron) {
-                outputs.add((OutputNeuron) neuronBase);
-            } else if (neuronBase instanceof InputNeuron) {
-                inputs.add((InputNeuron) neuronBase);
+                    break;
+                case("OUTPUT"):
+                    x = centerX + guiWidth - 5;
+                    y = outputY;
+                    buttonWidth = 5;
+                    buttonHeight = 10;
+                    outputY += buttonHeight;
+
+                    break;
+                case("MIDDLE"):
+                    x = width/2;
+                    y = middleY;
+                    buttonWidth = 5;
+                    buttonHeight = 10;
+                    middleY += buttonHeight;
+
+                    break;
+                default:
+                    throw new ChaosNetException("Invalid Neuron: " + neuron._base_type());
+
             }
 
-            neuronInformation.put(neuronBase, new CCNeuronInformation());
-        }
 
-        for (int i = 0; i < outputs.size(); i++) {
-            OutputNeuron output = outputs.get(i);
-            CCNeuronInformation information = neuronInformation.get(output);
-            information.y = (height / outputs.size()) * i + (height / outputs.size()) / 2;
+            for(int i = 0; i < neuron.dependencies.size(); i++){
+                    if(neuron.dependencies.get(i).weight > 0) {
+                        r = 255;
+                        g = 0;
+                        b = 0;
+                        a = 255;
+                    } else {
+                        r = 0;
+                        g = 255;
+                        b = 0;
+                        a = 255;
+                    }
 
-            output.setDistanceFromIO(0, width, height, buttonHeight, neuronInformation);
-            information.x = width - (buttonWidth / 2 + guiLeft);
-        }
 
-        for (int i = 0; i < inputs.size(); i++) {
-            InputNeuron input = inputs.get(i);
-            CCNeuronInformation information = neuronInformation.get(input);
-            information.x = buttonWidth / 2 + guiLeft;
-            information.y = (height / inputs.size()) * i + (height / inputs.size()) / 2;
-        }
-
-        HashMap<Float, List<CCNeuronInformation>> layers = new HashMap<>();
-        for (NeuronBase neuron : entityOrganism.getNNet().neurons.values()) {
-            CCNeuronInformation information = neuronInformation.get(neuron);
-            if (!(neuron instanceof InputNeuron || neuron instanceof OutputNeuron)) {
-                if (!layers.containsKey(information.layer)) {
-                    layers.put(information.layer, new ArrayList<>());
-                }
-
-                layers.get(information.layer).add(information);
+                drawLine(x + buttonWidth/2, y + buttonHeight/2, neuron.dependencies.get(i).depNeuron.x + buttonWidth/2, neuron.dependencies.get(i).depNeuron.y+buttonHeight/2, r, g, b, a);
             }
-        }
+            neuron.setcoords(x, y);
 
-        for (float layer : layers.keySet()) {
-            List<CCNeuronInformation> neuronsInLayer = layers.get(layer);
-
-            for (int i = 0; i < neuronsInLayer.size(); i++) {
-                neuronsInLayer.get(i).y = (height / neuronsInLayer.size()) * i + (height / neuronsInLayer.size()) / 2;
-            }
-
-        }
-
-        for (NeuronBase neuron : entityOrganism.getNNet().neurons.values()) {
-
-            CCNeuronInformation information = neuronInformation.get(neuron);
-            buttonWidth = fontRenderer.getStringWidth(neuron.toString()) + 10;
-
-            buttonList.add(new CCGUINeuronDisplayButton(
-                            ID++,
-                            information.x - buttonWidth / 2,
-                            information.y - buttonHeight / 2,
-                            buttonWidth,
-                            buttonHeight,
-                            neuron.toString(),
-                            entityOrganism,
-                            neuron,
-                            neuronInformation
+            buttonList.add(button = new CCGUINeuronDisplayButton(
+                            btnCount,
+                            x,
+                            y,
+                    buttonWidth,
+                    buttonHeight,
+                    ""
 
                     )
             );
+            button.neuron = neuron;
+            button.entity = entityOrganism;
+            button.action = CCGuiBase.ButtonAction.VIEW_NEURON_DETAIL_ACTION;
+            btnCount += 1;
+            buttons.add(button);
+
+
         }
 
-        return ID;
+
+    }
+
+    public void updateTextBoxes() {
+        if (!textBox.getText().isEmpty()) {
+            if (!textBox.isFocused()) {
+                title = textBox.getText();
+            }
+        }
+        updateButtons();
+    }
+
+    @Override
+    protected void actionPerformed(GuiButton button) throws IOException {
+        if(button instanceof  CCGuiButton){
+            CCGuiButton ccButton = (CCGuiButton) button;
+            switch (ccButton.action){
+                case VIEW_NEURON_DETAIL_ACTION:
+                    CCOrgDetailView view = new CCOrgDetailView(ccButton.entity);
+                    mc.displayGuiScreen(view);
+                    return;
+            }
+        }
+        switch (button.id) {
+            case BUTTON1:
+                mc.displayGuiScreen(null);
+                break;
+        }
+        //initializeButtons();
+        super.actionPerformed(button);
+    }
+
+    @Override
+    protected void keyTyped(char typedChar, int keyCode) throws IOException {
+        textBox.textboxKeyTyped(typedChar, keyCode);
+        updateTextBoxes();
+        super.keyTyped(typedChar, keyCode);
+    }
+
+    @Override
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+        textBox.mouseClicked(mouseX, mouseY, mouseButton);
+        updateTextBoxes();
+        super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
     @Override
@@ -180,49 +264,28 @@ public class CCOrgNNetView extends CCGuiBase {
     }
 
     public void drawLine(int startX, int startY, int endX, int endY, int r, int g, int b, int a) {
-        GlStateManager.disableTexture2D();
-        GlStateManager.color(r / 255f, g / 255f, b / 255f, a / 255f);
-
-        GlStateManager.glLineWidth(5);
+        GlStateManager.color(r, g, b, a);
+        glLineWidth(5);
         GlStateManager.glBegin(GL_LINE_STRIP);
-
-        GlStateManager.glVertex3f(startX, startY, 0);
-        GlStateManager.glVertex3f(endX, endY, 0);
+        glVertex2f(startX, startY);
+        glVertex2f(endX, endY);
         GlStateManager.glEnd();
-        GlStateManager.enableTexture2D();
     }
 
 
-    public class CCGUINeuronDisplayButton extends CCGuiButton {
-        public final NeuronBase neuron;
-        HashMap<NeuronBase, CCNeuronInformation> neuronInformation;
-
-        public CCGUINeuronDisplayButton(int buttonId, int x, int y, int width, int height, String buttonText, EntityOrganism entityOrganism, NeuronBase neuron, HashMap<NeuronBase, CCNeuronInformation> neuronInformation) {
-            super(buttonId, x, y, width, height, buttonText, ButtonAction.VIEW_NEURON_DETAIL_ACTION, entityOrganism);
-            this.neuron = neuron;
-            this.neuronInformation = neuronInformation;
+    public class CCGUINeuronDisplayButton extends CCGuiButton{
+        public NeuronBase neuron;
+        public CCGUINeuronDisplayButton(int buttonId, int x, int y, int width, int height, String buttonText) {
+            super(buttonId, x, y, width, height, buttonText);
         }
-
         @Override
-        public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
-            super.drawButton(mc, mouseX, mouseY, partialTicks);
-        }
+        public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks)
+        {
 
-        public void drawDependencies() {
-            CCNeuronInformation informationOut = neuronInformation.get(neuron);
-            for (NeuronDep dep : neuron.dependencies) {
-                CCNeuronInformation informationIn = neuronInformation.get(dep.depNeuron);
-                drawLine(informationOut.x, informationOut.y, informationIn.x, informationIn.y, dep.weight < 0 ? (int) (255 * dep.weight * -1) : 0, dep.weight > 0 ? (int) (255 * dep.weight) : 0, 0, 255);
-            }
-        }
-    }
+            //ChaosCraft.logger.info("CCGUINeuronDisplayButton.drawButton " + this.displayString);
+            super.drawButton(mc, mouseX,mouseY,partialTicks);
 
-    public class CCNeuronInformation {
-        public int x;
-        public int y;
-        public float layer;
-        public int distanceFromOutput;
-        public int distanceFromInput;
+        }
 
     }
 

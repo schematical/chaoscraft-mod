@@ -18,14 +18,12 @@ public abstract class CCGuiBase extends GuiScreen {
         SHOW_INVENTORY,
         SHOW_SCORE_EVENTS,
         VIEW_ORG_DETAIL_ACTION,
-        VIEW_NEURON_DETAIL_ACTION,
-        VIEW_BIOLOGY_LIST_ACTION,
-        VIEW_BIOLOGY_DETAIL_ACTION
+        VIEW_NEURON_DETAIL_ACTION
     }
 
-    final String title;
+    private final String title;
     final int guiWidth, guiHeight;
-    final ResourceLocation texture;
+    private final ResourceLocation texture;
 
     int guiLeft;
     int guiTop;
@@ -66,7 +64,6 @@ public abstract class CCGuiBase extends GuiScreen {
     }
 
     int initializeButtons() {
-        buttonList.clear();
         int ID = 0;
         int buttonWidth = 100;
         int buttonHeight = 20;
@@ -90,7 +87,7 @@ public abstract class CCGuiBase extends GuiScreen {
     @Override
     protected void actionPerformed(GuiButton button) throws IOException {
         CCGuiButton ccButton = (CCGuiButton) button;
-        GuiScreen view = null;
+        CCGuiBase view = null;
         switch (ccButton.action) {
             case CLOSE:
                 mc.displayGuiScreen(null);
@@ -102,29 +99,21 @@ public abstract class CCGuiBase extends GuiScreen {
 
                 break;
             case SHOW_INVENTORY:
-                view = new CCOrgInventoryView(ccButton.entity);
-                mc.displayGuiScreen(view);
+                CCOrgInventoryView view2 = new CCOrgInventoryView(ccButton.entity);
+                mc.displayGuiScreen(view2);
 
                 break;
             case SHOW_NNET:
-                view = new CCOrgNNetView(ccButton.entity);
-                mc.displayGuiScreen(view);
+                CCOrgNNetView view3 = new CCOrgNNetView();
+                view3.entityOrganism = ccButton.entity;
+                mc.displayGuiScreen(view3);
 
                 break;
             case VIEW_ORG_DETAIL_ACTION:
                 view = new CCOrgDetailView(ccButton.entity);
                 mc.displayGuiScreen(view);
                 return;
-            case VIEW_BIOLOGY_LIST_ACTION:
-                view = new CCOrgBiologyListView(ccButton.entity);
-                mc.displayGuiScreen(view);
-                return;
-            case VIEW_BIOLOGY_DETAIL_ACTION:
-                view = new CCOrgBiologyDetailView(ccButton.entity, ((CCOrgBiologyListView.CCBiologyDetailButton) ccButton).biologyBase);
-                mc.displayGuiScreen(view);
-                return;
             default:
-                ChaosCraft.logger.warn("Unknown button action! " + ccButton.action);
                 super.actionPerformed(button);
         }
     }

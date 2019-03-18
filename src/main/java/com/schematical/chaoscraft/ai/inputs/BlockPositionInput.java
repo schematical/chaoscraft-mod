@@ -1,6 +1,7 @@
 package com.schematical.chaoscraft.ai.inputs;
 
 import com.schematical.chaoscraft.ai.InputNeuron;
+import com.schematical.chaoscraft.ai.biology.BiologyBase;
 import com.schematical.chaoscraft.ai.biology.BlockPositionSensor;
 import com.schematical.chaoscraft.util.PositionRange;
 import net.minecraft.block.Block;
@@ -33,7 +34,7 @@ public class BlockPositionInput                                                 
                     switch(attributeId){
                         case(com.schematical.chaoscraft.Enum.BLOCK_ID):
                             ResourceLocation regeistryName = block.getRegistryName();
-                            String key = regeistryName.getNamespace() + ":" + regeistryName.getPath();
+                            String key = regeistryName.getResourceDomain() + ":" + regeistryName.getResourcePath();
                             if(attributeValue.equals(key)){
                                 _lastValue = 1;
                             }
