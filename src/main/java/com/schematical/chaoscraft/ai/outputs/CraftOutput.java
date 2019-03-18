@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
+import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.util.ResourceLocation;
 import org.json.simple.JSONObject;
 
@@ -63,11 +64,9 @@ public class CraftOutput extends OutputNeuron {
 
        //ChaosCraft.logger.info("Attempting to Craft: " + recipe.getRegistryName().toString());
         ItemStack outputStack = null;
-        if(recipe instanceof ShapedRecipes) {
-            outputStack = nNet.entity.craft((ShapedRecipes) recipe);
-        }else{
-            ChaosCraft.logger.info("Found a non-shaped recipe: " + recipe.getRegistryName().toString());
-        }
+
+        outputStack = nNet.entity.craft(recipe);
+
         if(outputStack == null){
             throw new ChaosNetException("Something went wrong crafting: " + recipe.getRegistryName().toString() + " this should not be possible with the `evaluate` check above");
         }

@@ -46,6 +46,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipes;
+import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
@@ -401,14 +402,24 @@ public class EntityOrganism extends EntityLiving {
 
 
     }
-    public ItemStack craft(ShapedRecipes recipe) {
+
+
+    public ItemStack craft(IRecipe recipe) {
+        NonNullList<Ingredient> recipeItems = null;
+        if(recipe instanceof ShapedRecipes) {
+            recipeItems = ((ShapedRecipes) recipe).recipeItems;
+        }else if(recipe instanceof ShapelessRecipes) {
+            recipeItems = ((ShapelessRecipes) recipe).recipeItems;
+        }else{
+            throw new ChaosNetException("Found a recipe unaccounted for: " + recipe.getRegistryName().toString() + "Class Name: " +  recipe.getClass().getName());
+        }
         //Check to see if they have the items in inventory for that
         RecipeItemHelper recipeItemHelper = new RecipeItemHelper();
         int slots = itemHandler.getSlots();
         int emptySlot = -1;
 
         List<Integer> usedSlots = new ArrayList<Integer>();
-        for(Ingredient ingredient: recipe.recipeItems) {
+        for(Ingredient ingredient: recipeItems) {
 
             for (int i = 0; i < slots; i++) {
                 ItemStack itemStack = itemHandler.getStackInSlot(i);
@@ -573,6 +584,7 @@ public class EntityOrganism extends EntityLiving {
     public void setObserving(EntityPlayerMP observingPlayer) {
         this.observingPlayer = observingPlayer;
     }
+
 
     public static class EntityOrganismRenderer extends RenderLiving<EntityOrganism> {
 
