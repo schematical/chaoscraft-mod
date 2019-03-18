@@ -29,6 +29,7 @@ public class AreaOfFocus extends BiologyBase{
     public ArrayList<Entity> seenEntities = new ArrayList<Entity>();
     public HashMap<Float, HashMap<Float, HashMap<Float, ArrayList<CCObserviableAttributeCollection>>>> entityCache = new HashMap<Float, HashMap<Float, HashMap<Float, ArrayList<CCObserviableAttributeCollection>>>>();
     public boolean _entitiesCached = false;
+    public int viewRange;
     public Vec3d getFocusPoint(){
         if(this.currFocusVec != null){
             return this.currFocusVec;
@@ -72,7 +73,7 @@ public class AreaOfFocus extends BiologyBase{
         if(!_entitiesCached) {
 
 
-            float dist = 4;
+            float dist = viewRange + 1;
             AxisAlignedBB grownBox = new AxisAlignedBB(
             vec3d.x + dist,
             vec3d.y + dist,
@@ -133,6 +134,7 @@ public class AreaOfFocus extends BiologyBase{
         super.parseData(jsonObject);
         index = Integer.parseInt(jsonObject.get("index").toString());
         maxFocusDistance = Integer.parseInt(jsonObject.get("maxFocusDistance").toString());
+        viewRange = Integer.parseInt(jsonObject.get("viewRange").toString());
     }
     @Override
     public void reset() {

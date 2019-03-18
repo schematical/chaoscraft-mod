@@ -12,6 +12,7 @@ import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
 import com.schematical.chaoscraft.ai.CCObserviableAttributeCollection;
 import com.schematical.chaoscraft.ai.NeuralNet;
 import com.schematical.chaoscraft.ai.OutputNeuron;
+import com.schematical.chaoscraft.ai.biology.AreaOfFocus;
 import com.schematical.chaoscraft.ai.biology.BiologyBase;
 import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.events.OrgEvent;
@@ -255,6 +256,13 @@ public class EntityOrganism extends EntityLiving {
                     jsonObject.put("age", this.getAgeSeconds());
                     jsonObject.put("maxAge", this.maxLifeSeconds);
                     jsonObject.put("outputs", outputValues);
+                    AreaOfFocus areaOfFocus = (AreaOfFocus)nNet.getBiology("AreaOfFocus_0");
+                    JSONObject areaOfFocusJSON = new JSONObject();
+                    areaOfFocusJSON.put("x", areaOfFocus.getFocusPoint().x);
+                    areaOfFocusJSON.put("y", areaOfFocus.getFocusPoint().y);
+                    areaOfFocusJSON.put("z", areaOfFocus.getFocusPoint().z);
+                    areaOfFocusJSON.put("range", areaOfFocus.viewRange);
+                    jsonObject.put("areaOfFocus", areaOfFocusJSON);
                     ChaosCraft.networkWrapper.sendTo(new CCIMessage(jsonObject), (EntityPlayerMP) observingPlayer);
 
                 }

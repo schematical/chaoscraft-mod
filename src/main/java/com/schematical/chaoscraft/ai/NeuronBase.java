@@ -91,8 +91,7 @@ public abstract class NeuronBase extends InnovationBase {
     }
     public String toLongString(){
         String response = this.getClass().getSimpleName().replace("Input","");
-        response += " " + (Math.round(this._lastValue * 100) / 100);
-        response += " " + (Math.round(this._lastValue * 100) / 100);
+
         return response;
     }
 
