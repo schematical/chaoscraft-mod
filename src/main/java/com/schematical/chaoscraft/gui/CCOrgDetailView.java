@@ -78,6 +78,18 @@ public class CCOrgDetailView extends CCGuiBase {
                 entityOrganism
             )
         );
+        buttonList.add(
+                new CCGuiButton(
+                        ID++,
+                        this.guiLeft + (this.guiWidth / 2) - buttonWidth / 2,
+                        this.guiTop + (buttonHeight + 10) * ID,
+                        buttonWidth,
+                        buttonHeight,
+                        I18n.format(ChaosCraft.MODID + ".gui.open.areaoffocus"),
+                        ButtonAction.VIEW_AREA_OF_FOCUS,
+                        entityOrganism
+                )
+        );
 
         return ID;
     }
