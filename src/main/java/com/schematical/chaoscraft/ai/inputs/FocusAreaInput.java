@@ -35,7 +35,7 @@ public class FocusAreaInput extends InputNeuron {
             //ChaosCraft.logger.info("Debugging...");
         }
         if(areaOfFocus == null){
-            areaOfFocus = (AreaOfFocus)nNet.getBiology("AreaOfFocus1");
+            areaOfFocus = (AreaOfFocus)nNet.getBiology("AreaOfFocus_0");
         }
 
         switch(attributeId){

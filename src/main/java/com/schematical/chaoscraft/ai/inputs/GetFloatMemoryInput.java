@@ -20,7 +20,7 @@ public class GetFloatMemoryInput extends InputNeuron {
     @Override
     public void parseData(JSONObject jsonObject){
         super.parseData(jsonObject);
-        memoryId = jsonObject.get("eye").toString();
+        memoryId = jsonObject.get("memoryId").toString();
     }
 
 }
