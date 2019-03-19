@@ -4,6 +4,7 @@ import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.entities.EntityFitnessScoreEvent;
 import com.schematical.chaoscraft.entities.EntityOrganism;
 import com.schematical.chaoscraft.events.CCWorldEvent;
+import com.schematical.chaoscraft.events.OrgEvent;
 import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.util.text.TextComponentString;
 
@@ -47,6 +48,7 @@ public class EntityFitnessManager {
                 return;
             }
             scoreEvents.add(scoreEvent);
+            entityOrganism.events.add(new OrgEvent(scoreEvent));
             occurences.put(scoreEvent.fitnessRule.id, numOfOccurences);
             if(scoreEvent.life != 0) {
                 entityOrganism.adjustMaxLife(scoreEvent.life);

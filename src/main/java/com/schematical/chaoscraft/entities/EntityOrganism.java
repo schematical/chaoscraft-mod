@@ -5,6 +5,8 @@ package com.schematical.chaoscraft.entities;
  */
 
 
+import com.google.common.collect.Lists;
+import com.mojang.authlib.GameProfile;
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
 import com.schematical.chaoscraft.ai.CCObserviableAttributeCollection;
@@ -12,12 +14,15 @@ import com.schematical.chaoscraft.ai.NeuralNet;
 import com.schematical.chaoscraft.ai.OutputNeuron;
 import com.schematical.chaoscraft.ai.biology.BiologyBase;
 import com.schematical.chaoscraft.events.CCWorldEvent;
-import com.schematical.chaoscraft.events.CCWorldEventType;
+import com.schematical.chaoscraft.events.OrgEvent;
 import com.schematical.chaoscraft.fitness.EntityFitnessManager;
 import com.schematical.chaoscraft.gui.CCOrgDetailView;
 import com.schematical.chaoscraft.inventory.InventoryOrganism;
+import com.schematical.chaoscraft.proxies.CCIMessage;
+import com.schematical.chaosnet.model.ChaosNetException;
 import com.schematical.chaosnet.model.NNetRaw;
 import com.schematical.chaosnet.model.Organism;
+import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -25,18 +30,20 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.util.RecipeItemHelper;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
@@ -49,6 +56,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.ItemStackHandler;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import javax.annotation.Nonnull;
@@ -60,7 +68,7 @@ import java.util.List;
 public class EntityOrganism extends EntityLiving {
     public final double REACH_DISTANCE = 5.0D;
     private final long spawnTime;
-
+    protected CCPlayerEntityWrapper playerWrapper;
 
     public EntityFitnessManager entityFitnessManager;
     protected Organism organism;
@@ -87,6 +95,8 @@ public class EntityOrganism extends EntityLiving {
     public InventoryOrganism inventory;
     public CCObservableAttributeManager observableAttributeManager;
     public HashMap<String, BiologyBase> inputs = new HashMap<String, BiologyBase>();
+    public List<OrgEvent> events = new ArrayList<OrgEvent>();
+    public EntityPlayerMP observingPlayer;
 
     public EntityOrganism(World worldIn) {
         this(worldIn, "EntityOrganism");
@@ -128,6 +138,25 @@ public class EntityOrganism extends EntityLiving {
      public NeuralNet getNNet(){
         return nNet;
      }
+     public CCPlayerEntityWrapper getPlayerWrapper(){
+         if(playerWrapper == null){
+             GameProfile gameProfile = new GameProfile(null, this.getCCNamespace());
+             playerWrapper = new CCPlayerEntityWrapper(world, gameProfile);
+             playerWrapper.entityOrganism = this;
+         }
+         playerWrapper.prevRotationPitch = this.prevRotationPitch;
+         playerWrapper.rotationPitch  = this.rotationPitch;
+         playerWrapper.prevRotationYaw  = this.prevRotationYaw;
+         playerWrapper.rotationYaw = this.rotationYaw;
+         playerWrapper.prevPosX  = this.prevPosX;
+         playerWrapper.prevPosY  = this.prevPosY;
+         playerWrapper.prevPosZ  = this.prevPosZ;
+         playerWrapper.posX = this.posX;
+         playerWrapper.posY = this.posY;
+         playerWrapper.posZ = this.posZ;
+         playerWrapper.onGround = this.onGround;
+         return playerWrapper;
+     }
      public void attachNNetRaw(NNetRaw nNetRaw){
         String nNetString = nNetRaw.getNNetRaw();
          JSONObject obj = null;
@@ -163,6 +192,20 @@ public class EntityOrganism extends EntityLiving {
     }
 
     @Override
+    public boolean attackEntityFrom(DamageSource source, float amount)
+    {
+        if(!world.isRemote){
+            CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.HEALTH_CHANGE);
+            worldEvent.entity = this;
+            worldEvent.amount = -1 * (amount/this.getMaxHealth());
+            entityFitnessManager.test(worldEvent);
+            events.add(new OrgEvent(worldEvent, OrgEvent.DEFAULT_TTL));
+        }
+        return super.attackEntityFrom(source, amount);
+    }
+
+
+    @Override
     public void onUpdate(){
 
         if(getDebug()){
@@ -177,9 +220,34 @@ public class EntityOrganism extends EntityLiving {
             ) {
                 List<OutputNeuron> outputs = this.nNet.evaluate();
                 Iterator<OutputNeuron> iterator = outputs.iterator();
+                JSONObject jsonObject = null;
+                JSONArray outputValues = null;
+                if(observingPlayer != null) {
+                    jsonObject = new JSONObject();
+                    outputValues = new JSONArray();
+                }
                 while (iterator.hasNext()) {
+
                     OutputNeuron outputNeuron = iterator.next();
                     outputNeuron.execute();
+
+                    if(observingPlayer != null){
+                        JSONObject neuronOutput = new JSONObject();
+                        neuronOutput.put("summary", outputNeuron.toLongString());
+                        neuronOutput.put("_lastValue", outputNeuron._lastValue);
+                        outputValues.add( neuronOutput);
+
+                    }
+
+
+                }
+                if(observingPlayer != null) {
+                    jsonObject.put("namespace", this.organism.getNamespace());
+                    jsonObject.put("score", this.entityFitnessManager.totalScore());
+                    jsonObject.put("age", this.getAgeSeconds());
+                    jsonObject.put("maxAge", this.maxLifeSeconds);
+                    jsonObject.put("outputs", outputValues);
+                    ChaosCraft.networkWrapper.sendTo(new CCIMessage(jsonObject), (EntityPlayerMP) observingPlayer);
 
                 }
 
@@ -197,6 +265,14 @@ public class EntityOrganism extends EntityLiving {
                 this.renderYawOffset = 0;
                 this.setRotation(this.rotationYaw, this.rotationPitch);
                 this.observationHack();
+                Iterator<OrgEvent> eventIterator = events.iterator();
+                while(eventIterator.hasNext()){
+                    OrgEvent event = eventIterator.next();
+                    int eventTTL = event.tick();
+                    if(eventTTL <= 0){
+                        eventIterator.remove();
+                    }
+                }
             }
 
         }
@@ -207,6 +283,7 @@ public class EntityOrganism extends EntityLiving {
                 getAgeSeconds() > maxLifeSeconds ||
                 this.spawnHash != ChaosCraft.spawnHash
             ) {
+                this.dropInventory();
                 //ChaosCraft.logger.info("Killing: " + this.getName() + " - AGE: " + age + " - maxLifeSeconds: " + maxLifeSeconds + " - Score: " + this.entityFitnessManager.totalScore());
                 this.setDead();
                 return;
@@ -288,86 +365,75 @@ public class EntityOrganism extends EntityLiving {
 
     public boolean canCraft(IRecipe recipe) {
         //Check to see if they have the items in inventory for that
-        ItemStackHandler itemStackHandler = nNet.entity.getItemStack();
-        int slots = itemStackHandler.getSlots();
+
 
         NonNullList<Ingredient> ingredients = recipe.getIngredients();
         if(ingredients.size() == 0){
             return false;
         }
+        RecipeItemHelper recipeItemHelper = getRecipeItemHelper();
 
-        List<ItemStack> stacks = new ArrayList<ItemStack>();
-        /*if(recipe.getRegistryName().toString().equals("minecraft:crafting_table")){
-            ChaosCraft.logger.info("Testing: " + recipe.getRegistryName().toString());
-        }*/
-        for(Ingredient ingredient : ingredients){
-            boolean containsItem = false;
-            for(int i = 0; i < slots; i++) {
-                ItemStack itemStack = itemStackHandler.getStackInSlot(i);
-                if(!itemStack.isEmpty()){
-                    boolean itWorks = ingredient.apply(itemStack);
-                    if (itWorks) {
-                        containsItem = true;
+        boolean result = recipeItemHelper.canCraft(recipe, null);
 
-                    }
-                }
-            }
-            if(!containsItem){
-               /*
-                ItemStack[] missingStacks = ingredient.getMatchingStacks();
-                String missing = "";
-                for(ItemStack missingStack : missingStacks){
-                    missing += missingStack.getDisplayName() + ", ";
-                }
-                if(recipe.getRegistryName().toString().equals("minecraft:crafting_table")){
-                    ChaosCraft.logger.info(recipe.getRegistryName().toString() + "Failed Missing: "  + missing);
-                }*/
+        return result;
 
-                return false;
-            }
-        }
-        //ChaosCraft.logger.info("Success!: " + recipe.getRegistryName().toString());
-        return true;
     }
-    public ItemStack craft(IRecipe recipe) {
-        //Check to see if they have the items in inventory for that
-        ItemStackHandler itemStackHandler = getItemStack();
-        int slots = itemStackHandler.getSlots();
-        int emptySlot = -1;
-        NonNullList<Ingredient> ingredients = recipe.getIngredients();
+    public RecipeItemHelper getRecipeItemHelper(){
 
-        List<ItemStack> stacks = new ArrayList<ItemStack>();
+        RecipeItemHelper recipeItemHelper = new RecipeItemHelper();
+        int slots = itemHandler.getSlots();
+
+        for(int i = 0; i < slots; i++) {
+            ItemStack itemStack = itemHandler.getStackInSlot(i);
+
+            if(!itemStack.isEmpty()){
+                recipeItemHelper.accountStack(itemStack);
+            }
+        }
+        return recipeItemHelper;
+
+
+    }
+    public ItemStack craft(ShapedRecipes recipe) {
+        //Check to see if they have the items in inventory for that
+        RecipeItemHelper recipeItemHelper = new RecipeItemHelper();
+        int slots = itemHandler.getSlots();
+        int emptySlot = -1;
+
         List<Integer> usedSlots = new ArrayList<Integer>();
-        for(Ingredient ingredient : ingredients){
-            boolean containsItem = false;
-            for(int i = 0; i < slots; i++) {
-                ItemStack itemStack = itemStackHandler.getStackInSlot(i);
-                if(itemStack.isEmpty()){
+        for(Ingredient ingredient: recipe.recipeItems) {
+
+            for (int i = 0; i < slots; i++) {
+                ItemStack itemStack = itemHandler.getStackInSlot(i);
+                if(itemStack.isEmpty()) {
                     emptySlot = i;
-                }else {
-                    boolean itWorks = ingredient.apply(itemStack);
-                    if (itWorks) {
-                        containsItem = true;
-                        usedSlots.add(i);
+                }else{
+                    int packedItem = RecipeItemHelper.pack(itemStack);
+                    IntList ingredientItemIds = ingredient.getValidItemStacksPacked();
+                    if (ingredientItemIds.contains(packedItem)) {
+                        //int amountTaken = recipeItemHelper.tryTake(packedItem, 1);
+                        if (itemHandler.getStackInSlot(i).getCount() < 1) {
+                            throw new ChaosNetException("Cannot get any more of these");
+                        }
+                        itemHandler.extractItem(i, 1, false);
                     }
                 }
+
+
             }
-            if(!containsItem){
-                return null;
-            }
+
         }
-        for(Integer slot: usedSlots){
-            itemStackHandler.extractItem(slot, 1, false);
-        }
-        ItemStack outputStack = recipe.getRecipeOutput();
+
+        ItemStack outputStack = recipe.getRecipeOutput().copy();
+        ChaosCraft.logger.info(this.getCCNamespace() + " - Crafted: " + outputStack.getDisplayName());
         if(emptySlot != -1) {
-            itemStackHandler.insertItem(emptySlot, outputStack, false);
+            itemHandler.insertItem(emptySlot, outputStack, false);
             observableAttributeManager.ObserveCraftableRecipes(this);
         }else{
             dropItem(outputStack.getItem(), outputStack.getCount());
             outputStack.setCount(0);
         }
-        ChaosCraft.logger.info(this.getCCNamespace() + " - Crafted: " + outputStack.getDisplayName());
+
         return outputStack;
     }
     /**
@@ -377,7 +443,19 @@ public class EntityOrganism extends EntityLiving {
     public void onDeath(@Nonnull DamageSource cause)
     {
         super.onDeath(cause);
+        if (!this.world.isRemote)
+        {
 
+            dropInventory();
+            if (world.getMinecraftServer() != null) {
+                world.getMinecraftServer().getPlayerList().sendMessage(cause.getDeathMessage(this));
+            }
+
+
+        }
+
+    }
+    public void dropInventory(){
         if (!this.world.isRemote)
         {
 
@@ -389,12 +467,6 @@ public class EntityOrganism extends EntityLiving {
                     this.itemHandler.extractItem(i, itemStack.getCount(), false);
                 }
             }
-
-            if (world.getMinecraftServer() != null) {
-                world.getMinecraftServer().getPlayerList().sendMessage(cause.getDeathMessage(this));
-            }
-
-
         }
     }
     public int getEmptyInventorySlot(){
@@ -447,7 +519,7 @@ public class EntityOrganism extends EntityLiving {
             return null;
         }
         Vec3d itemVec3d = null;
-        ChaosCraft.logger.info(this.getCCNamespace() + " - Tossing: " + itemStack.getDisplayName());
+        ChaosCraft.logger.info(this.getCCNamespace() + " - Tossing: " + itemStack.getItem().getRegistryName());
 
 
 
@@ -470,6 +542,29 @@ public class EntityOrganism extends EntityLiving {
 
 
         return itemStack;
+    }
+
+    public ItemStack getItemStackFromInventory(String resourceId) {
+        int slots = itemHandler.getSlots();
+        for(int i = 0; i < slots; i++) {
+            ItemStack itemStack = itemHandler.getStackInSlot(i);
+            if(!itemStack.isEmpty()){
+                CCObserviableAttributeCollection observiableAttributeCollection = observableAttributeManager.Observe(itemStack.getItem());
+                if(
+                    observiableAttributeCollection != null &&
+                    observiableAttributeCollection.resourceId.equals(resourceId)
+                ){
+                    this.setHeldItem(EnumHand.MAIN_HAND, itemStack);
+                    equippedSlot = i;
+                    return itemStack;
+                }
+            }
+        }
+        return null;
+    }
+
+    public void setObserving(EntityPlayerMP observingPlayer) {
+        this.observingPlayer = observingPlayer;
     }
 
     public static class EntityOrganismRenderer extends RenderLiving<EntityOrganism> {
@@ -612,7 +707,7 @@ public class EntityOrganism extends EntityLiving {
 
             boolean bool = world.setBlockState(pos, net.minecraft.init.Blocks.AIR.getDefaultState(), world.isRemote ? 11 : 3);
             if (bool) {
-                state.getBlock().onBlockDestroyedByPlayer(world, pos, state);
+                state.getBlock().onPlayerDestroy(world, pos, state);
             } else {
                 harvest = false;
             }
@@ -622,7 +717,7 @@ public class EntityOrganism extends EntityLiving {
                 state.getBlock().dropBlockAsItem(world, pos, state, 0);
 
             }
-            CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEventType.BLOCK_MINED);
+            CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.BLOCK_MINED);
             worldEvent.block = state.getBlock();
             entityFitnessManager.test(worldEvent);
         }
@@ -636,7 +731,7 @@ public class EntityOrganism extends EntityLiving {
 
     private void pickupItem(EntityItem item) {
         if (item.cannotPickup()) return;
-        ChaosCraft.logger.info(this.getCCNamespace() + " - Picked up: " + item.getName());
+        ChaosCraft.logger.info(this.getCCNamespace() + " - Picked up: " + item.getItem().getItem().getRegistryName());
         ItemStack stack = item.getItem();
 
         Item worldEventItem = stack.getItem();
@@ -656,7 +751,7 @@ public class EntityOrganism extends EntityLiving {
         if(observableAttributeManager != null) {
             observableAttributeManager.Observe(worldEventItem);
         }
-        CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEventType.ITEM_COLLECTED);
+        CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.ITEM_COLLECTED);
         worldEvent.item = worldEventItem;
         entityFitnessManager.test(worldEvent);
         //TODO: Recheck what you can craft
@@ -712,9 +807,9 @@ public class EntityOrganism extends EntityLiving {
         this.itemHandler.extractItem(slot, 1, false);
         swingArm(EnumHand.MAIN_HAND);
 
-        ChaosCraft.logger.info(this.getCCNamespace() + " - PlacedBlock up: " + block.getRegistryName());
+        ChaosCraft.logger.info(this.getCCNamespace() + " - PlacedBlock: " + block.getRegistryName());
         world.setBlockState(blockPos, block.getDefaultState());
-        CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEventType.BLOCK_PLACED);
+        CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.BLOCK_PLACED);
         worldEvent.block = block;
         entityFitnessManager.test(worldEvent);
         if(block.getRegistryName().toString().equals("minecraft:crafting_table")){
@@ -792,7 +887,7 @@ public class EntityOrganism extends EntityLiving {
 
             this.applyEnchantments(this, entityIn);
 
-            CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEventType.ENTITY_ATTACKED);
+            CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.ENTITY_ATTACKED);
             worldEvent.entity = entityIn;
             entityFitnessManager.test(worldEvent);
         }

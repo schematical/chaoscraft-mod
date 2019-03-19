@@ -28,7 +28,7 @@ public class ChaosCraftGUI {
     }
     public static void drawDebugLine(BlockPos startBlockPos, BlockPos endPos){
         Vec3d start = new Vec3d(startBlockPos.getX(), startBlockPos.getY(), startBlockPos.getZ());
-        Vec3d end = start.addVector(0, 10, 0);
+        Vec3d end = start.add(0, 10, 0);
         drawDebugLine(start, end);
     }
     public static void drawDebugLine(Vec3d start, Vec3d end){

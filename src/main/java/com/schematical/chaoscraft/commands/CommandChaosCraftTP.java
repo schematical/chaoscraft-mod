@@ -5,18 +5,16 @@ import com.schematical.chaoscraft.entities.EntityOrganism;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.play.server.SPacketPlayerPosLook;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextComponentString;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 
 
@@ -24,6 +22,7 @@ import java.util.*;
  * Created by user1a on 1/3/19.
  */
 public class CommandChaosCraftTP extends CommandBase{
+
      /*
      * Gets the name of the command
      */
@@ -73,7 +72,7 @@ public class CommandChaosCraftTP extends CommandBase{
                 entity1 = ChaosCraft.rick;
             }else{
                 for (EntityOrganism organism : ChaosCraft.organisims) {
-                    String orgName = organism.getName();
+                    String orgName = organism.getOrganism().getName();
                     ChaosCraft.logger.info(orgName + " == " + name);
                     if (orgName.equals(name)) {
                         entity1 = organism;
@@ -107,79 +106,11 @@ public class CommandChaosCraftTP extends CommandBase{
     }
 
     /**
-     * Teleports an entity to the specified coordinates
-     */
-    private static void teleportEntityToCoordinates(Entity teleportingEntity, CommandBase.CoordinateArg argX, CommandBase.CoordinateArg argY, CommandBase.CoordinateArg argZ, CommandBase.CoordinateArg argYaw, CommandBase.CoordinateArg argPitch)
-    {
-        if (teleportingEntity instanceof EntityPlayerMP)
-        {
-            Set<SPacketPlayerPosLook.EnumFlags> set = EnumSet.<SPacketPlayerPosLook.EnumFlags>noneOf(SPacketPlayerPosLook.EnumFlags.class);
-
-            if (argX.isRelative())
-            {
-                set.add(SPacketPlayerPosLook.EnumFlags.X);
-            }
-
-            if (argY.isRelative())
-            {
-                set.add(SPacketPlayerPosLook.EnumFlags.Y);
-            }
-
-            if (argZ.isRelative())
-            {
-                set.add(SPacketPlayerPosLook.EnumFlags.Z);
-            }
-
-            if (argPitch.isRelative())
-            {
-                set.add(SPacketPlayerPosLook.EnumFlags.X_ROT);
-            }
-
-            if (argYaw.isRelative())
-            {
-                set.add(SPacketPlayerPosLook.EnumFlags.Y_ROT);
-            }
-
-            float f = (float)argYaw.getAmount();
-
-            if (!argYaw.isRelative())
-            {
-                f = MathHelper.wrapDegrees(f);
-            }
-
-            float f1 = (float)argPitch.getAmount();
-
-            if (!argPitch.isRelative())
-            {
-                f1 = MathHelper.wrapDegrees(f1);
-            }
-
-            teleportingEntity.dismountRidingEntity();
-            ((EntityPlayerMP)teleportingEntity).connection.setPlayerLocation(argX.getAmount(), argY.getAmount(), argZ.getAmount(), f, f1, set);
-            teleportingEntity.setRotationYawHead(f);
-        }
-        else
-        {
-            float f2 = (float)MathHelper.wrapDegrees(argYaw.getResult());
-            float f3 = (float)MathHelper.wrapDegrees(argPitch.getResult());
-            f3 = MathHelper.clamp(f3, -90.0F, 90.0F);
-            teleportingEntity.setLocationAndAngles(argX.getResult(), argY.getResult(), argZ.getResult(), f2, f3);
-            teleportingEntity.setRotationYawHead(f2);
-        }
-
-        if (!(teleportingEntity instanceof EntityLivingBase) || !((EntityLivingBase)teleportingEntity).isElytraFlying())
-        {
-            teleportingEntity.motionY = 0.0D;
-            teleportingEntity.onGround = true;
-        }
-    }
-
-    /**
      * Get a list of options for when the user presses the TAB key
      */
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos)
     {
-        return args.length != 1 && args.length != 2 ? Collections.emptyList() : getListOfStringsMatchingLastWord(args,getOrgNames());
+        return args.length==0 ? Collections.emptyList() : getListOfStringsMatchingLastWord(args,getOrgNames());
     }
 
     /**
@@ -189,23 +120,19 @@ public class CommandChaosCraftTP extends CommandBase{
     {
         return index == 0;
     }
-    public String[] getOrgNames(){
-        List<EntityOrganism> orgs = new ArrayList<EntityOrganism>();
+
+    private String[] getOrgNames(){
+        List<String> names = new ArrayList<>(ChaosCraft.organisims.size());
+
+        names.add("rick");
+
         for (EntityOrganism organism: ChaosCraft.organisims) {
             if(organism.isEntityAlive() && organism.getNNet() != null){
-                orgs.add(organism);
+                names.add(organism.getOrganism().getName());
             }
         }
-        String[] astring = new String[orgs.size() + 1];
-        int i = 0;
-        astring[i] = "rick";
-        i ++;
-        for (EntityOrganism organism: orgs) {
-            astring[i] = organism.getName();
-            i ++;
-        }
 
-        return astring;
+        return names.toArray(new String[0]);
     }
 
 }
