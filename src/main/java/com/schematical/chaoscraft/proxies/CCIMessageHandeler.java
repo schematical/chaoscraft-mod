@@ -1,6 +1,7 @@
-package com.schematical.chaoscraft.networking;
+package com.schematical.chaoscraft.proxies;
 
 import com.schematical.chaoscraft.ChaosCraft;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -24,7 +25,6 @@ public class CCIMessageHandeler implements IMessageHandler<CCIMessage, IMessage>
         Iterator<Object> jsonObjectIterable = ouputValues.iterator();
         ChaosCraft.topLeftMessage = payload.get("namespace").toString() + "\n";
         ChaosCraft.topLeftMessage += "Score: " + payload.get("score") + " - Age: " +  payload.get("age") + " / " + payload.get("maxAge") + "\n";
-
         while(jsonObjectIterable.hasNext()){
             JSONObject ouputValue = (JSONObject)jsonObjectIterable.next();
             ChaosCraft.topLeftMessage += ouputValue.get("summary") + " - " + ouputValue.get("_lastValue") + "\n";
