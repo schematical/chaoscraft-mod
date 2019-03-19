@@ -12,6 +12,7 @@ import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
 import com.schematical.chaoscraft.ai.CCObserviableAttributeCollection;
 import com.schematical.chaoscraft.ai.NeuralNet;
 import com.schematical.chaoscraft.ai.OutputNeuron;
+import com.schematical.chaoscraft.ai.biology.AreaOfFocus;
 import com.schematical.chaoscraft.ai.biology.BiologyBase;
 import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.events.OrgEvent;
@@ -38,12 +39,15 @@ import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipes;
+import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
@@ -114,8 +118,13 @@ public class EntityOrganism extends EntityLiving {
 
         spawnTime = world.getWorldTime();
         this.refreshRender = true;
-        this.itemHandler.setSize(8);
-        this.inventory = new InventoryOrganism(this);
+        this.itemHandler.setSize(64);
+        /*this.inventory = new InventoryOrganism(this);
+        ItemStack stack1 = new ItemStack(Items.STICK, 2);
+        this.itemHandler.setStackInSlot(0, stack1);
+
+        ItemStack stack2 = new ItemStack(Blocks.PLANKS, 3);
+        this.itemHandler.setStackInSlot(1, stack2);*/
      }
      public String getCCNamespace(){
         if(this.organism == null){
@@ -247,6 +256,13 @@ public class EntityOrganism extends EntityLiving {
                     jsonObject.put("age", this.getAgeSeconds());
                     jsonObject.put("maxAge", this.maxLifeSeconds);
                     jsonObject.put("outputs", outputValues);
+                    AreaOfFocus areaOfFocus = (AreaOfFocus)nNet.getBiology("AreaOfFocus_0");
+                    JSONObject areaOfFocusJSON = new JSONObject();
+                    areaOfFocusJSON.put("x", areaOfFocus.getFocusPoint().x);
+                    areaOfFocusJSON.put("y", areaOfFocus.getFocusPoint().y);
+                    areaOfFocusJSON.put("z", areaOfFocus.getFocusPoint().z);
+                    areaOfFocusJSON.put("range", areaOfFocus.viewRange);
+                    jsonObject.put("areaOfFocus", areaOfFocusJSON);
                     ChaosCraft.networkWrapper.sendTo(new CCIMessage(jsonObject), (EntityPlayerMP) observingPlayer);
 
                 }
@@ -394,14 +410,24 @@ public class EntityOrganism extends EntityLiving {
 
 
     }
-    public ItemStack craft(ShapedRecipes recipe) {
+
+
+    public ItemStack craft(IRecipe recipe) {
+        NonNullList<Ingredient> recipeItems = null;
+        if(recipe instanceof ShapedRecipes) {
+            recipeItems = ((ShapedRecipes) recipe).recipeItems;
+        }else if(recipe instanceof ShapelessRecipes) {
+            recipeItems = ((ShapelessRecipes) recipe).recipeItems;
+        }else{
+            throw new ChaosNetException("Found a recipe unaccounted for: " + recipe.getRegistryName().toString() + "Class Name: " +  recipe.getClass().getName());
+        }
         //Check to see if they have the items in inventory for that
         RecipeItemHelper recipeItemHelper = new RecipeItemHelper();
         int slots = itemHandler.getSlots();
         int emptySlot = -1;
 
         List<Integer> usedSlots = new ArrayList<Integer>();
-        for(Ingredient ingredient: recipe.recipeItems) {
+        for(Ingredient ingredient: recipeItems) {
 
             for (int i = 0; i < slots; i++) {
                 ItemStack itemStack = itemHandler.getStackInSlot(i);
@@ -566,6 +592,7 @@ public class EntityOrganism extends EntityLiving {
     public void setObserving(EntityPlayerMP observingPlayer) {
         this.observingPlayer = observingPlayer;
     }
+
 
     public static class EntityOrganismRenderer extends RenderLiving<EntityOrganism> {
 

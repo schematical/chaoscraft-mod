@@ -20,7 +20,7 @@ public abstract class CCGuiBase extends GuiScreen {
         VIEW_ORG_DETAIL_ACTION,
         VIEW_NEURON_DETAIL_ACTION,
         VIEW_BIOLOGY_LIST_ACTION,
-        VIEW_BIOLOGY_DETAIL_ACTION
+        VIEW_AREA_OF_FOCUS, VIEW_BIOLOGY_DETAIL_ACTION
     }
 
     final String title;
@@ -121,6 +121,10 @@ public abstract class CCGuiBase extends GuiScreen {
                 return;
             case VIEW_BIOLOGY_DETAIL_ACTION:
                 view = new CCOrgBiologyDetailView(ccButton.entity, ((CCOrgBiologyListView.CCBiologyDetailButton) ccButton).biologyBase);
+                mc.displayGuiScreen(view);
+                return;
+            case VIEW_AREA_OF_FOCUS:
+                view = new CCOrgAreaOfFocusView(ccButton.entity);
                 mc.displayGuiScreen(view);
                 return;
             default:

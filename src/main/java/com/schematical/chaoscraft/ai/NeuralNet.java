@@ -49,6 +49,7 @@ public class NeuralNet {
                 OutputNeuron outputNeuron = (OutputNeuron)neuronBase;
                 neuronEvalDepth = 0;
                 float _last_value = outputNeuron.evaluate();
+                outputNeuron._lastValue = _last_value;
                 switch (outputNeuron._outputGroup){
                     case(OutputNeuron.OUTPUT_GROUP_NONE):
                         outputs.add(outputNeuron);

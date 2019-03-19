@@ -11,7 +11,8 @@ import net.minecraft.util.math.Vec3d;
 public class WalkSidewaysOutput extends OutputNeuron {
     @Override
     public void execute() {
-        if(Math.abs(this._lastValue) < ChaosCraft.activationThreshold){
+        float reversedValue = Math.abs((this._lastValue * 2)-1);
+        if(reversedValue < ChaosCraft.activationThreshold){
             return;
         }
 
@@ -19,7 +20,7 @@ public class WalkSidewaysOutput extends OutputNeuron {
         //this.entity.getMoveHelper().setMoveTo(vec3d2.x, vec3d2.y, vec3d2.z, this.speed);
 
 
-        nNet.entity.moveStrafing = ((this._lastValue * 2) -1) * Enum.SPEED;
+        nNet.entity.moveStrafing = reversedValue * Enum.SPEED;
         //ChaosCraft.logger.info(nNet.entity.getName() + " Walking Sideways: " + this._lastValue + " - " +  nNet.entity.moveStrafing);
         nNet.entity.getMoveHelper().strafe(nNet.entity.moveForward, nNet.entity.moveStrafing);
 
