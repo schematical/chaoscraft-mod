@@ -1,9 +1,11 @@
 package com.schematical.chaoscraft;
 
 import com.google.common.base.Predicate;
+import com.schematical.chaoscraft.ai.inputs.FocusAreaInput;
 import com.schematical.chaoscraft.entities.EntityOrganism;
 import com.schematical.chaoscraft.gui.CCKeyBinding;
 import com.schematical.chaoscraft.gui.CCOrgListView;
+import com.schematical.chaoscraft.proxies.CCIMessageHandeler;
 import com.schematical.chaoscraft.proxies.ClientProxy;
 import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.client.Minecraft;
@@ -124,19 +126,27 @@ public class CCEventListener {
 
         //}
     }
-    static final List<RayTraceDebug> raytraces = new ArrayList<>();
 
     @SubscribeEvent
-    public void debugRenderer(RenderWorldLastEvent event) {
-        Vec3d vector = new Vec3d(-0.8482726812362671, 0.0, 0.5295596718788147);
-//        System.out.println(vector);
-        vector = vector.rotatePitch(45);
-        vector = vector.rotateYaw((float) Math.toRadians(0));
-//        System.out.println(vector);
+    public static void debugRenderer(RenderWorldLastEvent event) {
+        EntityPlayer player = Minecraft.getMinecraft().player;
+        EntityOrganism org;
+        CCIMessageHandeler handle = new CCIMessageHandeler();
+        double xo = player.lastTickPosX + (player.posX - player.lastTickPosX) * (double) event.getPartialTicks();
+        double yo = player.lastTickPosY + (player.posY - player.lastTickPosY) * (double) event.getPartialTicks();
+        double zo = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * (double) event.getPartialTicks();
+        Vec3d vector = new Vec3d(1, 1, 1);
 
-        Vec3d start = new Vec3d(134.5, 60.5, 1615.5);
-        Vec3d offset = new Vec3d(0, 0, 0);
-        renderPathLine(start, start.add(vector), offset, new Color(227, 93, 218));
+        for(int i = 0; i<ChaosCraft.organisims.size(); i++){
+            org = ChaosCraft.organisims.get(i);
+            Vec3d start = new Vec3d(handle.vec3d.x, handle.vec3d.y, handle.vec3d.z);
+
+            Vec3d offset = new Vec3d(xo, yo, zo);
+
+
+            renderPathLine(start, start.add(vector), offset, new Color(227, 93, 218));
+        }
+
     }
 
     static void renderPathLine(Vec3d start, Vec3d end, Vec3d offset, Color color) {
@@ -147,6 +157,11 @@ public class CCEventListener {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
         bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
+        GlStateManager.pushMatrix();
+        GlStateManager.color(0.0F, 1.0F, 0.0F, 1f);
+        GlStateManager.disableLighting();
+        GlStateManager.disableTexture2D();
+        GlStateManager.glLineWidth(5.0F);
 
         bufferbuilder.pos((double) x1 - xo,
                 (double) y1 - yo,
@@ -159,6 +174,9 @@ public class CCEventListener {
                 .color(red, green, blue, 255).endVertex();
 
         tessellator.draw();
+        GlStateManager.enableLighting();
+        GlStateManager.enableTexture2D();
+        GlStateManager.popMatrix();
     }
 
     @SideOnly(Side.CLIENT)
