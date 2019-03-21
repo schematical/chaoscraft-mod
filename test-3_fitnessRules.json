@@ -1,0 +1,113 @@
+[
+  {
+    "id":"health-change",
+    "eventType": "HEALTH_CHANGE",
+    "scoreEffect": 250.0
+  },
+  {
+    "id":"block-mined",
+    "eventType": "BLOCK_MINED",
+    "scoreEffect": -10,
+    "lifeEffect": 0,
+    "maxOccurrences":100
+  },
+  {
+    "id":"item-collected",
+    "eventType": "ITEM_COLLECTED",
+    "scoreEffect": 5,
+    "lifeEffect": 0,
+    "maxOccurrences":0
+  },
+  {
+    "id":"block-placed",
+    "eventType": "BLOCK_PLACED",
+    "scoreEffect": 10,
+    "lifeEffect": 10,
+    "maxOccurrences":5
+  },
+  {
+    "id":"block-mined-wood",
+    "eventType": "BLOCK_MINED",
+    "attributeId":"BLOCK_ID",
+    "attributeValue": "minecraft:log", //WOOD
+    "scoreEffect": 100,
+    "lifeEffect": 60,
+    "maxOccurrences":1
+  },
+  {
+    "id":"item-collected-wood",
+    "eventType": "ITEM_COLLECTED",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:log", //WOOD
+    "scoreEffect": 100,
+    "lifeEffect": 5,
+    "maxOccurrences":1
+  },
+  {
+    "id":"item-crafted-anything",
+    "eventType": "CRAFT",
+    "scoreEffect": 250,
+    "lifeEffect": 60,
+    "maxOccurrences":1
+  },
+  {
+    "id":"item-crafted-wooden-plank",
+    "eventType": "CRAFT",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:planks", //Wooden PLANK
+    "scoreEffect": 500,
+    "lifeEffect": 120,
+    "maxOccurrences":1
+  },
+  {
+    "id":"item-crafted-crafting-table",
+    "eventType": "CRAFT",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:crafting_table", //CRAFTING TABLE
+    "scoreEffect": 1000,
+    "lifeEffect": 3600,
+    "maxOccurrences":1
+  },
+  {
+    "id":"block-placed-crafting-table",
+    "eventType": "BLOCK_PLACED",
+    "scoreEffect": 2500,
+    "attributeId":"BLOCK_ID",
+    "attributeValue": "minecraft:crafting_table", //CRAFTING TABLE
+    "maxOccurrences":1
+  },
+  {
+    "id":"item-crafted-stick",
+    "eventType": "CRAFT",
+    "scoreEffect": 1000,
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:stick",
+    "maxOccurrences":1
+  },
+  {
+    "id":"item-crafted-torch",
+    "eventType": "CRAFT",
+    "scoreEffect": 4500,
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:torch", //CRAFTING TABLE
+    "maxOccurrences":1
+  },
+  {
+    "id":"equip-anything",
+    "eventType": "EQUIP",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:planks", //Wooden PLANK
+    "scoreEffect": 10,
+    "lifeEffect": 0,
+    "maxOccurrences":1
+  },
+  {
+    "id":"equip-crafting-table",
+    "eventType": "EQUIP",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:crafting_table", //Wooden PLANK
+    "scoreEffect": 900,
+    "lifeEffect": 0,
+    "maxOccurrences":1
+  }
+]
