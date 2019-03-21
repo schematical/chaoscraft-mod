@@ -1,15 +1,19 @@
 package com.schematical.chaoscraft.proxies;
 
 import com.schematical.chaoscraft.ChaosCraft;
+import com.schematical.chaoscraft.gui.ChaosCraftGUI;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import java.awt.*;
 import java.util.Iterator;
 
 /**
@@ -17,7 +21,7 @@ import java.util.Iterator;
  */
 public class CCIMessageHandeler implements IMessageHandler<CCIMessage, IMessage> {
     // Do note that the default constructor is required, but implicitly defined in this case
-
+@SideOnly(Side.CLIENT)
     @Override public IMessage onMessage(CCIMessage message, MessageContext ctx) {
         // This is the player the packet was sent to the server from
         //EntityPlayerMP serverPlayer = ctx.getServerHandler().player;
@@ -38,22 +42,83 @@ public class CCIMessageHandeler implements IMessageHandler<CCIMessage, IMessage>
             (double)areaOfFocusJSON.get("z")
         );
         int dist = Integer.parseInt(areaOfFocusJSON.get("range").toString());
-        AxisAlignedBB grownBox = new AxisAlignedBB(
+        if(dist == 0){
+            dist = 1;
+        }
+
+        Vec3d startVec = new Vec3d(
                 vec3d.x + dist,
                 vec3d.y + dist,
-                vec3d.z + dist,
+                vec3d.z + dist
+        );
+        Vec3d endVec = new Vec3d(
                 vec3d.x - dist,
                 vec3d.y - dist,
                 vec3d.z - dist
         );
+
+        Color color = Color.BLUE;
+
+        ChaosCraftGUI.drawDebugBox(
+           startVec,
+            endVec,
+            color
+        );
+//        ChaosCraftGUI.drawDebugLine(
+//                new Vec3d(
+//                        vec3d.x - dist,
+//                        vec3d.y + dist,
+//                        vec3d.z + dist
+//                ),
+//                new Vec3d(
+//                        vec3d.x - dist,
+//                        vec3d.y - dist,
+//                        vec3d.z + dist
+//                ),
+//            color
+//        );
+//        ChaosCraftGUI.drawDebugLine(
+//                new Vec3d(
+//                        vec3d.x - dist,
+//                        vec3d.y - dist,
+//                        vec3d.z + dist
+//                ),
+//                new Vec3d(
+//                        vec3d.x - dist,
+//                        vec3d.y - dist,
+//                        vec3d.z - dist
+//                ),
+//                color
+//        );
+//        ChaosCraftGUI.drawDebugLine(
+//                new Vec3d(
+//                        vec3d.x - dist,
+//                        vec3d.y - dist,
+//                        vec3d.z - dist
+//                ),
+//                new Vec3d(
+//                        vec3d.x + dist,
+//                        vec3d.y - dist,
+//                        vec3d.z - dist
+//                ),
+//                color
+//        );
+//        ChaosCraftGUI.drawDebugLine(
+//                new Vec3d(
+//                        vec3d.x + dist,
+//                        vec3d.y - dist,
+//                        vec3d.z - dist
+//                ),
+//                new Vec3d(
+//                        vec3d.x + dist,
+//                        vec3d.y + dist,
+//                        vec3d.z - dist
+//                ),
+//                color
+//        );
+        return null;
         //TODO: Draw Lines around the above box
 
-        // Execute the action on the main server thread by adding it as a scheduled task
-       /* serverPlayer.getServerWorld().addScheduledTask(() -> {
-            serverPlayer.inventory.addItemStackToInventory(new ItemStack(Items.DIAMOND, amount));
-        });*/
-        // No response packet
-        return null;
     }
 
 }

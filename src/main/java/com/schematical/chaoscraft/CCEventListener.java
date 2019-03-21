@@ -4,17 +4,26 @@ import com.google.common.base.Predicate;
 import com.schematical.chaoscraft.entities.EntityOrganism;
 import com.schematical.chaoscraft.gui.CCKeyBinding;
 import com.schematical.chaoscraft.gui.CCOrgListView;
+import com.schematical.chaoscraft.gui.ChaosCraftGUI;
 import com.schematical.chaoscraft.proxies.ClientProxy;
 import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.monster.EntityPigZombie;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -24,6 +33,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
+import java.awt.*;
 import java.util.Iterator;
 import java.util.List;
 
@@ -107,8 +117,36 @@ public class CCEventListener {
                 placement += 10;
             }
         }
+
     }
 
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent
+    public static void debugRenderer(RenderWorldLastEvent event) {
+        EntityPlayer player = Minecraft.getMinecraft().player;
+        if(player == null){
+            return;
+        }
+        AxisAlignedBB axisAlignedBB = player.getRenderBoundingBox();
+        if(axisAlignedBB == null){
+            return;
+        }
+        ChaosCraftGUI.drawDebugBox(
+                new Vec3d(
+                    axisAlignedBB.maxX,
+                    axisAlignedBB.maxY,
+                    axisAlignedBB.maxZ
+                ),
+                new Vec3d(
+                        axisAlignedBB.minX,
+                        axisAlignedBB.minY,
+                        axisAlignedBB.minZ
+                ),
+                Color.GREEN
+        );
+        ChaosCraftGUI.render();
+
+    }
     @SideOnly(Side.CLIENT)
     @SubscribeEvent(priority= EventPriority.NORMAL, receiveCanceled=true)
     public  static void onEvent(InputEvent.KeyInputEvent event) {
@@ -148,7 +186,6 @@ public class CCEventListener {
     }
     @SubscribeEvent
     public static void spawnEvent(EntityJoinWorldEvent event) {
-        /*
         if (event.getEntity() instanceof EntityMob) {
             EntityMob mob = (EntityMob) event.getEntity();
 
@@ -160,7 +197,6 @@ public class CCEventListener {
                 }
             }
         }
-        */
     }
 
 
