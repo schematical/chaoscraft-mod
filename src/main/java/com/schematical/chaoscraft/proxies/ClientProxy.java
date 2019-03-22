@@ -5,6 +5,7 @@ import com.schematical.chaoscraft.commands.*;
 import com.schematical.chaoscraft.entities.EntityOrganism;
 import com.schematical.chaoscraft.entities.EntityRick;
 import com.schematical.chaoscraft.gui.CCKeyBinding;
+import com.schematical.chaoscraft.rendering.EntityOrganismRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.ClientCommandHandler;
@@ -43,7 +44,7 @@ public class ClientProxy implements IProxy {
         );
         RenderingRegistry.registerEntityRenderingHandler(
                 EntityOrganism.class,
-                manager -> new EntityOrganism.EntityOrganismRenderer(manager)
+                manager -> new EntityOrganismRenderer(manager)
         );
 
 
