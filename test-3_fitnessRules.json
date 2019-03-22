@@ -31,8 +31,8 @@
     "attributeId":"BLOCK_ID",
     "attributeValue": "minecraft:log", //WOOD
     "scoreEffect": 100,
-    "lifeEffect": 60,
-    "maxOccurrences":1
+    "lifeEffect": 40,
+    "maxOccurrences":4
   },
   {
     "id":"item-collected-wood",
@@ -40,15 +40,8 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:log", //WOOD
     "scoreEffect": 100,
-    "lifeEffect": 5,
-    "maxOccurrences":1
-  },
-  {
-    "id":"item-crafted-anything",
-    "eventType": "CRAFT",
-    "scoreEffect": 250,
-    "lifeEffect": 60,
-    "maxOccurrences":1
+    "lifeEffect": 4,
+    "maxOccurrences":4
   },
   {
     "id":"item-crafted-wooden-plank",
@@ -65,7 +58,7 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:crafting_table", //CRAFTING TABLE
     "scoreEffect": 1000,
-    "lifeEffect": 3600,
+    "lifeEffect": 480,
     "maxOccurrences":1
   },
   {
@@ -85,14 +78,6 @@
     "maxOccurrences":1
   },
   {
-    "id":"item-crafted-torch",
-    "eventType": "CRAFT",
-    "scoreEffect": 4500,
-    "attributeId":"ITEM_ID",
-    "attributeValue": "minecraft:torch", //CRAFTING TABLE
-    "maxOccurrences":1
-  },
-  {
     "id":"equip-anything",
     "eventType": "EQUIP",
     "attributeId":"ITEM_ID",
@@ -109,5 +94,292 @@
     "scoreEffect": 900,
     "lifeEffect": 0,
     "maxOccurrences":1
-  }
+  },
+  {
+    "id":"item-crafted-wooden-pickaxe",
+    "eventType": "CRAFT",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:wooden_pickaxe", //Wooden PICKAXE
+    "scoreEffect": 3000,
+    "lifeEffect": 600,
+    "maxOccurrences":1
+  },
+  {
+    "id":"equip-wooden-pickaxe",
+    "eventType": "EQUIP",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:wooden_pickaxe", //Wooden PICKAXE
+    "scoreEffect": 1000,
+    "lifeEffect": 0,
+    "maxOccurrences":1
+  },
+  {
+    "id":"block-mined-stone",
+    "eventType": "BLOCK_MINED",
+    "attributeId":"BLOCK_ID",
+    "attributeValue": "minecraft:stone", //STONE
+    "scoreEffect": 100,
+    "lifeEffect": 40,
+    "maxOccurrences":11
+  },
+  {
+    "id":"item-collected-cobbestone",
+    "eventType": "ITEM_COLLECTED",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:cobbestone", //COBBLESTONE
+    "scoreEffect": 100,
+    "lifeEffect": 2,
+    "maxOccurrences":11
+  },
+  {
+    "id":"item-crafted-furnace",
+    "eventType": "CRAFT",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:furnace", //FURNACE
+    "scoreEffect": 1500,
+    "lifeEffect": 600,
+    "maxOccurrences":1
+  },
+  {
+    "id":"block-placed-furnace",
+    "eventType": "BLOCK_PLACED",
+    "scoreEffect": 3500,
+    "attributeId":"BLOCK_ID",
+    "attributeValue": "minecraft:furnace", //FURNACE
+    "maxOccurrences":1
+  },
+  {
+    "id":"equip-furnace",
+    "eventType": "EQUIP",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:furnace", //FURNACE
+    "scoreEffect": 1000,
+    "lifeEffect": 0,
+    "maxOccurrences":1
+  },
+  {
+    "id":"item-crafted-stone-pickaxe",
+    "eventType": "CRAFT",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:stone_pickaxe", //Stone PICKAXE
+    "scoreEffect": 4000,
+    "lifeEffect": 600,
+    "maxOccurrences":1
+  },
+  {
+    "id":"equip-stone-pickaxe",
+    "eventType": "EQUIP",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:stone_pickaxe", //Stone PICKAXE
+    "scoreEffect": 1000,
+    "lifeEffect": 0,
+    "maxOccurrences":1
+  },
+  {
+    "id":"block-mined-iron-ore",
+    "eventType": "BLOCK_MINED",
+    "attributeId":"BLOCK_ID",
+    "attributeValue": "minecraft:iron_ore", //Iron ORE
+    "scoreEffect": 250,
+    "lifeEffect": 60,
+    "maxOccurrences":3
+  },
+  {
+    "id":"item-collected-iron-ore",
+    "eventType": "ITEM_COLLECTED",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:iron_ore", //Iron ORE
+    "scoreEffect": 500,
+    "lifeEffect": 3,
+    "maxOccurrences":3
+  },
+  {
+    "id":"block-mined-coal",
+    "eventType": "BLOCK_MINED",
+    "attributeId":"BLOCK_ID",
+    "attributeValue": "minecraft:coal", //COAL
+    "scoreEffect": 200,
+    "lifeEffect": 90,
+    "maxOccurrences":1
+  },
+  {
+    "id":"item-collected-coal",
+    "eventType": "ITEM_COLLECTED",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:coal", //COAL
+    "scoreEffect": 300,
+    "lifeEffect": 3,
+    "maxOccurrences":1
+  },
+  {
+    "id":"item-crafted-bow",
+    "eventType": "CRAFT",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:bow", //BOW
+    "scoreEffect": 1500,
+    "lifeEffect": 420,
+    "maxOccurrences":1
+  },
+  {
+    "id":"item-crafted-iron-pickaxe",
+    "eventType": "CRAFT",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:iron_pickaxe", //Iron PICKAXE
+    "scoreEffect": 5000,
+    "lifeEffect": 900,
+    "maxOccurrences":1
+  },
+    {
+    "id":"equip-iron-pickaxe",
+    "eventType": "EQUIP",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:iron_pickaxe", //Iron PICKAXE
+    "scoreEffect": 1000,
+    "lifeEffect": 0,
+    "maxOccurrences":1
+  },
+  {
+    "id":"item-crafted-iron-helemt",
+    "eventType": "CRAFT",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:iron_helmet", //Iron HELMET
+    "scoreEffect": 3750,
+    "lifeEffect": 240,
+    "maxOccurrences":1
+  },
+  {
+    "id":"item-crafted-iron-chestplate",
+    "eventType": "CRAFT",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:iron_chestplate", //Iron CHESTPLATE
+    "scoreEffect": 6000,
+    "lifeEffect": 240,
+    "maxOccurrences":1
+  },
+  {
+    "id":"item-crafted-iron-leggings",
+    "eventType": "CRAFT",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:iron_leggings", //Iron LEGGINGS
+    "scoreEffect": 5250,
+    "lifeEffect": 240,
+    "maxOccurrences":1
+  },
+  {
+    "id":"item-crafted-iron-boots",
+    "eventType": "CRAFT",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:iron_boots", //Iron BOOTS
+    "scoreEffect": 3000,
+    "lifeEffect": 240,
+    "maxOccurrences":1
+  },
+  {
+    "id":"item-crafted-iron-sword",
+    "eventType": "CRAFT",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:iron_sword", //Iron SWORD
+    "scoreEffect": 5000,
+    "lifeEffect": 300,
+    "maxOccurrences":1
+  },
+  {
+    "id":"block-mined-diamond-ore",
+    "eventType": "BLOCK_MINED",
+    "attributeId":"BLOCK_ID",
+    "attributeValue": "minecraft:diamond_ore", //Diamond ORE
+    "scoreEffect": 1000,
+    "lifeEffect": 900,
+    "maxOccurrences":1000
+  },
+  {
+    "id":"item-collected-diamond",
+    "eventType": "ITEM_COLLECTED",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:diamond", //Diamond ORE
+    "scoreEffect": 1500,
+    "lifeEffect": 3,
+    "maxOccurrences":1000
+  },
+  {
+    "id":"item-crafted-diamond-helemt",
+    "eventType": "CRAFT",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:diamond_helmet", //Diamond HELMET
+    "scoreEffect": 6250,
+    "lifeEffect": 240,
+    "maxOccurrences":1
+  },
+  {
+    "id":"item-crafted-diamond-chestplate",
+    "eventType": "CRAFT",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:diamond_chestplate", //diamond CHESTPLATE
+    "scoreEffect": 10000,
+    "lifeEffect": 240,
+    "maxOccurrences":1
+  },
+  {
+    "id":"item-crafted-diamond-leggings",
+    "eventType": "CRAFT",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:diamond_leggings", //Diamond LEGGINGS
+    "scoreEffect": 8750,
+    "lifeEffect": 240,
+    "maxOccurrences":1
+  },
+  {
+    "id":"item-crafted-diamond-boots",
+    "eventType": "CRAFT",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:diamond_boots", //Diamond BOOTS
+    "scoreEffect": 5000,
+    "lifeEffect": 240,
+    "maxOccurrences":1
+  },
+  {
+    "id":"item-crafted-diamond-sword",
+    "eventType": "CRAFT",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:diamond_sword", //Diamond SWORD
+    "scoreEffect": 7500,
+    "lifeEffect": 300,
+    "maxOccurrences":1
+  },
+  {
+    "id":"item-crafted-diamond-pickaxe",
+    "eventType": "CRAFT",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:diamond_pickaxe", //Diamond PICKAXE
+    "scoreEffect": 6000,
+    "lifeEffect": 900,
+    "maxOccurrences":1
+  },
+    {
+    "id":"equip-diamond-pickaxe",
+    "eventType": "EQUIP",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:diamond_pickaxe", //Diamond PICKAXE
+    "scoreEffect": 1000,
+    "lifeEffect": 0,
+    "maxOccurrences":1
+  },
+  {
+    "id":"block-mined-obsidian",
+    "eventType": "BLOCK_MINED",
+    "attributeId":"BLOCK_ID",
+    "attributeValue": "minecraft:obsidian", //OBSIDIAN
+    "scoreEffect": 600,
+    "lifeEffect": 15,
+    "maxOccurrences":4
+  },
+  {
+    "id":"item-collected-obsidian",
+    "eventType": "ITEM_COLLECTED",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:obsidian", //OBSIDIAN
+    "scoreEffect": 750,
+    "lifeEffect": 3,
+    "maxOccurrences":4
+  },
 ]
