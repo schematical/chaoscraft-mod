@@ -8,10 +8,6 @@ import com.schematical.chaoscraft.gui.ChaosCraftGUI;
 import com.schematical.chaoscraft.proxies.ClientProxy;
 import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
@@ -20,7 +16,7 @@ import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.monster.EntityPigZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
@@ -127,24 +123,27 @@ public class CCEventListener {
         if(player == null){
             return;
         }
-        AxisAlignedBB axisAlignedBB = player.getRenderBoundingBox();
-        if(axisAlignedBB == null){
-            return;
-        }
+
         ChaosCraftGUI.drawDebugBox(
                 new Vec3d(
-                    axisAlignedBB.maxX,
-                    axisAlignedBB.maxY,
-                    axisAlignedBB.maxZ
+                    -256, 64, 266
                 ),
                 new Vec3d(
-                        axisAlignedBB.minX,
-                        axisAlignedBB.minY,
-                        axisAlignedBB.minZ
+                        -300,80,300
                 ),
                 Color.GREEN
         );
-        ChaosCraftGUI.render();
+
+        ChaosCraftGUI.drawDebugLine(
+                new BlockPos(
+                        -256, 64, 266
+                ),
+                new BlockPos(
+                        -300,80,300
+                ),
+                new Color(255, 155, 61, 255)
+        );
+        ChaosCraftGUI.render(event);
 
     }
     @SideOnly(Side.CLIENT)
