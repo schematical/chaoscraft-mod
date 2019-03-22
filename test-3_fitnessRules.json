@@ -119,9 +119,18 @@
     "eventType": "BLOCK_MINED",
     "attributeId":"BLOCK_ID",
     "attributeValue": "minecraft:stone", //STONE
-    "scoreEffect": 100,
+    "scoreEffect": 94,
     "lifeEffect": 30,
     "maxOccurrences":11
+  },
+  {
+    "id":"block-mined-stone",
+    "eventType": "BLOCK_MINED",
+    "attributeId":"BLOCK_ID",
+    "attributeValue": "minecraft:stone", //STONE
+    "scoreEffect": 6,
+    "lifeEffect": 0,
+    "maxOccurrences":10000
   },
   {
     "id":"item-collected-cobbestone",
