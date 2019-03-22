@@ -588,7 +588,7 @@
     "maxOccurrences":1
   },
   {
-    "id":"item-shield",
+    "id":"item-crafted-shield",
     "eventType": "CRAFT",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:shield", //SHIELD
