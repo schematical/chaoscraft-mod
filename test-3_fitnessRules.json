@@ -240,6 +240,24 @@
     "maxOccurrences":1
   },
   {
+    "id":"item-collected-flint",
+    "eventType": "ITEM_COLLECTED",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:flint", //FLINT
+    "scoreEffect": 400,
+    "lifeEffect": 30,
+    "maxOccurrences":1
+  },
+  {
+    "id":"item-collected-feather",
+    "eventType": "ITEM_COLLECTED",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:feather", //feather
+    "scoreEffect": 250,
+    "lifeEffect": 15,
+    "maxOccurrences":1
+  },
+  {
     "id":"item-crafted-arrow",
     "eventType": "CRAFT",
     "attributeId":"ITEM_ID",
@@ -447,6 +465,42 @@
     "maxOccurrences":4
   },
   {
+    "id":"item-collected-sugar-cane",
+    "eventType": "ITEM_COLLECTED",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:reed", //SUGAR CANE
+    "scoreEffect": 300,
+    "lifeEffect": 10,
+    "maxOccurrences":3
+  },
+  {
+    "id":"item-crafted-paper",
+    "eventType": "CRAFT",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:paper", //PAPER
+    "scoreEffect": 1500,
+    "lifeEffect": 60,
+    "maxOccurrences":1
+  },
+  {
+    "id":"item-collected-leather",
+    "eventType": "ITEM_COLLECTED",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:leather", //LEATHER
+    "scoreEffect": 1500,
+    "lifeEffect": 30,
+    "maxOccurrences":1
+  },
+  {
+    "id":"item-crafted-book",
+    "eventType": "CRAFT",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:book", //BOOK
+    "scoreEffect": 2500,
+    "lifeEffect": 120,
+    "maxOccurrences":1
+  },
+  {
     "id":"item-crafted-enchanting-table",
     "eventType": "CRAFT",
     "attributeId":"ITEM_ID",
@@ -491,6 +545,33 @@
     "maxOccurrences":3
   },
   {
+    "id":"item-collected-gunpowder",
+    "eventType": "ITEM_COLLECTED",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:gunpowder", //GUNPOWDER
+    "scoreEffect": 750,
+    "lifeEffect": 30,
+    "maxOccurrences":1
+  },
+  {
+    "id":"block-mined-sand",
+    "eventType": "BLOCK_MINED",
+    "attributeId":"BLOCK_ID",
+    "attributeValue": "minecraft:sand", //SAND
+    "scoreEffect": 50,
+    "lifeEffect": 10,
+    "maxOccurrences":1
+  },
+  {
+    "id":"item-collected-sand",
+    "eventType": "ITEM_COLLECTED",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:sand", //SAND
+    "scoreEffect": 100,
+    "lifeEffect": 3,
+    "maxOccurrences":1
+  },
+  {
     "id":"item-crafted-tnt",
     "eventType": "CRAFT",
     "attributeId":"ITEM_ID",
@@ -533,6 +614,15 @@
     "scoreEffect": 350,
     "lifeEffect": 3,
     "maxOccurrences":3
+  },
+  {
+    "id":"item-collected-apple",
+    "eventType": "ITEM_COLLECTED",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:apple", //APPLE
+    "scoreEffect": 400,
+    "lifeEffect": 10,
+    "maxOccurrences":1
   },
   {
     "id":"item-crafted-golden-apple",
@@ -603,6 +693,15 @@
     "attributeValue": "minecraft:shield", //SHIELD
     "scoreEffect": 3750,
     "lifeEffect": 300,
+    "maxOccurrences":1
+  },
+  {
+    "id":"item-collected-totem-of-undying",
+    "eventType": "ITEM_COLLECTED",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:totem_of_undying", //TOTEM OF UNDYING
+    "scoreEffect": 4000,
+    "lifeEffect": 90,
     "maxOccurrences":1
   },
 ]
