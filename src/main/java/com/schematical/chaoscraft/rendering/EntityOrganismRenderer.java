@@ -91,9 +91,18 @@ public class EntityOrganismRenderer extends RenderLiving<EntityOrganism> {
                 int g = pixelColor.getGreen();
                 int b = pixelColor.getBlue();
                 Color newPixelColor = pixelColor;
-                if(pixelColor.equals(Color.RED)){
+                if(pixelColor.equals(Color.WHITE)) {
+                    newPixelColor = pixelColor;
+                }else if(pixelColor.equals(Color.RED)){
                     newPixelColor = color1;
-                }else if(pixelColor.equals(Color.GREEN) || pixelColor.getGreen() > 200){
+                }else if(
+                    pixelColor.equals(Color.GREEN) ||
+                    (
+                        pixelColor.getGreen() > 200 &&
+                        pixelColor.getRed() < 100 &&
+                        pixelColor.getBlue() < 100
+                    )
+                ){
                     newPixelColor = color2;
                 }else if(pixelColor.equals(Color.BLUE)){
                     newPixelColor = color3;

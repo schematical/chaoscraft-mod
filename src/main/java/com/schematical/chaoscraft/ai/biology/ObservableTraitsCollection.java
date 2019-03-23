@@ -37,7 +37,7 @@ public class ObservableTraitsCollection extends BiologyBase{
         if(value == null){
             return null;
         }
-        int iValue = Integer.parseInt(value) * 8;
+        int iValue = (Integer.parseInt(value) * 32);
         if(iValue == 256){
             iValue -= 1;
         }

@@ -59,7 +59,7 @@ public class ClientProxy implements IProxy {
             ClientRegistry.registerKeyBinding(keyBindings.get(i));
         }
         ChaosCraft.networkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel(ChaosCraft.MODID);
-        ChaosCraft.networkWrapper.registerMessage(CCIMessageHandeler.class, CCIMessage.class, 0, Side.CLIENT);
+        ChaosCraft.networkWrapper.registerMessage(CAIMessageHandler.class, CCIMessage.class, 0, Side.CLIENT);
     }
     @Override
     public void init(FMLInitializationEvent event) {

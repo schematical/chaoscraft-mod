@@ -25,7 +25,12 @@ public class FocusDistanceOutput extends OutputNeuron {
         if(areaOfFocus == null){
             areaOfFocus = (AreaOfFocus)nNet.getBiology("AreaOfFocus_0");
         }
-        areaOfFocus.setDistance((float)(this._lastValue * areaOfFocus.maxFocusDistance));
+        float adjustedValue = (this._lastValue * 2) - 1;
+        if(adjustedValue <= 0){
+            areaOfFocus.setDistance(0f);
+            return;
+        }
+        areaOfFocus.setDistance(0f);//areaOfFocus.setDistance((float)(adjustedValue * areaOfFocus.maxFocusDistance));
 
 
     }
