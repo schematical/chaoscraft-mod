@@ -31,6 +31,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.layers.LayerHeldItem;
 import net.minecraft.client.util.RecipeItemHelper;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.*;
@@ -594,25 +595,7 @@ public class EntityOrganism extends EntityLiving {
     }
 
 
-    public static class EntityOrganismRenderer extends RenderLiving<EntityOrganism> {
 
-        public EntityOrganismRenderer(RenderManager rendermanagerIn) {
-            super(rendermanagerIn, new ModelPlayer(.5f, false), 0.5f);
-        }
-
-        @Override
-        protected ResourceLocation getEntityTexture(EntityOrganism entity) {
-            if(entity.refreshRender){
-                EntityOrganism realOrg = ChaosCraft.getEntityOrganismByName(entity.getName());
-                if(realOrg != null){
-                    entity.setSkin(realOrg.getSkin());
-                    entity.refreshRender = false;
-                }
-            }
-            return new ResourceLocation(entity.getSkin());
-        }
-
-    }
 
     private String getSkin() {
         return this.skin;

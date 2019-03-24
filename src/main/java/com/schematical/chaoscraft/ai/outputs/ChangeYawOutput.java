@@ -10,7 +10,7 @@ public class ChangeYawOutput extends OutputNeuron {
     @Override
     public void execute() {
 
-        float delta = ((this._lastValue * 2) -1) * 30;
+        float delta = ((this._lastValue * 2) -1) * 15;
         if(Math.abs(delta) < ChaosCraft.activationThreshold){
             return;
         }
