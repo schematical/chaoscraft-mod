@@ -7,7 +7,6 @@ package com.schematical.chaoscraft.entities;
 
 import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
-import com.schematical.chaoscraft.CCEventListener;
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
 import com.schematical.chaoscraft.ai.CCObserviableAttributeCollection;
@@ -30,11 +29,9 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.layers.LayerHeldItem;
 import net.minecraft.client.util.RecipeItemHelper;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.*;
@@ -66,8 +63,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.ItemStackHandler;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.lwjgl.opengl.GL11;
-
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -75,14 +70,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import static org.lwjgl.opengl.GL11.GL_LINE_STRIP;
-
 public class EntityOrganism extends EntityLiving {
-    private static final GlStateManager GLStateManager = new GlStateManager();
     public final double REACH_DISTANCE = 5.0D;
     private final long spawnTime;
     protected CCPlayerEntityWrapper playerWrapper;
-    private CCEventListener event;
+
     public EntityFitnessManager entityFitnessManager;
     protected Organism organism;
     protected NeuralNet nNet;
@@ -195,7 +187,6 @@ public class EntityOrganism extends EntityLiving {
          }
      }
 
-
      public void attachOrganism(Organism _organism){
          organism = _organism;
 
@@ -226,7 +217,7 @@ public class EntityOrganism extends EntityLiving {
 
     @Override
     public void onUpdate(){
-        CCEventListener.;
+
         if(getDebug()){
             int i = 0;
         }
@@ -275,10 +266,7 @@ public class EntityOrganism extends EntityLiving {
                     jsonObject.put("areaOfFocus", areaOfFocusJSON);
                     ChaosCraft.networkWrapper.sendTo(new CCIMessage(jsonObject), (EntityPlayerMP) observingPlayer);
 
-
-
-
-                }
+               }
 
                 List<EntityItem> items = this.world.getEntitiesWithinAABB(EntityItem.class, this.getEntityBoundingBox().grow(2.0D, 1.0D, 2.0D));
 
@@ -305,8 +293,6 @@ public class EntityOrganism extends EntityLiving {
             }
 
         }
-
-
         super.onUpdate();
         if(!world.isRemote) {
             if (
@@ -322,8 +308,6 @@ public class EntityOrganism extends EntityLiving {
 
         }
     }
-
-
 
     private void observationHack() {
         this.ticksSinceObservationHack += 1;
@@ -611,25 +595,7 @@ public class EntityOrganism extends EntityLiving {
     }
 
 
-    public static class EntityOrganismRenderer extends RenderLiving<EntityOrganism> {
 
-        public EntityOrganismRenderer(RenderManager rendermanagerIn) {
-            super(rendermanagerIn, new ModelPlayer(.5f, false), 0.5f);
-        }
-
-        @Override
-        protected ResourceLocation getEntityTexture(EntityOrganism entity) {
-            if(entity.refreshRender){
-                EntityOrganism realOrg = ChaosCraft.getEntityOrganismByName(entity.getName());
-                if(realOrg != null){
-                    entity.setSkin(realOrg.getSkin());
-                    entity.refreshRender = false;
-                }
-            }
-            return new ResourceLocation(entity.getSkin());
-        }
-
-    }
 
     private String getSkin() {
         return this.skin;
