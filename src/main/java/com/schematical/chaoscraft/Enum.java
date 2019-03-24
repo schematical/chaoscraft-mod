@@ -13,6 +13,6 @@ public class Enum {
     public final static String INPUT = "INPUT";
     public final static String OUTPUT = "OUTPUT";
     public final static String MIDDLE = "MIDDLE";
-    public final static int SPEED = 4;
+    public final static int SPEED = 5;
 }
 

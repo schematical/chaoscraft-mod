@@ -411,7 +411,7 @@ public class ChaosCraft
         return spawnedEntityOrganisms;
     }
     public static void placeEntity(BlockPos pos, EntityOrganism entityOrganism){
-        int range = 30;
+        int range = 40;
         int minRange = 5;
         int yRange = 20;
         Vec3d rndPos = null;
@@ -475,8 +475,7 @@ public class ChaosCraft
                         }
                     }
                     if(saftyCatch2 >= saftyMax2){
-                        rndPos = null;
-                        //throw new ChaosNetException("Could not find good spawn pos after " + saftyCatch2 + " attempts");
+                        throw new ChaosNetException("Could not find good spawn pos after " + saftyCatch2 + " attempts");
                     }
                 }
             }
@@ -549,7 +548,7 @@ public class ChaosCraft
 
     public static void toggleObservingPlayer(EntityPlayerMP player) {
         if(ChaosCraft.observingPlayers.contains(player)){
-            ChaosCraft.observingPlayers.clear();
+            ChaosCraft.observingPlayers.remove(player);
             player.setGameType(GameType.CREATIVE);
         }else {
             player.setGameType(GameType.SPECTATOR);

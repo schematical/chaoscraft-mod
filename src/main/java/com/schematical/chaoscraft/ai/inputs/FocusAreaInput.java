@@ -68,11 +68,7 @@ public class FocusAreaInput extends InputNeuron {
         x = Float.parseFloat(jsonObject.get("x").toString());
         y = Float.parseFloat(jsonObject.get("y").toString());
         z = Float.parseFloat(jsonObject.get("z").toString());
-        if(jsonObject.get("viewRange") != null) {
-            viewRange = Integer.parseInt(jsonObject.get("viewRange").toString());
-        }else{
-            viewRange = 1;
-        }
+        viewRange = Integer.parseInt(jsonObject.get("viewRange").toString());
 
 
     }

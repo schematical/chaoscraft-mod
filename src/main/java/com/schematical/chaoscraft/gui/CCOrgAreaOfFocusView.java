@@ -35,7 +35,20 @@ public class CCOrgAreaOfFocusView extends GuiContainer {
         }
         AreaOfFocus areaOfFocus = (AreaOfFocus)neuralNet.getBiology("AreaOfFocus_0");
         Vec3d focusPoint = areaOfFocus.getFocusPoint();
+        fontRenderer.drawString(
+           Math.round(focusPoint.x) + ", " +
+                Math.round(focusPoint.y) + ", " +
+                Math.round(focusPoint.z),
+                5, 5, Color.darkGray.getRGB()
 
+        );
+
+        fontRenderer.drawString(
+           Math.round(entityOrganism.getPosition().getX()) + ", " +
+                Math.round(entityOrganism.getPosition().getY()) + ", " +
+                Math.round(entityOrganism.getPosition().getZ()),
+                5, 10, Color.darkGray.getRGB()
+        );
     }
 
     @Override

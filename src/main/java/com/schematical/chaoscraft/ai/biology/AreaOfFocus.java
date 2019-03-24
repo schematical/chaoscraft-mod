@@ -110,7 +110,7 @@ public class AreaOfFocus extends BiologyBase{
         IBlockState blockState = entity.world.getBlockState(
             blockPos
         );
-        AxisAlignedBB blockBox = blockState.getBoundingBox(entity.world, blockPos).offset(blockPos);
+        AxisAlignedBB blockBox = blockState.getBoundingBox(entity.world, blockPos);
 
         for (Entity target : seenEntities) {
 
