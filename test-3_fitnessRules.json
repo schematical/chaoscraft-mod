@@ -370,9 +370,9 @@
     "eventType": "ITEM_COLLECTED",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:diamond", //Diamond
-    "scoreEffect": 2000,
+    "scoreEffect": 3500,
     "lifeEffect": 3,
-    "maxOccurrences":2
+    "maxOccurrences":1
   },
   {
     "id":"item-crafted-diamond-helemt",
@@ -478,7 +478,7 @@
     "eventType": "CRAFT",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:paper", //PAPER
-    "scoreEffect": 1250,
+    "scoreEffect": 1000,
     "lifeEffect": 60,
     "maxOccurrences":1
   },
@@ -487,7 +487,7 @@
     "eventType": "ITEM_COLLECTED",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:leather", //LEATHER
-    "scoreEffect": 1000,
+    "scoreEffect": 750,
     "lifeEffect": 30,
     "maxOccurrences":1
   },
@@ -496,7 +496,7 @@
     "eventType": "CRAFT",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:book", //BOOK
-    "scoreEffect": 2500,
+    "scoreEffect": 2250,
     "lifeEffect": 120,
     "maxOccurrences":1
   },
@@ -620,7 +620,7 @@
     "eventType": "ITEM_COLLECTED",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:apple", //APPLE
-    "scoreEffect": 250,
+    "scoreEffect": 200,
     "lifeEffect": 10,
     "maxOccurrences":1
   },
@@ -647,7 +647,7 @@
     "eventType": "ITEM_COLLECTED",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:ender_pearl", //ENDER PEARL
-    "scoreEffect": 3000,
+    "scoreEffect": 2500,
     "lifeEffect": 3,
     "maxOccurrences":1
   },
