@@ -18,12 +18,12 @@ import java.awt.*;
  */
 public class CCOrgAreaOfFocusView extends GuiContainer {
 
-    private static final ResourceLocation texture = new ResourceLocation(ChaosCraft.MODID, "focalview.png");
+    private static final ResourceLocation texture = new ResourceLocation(ChaosCraft.MODID, "container.png");
     EntityOrganism entityOrganism;
     public CCOrgAreaOfFocusView(EntityOrganism entity) {
         super(new CCOrgAreaOfFocusContainer(entity));
-        xSize = 98;
-        ySize = 98;
+        xSize = 176;
+        ySize = 166;
         entityOrganism = entity;
     }
 
