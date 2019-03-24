@@ -7,43 +7,30 @@ import com.schematical.chaoscraft.gui.CCOrgListView;
 import com.schematical.chaoscraft.proxies.ClientProxy;
 import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.monster.EntityPigZombie;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
-import java.awt.*;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 /**
  * Created by user1a on 1/6/19.
  */
-@Mod.EventBusSubscriber
 public class CCEventListener {
-    public EntityOrganism org;
 
     @SubscribeEvent
     public static void onWorldTickEvent(TickEvent.WorldTickEvent worldTickEvent){
@@ -120,45 +107,6 @@ public class CCEventListener {
                 placement += 10;
             }
         }
-        //if(ChaosCraft.observingPlayers != null) {
-
-        //}
-    }
-    static final List<RayTraceDebug> raytraces = new ArrayList<>();
-
-    @SubscribeEvent
-    public void debugRenderer(RenderWorldLastEvent event) {
-        Vec3d vector = new Vec3d(-0.8482726812362671, 0.0, 0.5295596718788147);
-//        System.out.println(vector);
-        vector = vector.rotatePitch(45);
-        vector = vector.rotateYaw((float) Math.toRadians(0));
-//        System.out.println(vector);
-
-        Vec3d start = new Vec3d(134.5, 60.5, 1615.5);
-        Vec3d offset = new Vec3d(0, 0, 0);
-        renderPathLine(start, start.add(vector), offset, new Color(227, 93, 218));
-    }
-
-    static void renderPathLine(Vec3d start, Vec3d end, Vec3d offset, Color color) {
-        renderPathLine(start.x, start.y, start.z, end.x, end.y, end.z, offset.x, offset.y, offset.z, color.getRed(), color.getGreen(), color.getBlue());
-    }
-
-    public static void renderPathLine(double x1, double y1, double z1, double x2, double y2, double z2, double xo, double yo, double zo, int red, int green, int blue) {
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuffer();
-        bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
-
-        bufferbuilder.pos((double) x1 - xo,
-                (double) y1 - yo,
-                (double) z1 - zo)
-                .color(red, green, blue, 255).endVertex();
-
-        bufferbuilder.pos((double) x2 - xo,
-                (double) y2 - yo,
-                (double) z2 - zo)
-                .color(red, green, blue, 255).endVertex();
-
-        tessellator.draw();
     }
 
     @SideOnly(Side.CLIENT)
