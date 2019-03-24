@@ -5,32 +5,24 @@ package com.schematical.chaoscraft.entities;
  */
 
 
-import com.google.common.collect.Sets;
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.AIFindExistingOrganisims;
 import com.schematical.chaoscraft.ai.AISpawnOrganisim;
-import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.ai.*;
-import net.minecraft.entity.passive.EntityRabbit;
+import net.minecraft.entity.ai.EntityAISwimming;
+import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
-
-import java.util.Set;
+import net.minecraftforge.common.ForgeChunkManager;
 
 public class EntityRick extends EntityLiving {
 
+    public ForgeChunkManager.Ticket chunkTicket;
 
     public EntityRick(World worldIn) {
         this(worldIn, "Rick");
@@ -38,6 +30,13 @@ public class EntityRick extends EntityLiving {
 
     public EntityRick(World worldIn, String name) {
         super(worldIn);
+
+        if(!world.isRemote) {
+            if(chunkTicket == null) {
+                chunkTicket = ForgeChunkManager.requestTicket(ChaosCraft.INSTANCE, world, ForgeChunkManager.Type.ENTITY);
+                chunkTicket.bindEntity(this);
+            }
+        }
 
         this.tasks.taskEntries.clear();
 
@@ -47,10 +46,10 @@ public class EntityRick extends EntityLiving {
         this.tasks.addTask(11, new EntityAIWatchClosest(this, EntityPlayer.class, 10.0F));
         //this.targetTasks.addTask(2, new EntityAINearestAttackableTarget(this, EntityPlayer.class, true));
         this.tasks.addTask(2, new AIFindExistingOrganisims(this, EntityOrganism.class));
+
+        this.setEntityInvulnerable(true);
+        this.enablePersistence();
     }
-
-
-
 
     @Override
     public void onUpdate()
@@ -70,6 +69,7 @@ public class EntityRick extends EntityLiving {
         }
 
     }
+
     public void onOrganisimDeath(EntityCreature creature){
         if(!world.isRemote) {
             if(ChaosCraft.organisims.contains(creature)) {
@@ -77,6 +77,5 @@ public class EntityRick extends EntityLiving {
             }
         }
     }
-
 
 }

@@ -2,6 +2,7 @@ package com.schematical.chaoscraft;
 
 import com.google.common.base.Predicate;
 import com.schematical.chaoscraft.entities.EntityOrganism;
+import com.schematical.chaoscraft.entities.EntityRick;
 import com.schematical.chaoscraft.gui.CCKeyBinding;
 import com.schematical.chaoscraft.gui.CCOrgListView;
 import com.schematical.chaoscraft.gui.CCSpeciesListView;
@@ -11,17 +12,14 @@ import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
-import net.minecraft.entity.monster.EntityEnderman;
-import net.minecraft.entity.monster.EntityMob;
-import net.minecraft.entity.monster.EntityPigZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.common.ForgeChunkManager;
+import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -29,10 +27,8 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import sun.java2d.pipe.AAShapePipe;
 
 import javax.annotation.Nullable;
-import java.awt.*;
 import java.util.Iterator;
 import java.util.List;
 
@@ -49,6 +45,7 @@ public class CCEventListener {
             ChaosCraft.rick = null;
             ChaosCraft.spawnRick(worldTickEvent.world, ChaosCraft.rickPos);
         }
+
         Iterator<EntityOrganism> iterator = ChaosCraft.organisims.iterator();
 
         while(iterator.hasNext()){
@@ -126,10 +123,6 @@ public class CCEventListener {
         if(player == null){
             return;
         }
-        AxisAlignedBB axisAlignedBB = player.getRenderBoundingBox();
-        if(axisAlignedBB != null){
-
-        }
        /* ChaosCraftGUI.drawDebugBox(
                 new Vec3d(
                         axisAlignedBB.minX,
@@ -155,6 +148,9 @@ public class CCEventListener {
                 ),
                 new Color(255, 155, 61, 255)
         );*/
+
+//       for(ChunkPos pos : ForgeChunkManager.getPersistentChunksFor())
+
         ChaosCraftGUI.render(event);
 
     }
@@ -215,6 +211,33 @@ public class CCEventListener {
         }*/
     }
 
+    @SubscribeEvent
+    public static void entityEnterChunkEvent(EntityEvent.EnteringChunk event) {
+        if(event.getEntity().world.isRemote) return;
 
+        if(event.getEntity() instanceof  EntityOrganism || event.getEntity() instanceof EntityRick) {
+            Chunk oldChunk = event.getEntity().world.getChunk(event.getOldChunkX(), event.getOldChunkZ());
+            ForgeChunkManager.Ticket chunkTicket;
+
+            if(event.getEntity() instanceof EntityOrganism) {
+                chunkTicket = ((EntityOrganism) event.getEntity()).chunkTicket;
+            } else {
+                chunkTicket = ((EntityRick) event.getEntity()).chunkTicket;
+            }
+
+            if(chunkTicket == null) {
+                System.out.println("WTF WHY HOW???");
+                return;
+            }
+
+            ForgeChunkManager.unforceChunk(chunkTicket, oldChunk.getPos());
+
+            ForgeChunkManager.forceChunk(chunkTicket, new ChunkPos(event.getOldChunkX(), event.getNewChunkZ()));
+
+            if(chunkTicket.getChunkList().size() >= chunkTicket.getMaxChunkListDepth()) {
+                ChaosCraft.logger.error("Passed max amount of chunks loaded!");
+            }
+        }
+    }
 
 }
