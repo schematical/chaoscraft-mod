@@ -5,27 +5,6 @@
     "scoreEffect": 250.0
   },
   {
-    "id":"block-mined",
-    "eventType": "BLOCK_MINED",
-    "scoreEffect": -10,
-    "lifeEffect": 0,
-    "maxOccurrences":100
-  },
-  {
-    "id":"item-collected",
-    "eventType": "ITEM_COLLECTED",
-    "scoreEffect": 5,
-    "lifeEffect": 0,
-    "maxOccurrences":0
-  },
-  {
-    "id":"block-placed",
-    "eventType": "BLOCK_PLACED",
-    "scoreEffect": 10,
-    "lifeEffect": 10,
-    "maxOccurrences":5
-  },
-  {
     "id":"block-mined-wood",
     "eventType": "BLOCK_MINED",
     "attributeId":"BLOCK_ID",
@@ -119,18 +98,9 @@
     "eventType": "BLOCK_MINED",
     "attributeId":"BLOCK_ID",
     "attributeValue": "minecraft:stone", //STONE
-    "scoreEffect": 94,
+    "scoreEffect": 100,
     "lifeEffect": 30,
     "maxOccurrences":11
-  },
-  {
-    "id":"block-mined-stone",
-    "eventType": "BLOCK_MINED",
-    "attributeId":"BLOCK_ID",
-    "attributeValue": "minecraft:stone", //STONE
-    "scoreEffect": 6,
-    "lifeEffect": 0,
-    "maxOccurrences":10000
   },
   {
     "id":"item-collected-cobbestone",
