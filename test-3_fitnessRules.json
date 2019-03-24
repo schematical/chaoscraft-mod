@@ -7,23 +7,23 @@
   {
     "id":"block-mined",
     "eventType": "BLOCK_MINED",
-    "scoreEffect": 1,
+    "scoreEffect": 0,
     "lifeEffect": 0,
     "maxOccurrences":100
   },
   {
     "id":"item-collected",
     "eventType": "ITEM_COLLECTED",
-    "scoreEffect": 5,
+    "scoreEffect": 0,
     "lifeEffect": 0,
     "maxOccurrences":0
   },
   {
     "id":"block-placed",
     "eventType": "BLOCK_PLACED",
-    "scoreEffect": 10,
-    "lifeEffect": 10,
-    "maxOccurrences":1
+    "scoreEffect": 0,
+    "lifeEffect": 0,
+    "maxOccurrences":0
   },
   {
     "id":"block-mined-wood",
