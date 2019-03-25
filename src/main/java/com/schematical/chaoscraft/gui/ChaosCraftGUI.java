@@ -51,6 +51,7 @@ public class ChaosCraftGUI {
         isRendering = false;
 
         GlStateManager.popMatrix();
+        GlStateManager.translate(0, 0, 0);
     }
 
     public static void drawBoundingBox(Vec3d posA, Vec3d posB, Color c) {
