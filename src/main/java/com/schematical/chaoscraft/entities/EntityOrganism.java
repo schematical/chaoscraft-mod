@@ -25,6 +25,7 @@ import com.schematical.chaosnet.model.NNetRaw;
 import com.schematical.chaosnet.model.Organism;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockAir;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -49,10 +50,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
@@ -65,10 +63,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class EntityOrganism extends EntityLiving {
     public final double REACH_DISTANCE = 5.0D;
@@ -81,6 +76,7 @@ public class EntityOrganism extends EntityLiving {
     protected float digSpeed = 1;
     protected ItemStackHandler itemHandler = new ItemStackHandler();
     protected BlockPos lastMinePos = BlockPos.ORIGIN.down();
+    int rightClickDelay = 0;
 
     protected int miningTicks = 0;
     protected int selectedItemIndex = 0;
@@ -725,7 +721,7 @@ public class EntityOrganism extends EntityLiving {
         Item worldEventItem = stack.getItem();
         //inventory.addItemStackToInventory(stack);
         for (int i = 0; i < this.itemHandler.getSlots() && !stack.isEmpty(); i++) {
-            if(getHeldItemMainhand() == ItemStack.EMPTY) {
+            if(getHeldItemMainhand().getItem() == Item.getItemById(0)) {
                 this.setHeldItem(EnumHand.MAIN_HAND, stack);
                 equippedSlot = i;
             }
@@ -753,64 +749,121 @@ public class EntityOrganism extends EntityLiving {
 
 
     }
-    public void placeBlock(BlockPos blockPos){
-        ItemStack itemStack = nNet.entity.getHeldItemMainhand();
-        if(itemStack == null){
-            return;
+    public void rightClick(RayTraceResult result) {
+        this.rightClickDelay = 4;
+        for (EnumHand hand : EnumHand.values()) {
+
+            switch (result.typeOfHit) {
+                case BLOCK:
+                    BlockPos blockpos = result.getBlockPos();
+
+                    if (this.world.getBlockState(blockpos).getMaterial() != Material.AIR) {
+
+                        EnumActionResult enumactionresult = rightClickBlock(blockpos, result.sideHit, result.hitVec, hand);
+
+
+                        if (enumactionresult == EnumActionResult.SUCCESS) {
+                            this.swingArm(hand);
+
+                            return;
+                        }
+                    }
+
+                    List<UUID> uuids = new ArrayList<>();
+
+                    break;
+
+                default:
+                    break;
+            }
+
+            ItemStack itemstack = getHeldItem(hand);
+
+            if (!itemstack.isEmpty() && itemRightClick(hand) == EnumActionResult.SUCCESS) {
+                //                this.entityRenderer.itemRenderer.resetEquippedProgress(enumhand);
+                return;
+            }
         }
-        Item heldItem = itemStack.getItem();
-        if(!(heldItem instanceof ItemBlock)){
-            return;
-        }
-        Block block = ((ItemBlock) heldItem).getBlock();
+    }
 
-        //ChaosCraft.logger.info(getName() + " Placing Block: " + block.getLocalizedName() + " - " + blockPos.toString());
-        IBlockState blockState = this.world.getBlockState(blockPos);
+    private EnumActionResult itemRightClick(EnumHand hand) {
+        ItemStack itemstack = getHeldItem(hand);
 
-        //Block replaceBlock = blockState.getBlock();
+        if (this.getPlayerWrapper().getCooldownTracker().hasCooldown(itemstack.getItem())) {
+            return EnumActionResult.PASS;
 
-        if(!blockState.getMaterial().isReplaceable()){
-            return;
-        }
 
-        if(this.getEntityBoundingBox().grow(.5d).intersects(blockState.getBoundingBox(this.world, blockPos).grow(.5d))){
-            return;//This will kill us
-        }
+        } else {
+            int i = itemstack.getCount();
+            ActionResult<ItemStack> actionresult = itemstack.useItemRightClick(world, this.getPlayerWrapper(), hand);
+            ItemStack itemstack1 = actionresult.getResult();
 
-        //Check if it is in their inventory
-        ItemStack stack = null;
-        int slot = -1;
-        for (int i = 0; i < this.itemHandler.getSlots(); i++) {
-            ItemStack checkStack = this.itemHandler.getStackInSlot(i);
-            Item item = checkStack.getItem();
+            if (itemstack1 != itemstack || itemstack1.getCount() != i) {
+                this.setHeldItem(hand, itemstack1);
 
-            if(item instanceof ItemBlock){
-                ItemBlock itemBlock = (ItemBlock) item;
-                //itemBlock.placeBlockAt();
-                if(itemBlock.getBlock() == block){
-                    stack = checkStack;
-                    slot = i;
+
+                if (itemstack1.isEmpty()) {
+                    net.minecraftforge.event.ForgeEventFactory.onPlayerDestroyItem(this.getPlayerWrapper(), itemstack, hand);
                 }
             }
-            //PacketHandler.INSTANCE.sendToAllTracking(new SyncHandsMessage(this.itemHandler.getStackInSlot(i), getEntityId(), i, selectedItemIndex), this);
-        }
-        if (stack == null  ||stack.isEmpty()) {
-            return;
-        }
 
-        this.itemHandler.extractItem(slot, 1, false);
-        swingArm(EnumHand.MAIN_HAND);
-
-        ChaosCraft.logger.info(this.getCCNamespace() + " - PlacedBlock: " + block.getRegistryName());
-        world.setBlockState(blockPos, block.getDefaultState());
-        CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.BLOCK_PLACED);
-        worldEvent.block = block;
-        entityFitnessManager.test(worldEvent);
-        if(block.getRegistryName().toString().equals("minecraft:crafting_table")){
-            String message = nNet.entity.getCCNamespace() +" Placed Block " + block.getRegistryName();
-            ChaosCraft.chat(message);
+            return actionresult.getType();
         }
+    }
 
+    private EnumActionResult rightClickBlock(BlockPos pos, EnumFacing direction, Vec3d vec, EnumHand hand) {
+        ItemStack itemstack = getHeldItem(hand);
+
+        if (itemstack.isEmpty()) return EnumActionResult.PASS;
+
+        float f = (float) (vec.x - (double) pos.getX());
+        float f1 = (float) (vec.y - (double) pos.getY());
+        float f2 = (float) (vec.z - (double) pos.getZ());
+        boolean flag = false;
+
+        if (!world.getWorldBorder().contains(pos)) {
+            return EnumActionResult.FAIL;
+        } else {
+
+            EnumActionResult ret = itemstack.onItemUseFirst(this.getPlayerWrapper(), world, pos, hand, direction, f, f1, f2);
+            if (ret != EnumActionResult.PASS) {
+                return ret;
+            }
+
+            IBlockState iblockstate = world.getBlockState(pos);
+            boolean bypass = getHeldItemMainhand().doesSneakBypassUse(world, pos, this.getPlayerWrapper()) && getHeldItemOffhand().doesSneakBypassUse(world, pos, this.getPlayerWrapper());
+
+            if ((!this.isSneaking() || bypass)) {
+                flag = iblockstate.getBlock().onBlockActivated(world, pos, iblockstate, this.getPlayerWrapper(), hand, direction, f, f1, f2);
+            }
+
+            if (!flag && itemstack.getItem() instanceof ItemBlock) {
+                ItemBlock itemblock = (ItemBlock) itemstack.getItem();
+
+                if (!itemblock.canPlaceBlockOnSide(world, pos, direction, this.getPlayerWrapper(), itemstack)) {
+                    return EnumActionResult.FAIL;
+                } else {
+
+
+
+                }
+            }
+
+            if (!flag) {
+                if (itemstack.isEmpty()) {
+                    return EnumActionResult.PASS;
+                } else if (this.getPlayerWrapper().getCooldownTracker().hasCooldown(itemstack.getItem())) {
+                    return EnumActionResult.PASS;
+                } else {
+                    EnumActionResult result = itemstack.onItemUse(this.getPlayerWrapper(), world, pos, hand, direction, f, f1, f2);
+                    if (result == EnumActionResult.SUCCESS) {
+                    }
+                    return result;
+                }
+            } else {
+                return EnumActionResult.SUCCESS;
+            }
+        }
     }
 
     public int hasInInventory(Item item){
