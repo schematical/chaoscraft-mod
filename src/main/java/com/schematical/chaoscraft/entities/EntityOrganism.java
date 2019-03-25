@@ -165,6 +165,7 @@ public class EntityOrganism extends EntityLiving {
          playerWrapper.posY = this.posY;
          playerWrapper.posZ = this.posZ;
          playerWrapper.onGround = this.onGround;
+         playerWrapper.setHeldItem(EnumHand.MAIN_HAND, getHeldItemMainhand());
          return playerWrapper;
      }
      public void attachNNetRaw(NNetRaw nNetRaw){
@@ -266,7 +267,7 @@ public class EntityOrganism extends EntityLiving {
                     jsonObject.put("areaOfFocus", areaOfFocusJSON);
                     ChaosCraft.networkWrapper.sendTo(new CCIMessage(jsonObject), (EntityPlayerMP) observingPlayer);
 
-                }
+               }
 
                 List<EntityItem> items = this.world.getEntitiesWithinAABB(EntityItem.class, this.getEntityBoundingBox().grow(2.0D, 1.0D, 2.0D));
 
@@ -581,8 +582,6 @@ public class EntityOrganism extends EntityLiving {
                     observiableAttributeCollection != null &&
                     observiableAttributeCollection.resourceId.equals(resourceId)
                 ){
-                    this.setHeldItem(EnumHand.MAIN_HAND, itemStack);
-                    equippedSlot = i;
                     return itemStack;
                 }
             }
@@ -673,39 +672,19 @@ public class EntityOrganism extends EntityLiving {
         ){
             return;
         }
-        float hardness = state.getBlockHardness(world, pos);
 
-        this.world.sendBlockBreakProgress(this.getEntityId(), pos, (int) (hardness * miningTicks * 10.0F) - 1);
+        this.world.sendBlockBreakProgress(this.getEntityId(), pos, (int) (state.getPlayerRelativeBlockHardness(this.getPlayerWrapper(), world, pos) * miningTicks * 10.0F) - 1);
 
-        boolean harvest = true;//state.getBlock().canHarvestBlock(world, pos, fakePlayer);
+
+        boolean harvest = state.getBlock().canHarvestBlock(world, pos, this.getPlayerWrapper());
 
         ItemStack stack = getHeldItemMainhand();
         String tool = state.getBlock().getHarvestTool(state);
 
-        if(hardness != 0) {
-
-
-            if (material.isToolNotRequired()) {
-                hardness /= 100F;
-            } else {
-                if (
-                    tool != null &&
-                    (
-                        stack.isEmpty() ||
-                        stack.getItem().equals(tool)
-                    )
-                ) {
-                    harvest = false;
-                }
-                hardness /= 300F;
-
-            }
-
-        }
 
         //ChaosCraft.logger.info(this.getName() + " Mining: " + state.getBlock().getLocalizedName() + " Tool:" + tool + " Held Stack: " + stack.getDisplayName() + "  Hardness: " + hardness + " - " + miningTicks + " - " + harvest + " => " + (hardness * miningTicks > 1.0f));
         //Check if block has been broken
-        if (hardness * miningTicks > 1.0f) {
+        if (state.getPlayerRelativeBlockHardness(this.getPlayerWrapper(), world, pos) * miningTicks > 1.0f) {
             //Broken
             miningTicks = 0;
 
@@ -723,8 +702,7 @@ public class EntityOrganism extends EntityLiving {
             }
 
             if (harvest) {
-                //state.getBlock().harvestBlock(world, fakePlayer, pos, state, world.getTileEntity(pos), itemstack);
-                state.getBlock().dropBlockAsItem(world, pos, state, 0);
+                state.getBlock().harvestBlock(world, this.getPlayerWrapper(), pos, state, world.getTileEntity(pos), stack);
 
             }
             CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.BLOCK_MINED);
@@ -747,9 +725,15 @@ public class EntityOrganism extends EntityLiving {
         Item worldEventItem = stack.getItem();
         //inventory.addItemStackToInventory(stack);
         for (int i = 0; i < this.itemHandler.getSlots() && !stack.isEmpty(); i++) {
-            this.setHeldItem(EnumHand.MAIN_HAND, stack);
-            equippedSlot = i;
+            if(getHeldItemMainhand() == ItemStack.EMPTY) {
+                this.setHeldItem(EnumHand.MAIN_HAND, stack);
+                equippedSlot = i;
+            }
+
             stack = this.itemHandler.insertItem(i, stack, false);
+
+
+
             this.selectedItemIndex = i;
 
             //PacketHandler.INSTANCE.sendToAllTracking(new SyncHandsMessage(this.itemHandler.getStackInSlot(i), getEntityId(), i, selectedItemIndex), this);
