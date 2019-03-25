@@ -19,7 +19,7 @@ import java.util.Iterator;
 /**
  * Created by user1a on 3/8/19.
  */
-public class CCIMessageHandeler implements IMessageHandler<CCIMessage, IMessage> {
+public class CAIMessageHandler implements IMessageHandler<CCIMessage, IMessage> {
     // Do note that the default constructor is required, but implicitly defined in this case
 @SideOnly(Side.CLIENT)
     @Override public IMessage onMessage(CCIMessage message, MessageContext ctx) {
@@ -60,64 +60,12 @@ public class CCIMessageHandeler implements IMessageHandler<CCIMessage, IMessage>
         Color color = Color.BLUE;
 
         ChaosCraftGUI.drawDebugBox(
-           startVec,
+            startVec,
             endVec,
             color
         );
-//        ChaosCraftGUI.drawDebugLine(
-//                new Vec3d(
-//                        vec3d.x - dist,
-//                        vec3d.y + dist,
-//                        vec3d.z + dist
-//                ),
-//                new Vec3d(
-//                        vec3d.x - dist,
-//                        vec3d.y - dist,
-//                        vec3d.z + dist
-//                ),
-//            color
-//        );
-//        ChaosCraftGUI.drawDebugLine(
-//                new Vec3d(
-//                        vec3d.x - dist,
-//                        vec3d.y - dist,
-//                        vec3d.z + dist
-//                ),
-//                new Vec3d(
-//                        vec3d.x - dist,
-//                        vec3d.y - dist,
-//                        vec3d.z - dist
-//                ),
-//                color
-//        );
-//        ChaosCraftGUI.drawDebugLine(
-//                new Vec3d(
-//                        vec3d.x - dist,
-//                        vec3d.y - dist,
-//                        vec3d.z - dist
-//                ),
-//                new Vec3d(
-//                        vec3d.x + dist,
-//                        vec3d.y - dist,
-//                        vec3d.z - dist
-//                ),
-//                color
-//        );
-//        ChaosCraftGUI.drawDebugLine(
-//                new Vec3d(
-//                        vec3d.x + dist,
-//                        vec3d.y - dist,
-//                        vec3d.z - dist
-//                ),
-//                new Vec3d(
-//                        vec3d.x + dist,
-//                        vec3d.y + dist,
-//                        vec3d.z - dist
-//                ),
-//                color
-//        );
+
         return null;
-        //TODO: Draw Lines around the above box
 
     }
 

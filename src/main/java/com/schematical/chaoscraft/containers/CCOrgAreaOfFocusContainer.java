@@ -29,14 +29,14 @@ public class CCOrgAreaOfFocusContainer extends Container {
         itemStackHandler.setSize(64);
         // CONTAINER INVENTORY
 
-        for (int y = 0; y < 5; y++) {
-            for (int x = 0; x < 5; x++) {
-                CCObserviableAttributeCollection observiableAttributeCollection = areaOfFocus.canSeenBlock(x -2, y -2, 0);
-                Block block = Block.getBlockFromName( observiableAttributeCollection.resourceId);
+        for (int x = 0; x < 5; x++) {
+            for (int y = 0; y < 5; y++) {
+                CCObserviableAttributeCollection observiableAttributeCollection = areaOfFocus.canSeenBlock(x, y, 0);
+                Block block = Block.getBlockFromName(observiableAttributeCollection.resourceId);
                 ItemStack itemStack = new ItemStack(block);
                 itemStack.setCount(1);
-                itemStackHandler.setStackInSlot(y  * 5 + x, itemStack);
-                addSlotToContainer(new SlotItemHandler(itemStackHandler, x + (y * 5), 62 + x * 18, 17 + (5 - y) * 18));
+                itemStackHandler.setStackInSlot(x  * 5 + y, itemStack);
+                addSlotToContainer(new SlotItemHandler(itemStackHandler, x + (y * 5), 5 + x * 18, 5 + y * 18));
 
             }
         }
@@ -77,6 +77,6 @@ public class CCOrgAreaOfFocusContainer extends Container {
 
     @Override
     public boolean canInteractWith(EntityPlayer player) {
-        return true;
+        return false;
     }
 }

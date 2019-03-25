@@ -16,6 +16,7 @@ import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.monster.EntityPigZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -27,6 +28,7 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import sun.java2d.pipe.AAShapePipe;
 
 import javax.annotation.Nullable;
 import java.awt.*;
@@ -123,13 +125,22 @@ public class CCEventListener {
         if(player == null){
             return;
         }
+        AxisAlignedBB axisAlignedBB = player.getRenderBoundingBox();
+        if(axisAlignedBB != null){
 
-        ChaosCraftGUI.drawDebugBox(
+        }
+       /* ChaosCraftGUI.drawDebugBox(
                 new Vec3d(
-                    -256, 64, 266
+                        axisAlignedBB.minX,
+                        axisAlignedBB.minY,
+                        axisAlignedBB.minZ
+                        //-256, 64, 266
                 ),
                 new Vec3d(
-                        -300,80,300
+                        axisAlignedBB.maxX,
+                        axisAlignedBB.maxY,
+                        axisAlignedBB.maxZ
+                        //-300,80,300
                 ),
                 Color.GREEN
         );
@@ -142,7 +153,7 @@ public class CCEventListener {
                         -300,80,300
                 ),
                 new Color(255, 155, 61, 255)
-        );
+        );*/
         ChaosCraftGUI.render(event);
 
     }
@@ -185,7 +196,7 @@ public class CCEventListener {
     }
     @SubscribeEvent
     public static void spawnEvent(EntityJoinWorldEvent event) {
-        if (event.getEntity() instanceof EntityMob) {
+       /* if (event.getEntity() instanceof EntityMob) {
             EntityMob mob = (EntityMob) event.getEntity();
 
             if (!(mob instanceof EntityPigZombie)) {
@@ -195,7 +206,7 @@ public class CCEventListener {
                     mob.targetTasks.addTask(2, new EntityAINearestAttackableTarget<>(mob, EntityOrganism.class, true));
                 }
             }
-        }
+        }*/
     }
 
 

@@ -411,7 +411,7 @@ public class ChaosCraft
         return spawnedEntityOrganisms;
     }
     public static void placeEntity(BlockPos pos, EntityOrganism entityOrganism){
-        int range = 40;
+        int range = 30;
         int minRange = 5;
         int yRange = 20;
         Vec3d rndPos = null;
@@ -475,7 +475,8 @@ public class ChaosCraft
                         }
                     }
                     if(saftyCatch2 >= saftyMax2){
-                        throw new ChaosNetException("Could not find good spawn pos after " + saftyCatch2 + " attempts");
+                        rndPos = null;
+                        //throw new ChaosNetException("Could not find good spawn pos after " + saftyCatch2 + " attempts");
                     }
                 }
             }
