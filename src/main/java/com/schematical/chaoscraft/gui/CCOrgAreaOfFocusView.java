@@ -18,12 +18,12 @@ import java.awt.*;
  */
 public class CCOrgAreaOfFocusView extends GuiContainer {
 
-    private static final ResourceLocation texture = new ResourceLocation(ChaosCraft.MODID, "container.png");
+    private static final ResourceLocation texture = new ResourceLocation(ChaosCraft.MODID, "focalview.png");
     EntityOrganism entityOrganism;
     public CCOrgAreaOfFocusView(EntityOrganism entity) {
         super(new CCOrgAreaOfFocusContainer(entity));
-        xSize = 176;
-        ySize = 166;
+        xSize = 98;
+        ySize = 98;
         entityOrganism = entity;
     }
 
@@ -35,20 +35,7 @@ public class CCOrgAreaOfFocusView extends GuiContainer {
         }
         AreaOfFocus areaOfFocus = (AreaOfFocus)neuralNet.getBiology("AreaOfFocus_0");
         Vec3d focusPoint = areaOfFocus.getFocusPoint();
-        fontRenderer.drawString(
-           Math.round(focusPoint.x) + ", " +
-                Math.round(focusPoint.y) + ", " +
-                Math.round(focusPoint.z),
-                5, 5, Color.darkGray.getRGB()
 
-        );
-
-        fontRenderer.drawString(
-           Math.round(entityOrganism.getPosition().getX()) + ", " +
-                Math.round(entityOrganism.getPosition().getY()) + ", " +
-                Math.round(entityOrganism.getPosition().getZ()),
-                5, 10, Color.darkGray.getRGB()
-        );
     }
 
     @Override
