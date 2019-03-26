@@ -4,6 +4,7 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.biology.ObservableTraitsCollection;
 import com.schematical.chaoscraft.entities.EntityOrganism;
+import io.mikael.urlbuilder.util.Decoder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.entity.RenderLiving;
@@ -24,7 +25,7 @@ import io.mikael.urlbuilder.util.Encoder;
  * Created by user1a on 3/22/19.
  */
 public class EntityOrganismRenderer extends RenderLiving<EntityOrganism> {
-    private static final Encoder UTF8_URL_ENCODER = new Encoder(StandardCharsets.UTF_8);
+    private static final Decoder UTF8_URL_ENCODER = new Decoder(StandardCharsets.UTF_8);
     public EntityOrganismRenderer(RenderManager rendermanagerIn) {
         super(rendermanagerIn, new ModelPlayer(.5f, false), 0.5f);
         this.addLayer(new LayerHeldItem(this));
@@ -49,7 +50,7 @@ public class EntityOrganismRenderer extends RenderLiving<EntityOrganism> {
 
         String chaosResourceDir = getClass().getResource("/assets/chaoscraft").getFile();
         URL skinFileURL = getClass().getResource( "/assets/chaoscraft/" + rgbString + ".png");
-        String skinFileName = UTF8_URL_ENCODER.encodePath(chaosResourceDir + "/" + rgbString + ".png");
+        String skinFileName = UTF8_URL_ENCODER.decodePath(chaosResourceDir + "/" + rgbString + ".png");
         if(skinFileURL != null) {
 
             File file = new File(skinFileName);
