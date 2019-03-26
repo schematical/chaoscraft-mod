@@ -699,11 +699,11 @@ public class EntityOrganism extends EntityLiving {
 
             if (harvest) {
                 state.getBlock().harvestBlock(world, this.getPlayerWrapper(), pos, state, world.getTileEntity(pos), stack);
-
+                CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.BLOCK_MINED);
+                worldEvent.block = state.getBlock();
+                entityFitnessManager.test(worldEvent);
             }
-            CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.BLOCK_MINED);
-            worldEvent.block = state.getBlock();
-            entityFitnessManager.test(worldEvent);
+
         }
     }
 

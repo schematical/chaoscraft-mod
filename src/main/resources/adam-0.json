@@ -16,9 +16,8 @@
         "id": "neuron-2"
       },
       {
-        "$TYPE": "CraftOutput",
+        "$TYPE": "PlaceBlockOutput",
         "_base_type": "output",
-        "recipeId":"minecraft:birch_planks",
         "dependencies": [
           {
             "neuronId": "neuron-2",
@@ -28,7 +27,7 @@
         "id": "neuron-3"
       },
       {
-        "$TYPE": "UseItemOutput",
+        "$TYPE": "DigOutput",
         "_base_type": "output",
         "dependencies": [
           {
@@ -45,7 +44,7 @@
         "dependencies": [
           {
             "neuronId": "neuron-2",
-            "weight": 1
+            "weight": 0
           }
         ],
         "id": "neuron-5"
@@ -58,7 +57,7 @@
         "dependencies": [
           {
             "neuronId": "neuron-2",
-            "weight": 1
+            "weight": 0
           }
         ],
         "id": "neuron-6"
