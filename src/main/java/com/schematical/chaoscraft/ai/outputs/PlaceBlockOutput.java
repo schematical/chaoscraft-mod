@@ -29,7 +29,7 @@ public class PlaceBlockOutput extends OutputNeuron {
         Vec3i vec3i = rayTraceResult.sideHit.getDirectionVec();
         BlockPos destBlockPos = rayTraceResult.getBlockPos().add(vec3i);
 
-        nNet.entity.placeBlock(destBlockPos);
+        nNet.entity.rightClick(rayTraceResult);
 
     }
     /*@Override
