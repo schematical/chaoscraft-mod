@@ -181,7 +181,7 @@
     "eventType": "BLOCK_MINED",
     "attributeId":"BLOCK_ID",
     "attributeValue": "minecraft:iron_ore", //Iron ORE
-    "scoreEffect": 350,
+    "scoreEffect": 600,
     "lifeEffect": 60,
     "maxOccurrences":3
   },
