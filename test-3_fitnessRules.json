@@ -14,16 +14,16 @@
   {
     "id":"item-collected",
     "eventType": "ITEM_COLLECTED",
-    "scoreEffect": 20,
+    "scoreEffect": 0,
     "lifeEffect": 0,
-    "maxOccurrences":5
+    "maxOccurrences":0
   },
   {
     "id":"block-placed",
     "eventType": "BLOCK_PLACED",
-    "scoreEffect": 0,
+    "scoreEffect": 20,
     "lifeEffect": 0,
-    "maxOccurrences":0
+    "maxOccurrences":5
   },
   {
     "id":"block-mined-wood",
