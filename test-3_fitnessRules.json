@@ -119,7 +119,7 @@
     "eventType": "BLOCK_MINED",
     "attributeId":"BLOCK_ID",
     "attributeValue": "minecraft:stone", //STONE
-    "scoreEffect": 100,
+    "scoreEffect": 25,
     "lifeEffect": 2,
     "maxOccurrences":11
   },
@@ -128,7 +128,7 @@
     "eventType": "ITEM_COLLECTED",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:cobbestone", //COBBLESTONE
-    "scoreEffect": 100,
+    "scoreEffect": 175,
     "lifeEffect": 12,
     "maxOccurrences":11
   },
@@ -181,7 +181,7 @@
     "eventType": "BLOCK_MINED",
     "attributeId":"BLOCK_ID",
     "attributeValue": "minecraft:iron_ore", //Iron ORE
-    "scoreEffect": 250,
+    "scoreEffect": 150,
     "lifeEffect": 60,
     "maxOccurrences":3
   },
@@ -190,16 +190,16 @@
     "eventType": "ITEM_COLLECTED",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:iron_ore", //Iron ORE
-    "scoreEffect": 500,
+    "scoreEffect": 800,
     "lifeEffect": 3,
-    "maxOccurrences":3
+    "maxOccurrences":1
   },
   {
     "id":"block-mined-coal",
     "eventType": "BLOCK_MINED",
     "attributeId":"BLOCK_ID",
     "attributeValue": "minecraft:coal", //COAL ORE
-    "scoreEffect": 400,
+    "scoreEffect": 200,
     "lifeEffect": 90,
     "maxOccurrences":1
   },
@@ -208,7 +208,7 @@
     "eventType": "ITEM_COLLECTED",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:coal", //COAL
-    "scoreEffect": 400,
+    "scoreEffect": 600,
     "lifeEffect": 3,
     "maxOccurrences":1
   },
