@@ -7,16 +7,16 @@
   {
     "id":"block-mined",
     "eventType": "BLOCK_MINED",
-    "scoreEffect": 0,
+    "scoreEffect": -10,
     "lifeEffect": 0,
-    "maxOccurrences":100
+    "maxOccurrences":10
   },
   {
     "id":"item-collected",
     "eventType": "ITEM_COLLECTED",
-    "scoreEffect": 0,
+    "scoreEffect": 20,
     "lifeEffect": 0,
-    "maxOccurrences":0
+    "maxOccurrences":5
   },
   {
     "id":"block-placed",
