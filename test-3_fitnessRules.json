@@ -120,7 +120,7 @@
     "attributeId":"BLOCK_ID",
     "attributeValue": "minecraft:stone", //STONE
     "scoreEffect": 100,
-    "lifeEffect": 30,
+    "lifeEffect": 2,
     "maxOccurrences":11
   },
   {
@@ -129,7 +129,7 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:cobbestone", //COBBLESTONE
     "scoreEffect": 100,
-    "lifeEffect": 2,
+    "lifeEffect": 12,
     "maxOccurrences":11
   },
   {
