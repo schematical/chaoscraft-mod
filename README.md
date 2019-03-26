@@ -87,7 +87,7 @@ World#getWorldTime() % 24000
 ```
 
 
-/tp @e[type=chaoscraft:adam-0] @p
+/tp @e[name=adam] @p
 
 
 
