@@ -16,7 +16,7 @@
         "id": "neuron-2"
       },
       {
-        "$TYPE": "PlaceBlockOutput",
+        "$TYPE": "SwimOutput",
         "_base_type": "output",
         "dependencies": [
           {
