@@ -17,16 +17,22 @@ import java.util.List;
 /**
  * Created by user1a on 2/26/19.
  */
-public class Target extends BiologyBase{
+public class TargetSlot extends BiologyBase{
     public Entity entity;
-    public Block block;
+    public Vec3d position;
     public float weight;
 
     public void setTarget(Entity entity){
         this.entity = entity;
     }
-    public void setTarget(Block block){
-        this.block = block;
+    public void setTarget(Vec3d vec3d){
+        this.position = vec3d;
+    }
+    public Vec3d getTargetPosition(){
+        if(entity != null){
+            return entity.getPositionVector();
+        }
+        return this.position;
     }
     @Override
     public void parseData(JSONObject jsonObject){
