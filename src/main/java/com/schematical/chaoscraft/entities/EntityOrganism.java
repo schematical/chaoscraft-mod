@@ -109,7 +109,7 @@ public class EntityOrganism extends EntityLiving {
         this.tasks.taskEntries.clear();
 
 
-        this.tasks.addTask(1, new EntityAISwimming(this));
+        //this.tasks.addTask(1, new EntityAISwimming(this));
 
         this.entityFitnessManager = new EntityFitnessManager(this);
 
