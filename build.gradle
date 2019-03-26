@@ -58,6 +58,7 @@ dependencies {
 
     // https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple
     compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
+    compile group: 'io.mikael', name: 'urlbuilder', version: '2.0.8'
 }
 
 processResources {

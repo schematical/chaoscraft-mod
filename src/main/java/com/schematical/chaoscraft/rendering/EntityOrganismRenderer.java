@@ -18,12 +18,13 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-
+import java.nio.charset.StandardCharsets;
+import io.mikael.urlbuilder.util.Encoder;
 /**
  * Created by user1a on 3/22/19.
  */
 public class EntityOrganismRenderer extends RenderLiving<EntityOrganism> {
-
+    private static final Encoder UTF8_URL_ENCODER = new Encoder(StandardCharsets.UTF_8);
     public EntityOrganismRenderer(RenderManager rendermanagerIn) {
         super(rendermanagerIn, new ModelPlayer(.5f, false), 0.5f);
         this.addLayer(new LayerHeldItem(this));
@@ -48,7 +49,7 @@ public class EntityOrganismRenderer extends RenderLiving<EntityOrganism> {
 
         String chaosResourceDir = getClass().getResource("/assets/chaoscraft").getFile();
         URL skinFileURL = getClass().getResource( "/assets/chaoscraft/" + rgbString + ".png");
-        String skinFileName = chaosResourceDir + "/" + rgbString + ".png";
+        String skinFileName = UTF8_URL_ENCODER.encodePath(chaosResourceDir + "/" + rgbString + ".png");
         if(skinFileURL != null) {
 
             File file = new File(skinFileName);
