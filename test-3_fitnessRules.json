@@ -7,6 +7,8 @@
   {
     "id":"block-mined",
     "eventType": "BLOCK_MINED",
+    "attributeId":"BLOCK_ID",
+    "attributeValue": "minecraft:dirt", //DIRT
     "scoreEffect": -10,
     "lifeEffect": 0,
     "maxOccurrences":10
