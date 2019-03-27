@@ -73,8 +73,34 @@
     "id":"equip-crafting-table",
     "eventType": "EQUIP",
     "attributeId":"ITEM_ID",
-    "attributeValue": "minecraft:crafting_table", //Wooden PLANK
+    "attributeValue": "minecraft:crafting_table", //CRAFTING TABLE
     "scoreEffect": 500,
+    "lifeEffect": 0,
+    "maxOccurrences":1
+  },
+  {
+    "id":"item-crafted-chest",
+    "eventType": "CRAFT",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:chest", //CHEST
+    "scoreEffect": 350,
+    "lifeEffect": 120,
+    "maxOccurrences":1
+  },
+  {
+    "id":"block-placed-chest",
+    "eventType": "BLOCK_PLACED",
+    "scoreEffect": 100,
+    "attributeId":"BLOCK_ID",
+    "attributeValue": "minecraft:chest", //CHEST
+    "maxOccurrences":1
+  },
+  {
+    "id":"equip-chest",
+    "eventType": "EQUIP",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:chest", //chest
+    "scoreEffect": 50,
     "lifeEffect": 0,
     "maxOccurrences":1
   },
