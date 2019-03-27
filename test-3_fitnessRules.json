@@ -37,10 +37,28 @@
     "maxOccurrences":4
   },
   {
+    "id":"block-mined-wood",
+    "eventType": "BLOCK_MINED",
+    "attributeId":"BLOCK_ID",
+    "attributeValue": "minecraft:log2", //WOOD
+    "scoreEffect": 100,
+    "lifeEffect": 30,
+    "maxOccurrences":4
+  },
+  {
     "id":"item-collected-wood",
     "eventType": "ITEM_COLLECTED",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:log", //WOOD
+    "scoreEffect": 100,
+    "lifeEffect": 4,
+    "maxOccurrences":4
+  },
+  {
+    "id":"item-collected-wood",
+    "eventType": "ITEM_COLLECTED",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:log2", //WOOD
     "scoreEffect": 100,
     "lifeEffect": 4,
     "maxOccurrences":4
