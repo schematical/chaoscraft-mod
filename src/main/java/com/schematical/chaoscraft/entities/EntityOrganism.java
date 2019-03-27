@@ -675,7 +675,7 @@ public class EntityOrganism extends EntityLiving {
         boolean harvest = state.getBlock().canHarvestBlock(world, pos, this.getPlayerWrapper());
 
         ItemStack stack = getHeldItemMainhand();
-        String tool = state.getBlock().getHarvestTool(state);
+        //String tool = state.getBlock().getHarvestTool(state);
 
 
         //ChaosCraft.logger.info(this.getName() + " Mining: " + state.getBlock().getLocalizedName() + " Tool:" + tool + " Held Stack: " + stack.getDisplayName() + "  Hardness: " + hardness + " - " + miningTicks + " - " + harvest + " => " + (hardness * miningTicks > 1.0f));
@@ -756,8 +756,8 @@ public class EntityOrganism extends EntityLiving {
             switch (result.typeOfHit) {
                 case BLOCK:
                     BlockPos blockpos = result.getBlockPos();
-
-                    if (this.world.getBlockState(blockpos).getMaterial() != Material.AIR) {
+                    IBlockState state = this.world.getBlockState(blockpos);
+                    if (state.getMaterial() != Material.AIR) {
 
                         EnumActionResult enumactionresult = rightClickBlock(blockpos, result.sideHit, result.hitVec, hand);
 
@@ -765,6 +765,9 @@ public class EntityOrganism extends EntityLiving {
                         if (enumactionresult == EnumActionResult.SUCCESS) {
                             this.swingArm(hand);
 
+                            CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.BLOCK_PLACED);
+                            worldEvent.block = state.getBlock();
+                            entityFitnessManager.test(worldEvent);
                             return;
                         }
                     }

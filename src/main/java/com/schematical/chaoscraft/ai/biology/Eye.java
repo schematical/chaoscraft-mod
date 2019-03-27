@@ -10,7 +10,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -58,6 +60,11 @@ public class Eye  extends BiologyBase{
             Block block = blockState.getBlock();
 
             CCObserviableAttributeCollection attributeCollection = entity.observableAttributeManager.Observe(block);
+            attributeCollection.position = new Vec3d(
+                rayTraceResult.getBlockPos().getX(),
+                rayTraceResult.getBlockPos().getY(),
+                rayTraceResult.getBlockPos().getZ()
+            );
             seenBlocks.add(attributeCollection);
         }
         _blocksCached = true;
@@ -69,7 +76,7 @@ public class Eye  extends BiologyBase{
             return seenEntities;
         }
         AxisAlignedBB grownBox = entity.getEntityBoundingBox().grow(maxDistance, maxDistance, maxDistance);
-        List<Entity> entities =  entity.world.getEntitiesWithinAABB(EntityLiving.class,  grownBox);
+        List<Entity> entities =  entity.world.getEntitiesWithinAABB(EntityLivingBase.class,  grownBox);
         entities.addAll(entity.world.getEntitiesWithinAABB(EntityItem.class,  grownBox));
 
         Vec3d vec3d = entity.getPositionEyes(1);
@@ -102,6 +109,33 @@ public class Eye  extends BiologyBase{
         }
         _entitiesCached = true;
         return seenEntities;
+    }
+    public CCObserviableAttributeCollection getClosestSeenObject(){
+        double closestDist = 999999;
+        CCObserviableAttributeCollection closest = null;
+        ArrayList<CCObserviableAttributeCollection> seenColl = getAllSeenObjects();
+        Vec3d entityPos = new Vec3d(entity.getPosition().getX(), entity.getPosition().getY(), entity.getPosition().getZ());
+        for(CCObserviableAttributeCollection seen: seenColl){
+            if(
+
+                seen.position != null
+            ){
+                double dist = entityPos.distanceTo(seen.position);
+                if(
+                    closest == null ||
+                    dist < closestDist
+                ) {
+                    closest = seen;
+                    closestDist = dist;
+                }
+            }
+        }
+        return closest;
+    }
+    public ArrayList<CCObserviableAttributeCollection> getAllSeenObjects(){
+        ArrayList<CCObserviableAttributeCollection> seenColl = canSeenBlocks();
+        seenColl.addAll(canSeenEntities());
+        return seenColl;
     }
     @Override
     public void parseData(JSONObject jsonObject){
