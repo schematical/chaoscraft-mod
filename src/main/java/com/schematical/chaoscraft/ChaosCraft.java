@@ -55,6 +55,8 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.FileReader;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -569,6 +571,22 @@ public class ChaosCraft
         // register server commands
         event.registerServerCommand(new CommandChaosCraftObserve());
 
+    }
+    public static void repair(){
+        try{
+
+            PostUsernameTrainingroomsTrainingroomSessionsSessionRepairRequest request = new PostUsernameTrainingroomsTrainingroomSessionsSessionRepairRequest();
+            request.setUsername(ChaosCraft.config.trainingRoomUsernameNamespace);
+            request.setTrainingroom(ChaosCraft.config.trainingRoomNamespace);
+            request.setSession(ChaosCraft.config.sessionNamespace);
+            PostUsernameTrainingroomsTrainingroomSessionsSessionRepairResult response = ChaosCraft.sdk.postUsernameTrainingroomsTrainingroomSessionsSessionRepair(request);
+
+        }catch(ChaosNetException exception){
+            ByteBuffer byteBuffer = exception.sdkHttpMetadata().responseContent();
+            String message = StandardCharsets.UTF_8.decode(byteBuffer).toString();
+            exception.setMessage(message);
+            throw exception;
+        }
     }
 
 

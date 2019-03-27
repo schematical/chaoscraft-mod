@@ -80,6 +80,10 @@ public class ChaosThread implements Runnable {
 
             int statusCode = exception.sdkHttpMetadata().httpStatusCode();
             switch(statusCode){
+                case(400):
+                    ChaosCraft.orgsToReport.clear();
+                    ChaosCraft.repair();
+                    break;
                 case(401):
                     ChaosCraft.auth();
                 break;
