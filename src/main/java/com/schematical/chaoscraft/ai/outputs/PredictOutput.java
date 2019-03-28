@@ -19,7 +19,7 @@ public class PredictOutput extends OutputNeuron {
         while(eventIterator.hasNext()) {
             OrgEvent event = eventIterator.next();
             if (event instanceof OrgPredictionEvent) {
-                return _lastValue;
+                return .5f;
             }
         }
         return super.evaluate();

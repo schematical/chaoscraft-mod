@@ -42,11 +42,14 @@ public class EventInput extends InputNeuron {
                     }
                     break;
                 case(HEALTH_CHANGE):
+                    CCWorldEvent worldEvent = event.getWorldEvent();
                     if(
-                        event.getWorldEvent() != null &&
-                        event.getWorldEvent().eventType == CCWorldEvent.Type.HEALTH_CHANGE
+                        worldEvent != null &&
+                            worldEvent.eventType == CCWorldEvent.Type.HEALTH_CHANGE
                     ) {
-                        float value = event.getTTLWeight() * event.getWorldEvent().amount;
+                        float eventTTLWeight = event.getTTLWeight();
+
+                        float value = eventTTLWeight * worldEvent.amount;
                         _lastValue += value;
                     }
                 break;

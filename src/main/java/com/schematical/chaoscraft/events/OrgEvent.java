@@ -44,7 +44,7 @@ public class OrgEvent {
         return ttl;
     }
     public float getTTLWeight() {
-        return ttl / startTtl;
+        return (float)ttl / (float)startTtl;
     }
     public CCWorldEvent getWorldEvent(){
         return this.worldEvent;
