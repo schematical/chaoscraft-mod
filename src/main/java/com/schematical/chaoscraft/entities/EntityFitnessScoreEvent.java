@@ -24,7 +24,7 @@ public class EntityFitnessScoreEvent {
         }
     }
     public float getAdjustedScore(){
-        return score * multiplier;
+        return Math.round(score * multiplier);
     }
     public String toString(){
         return worldEvent.toString() + " = " + getAdjustedScore() + "(" + score + "*" + multiplier + ")";
