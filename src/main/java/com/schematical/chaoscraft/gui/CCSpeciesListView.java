@@ -67,7 +67,7 @@ public class CCSpeciesListView extends CCGuiBase {
         GuiScreen view = null;
         switch (ccButton.action) {
             case TOGGLE_SPECIES_VISIBILITY_ACTION:
-                mc.displayGuiScreen(null);
+
                 CCSpeciesListViewButton speciesButton = (CCSpeciesListViewButton) ccButton;
                 speciesButton.showStats = !speciesButton.showStats;
                 break;
@@ -134,7 +134,7 @@ public class CCSpeciesListView extends CCGuiBase {
             buttonList.add(
                 new CCSpeciesListViewButton(
                     ID++,
-                   100,
+                   this.guiLeft,
                    this.guiTop + (ID * 15),
                     100,
                     15,
