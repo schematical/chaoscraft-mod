@@ -182,13 +182,4 @@ public class CCSpeciesListView extends CCGuiBase {
 
 
 
-    public class CCNeuronInformation {
-        public int x;
-        public int y;
-        public float layer;
-        public int distanceFromOutput;
-        public int distanceFromInput;
-
-    }
-
 }

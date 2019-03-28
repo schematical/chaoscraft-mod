@@ -24,16 +24,17 @@ public class CCOrgScoreEventsView extends CCGuiBase {
         int buttonWidth = 200;
         int buttonHeight = 15;
         for (EntityFitnessScoreEvent scoreEvent : entityOrganism.entityFitnessManager.scoreEvents) {
-            buttonList.add(new CCGuiButton(
-                            ID++,
-                            this.guiLeft + (this.guiWidth / 2) - buttonWidth / 2,
-                            this.guiTop + (buttonHeight) * (ID-1),
-                            buttonWidth,
-                            buttonHeight,
-                            scoreEvent.toString(),
-                            ButtonAction.VIEW_ORG_DETAIL_ACTION,
-                            entityOrganism
-                    )
+            buttonList.add(
+                new CCGuiButton(
+                    ID++,
+                    this.guiLeft + (this.guiWidth / 2) - buttonWidth / 2,
+                    this.guiTop + (buttonHeight) * (ID-1),
+                    buttonWidth,
+                    buttonHeight,
+                    scoreEvent.toString(),
+                    ButtonAction.VIEW_ORG_DETAIL_ACTION,
+                    entityOrganism
+                )
             );
         }
 
