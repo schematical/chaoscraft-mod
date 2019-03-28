@@ -73,14 +73,14 @@ public class EntityOrganism extends EntityLiving {
     public EntityFitnessManager entityFitnessManager;
     protected Organism organism;
     protected NeuralNet nNet;
-    protected float digSpeed = 1;
+
     protected ItemStackHandler itemHandler = new ItemStackHandler();
     protected BlockPos lastMinePos = BlockPos.ORIGIN.down();
     int rightClickDelay = 0;
 
     protected int miningTicks = 0;
     protected int selectedItemIndex = 0;
-    protected float maxLifeSeconds = 30;
+    protected float maxLifeSeconds = 10;
     protected int ticksSinceObservationHack = 0;
 
     public boolean hasAttemptedReport = false;
@@ -98,6 +98,8 @@ public class EntityOrganism extends EntityLiving {
     public HashMap<String, BiologyBase> inputs = new HashMap<String, BiologyBase>();
     public List<OrgEvent> events = new ArrayList<OrgEvent>();
     public EntityPlayerMP observingPlayer;
+    public Vec3d spawnPos;
+    private boolean hasTraveled = false;
 
     public EntityOrganism(World worldIn) {
         this(worldIn, "EntityOrganism");
@@ -216,7 +218,7 @@ public class EntityOrganism extends EntityLiving {
     public void onUpdate(){
 
         if(getDebug()){
-            int i = 0;
+
         }
 
         if(!world.isRemote){
@@ -225,6 +227,17 @@ public class EntityOrganism extends EntityLiving {
                 this.nNet != null &&
                 this.nNet.ready
             ) {
+                if(!this.hasTraveled) {
+                    if (this.spawnPos != null) {
+                        if (this.spawnPos.distanceTo(this.getPositionVector()) > 5) {
+                            CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.HAS_TRAVELED);
+                            entityFitnessManager.test(worldEvent);
+                        }
+                    } else {
+                        this.spawnPos = this.getPositionVector();
+                    }
+                }
+
                 List<OutputNeuron> outputs = this.nNet.evaluate();
                 Iterator<OutputNeuron> iterator = outputs.iterator();
                 JSONObject jsonObject = null;
@@ -297,8 +310,7 @@ public class EntityOrganism extends EntityLiving {
                 getAgeSeconds() > maxLifeSeconds ||
                 this.spawnHash != ChaosCraft.spawnHash
             ) {
-                this.dropInventory();
-                //ChaosCraft.logger.info("Killing: " + this.getName() + " - AGE: " + age + " - maxLifeSeconds: " + maxLifeSeconds + " - Score: " + this.entityFitnessManager.totalScore());
+                //this.dropInventory();
                 this.setDead();
                 return;
             }
