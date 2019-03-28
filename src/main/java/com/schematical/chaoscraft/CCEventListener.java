@@ -4,6 +4,7 @@ import com.google.common.base.Predicate;
 import com.schematical.chaoscraft.entities.EntityOrganism;
 import com.schematical.chaoscraft.gui.CCKeyBinding;
 import com.schematical.chaoscraft.gui.CCOrgListView;
+import com.schematical.chaoscraft.gui.CCSpeciesListView;
 import com.schematical.chaoscraft.gui.ChaosCraftGUI;
 import com.schematical.chaoscraft.proxies.ClientProxy;
 import com.schematical.chaosnet.model.ChaosNetException;
@@ -172,6 +173,11 @@ public class CCEventListener {
 
                         Minecraft.getMinecraft().displayGuiScreen(view);
                     break;
+                    case(CCKeyBinding.SHOW_SPECIES_LIST):
+                        CCSpeciesListView view2 = new CCSpeciesListView();
+
+                        Minecraft.getMinecraft().displayGuiScreen(view2);
+                        break;
                     case(CCKeyBinding.OBSERVER_MODE):
                         List<EntityPlayerMP> players = Minecraft.getMinecraft().world.<EntityPlayerMP>getPlayers(EntityPlayerMP.class, new Predicate<EntityPlayerMP>() {
                             @Override

@@ -17,6 +17,8 @@ public abstract class CCGuiBase extends GuiScreen {
         SHOW_NNET,
         SHOW_INVENTORY,
         SHOW_SCORE_EVENTS,
+        VIEW_SPECIES_LIST_ACTION,
+        TOGGLE_SPECIES_VISIBILITY_ACTION,
         VIEW_ORG_DETAIL_ACTION,
         VIEW_NEURON_DETAIL_ACTION,
         VIEW_BIOLOGY_LIST_ACTION,
@@ -127,6 +129,7 @@ public abstract class CCGuiBase extends GuiScreen {
                 view = new CCOrgAreaOfFocusView(ccButton.entity);
                 mc.displayGuiScreen(view);
                 return;
+
             default:
                 ChaosCraft.logger.warn("Unknown button action! " + ccButton.action);
                 super.actionPerformed(button);

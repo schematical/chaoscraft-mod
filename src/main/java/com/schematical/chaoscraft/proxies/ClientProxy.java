@@ -52,6 +52,7 @@ public class ClientProxy implements IProxy {
         //keyBindings[1] = new KeyBinding("key.structure.desc", Keyboard.KEY_P, "key.magicbeans.category");
         keyBindings.add(new KeyBinding(CCKeyBinding.SHOW_ORG_LIST, Keyboard.KEY_H, "key.chaoscraft"));
         keyBindings.add(new KeyBinding(CCKeyBinding.OBSERVER_MODE, Keyboard.KEY_O, "key.chaoscraft"));
+        keyBindings.add(new KeyBinding(CCKeyBinding.SHOW_SPECIES_LIST, Keyboard.KEY_J, "key.chaoscraft"));
 
 // register all the key bindings
         for (int i = 0; i < keyBindings.size(); ++i)
