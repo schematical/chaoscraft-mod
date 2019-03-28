@@ -38,7 +38,7 @@ public class CCWorldEvent {
             response += " " + item.getRegistryName();
         }
         if(entity != null){
-            response += " " + entity.getDisplayName();
+            response += " " + entity.getName();
         }
         return response;
     }
