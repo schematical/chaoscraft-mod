@@ -5,6 +5,7 @@ import com.schematical.chaosnet.model.ChaosNetException;
 import com.schematical.chaosnet.model.ObservedAttributesElement;
 import com.schematical.chaosnet.model.Organism;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.CraftingManager;
@@ -50,10 +51,18 @@ public class CCObservableAttributeManager {
         }
         return false;
     }
+    public CCObserviableAttributeCollection Observe(IBlockState blockState){
+        CCObserviableAttributeCollection atts = Observe(blockState.getBlock());
+
+        return atts;
+
+    }
     public CCObserviableAttributeCollection Observe(Block block){
         CCObserviableAttributeCollection atts = new CCObserviableAttributeCollection();
         atts.resourceType = CCResourceType.BLOCK;
         atts.resourceId = block.getRegistryName().toString();
+        //atts.position = block.blockP
+
         TestUnique(CCAttributeId.BLOCK_ID, atts.resourceId);
         return atts;
 
@@ -81,6 +90,8 @@ public class CCObservableAttributeManager {
         }
         atts.resourceId = resourceLocation.toString();
         atts.resourceType = CCResourceType.ENTITY;
+        atts.position = entity.getPositionVector();
+        atts._entity = entity;
         TestUnique(CCAttributeId.ENTITY_ID, atts.resourceId);
         return atts;
     }

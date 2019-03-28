@@ -15,6 +15,8 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -40,15 +42,11 @@ public class CommandChaosCraftRepair extends CommandBase {
 
     public void execute(MinecraftServer p_execute_1_, ICommandSender p_execute_2_, String[] p_execute_3_) throws CommandException {
         try{
-            PostUsernameTrainingroomsTrainingroomSessionsSessionRepairRequest request = new PostUsernameTrainingroomsTrainingroomSessionsSessionRepairRequest();
-            request.setUsername(ChaosCraft.config.trainingRoomUsernameNamespace);
-            request.setTrainingroom(ChaosCraft.config.trainingRoomNamespace);
-            request.setSession(ChaosCraft.config.sessionNamespace);
-            PostUsernameTrainingroomsTrainingroomSessionsSessionRepairResult response = ChaosCraft.sdk.postUsernameTrainingroomsTrainingroomSessionsSessionRepair(request);
-
+            ChaosCraft.repair();
         }catch(ChaosNetException exception){
+
             p_execute_2_.sendMessage(
-                new TextComponentString("Error Status: " + exception.sdkHttpMetadata().httpStatusCode() + " - " + exception.sdkHttpMetadata().responseContent().toString())
+                new TextComponentString("Error Status: " + exception.sdkHttpMetadata().httpStatusCode() + " - " + exception.getMessage())
             );
             return;
         }

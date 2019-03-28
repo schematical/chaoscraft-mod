@@ -35,17 +35,19 @@ public class EntityFitnessManager {
             if(scoreEvent.fitnessRule == null){
                 throw new ChaosNetException("`scoreEvent.fitnessRule` is `null`");
             }
-            if(
-                occurences.containsKey(
-                    scoreEvent.fitnessRule.id
-                )
-            ) {
+            if(scoreEvent.fitnessRule.maxOccurrences != -1) {
+                if (
+                        occurences.containsKey(
+                                scoreEvent.fitnessRule.id
+                        )
+                        ) {
 
-                numOfOccurences = occurences.get(scoreEvent.fitnessRule.id);
-            }
-            numOfOccurences += 1;
-            if(numOfOccurences >  scoreEvent.fitnessRule.maxOccurrences){
-                return;
+                    numOfOccurences = occurences.get(scoreEvent.fitnessRule.id);
+                }
+                numOfOccurences += 1;
+                if (numOfOccurences > scoreEvent.fitnessRule.maxOccurrences) {
+                    return;
+                }
             }
             scoreEvents.add(scoreEvent);
             entityOrganism.events.add(new OrgEvent(scoreEvent));
