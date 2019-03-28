@@ -16,56 +16,44 @@
         "id": "neuron-2"
       },
       {
-        "$TYPE": "SetTargetSlotOutput",
+        "$TYPE": "PredictOutput",
         "_base_type": "output",
-        "targetSlotId":"TargetSlot_0",
         "dependencies": [
           {
-            "neuronId": "neuron-2",
+            "neuronId": "neuron-4",
             "weight": 1
           }
         ],
         "id": "neuron-3"
       },
       {
-        "$TYPE": "AttackOutput",
+        "$TYPE": "HasInInventoryInput",
+        "_base_type": "input",
+        "dependencies": [],
+        "attributeId":"ITEM_ID",
+        "attributeValue":"minecraft:wooden_pickaxe",
+        "id": "neuron-4"
+      },
+
+
+
+      {
+        "$TYPE": "ChatOutput",
         "_base_type": "output",
         "dependencies": [
           {
-            "neuronId": "neuron-5",
-            "weight": 1
-          },
-          {
             "neuronId": "neuron-6",
-            "weight": 1
-          },
-          {
-            "neuronId": "neuron-7",
             "weight": 1
           }
         ],
-        "id": "neuron-4"
+        "id": "neuron-5"
       },
       {
-        "$TYPE": "TargetPitchInput",
+        "$TYPE": "EventInput",
         "_base_type": "input",
-        "targetSlotId":"TargetSlot_0",
-        "id": "neuron-5",
-        "dependencies": []
-      },
-      {
-        "$TYPE": "TargetYawInput",
-        "_base_type": "input",
-        "targetSlotId":"TargetSlot_0",
         "dependencies": [],
+        "eventType":"PREDICTION",
         "id": "neuron-6"
-      },
-      {
-        "$TYPE": "TargetDistanceInput",
-        "_base_type": "input",
-        "targetSlotId":"TargetSlot_0",
-        "dependencies": [],
-        "id": "neuron-7"
       }
     ],
     "biology": [
