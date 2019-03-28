@@ -52,7 +52,7 @@
         "$TYPE": "EventInput",
         "_base_type": "input",
         "dependencies": [],
-        "eventType":"HEALTH_CHANGE",
+        "eventType":"PREDICTION",
         "id": "neuron-6"
       }
     ],

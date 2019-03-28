@@ -35,8 +35,8 @@ public class CCOrgAreaOfFocusContainer extends Container {
                 Block block = Block.getBlockFromName(observiableAttributeCollection.resourceId);
                 ItemStack itemStack = new ItemStack(block);
                 itemStack.setCount(1);
-                itemStackHandler.setStackInSlot(x  * 5 + y, itemStack);
-                addSlotToContainer(new SlotItemHandler(itemStackHandler, x + (y * 5), 5 + x * 18, 5 + y * 18));
+                itemStackHandler.setStackInSlot((y  * 5) + x, itemStack);
+                addSlotToContainer(new SlotItemHandler(itemStackHandler, x + (y * 5), 5 + x * 18, 5 + (5 - y) * 18));
 
             }
         }
