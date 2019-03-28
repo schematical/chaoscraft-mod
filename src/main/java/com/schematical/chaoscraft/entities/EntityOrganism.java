@@ -293,12 +293,14 @@ public class EntityOrganism extends EntityLiving {
                 this.setRotation(this.rotationYaw, this.rotationPitch);
                 this.observationHack();
                 Iterator<OrgEvent> eventIterator = events.iterator();
+
                 while(eventIterator.hasNext()){
                     OrgEvent event = eventIterator.next();
                     int eventTTL = event.tick();
                     if(eventTTL <= 0){
                         eventIterator.remove();
                     }
+                    //Check to see if there is a reward prediction
                 }
             }
 
