@@ -27,6 +27,6 @@ public class EntityFitnessScoreEvent {
         return Math.round(score * multiplier);
     }
     public String toString(){
-        return worldEvent.toString() + " = " + getAdjustedScore() + "(" + score + "*" + multiplier + ")";
+        return worldEvent.eventType + " = " + getAdjustedScore() + "(" + score + "*" + multiplier + ")";
     }
 }
