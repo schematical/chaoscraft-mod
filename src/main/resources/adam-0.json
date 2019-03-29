@@ -69,6 +69,13 @@
         "pitch":0,
         "yaw":0,
         "maxDistance":5
+      },
+      {
+        "$TYPE": "AreaOfFocus",
+        "index": 0,
+        "maxFocusDistance": 1,
+        "viewRange": 1,
+        "id": "AreaOfFocus_0"
       }
     ]
   },
