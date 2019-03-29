@@ -4,6 +4,7 @@ import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.entities.EntityOrganism;
 import com.schematical.chaosnet.model.ChaosNetException;
 import com.schematical.chaosnet.model.Organism;
+import io.mikael.urlbuilder.util.Decoder;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -16,6 +17,7 @@ import org.json.simple.parser.JSONParser;
 import java.io.File;
 import java.io.FileReader;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 import java.util.List;
@@ -26,6 +28,7 @@ import java.util.List;
  * Created by user1a on 1/3/19.
  */
 public class CommandChaosCraftAdam extends CommandBase{
+    private static final Decoder UTF8_URL_ENCODER = new Decoder(StandardCharsets.UTF_8);
      /*
      * Gets the name of the command
      */
@@ -69,6 +72,7 @@ public class CommandChaosCraftAdam extends CommandBase{
         try {
             ClassLoader classLoader = getClass().getClassLoader();
             String resourcePath = classLoader.getResource("adam-0.json").getFile();
+            resourcePath = UTF8_URL_ENCODER.decodePath(resourcePath);
             File f = new File(resourcePath);
             JSONObject obj = null;
             if(!f.exists()){
