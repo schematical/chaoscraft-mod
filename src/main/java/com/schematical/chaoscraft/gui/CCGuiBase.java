@@ -1,6 +1,7 @@
 package com.schematical.chaoscraft.gui;
 
 import com.schematical.chaoscraft.ChaosCraft;
+import com.schematical.chaoscraft.entities.EntityOrganism;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -22,7 +23,7 @@ public abstract class CCGuiBase extends GuiScreen {
         VIEW_ORG_DETAIL_ACTION,
         VIEW_NEURON_DETAIL_ACTION,
         VIEW_BIOLOGY_LIST_ACTION,
-        VIEW_AREA_OF_FOCUS, VIEW_BIOLOGY_DETAIL_ACTION
+        VIEW_AREA_OF_FOCUS, VIEW_BIOLOGY_DETAIL_ACTION, TOGGLE_PLACING_CHAT, TOGGLE_MINING_CHAT
     }
 
     final String title;
@@ -93,6 +94,7 @@ public abstract class CCGuiBase extends GuiScreen {
     protected void actionPerformed(GuiButton button) throws IOException {
         CCGuiButton ccButton = (CCGuiButton) button;
         GuiScreen view = null;
+        EntityOrganism org = ccButton.getEntity();
         switch (ccButton.action) {
             case CLOSE:
                 mc.displayGuiScreen(null);
@@ -128,6 +130,16 @@ public abstract class CCGuiBase extends GuiScreen {
             case VIEW_AREA_OF_FOCUS:
                 view = new CCOrgAreaOfFocusView(ccButton.entity);
                 mc.displayGuiScreen(view);
+                return;
+            case TOGGLE_MINING_CHAT:
+                for(EntityOrganism entityOrganism : ChaosCraft.organisims) {
+                    entityOrganism.miningChat = !entityOrganism.miningChat;
+                }
+                return;
+            case TOGGLE_PLACING_CHAT:
+                for(EntityOrganism entityOrganism : ChaosCraft.organisims) {
+                    entityOrganism.placingChat = !entityOrganism.placingChat;
+                }
                 return;
 
             default:

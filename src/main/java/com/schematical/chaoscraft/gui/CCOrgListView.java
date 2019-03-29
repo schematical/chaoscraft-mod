@@ -18,6 +18,39 @@ public class CCOrgListView extends CCGuiBase {
 
         int buttonWidth = 150;
         int buttonHeight = 10;
+        int toggleB = 80;
+
+        buttonList.add(new CCGuiButton(
+                0,
+                this.guiLeft + (this.guiWidth / 2) - toggleB / 2,
+                0,
+                toggleB,
+                buttonHeight,
+                "Toggle Mining",
+                ButtonAction.TOGGLE_MINING_CHAT
+
+        ));
+        buttonList.add(new CCGuiButton(
+                0,
+                toggleB + this.guiLeft + (this.guiWidth / 2) - toggleB / 2,
+                0,
+                toggleB,
+                buttonHeight,
+                "Toggle Placing",
+                ButtonAction.TOGGLE_PLACING_CHAT
+
+        ));
+        buttonList.add(new CCGuiButton(
+                0,
+                (this.guiLeft + (this.guiWidth / 2) - toggleB / 2) - toggleB,
+                0,
+                toggleB,
+                buttonHeight,
+                "Toggle Crafting",
+                ButtonAction.TOGGLE_PLACING_CHAT
+
+        ));
+
         for (EntityOrganism entityOrganism : ChaosCraft.organisims) {
             buttonList.add(new CCGuiButton(
                             ID++,
@@ -29,8 +62,11 @@ public class CCOrgListView extends CCGuiBase {
                             ButtonAction.VIEW_ORG_DETAIL_ACTION,
                             entityOrganism
                     )
+
             );
+
         }
+
 
         return ID;
     }
