@@ -23,7 +23,7 @@ public abstract class CCGuiBase extends GuiScreen {
         VIEW_ORG_DETAIL_ACTION,
         VIEW_NEURON_DETAIL_ACTION,
         VIEW_BIOLOGY_LIST_ACTION,
-        VIEW_AREA_OF_FOCUS, VIEW_BIOLOGY_DETAIL_ACTION, TOGGLE_PLACING_CHAT, TOGGLE_MINING_CHAT
+        VIEW_AREA_OF_FOCUS, VIEW_BIOLOGY_DETAIL_ACTION, TOGGLE_PLACING_CHAT, TOGGLE_MINING_CHAT, TOGGLE_CRAFTING_CHAT
     }
 
     final String title;
@@ -135,11 +135,22 @@ public abstract class CCGuiBase extends GuiScreen {
                 for(EntityOrganism entityOrganism : ChaosCraft.organisims) {
                     entityOrganism.miningChat = !entityOrganism.miningChat;
                 }
+                ChaosCraft.miningChat = !ChaosCraft.miningChat;
+                ChaosCraft.chat("Mining chat is " + ChaosCraft.miningChat);
                 return;
             case TOGGLE_PLACING_CHAT:
                 for(EntityOrganism entityOrganism : ChaosCraft.organisims) {
                     entityOrganism.placingChat = !entityOrganism.placingChat;
                 }
+                ChaosCraft.placingChat = !ChaosCraft.placingChat;
+                ChaosCraft.chat("Placing chat is " + ChaosCraft.placingChat);
+                return;
+            case TOGGLE_CRAFTING_CHAT:_CHAT:
+                for(EntityOrganism entityOrganism : ChaosCraft.organisims) {
+                    entityOrganism.craftingChat = !entityOrganism.craftingChat;
+                }
+                ChaosCraft.craftingChat = !ChaosCraft.craftingChat;
+                ChaosCraft.chat("Crafting chat is " + ChaosCraft.craftingChat);
                 return;
 
             default:

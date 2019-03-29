@@ -47,7 +47,7 @@ public class CCOrgListView extends CCGuiBase {
                 toggleB,
                 buttonHeight,
                 "Toggle Crafting",
-                ButtonAction.TOGGLE_PLACING_CHAT
+                ButtonAction.TOGGLE_CRAFTING_CHAT
 
         ));
 

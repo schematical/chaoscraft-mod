@@ -68,6 +68,7 @@ import java.util.*;
 public class EntityOrganism extends EntityLiving {
     public final double REACH_DISTANCE = 5.0D;
     private final long spawnTime;
+
     protected CCPlayerEntityWrapper playerWrapper;
 
     public EntityFitnessManager entityFitnessManager;
@@ -100,8 +101,10 @@ public class EntityOrganism extends EntityLiving {
     public EntityPlayerMP observingPlayer;
     public Vec3d spawnPos;
     private boolean hasTraveled = false;
+
     public boolean miningChat = false;
     public boolean placingChat = false;
+    public boolean craftingChat = false;
 
     public EntityOrganism(World worldIn) {
         this(worldIn, "EntityOrganism");
@@ -465,6 +468,9 @@ public class EntityOrganism extends EntityLiving {
 
         ItemStack outputStack = recipe.getRecipeOutput().copy();
         ChaosCraft.logger.info(this.getCCNamespace() + " - Crafted: " + outputStack.getDisplayName());
+        if(craftingChat) {
+            ChaosCraft.chat(organism.getName() + " crafted " + outputStack.getDisplayName());
+        }
         if(emptySlot != -1) {
             itemHandler.insertItem(emptySlot, outputStack, false);
             observableAttributeManager.ObserveCraftableRecipes(this);
