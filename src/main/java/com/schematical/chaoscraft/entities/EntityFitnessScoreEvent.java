@@ -27,6 +27,10 @@ public class EntityFitnessScoreEvent {
         return Math.round(score * multiplier);
     }
     public String toString(){
-        return worldEvent.toString() + " = " + getAdjustedScore() + "(" + score + "*" + (Math.round(multiplier * 3) / 3) + ")";
+        String _multiplier = ((Float)multiplier).toString();
+        if(_multiplier.length() > 3){
+            _multiplier = _multiplier.substring(0, 3);
+        }
+        return worldEvent.toString() + " = " + getAdjustedScore() + "(" + score + "*" + _multiplier + ")";
     }
 }
