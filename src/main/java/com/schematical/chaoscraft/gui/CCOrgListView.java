@@ -18,7 +18,7 @@ public class CCOrgListView extends CCGuiBase {
 
         int buttonWidth = 150;
         int buttonHeight = 10;
-        int toggleB = 80;
+        int toggleB = 120;
 
         buttonList.add(new CCGuiButton(
                 0,
@@ -26,7 +26,7 @@ public class CCOrgListView extends CCGuiBase {
                 0,
                 toggleB,
                 buttonHeight,
-                "Toggle Mining",
+                "Toggle Mining Chats",
                 ButtonAction.TOGGLE_MINING_CHAT
 
         ));
@@ -36,7 +36,7 @@ public class CCOrgListView extends CCGuiBase {
                 0,
                 toggleB,
                 buttonHeight,
-                "Toggle Placing",
+                "Toggle Placing Chats",
                 ButtonAction.TOGGLE_PLACING_CHAT
 
         ));
@@ -46,7 +46,7 @@ public class CCOrgListView extends CCGuiBase {
                 0,
                 toggleB,
                 buttonHeight,
-                "Toggle Crafting",
+                "Toggle Crafting Chats",
                 ButtonAction.TOGGLE_CRAFTING_CHAT
 
         ));
