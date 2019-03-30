@@ -718,14 +718,14 @@
     "eventType": "CRAFT",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:boat", //BOAT
-    "scoreEffect": 900,
+    "scoreEffect": 500,
     "lifeEffect": 180,
     "maxOccurrences":1
   },
   {
     "id":"block-placed-boat",
     "eventType": "BLOCK_PLACED",
-    "scoreEffect": 450,
+    "scoreEffect": 250,
     "attributeId":"BLOCK_ID",
     "attributeValue": "minecraft:boat", //BOAT
     "maxOccurrences":1
@@ -735,7 +735,7 @@
     "eventType": "EQUIP",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:boat", //BOAT
-    "scoreEffect": 250,
+    "scoreEffect": 150,
     "lifeEffect": 0,
     "maxOccurrences":1
   },
