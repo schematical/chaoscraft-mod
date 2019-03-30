@@ -110,7 +110,7 @@
     "eventType": "CRAFT",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:chest", //CHEST
-    "scoreEffect": 350,
+    "scoreEffect": 400,
     "lifeEffect": 120,
     "maxOccurrences":1
   },
