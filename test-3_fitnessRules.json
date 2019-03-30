@@ -12,7 +12,7 @@
     "scoreEffect": 250.0
   },
   {
-    "id":"block-mined",
+    "id":"block-mined-dirt",
     "eventType": "BLOCK_MINED",
     "attributeId":"BLOCK_ID",
     "attributeValue": "minecraft:dirt", //DIRT
