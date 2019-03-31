@@ -554,6 +554,15 @@
     "maxOccurrences":1
   },
   {
+    "id":"item-collected-book",
+    "eventType": "ITEM_COLLECTED",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:book", //BOOK
+    "scoreEffect": 500,
+    "lifeEffect": 30,
+    "maxOccurrences":1
+  },
+  {
     "id":"item-crafted-enchanting-table",
     "eventType": "CRAFT",
     "attributeId":"ITEM_ID",
@@ -755,6 +764,164 @@
     "attributeValue": "minecraft:totem_of_undying", //TOTEM OF UNDYING
     "scoreEffect": 4000,
     "lifeEffect": 240,
+    "maxOccurrences":1
+  }
+  {
+    "id":"block-mined-cactus",
+    "eventType": "BLOCK_MINED",
+    "attributeId":"BLOCK_ID",
+    "attributeValue": "minecraft:cactus", //CACTUS
+    "scoreEffect": 50,
+    "lifeEffect": 10,
+    "maxOccurrences":1
+  },
+  {
+    "id":"item-collected-cactus",
+    "eventType": "ITEM_COLLECTED",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:cactus", //CACTUS
+    "scoreEffect": 30,
+    "lifeEffect": 3,
+    "maxOccurrences":1
+  },
+  {
+    "id":"block-placed-cactus",
+    "eventType": "BLOCK_PLACED",
+    "scoreEffect": 60,
+    "attributeId":"BLOCK_ID",
+    "attributeValue": "minecraft:cactus", //CACTUS
+    "maxOccurrences":1
+  },
+  {
+    "id":"equip-cactus",
+    "eventType": "EQUIP",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:cactus", //CACTUS
+    "scoreEffect": 30,
+    "lifeEffect": 0,
+    "maxOccurrences":1
+  },
+  {
+    "id":"item-collected-blaze-rod",
+    "eventType": "ITEM_COLLECTED",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:blaze_rod", //BLAZE ROD
+    "scoreEffect": 2000,
+    "lifeEffect": 180,
+    "maxOccurrences":1
+  }
+  {
+    "id":"item-crafted-blaze-powder",
+    "eventType": "CRAFT",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:blaze_powder", //BLAZE POWDER
+    "scoreEffect": 1000,
+    "lifeEffect": 150,
+    "maxOccurrences":1
+  },
+  {
+    "id":"item-crafted-fire-charge",
+    "eventType": "CRAFT",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:fire_charge", //FIRE CHARGE
+    "scoreEffect": 350,
+    "lifeEffect": 40,
+    "maxOccurrences":1
+  },
+  {
+    "id":"item-crafted-brewing-stand",
+    "eventType": "CRAFT",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:brewing_stand", //BREWING STAND
+    "scoreEffect": 2500,
+    "lifeEffect": 120,
+    "maxOccurrences":1
+  },
+  {
+    "id":"block-placed-brewing-stand",
+    "eventType": "BLOCK_PLACED",
+    "scoreEffect": 700,
+    "attributeId":"BLOCK_ID",
+    "attributeValue": "minecraft:brewing_stand", //BREWING STAND
+    "maxOccurrences":1
+  },
+  {
+    "id":"equip-brewing-stand",
+    "eventType": "EQUIP",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:brewing_stand", //BREWING STAND
+    "scoreEffect": 300,
+    "lifeEffect": 0,
+    "maxOccurrences":1
+  },
+  {
+    "id":"item-crafted-eye-of-ender",
+    "eventType": "CRAFT",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:ender_eye", //EYE OF ENDER
+    "scoreEffect": 1500,
+    "lifeEffect": 180,
+    "maxOccurrences":12
+  },
+  {
+    "id":"item-crafted-ender-chest",
+    "eventType": "CRAFT",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:ender_chest", //ENDER CHEST
+    "scoreEffect": 3000,
+    "lifeEffect": 300,
+    "maxOccurrences":20
+  },
+  {
+    "id":"block-placed-ender-chest",
+    "eventType": "BLOCK_PLACED",
+    "scoreEffect": 700,
+    "attributeId":"BLOCK_ID",
+    "attributeValue": "minecraft:ender_chest", //ENDER CHEST
+    "maxOccurrences":2
+  },
+  {
+    "id":"equip-ender-chest",
+    "eventType": "EQUIP",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:ender_chest", //ENDER CHEST
+    "scoreEffect": 300,
+    "lifeEffect": 0,
+    "maxOccurrences":1
+  },
+  {
+    "id":"item-crafted-bookshelf",
+    "eventType": "CRAFT",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:bookshelf", //BOOKSHELF
+    "scoreEffect": 1000,
+    "lifeEffect": 150,
+    "maxOccurrences":15
+  },
+  {
+    "id":"block-placed-bookshelf",
+    "eventType": "BLOCK_PLACED",
+    "scoreEffect": 500,
+    "attributeId":"BLOCK_ID",
+    "attributeValue": "minecraft:bookshelf", //BOOKSHELF
+    "maxOccurrences":1
+  },
+  {
+    "id":"equip-bookshelf",
+    "eventType": "EQUIP",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:bookshelf", //BOOKSHELF
+    "scoreEffect": 150,
+    "lifeEffect": 0,
+    "maxOccurrences":1
+  },
+  {
+    "id":"item-collected-elytra",
+    "eventType": "ITEM_COLLECTED",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:elytra", //ELYTRA
+    "scoreEffect": 5000,
+    "lifeEffect": 300,
     "maxOccurrences":1
   }
 ]
