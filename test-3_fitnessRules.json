@@ -709,8 +709,8 @@
     "eventType": "ITEM_COLLECTED",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:ender_pearl", //ENDER PEARL
-    "scoreEffect": 1000,
-    "lifeEffect": 45,
+    "scoreEffect": 1750,
+    "lifeEffect": 150,
     "maxOccurrences":1
   },
   {
