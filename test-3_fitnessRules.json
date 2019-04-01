@@ -3,7 +3,7 @@
     "id":"has-traveled",
     "eventType": "HAS_TRAVELED",
     "scoreEffect": 5,
-    "lifeEffect": 60,
+    "lifeEffect": 40,
     "maxOccurrences":1
   },
   {
