@@ -40,7 +40,7 @@
     "attributeId":"BLOCK_ID",
     "attributeValue": "minecraft:log", //WOOD
     "scoreEffect": 100,
-    "lifeEffect": 30,
+    "lifeEffect": 20,
     "maxOccurrences":4
   },
   {
@@ -49,7 +49,7 @@
     "attributeId":"BLOCK_ID",
     "attributeValue": "minecraft:log2", //WOOD
     "scoreEffect": 100,
-    "lifeEffect": 30,
+    "lifeEffect": 20,
     "maxOccurrences":4
   },
   {
@@ -93,7 +93,7 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:planks", //Wooden PLANK
     "scoreEffect": 500,
-    "lifeEffect": 90,
+    "lifeEffect": 60,
     "maxOccurrences":1
   },
   {
@@ -102,7 +102,7 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:crafting_table", //CRAFTING TABLE
     "scoreEffect": 2000,
-    "lifeEffect": 120,
+    "lifeEffect": 60,
     "maxOccurrences":1
   },
   {
@@ -128,7 +128,7 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:chest", //CHEST
     "scoreEffect": 400,
-    "lifeEffect": 120,
+    "lifeEffect": 40,
     "maxOccurrences":1
   },
   {
@@ -154,7 +154,7 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:stick", //STICK
     "scoreEffect": 1000,
-    "lifeEffect": 90,
+    "lifeEffect": 60,
     "maxOccurrences":1
   },
   {
@@ -172,7 +172,7 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:wooden_pickaxe", //Wooden PICKAXE
     "scoreEffect": 3000,
-    "lifeEffect": 240,
+    "lifeEffect": 180,
     "maxOccurrences":1
   },
   {
@@ -199,7 +199,7 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:cobbestone", //COBBLESTONE
     "scoreEffect": 50,
-    "lifeEffect": 12,
+    "lifeEffect": 10,
     "maxOccurrences":11
   },
   {
@@ -208,7 +208,7 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:furnace", //FURNACE
     "scoreEffect": 3000,
-    "lifeEffect": 300,
+    "lifeEffect": 240,
     "maxOccurrences":1
   },
   {
@@ -234,7 +234,7 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:stone_pickaxe", //Stone PICKAXE
     "scoreEffect": 4000,
-    "lifeEffect": 360,
+    "lifeEffect": 300,
     "maxOccurrences":1
   },
   {
@@ -252,7 +252,7 @@
     "attributeId":"BLOCK_ID",
     "attributeValue": "minecraft:iron_ore", //Iron ORE
     "scoreEffect": 700,
-    "lifeEffect": 60,
+    "lifeEffect": 40,
     "maxOccurrences":3
   },
   {
@@ -270,7 +270,7 @@
     "attributeId":"BLOCK_ID",
     "attributeValue": "minecraft:coal_ore", //COAL ORE
     "scoreEffect": 700,
-    "lifeEffect": 90,
+    "lifeEffect": 60,
     "maxOccurrences":1
   },
   {
@@ -288,7 +288,7 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:bow", //BOW
     "scoreEffect": 2500,
-    "lifeEffect": 180,
+    "lifeEffect": 150,
     "maxOccurrences":1
   },
   {
@@ -324,7 +324,7 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:arrow", //ARROW
     "scoreEffect": 2000,
-    "lifeEffect": 180,
+    "lifeEffect": 150,
     "maxOccurrences":1
   },
   {
@@ -333,7 +333,7 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:flint_and_steel", //FLINT AND STEEL
     "scoreEffect": 1250,
-    "lifeEffect": 150,
+    "lifeEffect": 120,
     "maxOccurrences":1
   },
   {
@@ -351,7 +351,7 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:iron_pickaxe", //Iron PICKAXE
     "scoreEffect": 5000,
-    "lifeEffect": 900,
+    "lifeEffect": 480,
     "maxOccurrences":1
   },
   {
@@ -369,7 +369,7 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:iron_helmet", //Iron HELMET
     "scoreEffect": 3250,
-    "lifeEffect": 120,
+    "lifeEffect": 90,
     "maxOccurrences":1
   },
   {
@@ -378,7 +378,7 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:iron_chestplate", //Iron CHESTPLATE
     "scoreEffect": 5200,
-    "lifeEffect": 180,
+    "lifeEffect": 90,
     "maxOccurrences":1
   },
   {
@@ -387,7 +387,7 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:iron_leggings", //Iron LEGGINGS
     "scoreEffect": 4550,
-    "lifeEffect": 160,
+    "lifeEffect": 90,
     "maxOccurrences":1
   },
   {
@@ -396,7 +396,7 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:iron_boots", //Iron BOOTS
     "scoreEffect": 2600,
-    "lifeEffect": 100,
+    "lifeEffect": 90,
     "maxOccurrences":1
   },
   {
@@ -405,7 +405,7 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:iron_sword", //Iron SWORD
     "scoreEffect": 4500,
-    "lifeEffect": 300,
+    "lifeEffect": 210,
     "maxOccurrences":1
   },
   {
@@ -423,7 +423,7 @@
     "attributeId":"BLOCK_ID",
     "attributeValue": "minecraft:diamond_ore", //Diamond ORE
     "scoreEffect": 2000,
-    "lifeEffect": 210,
+    "lifeEffect": 180,
     "maxOccurrences":1000
   },
   {
@@ -441,7 +441,7 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:diamond_helmet", //Diamond HELMET
     "scoreEffect": 5000,
-    "lifeEffect": 150,
+    "lifeEffect": 180,
     "maxOccurrences":1
   },
   {
@@ -450,7 +450,7 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:diamond_chestplate", //diamond CHESTPLATE
     "scoreEffect": 8000,
-    "lifeEffect": 240,
+    "lifeEffect": 180,
     "maxOccurrences":1
   },
   {
@@ -459,7 +459,7 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:diamond_leggings", //Diamond LEGGINGS
     "scoreEffect": 7000,
-    "lifeEffect": 210,
+    "lifeEffect": 180,
     "maxOccurrences":1
   },
   {
@@ -468,7 +468,7 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:diamond_boots", //Diamond BOOTS
     "scoreEffect": 4000,
-    "lifeEffect": 120,
+    "lifeEffect": 180,
     "maxOccurrences":1
   },
   {
@@ -477,7 +477,7 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:diamond_sword", //Diamond SWORD
     "scoreEffect": 6500,
-    "lifeEffect": 300,
+    "lifeEffect": 240,
     "maxOccurrences":1
   },
   {
@@ -540,7 +540,7 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:reed", //SUGAR CANE
     "scoreEffect": 20,
-    "lifeEffect": 3,
+    "lifeEffect": 2,
     "maxOccurrences":3
   },
   {
@@ -549,7 +549,7 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:paper", //PAPER
     "scoreEffect": 1000,
-    "lifeEffect": 45,
+    "lifeEffect": 30,
     "maxOccurrences":1
   },
   {
@@ -567,7 +567,7 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:book", //BOOK
     "scoreEffect": 2500,
-    "lifeEffect": 90,
+    "lifeEffect": 60,
     "maxOccurrences":1
   },
   {
@@ -585,7 +585,7 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:enchanting_table", //ENCHANTING TABLE
     "scoreEffect": 5500,
-    "lifeEffect": 360,
+    "lifeEffect": 300,
     "maxOccurrences":1
   },
   {
@@ -611,7 +611,7 @@
     "attributeId":"BLOCK_ID",
     "attributeValue": "minecraft:lapis_ore", //Lapis ORE
     "scoreEffect": 1000,
-    "lifeEffect": 80,
+    "lifeEffect": 60,
     "maxOccurrences":3
   },
   {
@@ -638,7 +638,7 @@
     "attributeId":"BLOCK_ID",
     "attributeValue": "minecraft:sand", //SAND
     "scoreEffect": 100,
-    "lifeEffect": 40,
+    "lifeEffect": 20,
     "maxOccurrences":1
   },
   {
@@ -647,7 +647,7 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:sand", //SAND
     "scoreEffect": 10,
-    "lifeEffect": 3,
+    "lifeEffect": 4,
     "maxOccurrences":1
   },
   {
@@ -656,7 +656,7 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:tnt", //TNT
     "scoreEffect": 2500,
-    "lifeEffect": 180,
+    "lifeEffect": 120,
     "maxOccurrences":1
   },
   {
@@ -682,7 +682,7 @@
     "attributeId":"BLOCK_ID",
     "attributeValue": "minecraft:gold_ore", //Gold ORE
     "scoreEffect": 1250,
-    "lifeEffect": 90,
+    "lifeEffect": 60,
     "maxOccurrences":1
   },
   {
@@ -709,7 +709,7 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:golden_apple", //Golden APPLE
     "scoreEffect": 3000,
-    "lifeEffect": 240,
+    "lifeEffect": 150,
     "maxOccurrences":1
   },
   {
@@ -727,7 +727,7 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:ender_pearl", //ENDER PEARL
     "scoreEffect": 1750,
-    "lifeEffect": 150,
+    "lifeEffect": 90,
     "maxOccurrences":1
   },
   {
@@ -745,7 +745,7 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:boat", //BOAT
     "scoreEffect": 400,
-    "lifeEffect": 180,
+    "lifeEffect": 120,
     "maxOccurrences":1
   },
   {
@@ -771,7 +771,7 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:shield", //SHIELD
     "scoreEffect": 3750,
-    "lifeEffect": 300,
+    "lifeEffect": 180,
     "maxOccurrences":1
   },
   {
