@@ -5,7 +5,6 @@ package com.schematical.chaoscraft.entities;
  */
 
 
-import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
@@ -25,24 +24,16 @@ import com.schematical.chaosnet.model.NNetRaw;
 import com.schematical.chaosnet.model.Organism;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockAir;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelPlayer;
-import net.minecraft.client.renderer.entity.RenderLiving;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.entity.layers.LayerHeldItem;
 import net.minecraft.client.util.RecipeItemHelper;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.*;
-import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -51,11 +42,9 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.util.*;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.ItemStackHandler;
@@ -101,6 +90,8 @@ public class EntityOrganism extends EntityLiving {
     public Vec3d spawnPos;
     private boolean hasTraveled = false;
 
+    public ForgeChunkManager.Ticket chunkTicket;
+
     public EntityOrganism(World worldIn) {
         this(worldIn, "EntityOrganism");
     }
@@ -110,6 +101,10 @@ public class EntityOrganism extends EntityLiving {
 
         this.tasks.taskEntries.clear();
 
+        if(!world.isRemote) {
+            chunkTicket = ForgeChunkManager.requestTicket(ChaosCraft.INSTANCE, world, ForgeChunkManager.Type.ENTITY);
+            chunkTicket.bindEntity(this);
+        }
 
         //this.tasks.addTask(1, new EntityAISwimming(this));
 
@@ -124,6 +119,7 @@ public class EntityOrganism extends EntityLiving {
 
         ItemStack stack2 = new ItemStack(Blocks.PLANKS, 3);
         this.itemHandler.setStackInSlot(1, stack2);*/
+        this.enablePersistence();
      }
      public String getCCNamespace(){
         if(this.organism == null){
@@ -213,15 +209,28 @@ public class EntityOrganism extends EntityLiving {
         return super.attackEntityFrom(source, amount);
     }
 
-
     @Override
     public void onUpdate(){
+
+        if(this.firstUpdate) {
+            if(!this.world.isRemote) {
+                ForgeChunkManager.forceChunk(chunkTicket, new ChunkPos(this.getPosition()));
+            }
+        }
+
+        if(this.isDead || this.dead) {
+            if(chunkTicket!=null) {
+                ForgeChunkManager.releaseTicket(chunkTicket);
+                chunkTicket = null;
+            }
+        }
 
         if(getDebug()){
 
         }
 
         if(!world.isRemote){
+
             //Tick neural net
             if(
                 this.nNet != null &&
@@ -483,7 +492,8 @@ public class EntityOrganism extends EntityLiving {
         super.onDeath(cause);
         if (!this.world.isRemote)
         {
-
+            ForgeChunkManager.releaseTicket(chunkTicket);
+            chunkTicket = null;
             dropInventory();
             if (world.getMinecraftServer() != null) {
                 world.getMinecraftServer().getPlayerList().sendMessage(cause.getDeathMessage(this));
@@ -959,6 +969,23 @@ public class EntityOrganism extends EntityLiving {
         return flag;
     }
 
+    @Override
+    public void setDead() {
+        super.setDead();
 
+        if(!world.isRemote) {
+            ForgeChunkManager.releaseTicket(chunkTicket);
+            chunkTicket = null;
+        }
+    }
 
+    @Override
+    public void onRemovedFromWorld() {
+        super.onRemovedFromWorld();
+
+        if(!world.isRemote&&chunkTicket!=null) {
+            ForgeChunkManager.releaseTicket(chunkTicket);
+            chunkTicket = null;
+        }
+    }
 }

@@ -4,31 +4,19 @@ package com.schematical.chaoscraft;
 import com.amazonaws.ImmutableRequest;
 import com.amazonaws.opensdk.config.ConnectionConfiguration;
 import com.amazonaws.opensdk.config.TimeoutConfiguration;
-
-import com.google.common.collect.Sets;
 import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
 import com.schematical.chaoscraft.commands.CommandChaosCraftObserve;
+import com.schematical.chaoscraft.commands.CommandDebug;
 import com.schematical.chaoscraft.entities.ChaosCraftFitnessManager;
-import com.schematical.chaoscraft.entities.EntityEvilRabbit;
 import com.schematical.chaoscraft.entities.EntityOrganism;
 import com.schematical.chaoscraft.entities.EntityRick;
 import com.schematical.chaoscraft.proxies.IProxy;
-
 import com.schematical.chaosnet.ChaosNet;
-
-import com.schematical.chaosnet.ChaosNetClientBuilder;
 import com.schematical.chaosnet.auth.ChaosnetCognitoUserPool;
 import com.schematical.chaosnet.model.*;
-import com.schematical.chaosnet.model.transform.GetUsernameTrainingroomsTrainingroomFitnessrulesResultJsonUnmarshaller;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.math.BlockPos;
@@ -36,17 +24,14 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.GameType;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.Mod;
-
+import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -54,14 +39,10 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.FileReader;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Set;
-import net.minecraftforge.fml.common.Mod.EventHandler;
 
 @Mod(modid = ChaosCraft.MODID, name = ChaosCraft.NAME, version = ChaosCraft.VERSION)
 public class ChaosCraft
@@ -96,6 +77,9 @@ public class ChaosCraft
     public static EntityOrganism highScoreOrg;
     public static BlockPos rickPos;
     public static SimpleNetworkWrapper networkWrapper;
+
+    @Mod.Instance
+    public static ChaosCraft INSTANCE;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
@@ -138,8 +122,7 @@ public class ChaosCraft
             loadFitnessFunctions();
         }
 
-
-
+        ForgeChunkManager.setForcedChunkLoadingCallback(this, new ForcedChunkLoadingCallback());
     }
     public static void auth(){
         if(config.refreshToken != null){
@@ -570,6 +553,7 @@ public class ChaosCraft
     public void serverLoad(FMLServerStartingEvent event) {
         // register server commands
         event.registerServerCommand(new CommandChaosCraftObserve());
+        event.registerServerCommand(new CommandDebug());
 
     }
     public static void repair(){
