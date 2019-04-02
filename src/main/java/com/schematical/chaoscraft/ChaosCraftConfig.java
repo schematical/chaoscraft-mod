@@ -1,5 +1,10 @@
 package com.schematical.chaoscraft;
 
+import net.minecraftforge.common.config.Config;
+import net.minecraftforge.common.config.ConfigManager;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import scala.Int;
@@ -7,6 +12,8 @@ import scala.Int;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+
+import static com.schematical.chaoscraft.ChaosCraft.MODID;
 
 /**
  * Created by user1a on 12/6/18.
@@ -21,6 +28,12 @@ public class ChaosCraftConfig {
     public String sessionNamespace;
     public String trainingRoomUsernameNamespace;
     public String trainingRoomNamespace;
+
+    //Debug chats init
+    public boolean miningDebug = false;
+    public boolean placingDebug = false;
+    public boolean craftingDebug = false;
+
     public void save(){
 
         JSONObject obj = new JSONObject();
@@ -33,6 +46,10 @@ public class ChaosCraftConfig {
         obj.put("sessionNamespace", sessionNamespace);
         obj.put("trainingRoomNamespace", trainingRoomNamespace);
         obj.put("trainingRoomUsernameNamespace", trainingRoomUsernameNamespace);
+
+        obj.put("miningDebug", miningDebug);
+        obj.put("placingDebug", placingDebug);
+        obj.put("craftingDebug", craftingDebug);
         // try-with-resources statement based on post comment below :)
         try {
             String configFilePath = getConfigPath();
@@ -77,10 +94,17 @@ public class ChaosCraftConfig {
                 trainingRoomNamespace = obj.get("trainingRoomNamespace").toString();
                 trainingRoomUsernameNamespace = obj.get("trainingRoomUsernameNamespace").toString();
                 sessionNamespace = obj.get("sessionNamespace").toString();
+
+                miningDebug = (boolean)obj.get("miningDebug");
+                placingDebug = (boolean)obj.get("placingDebug");
+                craftingDebug = (boolean)obj.get("craftingDebug");
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
     }
+
 }
+
+

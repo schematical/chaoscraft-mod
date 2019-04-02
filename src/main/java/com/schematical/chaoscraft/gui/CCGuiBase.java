@@ -132,25 +132,16 @@ public abstract class CCGuiBase extends GuiScreen {
                 mc.displayGuiScreen(view);
                 return;
             case TOGGLE_MINING_CHAT:
-                for(EntityOrganism entityOrganism : ChaosCraft.organisims) {
-                    entityOrganism.miningChat = !entityOrganism.miningChat;
-                }
-                ChaosCraft.miningChat = !ChaosCraft.miningChat;
-                ChaosCraft.chat("Mining chat is " + ChaosCraft.miningChat);
+                ChaosCraft.config.miningDebug = !ChaosCraft.config.miningDebug;
+                ChaosCraft.chat("Mining chat is " + ChaosCraft.config.miningDebug);
                 return;
             case TOGGLE_PLACING_CHAT:
-                for(EntityOrganism entityOrganism : ChaosCraft.organisims) {
-                    entityOrganism.placingChat = !entityOrganism.placingChat;
-                }
-                ChaosCraft.placingChat = !ChaosCraft.placingChat;
-                ChaosCraft.chat("Placing chat is " + ChaosCraft.placingChat);
+                ChaosCraft.config.placingDebug = !ChaosCraft.config.placingDebug;
+                ChaosCraft.chat("Placing chat is " + ChaosCraft.config.placingDebug);
                 return;
-            case TOGGLE_CRAFTING_CHAT:_CHAT:
-                for(EntityOrganism entityOrganism : ChaosCraft.organisims) {
-                    entityOrganism.craftingChat = !entityOrganism.craftingChat;
-                }
-                ChaosCraft.craftingChat = !ChaosCraft.craftingChat;
-                ChaosCraft.chat("Crafting chat is " + ChaosCraft.craftingChat);
+            case TOGGLE_CRAFTING_CHAT:
+                ChaosCraft.config.craftingDebug = !ChaosCraft.config.craftingDebug;
+                ChaosCraft.chat("Crafting chat is " + ChaosCraft.config.craftingDebug);
                 return;
 
             default:

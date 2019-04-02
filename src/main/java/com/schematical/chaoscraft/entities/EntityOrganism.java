@@ -102,9 +102,6 @@ public class EntityOrganism extends EntityLiving {
     public Vec3d spawnPos;
     private boolean hasTraveled = false;
 
-    public boolean miningChat = false;
-    public boolean placingChat = false;
-    public boolean craftingChat = false;
 
     public EntityOrganism(World worldIn) {
         this(worldIn, "EntityOrganism");
@@ -468,7 +465,7 @@ public class EntityOrganism extends EntityLiving {
 
         ItemStack outputStack = recipe.getRecipeOutput().copy();
         ChaosCraft.logger.info(this.getCCNamespace() + " - Crafted: " + outputStack.getDisplayName());
-        if(craftingChat) {
+        if(ChaosCraft.config.craftingDebug) {
             ChaosCraft.chat(organism.getName() + " crafted " + outputStack.getDisplayName());
         }
         if(emptySlot != -1) {
@@ -722,7 +719,7 @@ public class EntityOrganism extends EntityLiving {
                 state.getBlock().harvestBlock(world, this.getPlayerWrapper(), pos, state, world.getTileEntity(pos), stack);
                 CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.BLOCK_MINED);
                 worldEvent.block = state.getBlock();
-                if(miningChat) {
+                if(ChaosCraft.config.miningDebug) {
                     ChaosCraft.chat(organism.getName() + " mined " + state.getBlock().getLocalizedName());
                 }
                 entityFitnessManager.test(worldEvent);
@@ -870,7 +867,7 @@ public class EntityOrganism extends EntityLiving {
                 if (!itemblock.canPlaceBlockOnSide(world, pos, direction, this.getPlayerWrapper(), itemstack)) {
                     return EnumActionResult.FAIL;
                 } else {
-                    if(placingChat) {
+                    if(ChaosCraft.config.placingDebug) {
                         ChaosCraft.chat(organism.getName() + " placed " + itemblock.getBlock().getLocalizedName());
                     }
 

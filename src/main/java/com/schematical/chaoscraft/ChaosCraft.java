@@ -96,9 +96,6 @@ public class ChaosCraft
     public static EntityOrganism highScoreOrg;
     public static BlockPos rickPos;
     public static SimpleNetworkWrapper networkWrapper;
-    public static boolean miningChat = false;
-    public static boolean placingChat = false;
-    public static boolean craftingChat = false;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
@@ -371,9 +368,6 @@ public class ChaosCraft
                         }
 
                         entityOrganism.setCustomNameTag(organism.getName() + " - " + organism.getGeneration());
-                        entityOrganism.placingChat = placingChat;
-                        entityOrganism.miningChat = miningChat;
-                        entityOrganism.craftingChat = craftingChat;
                         BlockPos pos = rick.getPosition();
                         if(organism.getName().equals("adam")) {
 

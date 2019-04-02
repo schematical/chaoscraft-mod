@@ -99,4 +99,5 @@ public class CCOrgDetailView extends CCGuiBase {
         return false;
     }
 
+
 }
