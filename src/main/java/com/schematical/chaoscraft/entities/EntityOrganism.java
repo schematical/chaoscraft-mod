@@ -24,14 +24,12 @@ import com.schematical.chaosnet.model.NNetRaw;
 import com.schematical.chaosnet.model.Organism;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockAir;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.RecipeItemHelper;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.*;
-import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -44,13 +42,7 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.util.*;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.fml.relauncher.Side;
@@ -217,18 +209,20 @@ public class EntityOrganism extends EntityLiving {
         return super.attackEntityFrom(source, amount);
     }
 
-
     @Override
     public void onUpdate(){
 
-        super.onUpdate();
+        if(this.firstUpdate) {
+            if(!this.world.isRemote) {
+                ForgeChunkManager.forceChunk(chunkTicket, new ChunkPos(this.getPosition()));
+            }
+        }
 
         if(this.isDead || this.dead) {
             if(chunkTicket!=null) {
                 ForgeChunkManager.releaseTicket(chunkTicket);
                 chunkTicket = null;
             }
-            return;
         }
 
         if(!this.glowing) {
@@ -984,6 +978,16 @@ public class EntityOrganism extends EntityLiving {
         super.setDead();
 
         if(!world.isRemote) {
+            ForgeChunkManager.releaseTicket(chunkTicket);
+            chunkTicket = null;
+        }
+    }
+
+    @Override
+    public void onRemovedFromWorld() {
+        super.onRemovedFromWorld();
+
+        if(!world.isRemote&&chunkTicket!=null) {
             ForgeChunkManager.releaseTicket(chunkTicket);
             chunkTicket = null;
         }

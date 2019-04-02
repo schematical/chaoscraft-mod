@@ -17,6 +17,7 @@ import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeChunkManager;
 
@@ -54,6 +55,12 @@ public class EntityRick extends EntityLiving {
     @Override
     public void onUpdate()
     {
+        if(this.firstUpdate) {
+            if(!this.world.isRemote) {
+                ForgeChunkManager.forceChunk(chunkTicket, new ChunkPos(this.getPosition()));
+            }
+        }
+
         ChaosCraft.rickPos = this.getPosition();
         super.onUpdate();
 
