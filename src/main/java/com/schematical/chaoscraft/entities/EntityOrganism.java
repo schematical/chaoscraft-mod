@@ -225,10 +225,6 @@ public class EntityOrganism extends EntityLiving {
             }
         }
 
-        if(!this.glowing) {
-            this.setGlowing(true    );
-        }
-
         if(getDebug()){
 
         }
