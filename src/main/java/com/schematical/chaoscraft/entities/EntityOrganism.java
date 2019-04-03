@@ -89,6 +89,7 @@ public class EntityOrganism extends EntityLiving {
     public EntityPlayerMP observingPlayer;
     public Vec3d spawnPos;
     private boolean hasTraveled = false;
+    public int ticksWithouUpdate = 0;
 
     public ForgeChunkManager.Ticket chunkTicket;
 
@@ -224,6 +225,7 @@ public class EntityOrganism extends EntityLiving {
                 chunkTicket = null;
             }
         }
+        ticksWithouUpdate = 0;
 
         if(getDebug()){
 
@@ -316,16 +318,26 @@ public class EntityOrganism extends EntityLiving {
         }
         super.onUpdate();
         if(!world.isRemote) {
-            if (
-                //this.organism == null ||
-                getAgeSeconds() > maxLifeSeconds ||
-                this.spawnHash != ChaosCraft.spawnHash
-            ) {
-                //this.dropInventory();
-                this.setDead();
-                return;
-            }
 
+            checkStatus();
+        }
+    }
+    public boolean checkStatus(){
+        if (
+            //this.organism == null ||
+                getAgeSeconds() > maxLifeSeconds ||
+                        this.spawnHash != ChaosCraft.spawnHash
+                ) {
+            //this.dropInventory();
+            this.setDead();
+            return true;
+        }
+        return false;
+    }
+    public void manualUpdateCheck(){
+        ticksWithouUpdate += 1;
+        if(ticksWithouUpdate > 5){
+            checkStatus();
         }
     }
 

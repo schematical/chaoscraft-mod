@@ -50,6 +50,7 @@ public class CCEventListener {
 
         while(iterator.hasNext()){
             EntityOrganism organism = iterator.next();
+            organism.manualUpdateCheck();
             if(
                 organism.getOrganism() == null ||
                 organism.getSpawnHash() != ChaosCraft.spawnHash
