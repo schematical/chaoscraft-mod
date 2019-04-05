@@ -254,8 +254,12 @@ public class EntityOrganism extends EntityLiving {
                 JSONObject jsonObject = null;
                 JSONArray outputValues = null;
                 if(observingPlayer != null) {
-                    jsonObject = new JSONObject();
-                    outputValues = new JSONArray();
+                    if(observingPlayer.getSpectatingEntity().equals(this)) {
+                        jsonObject = new JSONObject();
+                        outputValues = new JSONArray();
+                    }else{
+                        observingPlayer = null;
+                    }
                 }
                 while (iterator.hasNext()) {
 
