@@ -16,6 +16,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 
 /**
@@ -39,7 +40,9 @@ public class ChaosCraftGUI {
         GlStateManager.translate(-xo, -yo, -zo);
 
         isRendering = true;
-        for(CCBox toRenderBox : toRenderBoxs){
+        Iterator<CCBox> iterator = toRenderBoxs.iterator();
+        while (iterator.hasNext()){
+            CCBox toRenderBox  = iterator.next();
             drawBoundingBox(toRenderBox.start, toRenderBox.end, toRenderBox.color);
         }
         toRenderBoxs.clear();

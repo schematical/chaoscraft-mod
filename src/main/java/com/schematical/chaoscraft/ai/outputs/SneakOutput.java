@@ -4,7 +4,7 @@ import com.schematical.chaoscraft.ai.OutputNeuron;
 
 public class SneakOutput extends OutputNeuron {
     public void execute() {
-        if(Math.abs(this._lastValue) <= .5){
+        if(this._lastValue <= .5){
             nNet.entity.setSneaking(false);
             return;
         }

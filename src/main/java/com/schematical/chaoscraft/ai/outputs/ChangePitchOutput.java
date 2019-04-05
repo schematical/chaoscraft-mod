@@ -10,15 +10,10 @@ import net.minecraft.util.math.MathHelper;
 public class ChangePitchOutput extends OutputNeuron {
     @Override
     public void execute() {
-        float delta = ((this._lastValue * 2) -1) * 90;
-        if(Math.abs(delta) < ChaosCraft.activationThreshold){
-            return;
-        }
+        float delta = reverseSigmoid(this._lastValue);
 
+        this.nNet.entity.setDesiredPitch(delta * 90);
 
-        //ChaosCraft.logger.info(nNet.entity.getName() + " ChangePitchOutput: " + this._lastValue + " - " + delta);
-
-        this.nNet.entity.setDesiredPitch(delta);
         //this.nNet.entity.rotationPitch += delta;
     }
 }

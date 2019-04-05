@@ -30,7 +30,7 @@ public class FocusDistanceOutput extends OutputNeuron {
             areaOfFocus.setDistance(0f);
             return;
         }
-        areaOfFocus.setDistance(0f);//areaOfFocus.setDistance((float)(adjustedValue * areaOfFocus.maxFocusDistance));
+        areaOfFocus.setDistance((float)(adjustedValue * areaOfFocus.maxFocusDistance));
 
 
     }

@@ -78,6 +78,14 @@ public abstract class NeuronBase extends InnovationBase {
         return (float) (1 / (1 + Math.exp(-x)));
     }
 
+    /**
+     * This does an aproximation between -1 and 1 of its what the value coming in may have been
+     * @param x
+     * @return
+     */
+    public float reverseSigmoid(float x){
+        return ((x * 2) -1);
+    }
     public void attachNNet(NeuralNet neuralNet) {
         this.nNet = neuralNet;
     }

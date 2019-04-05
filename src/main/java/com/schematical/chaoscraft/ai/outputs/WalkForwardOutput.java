@@ -11,8 +11,8 @@ import software.amazon.ion.Decimal;
 public class WalkForwardOutput extends OutputNeuron {
     @Override
     public void execute() {
-        float reversedValue = Math.abs((this._lastValue * 2)-1);
-        if(reversedValue < ChaosCraft.activationThreshold){
+        float reversedValue = this.reverseSigmoid(this._lastValue);
+        if(Math.abs(reversedValue) < ChaosCraft.activationThreshold){
             return;
         }
 

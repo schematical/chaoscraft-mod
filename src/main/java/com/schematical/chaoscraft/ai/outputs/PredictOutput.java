@@ -27,11 +27,11 @@ public class PredictOutput extends OutputNeuron {
     }
     @Override
     public void execute() {
-        float reversedValue = Math.abs((this._lastValue * 2)-1);
-        if(reversedValue < ChaosCraft.activationThreshold){
+        float reversedValue = this.reverseSigmoid(this._lastValue);
+        if(Math.abs(reversedValue) < ChaosCraft.activationThreshold){
             return;
         }
-        OrgEvent orgEvent = new OrgPredictionEvent((this._lastValue * 2)-1, OrgEvent.DEFAULT_TTL);
+        OrgEvent orgEvent = new OrgPredictionEvent(reversedValue, OrgEvent.DEFAULT_TTL);
         nNet.entity.events.add(orgEvent);
 
     }

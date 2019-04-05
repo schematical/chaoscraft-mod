@@ -11,13 +11,11 @@ import net.minecraft.util.math.Vec3d;
 public class WalkSidewaysOutput extends OutputNeuron {
     @Override
     public void execute() {
-        float reversedValue = Math.abs((this._lastValue * 2)-1);
-        if(reversedValue < ChaosCraft.activationThreshold){
+        float reversedValue = this.reverseSigmoid(this._lastValue);
+        if(Math.abs(reversedValue) < ChaosCraft.activationThreshold){
             return;
         }
 
-        //Pulled from net.minecraft.pathfinding.PathNavigate.onUpdateNavigation#263
-        //this.entity.getMoveHelper().setMoveTo(vec3d2.x, vec3d2.y, vec3d2.z, this.speed);
 
 
         nNet.entity.moveStrafing = reversedValue * Enum.SPEED;
