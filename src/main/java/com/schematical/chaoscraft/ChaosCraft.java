@@ -42,6 +42,7 @@ import org.json.simple.parser.ParseException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @Mod(modid = ChaosCraft.MODID, name = ChaosCraft.NAME, version = ChaosCraft.VERSION)
@@ -496,7 +497,9 @@ public class ChaosCraft
         );
     }
     public static EntityOrganism getEntityOrganismByName(String name){
-        for(EntityOrganism org : ChaosCraft.organisims){
+        Iterator<EntityOrganism> iterator = ChaosCraft.organisims.iterator();
+        while(iterator.hasNext()){
+            EntityOrganism org = iterator.next();
             if(org.getName().equals(name)){
                 return org;
             }

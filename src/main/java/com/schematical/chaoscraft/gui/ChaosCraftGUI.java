@@ -30,10 +30,11 @@ public class ChaosCraftGUI {
 
     public static void render(RenderWorldLastEvent event){
         EntityPlayer player = Minecraft.getMinecraft().player;
+
         double partialTicks = (double) event.getPartialTicks();
-        double xo = player.lastTickPosX + ((player.posX - player.lastTickPosX) * partialTicks);
-        double yo = player.lastTickPosY + ((player.posY - player.lastTickPosY) * partialTicks);
-        double zo = player.lastTickPosZ + ((player.posZ - player.lastTickPosZ) * partialTicks);
+        double xo = Minecraft.getMinecraft().getRenderManager().viewerPosX;///*player.lastTickPosX*/ + ((player.posX - player.lastTickPosX) * partialTicks);
+        double yo = Minecraft.getMinecraft().getRenderManager().viewerPosY;///*player.lastTickPosY*/ + ((player.posY - player.lastTickPosY) * partialTicks);
+        double zo = Minecraft.getMinecraft().getRenderManager().viewerPosZ;///*player.lastTickPosZ*/ + ((player.posZ - player.lastTickPosZ) * partialTicks);
 
         GlStateManager.pushMatrix();
 
