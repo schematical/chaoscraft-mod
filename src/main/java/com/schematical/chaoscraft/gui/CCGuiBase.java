@@ -1,6 +1,7 @@
 package com.schematical.chaoscraft.gui;
 
 import com.schematical.chaoscraft.ChaosCraft;
+import com.schematical.chaoscraft.entities.EntityOrganism;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -9,6 +10,8 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Comparator;
 
 public abstract class CCGuiBase extends GuiScreen {
 
@@ -53,6 +56,9 @@ public abstract class CCGuiBase extends GuiScreen {
         this.drawTexturedModalRect(centerX, centerY, 0, 0, guiWidth, guiHeight);
 
         fontRenderer.drawString(title, this.guiLeft + (this.guiWidth - this.fontRenderer.getStringWidth(title)) / 2, this.guiTop + 10, 0x000000);
+        Collections.sort(ChaosCraft.organisims, (h1, h2) -> (int) (h2.entityFitnessManager.totalScore() - h1.entityFitnessManager.totalScore()));
+        initializeButtons();
+
 
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
@@ -62,28 +68,15 @@ public abstract class CCGuiBase extends GuiScreen {
         this.guiLeft = (this.width - this.guiWidth) / 2;
         this.guiTop = (this.height - this.guiHeight) / 2;
 
-        initializeButtons();
 
+        initializeButtons();
         super.initGui();
     }
 
     int initializeButtons() {
         buttonList.clear();
         int ID = 0;
-        int buttonWidth = 100;
-        int buttonHeight = 20;
 
-        buttonList.add(
-                new CCGuiButton(
-                        ID++,
-                        this.guiLeft + (this.guiWidth / 2) - buttonWidth / 2,
-                        this.guiTop + this.guiHeight - (buttonHeight + 10),
-                        buttonWidth,
-                        buttonHeight,
-                        I18n.format(ChaosCraft.MODID + ".gui.close"),
-                        ButtonAction.CLOSE
-                )
-        );
 
 
         return ID;
