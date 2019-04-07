@@ -163,7 +163,7 @@
     "eventType": "EQUIP",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:planks", //Wooden PLANK
-    "scoreEffect": 10,
+    "scoreEffect": 50,
     "lifeEffect": 0,
     "maxOccurrences":1
   },
