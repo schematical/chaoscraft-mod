@@ -2,8 +2,15 @@
   {
     "id":"has-traveled",
     "eventType": "HAS_TRAVELED",
-    "scoreEffect": 5,
+    "scoreEffect": 10,
     "lifeEffect": 30,
+    "maxOccurrences":1
+  },
+  {
+    "id":"has-jumped",
+    "eventType": "HAS_JUMPED",
+    "scoreEffect": 10,
+    "lifeEffect": 7,
     "maxOccurrences":1
   },
   {
