@@ -2,8 +2,15 @@
   {
     "id":"has-traveled",
     "eventType": "HAS_TRAVELED",
-    "scoreEffect": 5,
-    "lifeEffect": 60,
+    "scoreEffect": 30,
+    "lifeEffect": 30,
+    "maxOccurrences":1
+  },
+  {
+    "id":"has-jumped",
+    "eventType": "HAS_JUMPED",
+    "scoreEffect": 25,
+    "lifeEffect": 7,
     "maxOccurrences":1
   },
   {
@@ -12,7 +19,7 @@
     "scoreEffect": 250.0
   },
   {
-    "id":"block-mined",
+    "id":"block-mined-dirt",
     "eventType": "BLOCK_MINED",
     "attributeId":"BLOCK_ID",
     "attributeValue": "minecraft:dirt", //DIRT
@@ -40,7 +47,7 @@
     "attributeId":"BLOCK_ID",
     "attributeValue": "minecraft:log", //WOOD
     "scoreEffect": 100,
-    "lifeEffect": 20,
+    "lifeEffect": 15,
     "maxOccurrences":4
   },
   {
@@ -49,7 +56,7 @@
     "attributeId":"BLOCK_ID",
     "attributeValue": "minecraft:log2", //WOOD
     "scoreEffect": 100,
-    "lifeEffect": 20,
+    "lifeEffect": 15,
     "maxOccurrences":4
   },
   {
@@ -71,12 +78,38 @@
     "maxOccurrences":4
   },
   {
+    "id":"item-collected-sapling",
+    "eventType": "ITEM_COLLECTED",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:sapling", //SAPLING
+    "scoreEffect": 30,
+    "lifeEffect": 5,
+    "maxOccurrences":1
+  },
+  {
+    "id":"block-placed-sapling",
+    "eventType": "BLOCK_PLACED",
+    "scoreEffect": 50,
+    "attributeId":"BLOCK_ID",
+    "attributeValue": "minecraft:sapling", //SAPLING
+    "maxOccurrences":1
+  },
+  {
+    "id":"equip-sapling",
+    "eventType": "EQUIP",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:sapling", //SAPLING
+    "scoreEffect": 20,
+    "lifeEffect": 0,
+    "maxOccurrences":1
+  },
+  {
     "id":"item-crafted-wooden-plank",
     "eventType": "CRAFT",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:planks", //Wooden PLANK
     "scoreEffect": 500,
-    "lifeEffect": 60,
+    "lifeEffect": 30,
     "maxOccurrences":1
   },
   {
@@ -85,7 +118,7 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:crafting_table", //CRAFTING TABLE
     "scoreEffect": 2000,
-    "lifeEffect": 60,
+    "lifeEffect": 50,
     "maxOccurrences":1
   },
   {
@@ -94,6 +127,7 @@
     "scoreEffect": 1000,
     "attributeId":"BLOCK_ID",
     "attributeValue": "minecraft:crafting_table", //CRAFTING TABLE
+    "lifeEffect": 30,
     "maxOccurrences":1
   },
   {
@@ -111,13 +145,13 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:chest", //CHEST
     "scoreEffect": 350,
-    "lifeEffect": 40,
+    "lifeEffect": 30,
     "maxOccurrences":1
   },
   {
     "id":"block-placed-chest",
     "eventType": "BLOCK_PLACED",
-    "scoreEffect": 100,
+    "scoreEffect": 150,
     "attributeId":"BLOCK_ID",
     "attributeValue": "minecraft:chest", //CHEST
     "maxOccurrences":1
@@ -137,7 +171,7 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:stick", //STICK
     "scoreEffect": 1000,
-    "lifeEffect": 60,
+    "lifeEffect": 30,
     "maxOccurrences":1
   },
   {
@@ -145,7 +179,7 @@
     "eventType": "EQUIP",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:planks", //Wooden PLANK
-    "scoreEffect": 10,
+    "scoreEffect": 50,
     "lifeEffect": 0,
     "maxOccurrences":1
   },
@@ -155,7 +189,7 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:wooden_pickaxe", //Wooden PICKAXE
     "scoreEffect": 3000,
-    "lifeEffect": 180,
+    "lifeEffect": 120,
     "maxOccurrences":1
   },
   {
@@ -163,7 +197,7 @@
     "eventType": "EQUIP",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:wooden_pickaxe", //Wooden PICKAXE
-    "scoreEffect": 1000,
+    "scoreEffect": 1250,
     "lifeEffect": 0,
     "maxOccurrences":1
   },
@@ -173,7 +207,7 @@
     "attributeId":"BLOCK_ID",
     "attributeValue": "minecraft:stone", //STONE
     "scoreEffect": 125,
-    "lifeEffect": 2,
+    "lifeEffect": 5,
     "maxOccurrences":11
   },
   {
@@ -182,7 +216,7 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:cobbestone", //COBBLESTONE
     "scoreEffect": 50,
-    "lifeEffect": 10,
+    "lifeEffect": 3,
     "maxOccurrences":11
   },
   {
@@ -191,7 +225,7 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:furnace", //FURNACE
     "scoreEffect": 3000,
-    "lifeEffect": 240,
+    "lifeEffect": 120,
     "maxOccurrences":1
   },
   {
@@ -207,7 +241,7 @@
     "eventType": "EQUIP",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:furnace", //FURNACE
-    "scoreEffect": 500,
+    "scoreEffect": 750,
     "lifeEffect": 0,
     "maxOccurrences":1
   },
@@ -217,7 +251,7 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:stone_pickaxe", //Stone PICKAXE
     "scoreEffect": 4000,
-    "lifeEffect": 300,
+    "lifeEffect": 240,
     "maxOccurrences":1
   },
   {
@@ -225,7 +259,7 @@
     "eventType": "EQUIP",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:stone_pickaxe", //Stone PICKAXE
-    "scoreEffect": 1000,
+    "scoreEffect": 1500,
     "lifeEffect": 0,
     "maxOccurrences":1
   },
@@ -253,7 +287,7 @@
     "attributeId":"BLOCK_ID",
     "attributeValue": "minecraft:coal_ore", //COAL ORE
     "scoreEffect": 700,
-    "lifeEffect": 60,
+    "lifeEffect": 40,
     "maxOccurrences":1
   },
   {
@@ -271,7 +305,7 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:bow", //BOW
     "scoreEffect": 2500,
-    "lifeEffect": 150,
+    "lifeEffect": 120,
     "maxOccurrences":1
   },
   {
@@ -279,7 +313,7 @@
     "eventType": "EQUIP",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:bow", //BOW
-    "scoreEffect": 1000,
+    "scoreEffect": 1250,
     "lifeEffect": 0,
     "maxOccurrences":1
   },
@@ -288,7 +322,7 @@
     "eventType": "ITEM_COLLECTED",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:flint", //FLINT
-    "scoreEffect": 400,
+    "scoreEffect": 300,
     "lifeEffect": 20,
     "maxOccurrences":1
   },
@@ -307,7 +341,7 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:arrow", //ARROW
     "scoreEffect": 2000,
-    "lifeEffect": 150,
+    "lifeEffect": 120,
     "maxOccurrences":1
   },
   {
@@ -316,7 +350,7 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:flint_and_steel", //FLINT AND STEEL
     "scoreEffect": 1250,
-    "lifeEffect": 120,
+    "lifeEffect": 90,
     "maxOccurrences":1
   },
   {
@@ -324,7 +358,7 @@
     "eventType": "EQUIP",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:flint_and_steel", //FLINT AND STEEL
-    "scoreEffect": 750,
+    "scoreEffect": 525,
     "lifeEffect": 0,
     "maxOccurrences":1
   },
@@ -342,7 +376,7 @@
     "eventType": "EQUIP",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:iron_pickaxe", //Iron PICKAXE
-    "scoreEffect": 1000,
+    "scoreEffect": 2000,
     "lifeEffect": 0,
     "maxOccurrences":1
   },
@@ -396,7 +430,7 @@
     "eventType": "EQUIP",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:iron_sword", //Iron SWORD
-    "scoreEffect": 1000,
+    "scoreEffect": 1750,
     "lifeEffect": 0,
     "maxOccurrences":1
   },
@@ -468,7 +502,7 @@
     "eventType": "EQUIP",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:diamond_sword", //Diamond SWORD
-    "scoreEffect": 1000,
+    "scoreEffect": 2000,
     "lifeEffect": 0,
     "maxOccurrences":1
   },
@@ -486,7 +520,7 @@
     "eventType": "EQUIP",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:diamond_pickaxe", //Diamond PICKAXE
-    "scoreEffect": 1000,
+    "scoreEffect": 2500,
     "lifeEffect": 0,
     "maxOccurrences":1
   },
@@ -551,6 +585,15 @@
     "attributeValue": "minecraft:book", //BOOK
     "scoreEffect": 2500,
     "lifeEffect": 60,
+    "maxOccurrences":1
+  },
+  {
+    "id":"item-collected-book",
+    "eventType": "ITEM_COLLECTED",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:book", //BOOK
+    "scoreEffect": 500,
+    "lifeEffect": 30,
     "maxOccurrences":1
   },
   {
@@ -646,7 +689,7 @@
     "eventType": "EQUIP",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:tnt", //TNT
-    "scoreEffect": 750,
+    "scoreEffect": 500,
     "lifeEffect": 0,
     "maxOccurrences":1
   },
@@ -700,8 +743,8 @@
     "eventType": "ITEM_COLLECTED",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:ender_pearl", //ENDER PEARL
-    "scoreEffect": 2500,
-    "lifeEffect": 60,
+    "scoreEffect": 1750,
+    "lifeEffect": 90,
     "maxOccurrences":1
   },
   {
@@ -709,7 +752,7 @@
     "eventType": "EQUIP",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:ender_pearl", //ENDER PEARL
-    "scoreEffect": 1500,
+    "scoreEffect": 500,
     "lifeEffect": 0,
     "maxOccurrences":1
   },
@@ -718,14 +761,14 @@
     "eventType": "CRAFT",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:boat", //BOAT
-    "scoreEffect": 900,
-    "lifeEffect": 120,
+    "scoreEffect": 400,
+    "lifeEffect": 75,
     "maxOccurrences":1
   },
   {
     "id":"block-placed-boat",
     "eventType": "BLOCK_PLACED",
-    "scoreEffect": 450,
+    "scoreEffect": 200,
     "attributeId":"BLOCK_ID",
     "attributeValue": "minecraft:boat", //BOAT
     "maxOccurrences":1
@@ -735,7 +778,7 @@
     "eventType": "EQUIP",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:boat", //BOAT
-    "scoreEffect": 250,
+    "scoreEffect": 100,
     "lifeEffect": 0,
     "maxOccurrences":1
   },
@@ -745,7 +788,7 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:shield", //SHIELD
     "scoreEffect": 3750,
-    "lifeEffect": 180,
+    "lifeEffect": 150,
     "maxOccurrences":1
   },
   {
@@ -755,6 +798,164 @@
     "attributeValue": "minecraft:totem_of_undying", //TOTEM OF UNDYING
     "scoreEffect": 4000,
     "lifeEffect": 240,
+    "maxOccurrences":1
+  }
+  {
+    "id":"block-mined-cactus",
+    "eventType": "BLOCK_MINED",
+    "attributeId":"BLOCK_ID",
+    "attributeValue": "minecraft:cactus", //CACTUS
+    "scoreEffect": 50,
+    "lifeEffect": 10,
+    "maxOccurrences":1
+  },
+  {
+    "id":"item-collected-cactus",
+    "eventType": "ITEM_COLLECTED",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:cactus", //CACTUS
+    "scoreEffect": 30,
+    "lifeEffect": 3,
+    "maxOccurrences":1
+  },
+  {
+    "id":"block-placed-cactus",
+    "eventType": "BLOCK_PLACED",
+    "scoreEffect": 60,
+    "attributeId":"BLOCK_ID",
+    "attributeValue": "minecraft:cactus", //CACTUS
+    "maxOccurrences":1
+  },
+  {
+    "id":"equip-cactus",
+    "eventType": "EQUIP",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:cactus", //CACTUS
+    "scoreEffect": 30,
+    "lifeEffect": 0,
+    "maxOccurrences":1
+  },
+  {
+    "id":"item-collected-blaze-rod",
+    "eventType": "ITEM_COLLECTED",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:blaze_rod", //BLAZE ROD
+    "scoreEffect": 2000,
+    "lifeEffect": 180,
+    "maxOccurrences":1
+  }
+  {
+    "id":"item-crafted-blaze-powder",
+    "eventType": "CRAFT",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:blaze_powder", //BLAZE POWDER
+    "scoreEffect": 1000,
+    "lifeEffect": 150,
+    "maxOccurrences":1
+  },
+  {
+    "id":"item-crafted-fire-charge",
+    "eventType": "CRAFT",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:fire_charge", //FIRE CHARGE
+    "scoreEffect": 350,
+    "lifeEffect": 40,
+    "maxOccurrences":1
+  },
+  {
+    "id":"item-crafted-brewing-stand",
+    "eventType": "CRAFT",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:brewing_stand", //BREWING STAND
+    "scoreEffect": 2500,
+    "lifeEffect": 120,
+    "maxOccurrences":1
+  },
+  {
+    "id":"block-placed-brewing-stand",
+    "eventType": "BLOCK_PLACED",
+    "scoreEffect": 700,
+    "attributeId":"BLOCK_ID",
+    "attributeValue": "minecraft:brewing_stand", //BREWING STAND
+    "maxOccurrences":1
+  },
+  {
+    "id":"equip-brewing-stand",
+    "eventType": "EQUIP",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:brewing_stand", //BREWING STAND
+    "scoreEffect": 350,
+    "lifeEffect": 0,
+    "maxOccurrences":1
+  },
+  {
+    "id":"item-crafted-eye-of-ender",
+    "eventType": "CRAFT",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:ender_eye", //EYE OF ENDER
+    "scoreEffect": 1500,
+    "lifeEffect": 180,
+    "maxOccurrences":12
+  },
+  {
+    "id":"item-crafted-ender-chest",
+    "eventType": "CRAFT",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:ender_chest", //ENDER CHEST
+    "scoreEffect": 3000,
+    "lifeEffect": 300,
+    "maxOccurrences":20
+  },
+  {
+    "id":"block-placed-ender-chest",
+    "eventType": "BLOCK_PLACED",
+    "scoreEffect": 700,
+    "attributeId":"BLOCK_ID",
+    "attributeValue": "minecraft:ender_chest", //ENDER CHEST
+    "maxOccurrences":2
+  },
+  {
+    "id":"equip-ender-chest",
+    "eventType": "EQUIP",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:ender_chest", //ENDER CHEST
+    "scoreEffect": 350,
+    "lifeEffect": 0,
+    "maxOccurrences":1
+  },
+  {
+    "id":"item-crafted-bookshelf",
+    "eventType": "CRAFT",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:bookshelf", //BOOKSHELF
+    "scoreEffect": 1000,
+    "lifeEffect": 150,
+    "maxOccurrences":15
+  },
+  {
+    "id":"block-placed-bookshelf",
+    "eventType": "BLOCK_PLACED",
+    "scoreEffect": 500,
+    "attributeId":"BLOCK_ID",
+    "attributeValue": "minecraft:bookshelf", //BOOKSHELF
+    "maxOccurrences":1
+  },
+  {
+    "id":"equip-bookshelf",
+    "eventType": "EQUIP",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:bookshelf", //BOOKSHELF
+    "scoreEffect": 250,
+    "lifeEffect": 0,
+    "maxOccurrences":1
+  },
+  {
+    "id":"item-collected-elytra",
+    "eventType": "ITEM_COLLECTED",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:elytra", //ELYTRA
+    "scoreEffect": 5000,
+    "lifeEffect": 300,
     "maxOccurrences":1
   }
 ]
