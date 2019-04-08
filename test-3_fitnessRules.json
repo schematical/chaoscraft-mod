@@ -799,7 +799,7 @@
     "scoreEffect": 4000,
     "lifeEffect": 240,
     "maxOccurrences":1
-  }
+  },
   {
     "id":"block-mined-cactus",
     "eventType": "BLOCK_MINED",
@@ -843,7 +843,7 @@
     "scoreEffect": 2000,
     "lifeEffect": 180,
     "maxOccurrences":1
-  }
+  },
   {
     "id":"item-crafted-blaze-powder",
     "eventType": "CRAFT",
