@@ -22,6 +22,7 @@ public class NeuralNet {
     public HashMap<String, NeuronBase> neurons = new HashMap<String, NeuronBase>();
     public HashMap<String, BiologyBase> biology = new HashMap<String, BiologyBase>();
     public boolean ready = false;
+    public JSONObject jsonObject;
 
     public NeuralNet() {
 
@@ -82,6 +83,7 @@ public class NeuralNet {
         return outputs;
     }
     public void parseData(JSONObject jsonObject){
+        this.jsonObject = jsonObject;
         try {
 
             JSONArray jsonBiology = ((JSONArray)jsonObject.get("biology"));

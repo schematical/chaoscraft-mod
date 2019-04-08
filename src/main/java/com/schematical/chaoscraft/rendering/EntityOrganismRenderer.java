@@ -2,8 +2,10 @@ package com.schematical.chaoscraft.rendering;
 
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.schematical.chaoscraft.ChaosCraft;
+import com.schematical.chaoscraft.ai.NeuralNet;
 import com.schematical.chaoscraft.ai.biology.ObservableTraitsCollection;
 import com.schematical.chaoscraft.entities.EntityOrganism;
+import com.schematical.chaosnet.model.NNet;
 import io.mikael.urlbuilder.util.Decoder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
@@ -33,12 +35,11 @@ public class EntityOrganismRenderer extends RenderLiving<EntityOrganism> {
 
     @Override
     protected ResourceLocation getEntityTexture(EntityOrganism entity) {
-
-        EntityOrganism realOrg = ChaosCraft.getEntityOrganismByName(entity.getName());
-        if(realOrg == null) {
-            return null;
+        NeuralNet nNet = entity.getNNet();
+        ObservableTraitsCollection observableTraitsCollection = null;
+        if(nNet != null) {
+            observableTraitsCollection = (ObservableTraitsCollection) entity.getNNet().getBiology("ObservableTraitsCollection_0");
         }
-        ObservableTraitsCollection observableTraitsCollection = (ObservableTraitsCollection)realOrg.getNNet().getBiology("ObservableTraitsCollection_0");
         if(observableTraitsCollection == null){
             return new ResourceLocation("chaoscraft:morty.png");
         }

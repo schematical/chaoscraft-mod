@@ -103,14 +103,14 @@ public class CCEventListener {
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public static void render(RenderGameOverlayEvent.Post event){
-        if(ChaosCraft.fontRenderer == null){
-            ChaosCraft.fontRenderer = Minecraft.getMinecraft().fontRenderer;
+        if(ChaosCraftGUI.fontRenderer == null){
+            ChaosCraftGUI.fontRenderer = Minecraft.getMinecraft().fontRenderer;
         }
         if(ChaosCraft.topLeftMessage != null) {
             String[] parts = ChaosCraft.topLeftMessage.split("\n");
             int placement = 5;
             for (String part : parts) {
-                ChaosCraft.fontRenderer.drawStringWithShadow(part, 5, placement, 0xFFFFFF);
+                ChaosCraftGUI.fontRenderer.drawStringWithShadow(part, 5, placement, 0xFFFFFF);
                 placement += 10;
             }
         }

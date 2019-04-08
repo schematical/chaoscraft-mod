@@ -55,7 +55,10 @@ public class CommandChaosCraftSessionStart extends CommandBase {
              return;
         }
 
-
+        World world = p_execute_1_.getEntityWorld();
+        if (world.isRemote) {
+            return;
+        }
 
         ChaosCraft.startTrainingSession();
         ChaosCraft.loadFitnessFunctions();
@@ -64,17 +67,16 @@ public class CommandChaosCraftSessionStart extends CommandBase {
             new TextComponentString("Successfully started a session - " + ChaosCraft.config.sessionNamespace)
         );
         if(ChaosCraft.rick == null) {
-            World world = p_execute_1_.getEntityWorld();
-            if (!world.isRemote) {
-                p_execute_2_.sendMessage(
-                    new TextComponentString("Spawning Rick...")
-                );
-                BlockPos pos = p_execute_2_.getPosition();
-                ChaosCraft.spawnRick(world, pos);
-                p_execute_2_.sendMessage(
-                    new TextComponentString("Rick Spawned")
-                );
-            }
+
+            p_execute_2_.sendMessage(
+                new TextComponentString("Spawning Rick...")
+            );
+            BlockPos pos = p_execute_2_.getPosition();
+            ChaosCraft.spawnRick(world, pos);
+            p_execute_2_.sendMessage(
+                new TextComponentString("Rick Spawned")
+            );
+
         }
     }
 

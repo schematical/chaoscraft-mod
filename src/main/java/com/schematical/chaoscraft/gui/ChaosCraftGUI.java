@@ -1,6 +1,8 @@
 package com.schematical.chaoscraft.gui;
 
+
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -27,7 +29,11 @@ public class ChaosCraftGUI {
     protected static ArrayList<CCLine> toRenderLines = new ArrayList<CCLine>();
     protected static boolean isRendering = false;
     private static ArrayList<CCBox> toRenderBoxs = new ArrayList<CCBox>();
+    public static FontRenderer fontRenderer;
 
+    public static void init(){
+        fontRenderer = Minecraft.getMinecraft().fontRenderer;
+    }
     public static void render(RenderWorldLastEvent event){
         EntityPlayer player = Minecraft.getMinecraft().player;
 

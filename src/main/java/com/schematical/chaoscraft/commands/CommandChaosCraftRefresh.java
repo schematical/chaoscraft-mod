@@ -41,19 +41,27 @@ public class CommandChaosCraftRefresh extends CommandBase {
     }
 
     public void execute(MinecraftServer p_execute_1_, ICommandSender p_execute_2_, String[] p_execute_3_) throws CommandException {
+        if(p_execute_1_ == null){
+            return;
+        }
+        World world = p_execute_1_.getEntityWorld();
+
+        if (world.isRemote) {
+            return;
+        }
         if(ChaosCraft.rick == null || ChaosCraft.rick.isDead) {
             ChaosCraft.rick = null;
-            World world = p_execute_1_.getEntityWorld();
-            if (!world.isRemote) {
-                p_execute_2_.sendMessage(
-                        new TextComponentString("Spawning Rick...")
-                );
-                BlockPos pos = p_execute_2_.getPosition();
-                ChaosCraft.spawnRick(world, pos);
-                p_execute_2_.sendMessage(
-                        new TextComponentString("Rick Spawned")
-                );
-            }
+
+
+            p_execute_2_.sendMessage(
+                    new TextComponentString("Spawning Rick...")
+            );
+            BlockPos pos = p_execute_2_.getPosition();
+            ChaosCraft.spawnRick(world, pos);
+            p_execute_2_.sendMessage(
+                    new TextComponentString("Rick Spawned")
+            );
+
         }
         //Cycle mortys?
         p_execute_2_.sendMessage(

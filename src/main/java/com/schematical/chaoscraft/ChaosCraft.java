@@ -6,6 +6,8 @@ import com.amazonaws.opensdk.config.ConnectionConfiguration;
 import com.amazonaws.opensdk.config.TimeoutConfiguration;
 import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
 import com.schematical.chaoscraft.commands.CommandChaosCraftObserve;
+import com.schematical.chaoscraft.commands.CommandChaosCraftRefresh;
+import com.schematical.chaoscraft.commands.CommandChaosCraftSessionStart;
 import com.schematical.chaoscraft.commands.CommandDebug;
 import com.schematical.chaoscraft.entities.ChaosCraftFitnessManager;
 import com.schematical.chaoscraft.entities.EntityOrganism;
@@ -16,7 +18,7 @@ import com.schematical.chaosnet.auth.ChaosnetCognitoUserPool;
 import com.schematical.chaosnet.model.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.gui.FontRenderer;
+
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.math.BlockPos;
@@ -24,6 +26,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.GameType;
 import net.minecraft.world.World;
+import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
@@ -68,7 +71,7 @@ public class ChaosCraft
     public static List<EntityOrganism> orgsToReport = new ArrayList<EntityOrganism>();
     public static TrainingRoomSessionNextResponse lastResponse;
     public static int consecutiveErrorCount = 0;
-    public static FontRenderer fontRenderer;
+
     public static String topLeftMessage;
     public static int spawnHash;
     public static float activationThreshold = .3f;
@@ -557,6 +560,8 @@ public class ChaosCraft
         // register server commands
         event.registerServerCommand(new CommandChaosCraftObserve());
         event.registerServerCommand(new CommandDebug());
+        event.registerServerCommand(new CommandChaosCraftSessionStart());
+        event.registerServerCommand(new CommandChaosCraftRefresh());
 
     }
     public static void repair(){

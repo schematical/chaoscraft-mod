@@ -31,8 +31,7 @@ public class ClientProxy implements IProxy {
     public void preInit(FMLPreInitializationEvent e) {
         ClientCommandHandler.instance.registerCommand(new CommandChaosCraftAuth());
         ClientCommandHandler.instance.registerCommand(new CommandChaosCraftSetConfig());
-        ClientCommandHandler.instance.registerCommand(new CommandChaosCraftSessionStart());
-        ClientCommandHandler.instance.registerCommand(new CommandChaosCraftRefresh());
+
         ClientCommandHandler.instance.registerCommand(new CommandChaosCraftTP());
         ClientCommandHandler.instance.registerCommand(new CommandChaosCraftList());
         ClientCommandHandler.instance.registerCommand(new CommandChaosCraftAdam());
@@ -64,7 +63,7 @@ public class ClientProxy implements IProxy {
     }
     @Override
     public void init(FMLInitializationEvent event) {
-        ChaosCraft.fontRenderer = Minecraft.getMinecraft().fontRenderer;
+
     }
 
     @Override

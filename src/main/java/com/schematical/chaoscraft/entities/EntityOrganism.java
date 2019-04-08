@@ -22,6 +22,7 @@ import com.schematical.chaoscraft.proxies.CCIMessage;
 import com.schematical.chaosnet.model.ChaosNetException;
 import com.schematical.chaosnet.model.NNetRaw;
 import com.schematical.chaosnet.model.Organism;
+import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -45,6 +46,8 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeChunkManager;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.ItemStackHandler;
@@ -54,7 +57,7 @@ import org.json.simple.JSONObject;
 import javax.annotation.Nonnull;
 import java.util.*;
 
-public class EntityOrganism extends EntityLiving {
+public class EntityOrganism extends EntityLiving implements IEntityAdditionalSpawnData {
     public final double REACH_DISTANCE = 5.0D;
     private final long spawnTime;
     protected CCPlayerEntityWrapper playerWrapper;
@@ -1003,5 +1006,31 @@ public class EntityOrganism extends EntityLiving {
             ForgeChunkManager.releaseTicket(chunkTicket);
             chunkTicket = null;
         }
+    }
+
+    @Override
+    public void writeSpawnData(ByteBuf buffer) {
+        ByteBufUtils.writeUTF8String(buffer, this.nNet.jsonObject.toJSONString());
+    }
+
+    @Override
+    public void readSpawnData(ByteBuf buf) {
+        if(this.nNet == null){
+            String nNetString = ByteBufUtils.readUTF8String(buf);
+            try {
+
+                org.json.simple.parser.JSONParser parser = new org.json.simple.parser.JSONParser();
+                JSONObject obj = (JSONObject) parser.parse(
+                        nNetString
+                );
+                nNet = new NeuralNet();
+                nNet.attachEntity(this);
+                nNet.parseData(obj);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 }
