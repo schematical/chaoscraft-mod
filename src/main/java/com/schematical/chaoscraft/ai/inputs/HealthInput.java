@@ -8,16 +8,17 @@ import org.json.simple.JSONObject;
  */
 public class HealthInput extends InputNeuron {
 
-    @Override
-    public float evaluate(){
+  @Override
+  public float evaluate() {
 
-        _lastValue = (nNet.entity.getHealth() / nNet.entity.getMaxHealth()) * 2 - 1;
-        return _lastValue;
-    }
-    @Override
-    public void parseData(JSONObject jsonObject){
-        super.parseData(jsonObject);
+    _lastValue = (nNet.entity.getHealth() / nNet.entity.getMaxHealth()) * 2 - 1;
+    return _lastValue;
+  }
 
-    }
+  @Override
+  public void parseData(JSONObject jsonObject) {
+    super.parseData(jsonObject);
+
+  }
 
 }

@@ -3,8 +3,6 @@ package com.schematical.chaoscraft.ai.outputs;
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.OutputNeuron;
 import com.schematical.chaoscraft.ai.biology.FloatMemory;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.RayTraceResult;
 import org.json.simple.JSONObject;
 
 /**
@@ -12,25 +10,25 @@ import org.json.simple.JSONObject;
  */
 public class SetFloatMemoryOutput extends OutputNeuron {
 
-    private String memoryId;
+  private String memoryId;
 
 
-
-    @Override
-    public void execute() {
-        float reversedValue = Math.abs((this._lastValue * 2)-1);
-        if(reversedValue < ChaosCraft.activationThreshold){
-            return;
-        }
-        FloatMemory floatMemory = (FloatMemory) nNet.getBiology(memoryId);
-        floatMemory.setValue(reversedValue);
-
+  @Override
+  public void execute() {
+    float reversedValue = Math.abs((this._lastValue * 2) - 1);
+    if (reversedValue < ChaosCraft.activationThreshold) {
+      return;
     }
-    @Override
-    public void parseData(JSONObject jsonObject){
-        super.parseData(jsonObject);
-        memoryId = jsonObject.get("memoryId").toString();
-    }
+    FloatMemory floatMemory = (FloatMemory) nNet.getBiology(memoryId);
+    floatMemory.setValue(reversedValue);
+
+  }
+
+  @Override
+  public void parseData(JSONObject jsonObject) {
+    super.parseData(jsonObject);
+    memoryId = jsonObject.get("memoryId").toString();
+  }
 
 
 }

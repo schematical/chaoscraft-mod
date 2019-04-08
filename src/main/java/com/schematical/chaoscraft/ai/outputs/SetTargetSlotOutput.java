@@ -11,37 +11,41 @@ import org.json.simple.JSONObject;
  * Created by user1a on 12/10/18.
  */
 public class SetTargetSlotOutput extends OutputNeuron {
-    private String targetSlotId;
 
-    @Override
-    public void execute() {
-        if(this._lastValue <= .5){
-            return;
-        }
-        Eye eye = (Eye)nNet.getBiology("Eye_0");
-        TargetSlot targetSlot = (TargetSlot) nNet.getBiology(targetSlotId);
-        CCObserviableAttributeCollection atts = eye.getClosestSeenObject();
-        if(atts == null){
-            return;
-        }
-        switch(atts.resourceType){
-            case("BLOCK"):
-                //Just use the position
-                if(atts.position == null){
-                    throw new ChaosNetException("Invalid `CCObserviableAttributeCollection` passed in. Missing `position`");
-                }
-                targetSlot.setTarget(atts.position);
-            break;
-            case("ENTITY"):
-                targetSlot.setTarget(atts._entity);
-            break;
-            default:
-                throw new ChaosNetException("Invalid `CCObserviableAttributeCollection.resourceType`: " + atts.resourceType);
-        }
+  private String targetSlotId;
+
+  @Override
+  public void execute() {
+    if (this._lastValue <= .5) {
+      return;
     }
-    @Override
-    public void parseData(JSONObject jsonObject){
-        super.parseData(jsonObject);
-        targetSlotId = jsonObject.get("targetSlotId").toString();
+    Eye eye = (Eye) nNet.getBiology("Eye_0");
+    TargetSlot targetSlot = (TargetSlot) nNet.getBiology(targetSlotId);
+    CCObserviableAttributeCollection atts = eye.getClosestSeenObject();
+    if (atts == null) {
+      return;
     }
+    switch (atts.resourceType) {
+      case ("BLOCK"):
+        //Just use the position
+        if (atts.position == null) {
+          throw new ChaosNetException(
+              "Invalid `CCObserviableAttributeCollection` passed in. Missing `position`");
+        }
+        targetSlot.setTarget(atts.position);
+        break;
+      case ("ENTITY"):
+        targetSlot.setTarget(atts._entity);
+        break;
+      default:
+        throw new ChaosNetException(
+            "Invalid `CCObserviableAttributeCollection.resourceType`: " + atts.resourceType);
+    }
+  }
+
+  @Override
+  public void parseData(JSONObject jsonObject) {
+    super.parseData(jsonObject);
+    targetSlotId = jsonObject.get("targetSlotId").toString();
+  }
 }

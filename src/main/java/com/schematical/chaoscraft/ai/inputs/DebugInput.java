@@ -9,19 +9,20 @@ import org.json.simple.JSONObject;
 public class DebugInput extends InputNeuron {
 
 
-    private float value = -1;
+  private float value = -1;
 
-    @Override
-    public float evaluate(){
-        _lastValue = value;
-        return _lastValue;
-    }
-    @Override
-    public void parseData(JSONObject jsonObject){
-        super.parseData(jsonObject);
-        value = Float.parseFloat(jsonObject.get("value").toString());
-       
+  @Override
+  public float evaluate() {
+    _lastValue = value;
+    return _lastValue;
+  }
 
-    }
+  @Override
+  public void parseData(JSONObject jsonObject) {
+    super.parseData(jsonObject);
+    value = Float.parseFloat(jsonObject.get("value").toString());
+
+
+  }
 
 }

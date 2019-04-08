@@ -5,8 +5,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
@@ -16,54 +14,56 @@ import net.minecraftforge.items.SlotItemHandler;
  */
 public class CCOrgInventoryContainer extends Container {
 
-    public CCOrgInventoryContainer(EntityOrganism entity) {
+  public CCOrgInventoryContainer(EntityOrganism entity) {
 
-        ItemStackHandler itemStackHandler = entity.getItemStack();
-        // CONTAINER INVENTORY
-        for (int y = 0; y < 3; y++) {
-            for (int x = 0; x < 3; x++) {
-                if(((y * 3) + x) < itemStackHandler.getSlots()) {
-                    addSlotToContainer(new SlotItemHandler(itemStackHandler, x + (y * 3), 62 + x * 18, 17 + y * 18));
-                }
-            }
+    ItemStackHandler itemStackHandler = entity.getItemStack();
+    // CONTAINER INVENTORY
+    for (int y = 0; y < 3; y++) {
+      for (int x = 0; x < 3; x++) {
+        if (((y * 3) + x) < itemStackHandler.getSlots()) {
+          addSlotToContainer(
+              new SlotItemHandler(itemStackHandler, x + (y * 3), 62 + x * 18, 17 + y * 18));
         }
-
-
+      }
     }
 
-    //@Override
-    public ItemStack transferStackInSlot(EntityOrganism organism, int index) {
-        ItemStack stack = ItemStack.EMPTY;
-        Slot slot = inventorySlots.get(index);
 
-        if (slot != null && slot.getHasStack()) {
-            ItemStack stackInSlot = slot.getStack();
-            stack = stackInSlot.copy();
+  }
 
-            int containerSlots = inventorySlots.size() - organism.inventory.mainInventory.size();//TODO: Matt look here
+  //@Override
+  public ItemStack transferStackInSlot(EntityOrganism organism, int index) {
+    ItemStack stack = ItemStack.EMPTY;
+    Slot slot = inventorySlots.get(index);
 
-            if (index < containerSlots) {
-                if (!this.mergeItemStack(stackInSlot, containerSlots, inventorySlots.size(), true)) {
-                    return ItemStack.EMPTY;
-                }
-            } else if (!this.mergeItemStack(stackInSlot, 0, containerSlots, false)) {
-                return ItemStack.EMPTY;
-            }
+    if (slot != null && slot.getHasStack()) {
+      ItemStack stackInSlot = slot.getStack();
+      stack = stackInSlot.copy();
 
-            if (stackInSlot.getCount() == 0) {
-                slot.putStack(ItemStack.EMPTY);
-            } else {
-                slot.onSlotChanged();
-            }
+      int containerSlots =
+          inventorySlots.size() - organism.inventory.mainInventory.size();//TODO: Matt look here
 
-            //slot.onTake(organism, stackInSlot);
-
+      if (index < containerSlots) {
+        if (!this.mergeItemStack(stackInSlot, containerSlots, inventorySlots.size(), true)) {
+          return ItemStack.EMPTY;
         }
-        return stack;
-    }
+      } else if (!this.mergeItemStack(stackInSlot, 0, containerSlots, false)) {
+        return ItemStack.EMPTY;
+      }
 
-    @Override
-    public boolean canInteractWith(EntityPlayer player) {
-        return true;
+      if (stackInSlot.getCount() == 0) {
+        slot.putStack(ItemStack.EMPTY);
+      } else {
+        slot.onSlotChanged();
+      }
+
+      //slot.onTake(organism, stackInSlot);
+
     }
+    return stack;
+  }
+
+  @Override
+  public boolean canInteractWith(EntityPlayer player) {
+    return true;
+  }
 }

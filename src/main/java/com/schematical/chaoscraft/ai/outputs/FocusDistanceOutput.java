@@ -1,16 +1,7 @@
 package com.schematical.chaoscraft.ai.outputs;
 
-import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.OutputNeuron;
 import com.schematical.chaoscraft.ai.biology.AreaOfFocus;
-import com.schematical.chaoscraft.events.CCWorldEvent;
-import com.schematical.chaosnet.model.ChaosNetException;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.ShapedRecipes;
-import net.minecraft.util.ResourceLocation;
-import org.json.simple.JSONObject;
 
 
 /**
@@ -18,21 +9,22 @@ import org.json.simple.JSONObject;
  */
 public class FocusDistanceOutput extends OutputNeuron {
 
-    protected AreaOfFocus areaOfFocus;
-    @Override
-    public void execute() {
+  protected AreaOfFocus areaOfFocus;
 
-        if(areaOfFocus == null){
-            areaOfFocus = (AreaOfFocus)nNet.getBiology("AreaOfFocus_0");
-        }
-        float adjustedValue = (this._lastValue * 2) - 1;
-        if(adjustedValue <= 0){
-            areaOfFocus.setDistance(0f);
-            return;
-        }
-        areaOfFocus.setDistance((float)(adjustedValue * areaOfFocus.maxFocusDistance));
+  @Override
+  public void execute() {
 
-
+    if (areaOfFocus == null) {
+      areaOfFocus = (AreaOfFocus) nNet.getBiology("AreaOfFocus_0");
     }
+    float adjustedValue = (this._lastValue * 2) - 1;
+    if (adjustedValue <= 0) {
+      areaOfFocus.setDistance(0f);
+      return;
+    }
+    areaOfFocus.setDistance((float) (adjustedValue * areaOfFocus.maxFocusDistance));
+
+
+  }
 
 }

@@ -9,18 +9,19 @@ import org.json.simple.JSONObject;
  */
 public class GetFloatMemoryInput extends InputNeuron {
 
-    private String memoryId;
+  private String memoryId;
 
-    @Override
-    public float evaluate(){
+  @Override
+  public float evaluate() {
 
-        FloatMemory floatMemory = (FloatMemory) nNet.getBiology(memoryId);
-        return floatMemory.getValue();
-    }
-    @Override
-    public void parseData(JSONObject jsonObject){
-        super.parseData(jsonObject);
-        memoryId = jsonObject.get("memoryId").toString();
-    }
+    FloatMemory floatMemory = (FloatMemory) nNet.getBiology(memoryId);
+    return floatMemory.getValue();
+  }
+
+  @Override
+  public void parseData(JSONObject jsonObject) {
+    super.parseData(jsonObject);
+    memoryId = jsonObject.get("memoryId").toString();
+  }
 
 }

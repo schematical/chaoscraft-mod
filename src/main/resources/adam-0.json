@@ -30,13 +30,10 @@
         "$TYPE": "HasInInventoryInput",
         "_base_type": "input",
         "dependencies": [],
-        "attributeId":"ITEM_ID",
-        "attributeValue":"minecraft:wooden_pickaxe",
+        "attributeId": "ITEM_ID",
+        "attributeValue": "minecraft:wooden_pickaxe",
         "id": "neuron-4"
       },
-
-
-
       {
         "$TYPE": "ChatOutput",
         "_base_type": "output",
@@ -52,7 +49,7 @@
         "$TYPE": "EventInput",
         "_base_type": "input",
         "dependencies": [],
-        "eventType":"PREDICTION",
+        "eventType": "PREDICTION",
         "id": "neuron-6"
       }
     ],
@@ -66,9 +63,9 @@
         "$TYPE": "Eye",
         "index": "0",
         "id": "Eye_0",
-        "pitch":0,
-        "yaw":0,
-        "maxDistance":5
+        "pitch": 0,
+        "yaw": 0,
+        "maxDistance": 5
       },
       {
         "$TYPE": "AreaOfFocus",

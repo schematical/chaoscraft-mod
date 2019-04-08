@@ -23,66 +23,69 @@ import net.minecraftforge.common.ForgeChunkManager;
 
 public class EntityRick extends EntityLiving {
 
-    public ForgeChunkManager.Ticket chunkTicket;
+  public ForgeChunkManager.Ticket chunkTicket;
 
-    public EntityRick(World worldIn) {
-        this(worldIn, "Rick");
+  public EntityRick(World worldIn) {
+    this(worldIn, "Rick");
+  }
+
+  public EntityRick(World worldIn, String name) {
+    super(worldIn);
+
+    if (!world.isRemote) {
+      if (chunkTicket == null) {
+        chunkTicket = ForgeChunkManager
+            .requestTicket(ChaosCraft.INSTANCE, world, ForgeChunkManager.Type.ENTITY);
+        chunkTicket.bindEntity(this);
+      }
     }
 
-    public EntityRick(World worldIn, String name) {
-        super(worldIn);
+    this.tasks.taskEntries.clear();
 
-        if(!world.isRemote) {
-            if(chunkTicket == null) {
-                chunkTicket = ForgeChunkManager.requestTicket(ChaosCraft.INSTANCE, world, ForgeChunkManager.Type.ENTITY);
-                chunkTicket.bindEntity(this);
-            }
-        }
+    this.tasks.addTask(3, new AISpawnOrganisim(this));
+    this.tasks.addTask(1, new EntityAISwimming(this));
+    //this.tasks.addTask(6, new EntityAIWander(this, 0.6D));
+    this.tasks.addTask(11, new EntityAIWatchClosest(this, EntityPlayer.class, 10.0F));
+    //this.targetTasks.addTask(2, new EntityAINearestAttackableTarget(this, EntityPlayer.class, true));
+    this.tasks.addTask(2, new AIFindExistingOrganisims(this, EntityOrganism.class));
 
-        this.tasks.taskEntries.clear();
+    this.setEntityInvulnerable(true);
+    this.enablePersistence();
+  }
 
-        this.tasks.addTask(3, new AISpawnOrganisim(this));
-        this.tasks.addTask(1, new EntityAISwimming(this));
-        //this.tasks.addTask(6, new EntityAIWander(this, 0.6D));
-        this.tasks.addTask(11, new EntityAIWatchClosest(this, EntityPlayer.class, 10.0F));
-        //this.targetTasks.addTask(2, new EntityAINearestAttackableTarget(this, EntityPlayer.class, true));
-        this.tasks.addTask(2, new AIFindExistingOrganisims(this, EntityOrganism.class));
+  @Override
+  public void onUpdate() {
+    if (this.firstUpdate) {
+      if (!this.world.isRemote) {
+        ForgeChunkManager.forceChunk(chunkTicket, new ChunkPos(this.getPosition()));
+      }
+    }
 
-        this.setEntityInvulnerable(true);
-        this.enablePersistence();
+    ChaosCraft.rickPos = this.getPosition();
+    super.onUpdate();
+
+  }
+
+  public static class RickRenderer extends RenderLiving<EntityRick> {
+
+    public RickRenderer(RenderManager rendermanagerIn) {
+      super(rendermanagerIn, new ModelPlayer(.5f, false), 0.5f);
     }
 
     @Override
-    public void onUpdate()
-    {
-        if(this.firstUpdate) {
-            if(!this.world.isRemote) {
-                ForgeChunkManager.forceChunk(chunkTicket, new ChunkPos(this.getPosition()));
-            }
-        }
-
-        ChaosCraft.rickPos = this.getPosition();
-        super.onUpdate();
-
-    }
-    public static class RickRenderer extends RenderLiving<EntityRick> {
-        public RickRenderer(RenderManager rendermanagerIn) {
-            super(rendermanagerIn, new ModelPlayer(.5f, false), 0.5f);
-        }
-
-        @Override
-        protected ResourceLocation getEntityTexture(EntityRick entity) {
-            return new ResourceLocation("chaoscraft:rick.png");//"minecraft:textures/entity/cow/cow.png");//ChaosCraft.MODID, "rick.png");
-        }
-
+    protected ResourceLocation getEntityTexture(EntityRick entity) {
+      return new ResourceLocation(
+          "chaoscraft:rick.png");//"minecraft:textures/entity/cow/cow.png");//ChaosCraft.MODID, "rick.png");
     }
 
-    public void onOrganisimDeath(EntityCreature creature){
-        if(!world.isRemote) {
-            if(ChaosCraft.organisims.contains(creature)) {
-                ChaosCraft.organisims.remove(creature);
-            }
-        }
+  }
+
+  public void onOrganisimDeath(EntityCreature creature) {
+    if (!world.isRemote) {
+      if (ChaosCraft.organisims.contains(creature)) {
+        ChaosCraft.organisims.remove(creature);
+      }
     }
+  }
 
 }

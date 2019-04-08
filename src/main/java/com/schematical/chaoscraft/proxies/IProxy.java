@@ -11,13 +11,13 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 public interface IProxy {
 
-    @EventHandler
-    public void preInit(FMLPreInitializationEvent event);
+  @EventHandler
+  public void preInit(FMLPreInitializationEvent event);
 
-    @EventHandler
-    public void init(FMLInitializationEvent event);
+  @EventHandler
+  public void init(FMLInitializationEvent event);
 
-    @EventHandler
-    public void postInit(FMLPostInitializationEvent event);
+  @EventHandler
+  public void postInit(FMLPostInitializationEvent event);
 
 }

@@ -10,30 +10,34 @@ import org.json.simple.JSONObject;
  * Created by user1a on 12/8/18.
  */
 public class TargetPitchInput extends InputNeuron {
-    private static final int  YAW_DEGREES = 365;
-    private String targetSlotId;
-    @Override
-    public float evaluate(){
-        TargetSlot targetSlot = (TargetSlot) nNet.getBiology(targetSlotId);
-        Vec3d targetPosition = targetSlot.getTargetPosition();
-        if(targetPosition == null){
-            return -1;
-        }
-        Vec3d vecToTarget = nNet.entity.getPositionVector().subtract(targetPosition);
-        double pitch = -Math.atan2(vecToTarget.y, Math.sqrt(Math.pow(vecToTarget.x, 2) + Math.pow(vecToTarget.z, 2)));
 
-        double degrees = Math.toDegrees(pitch);
-        degrees -= nNet.entity.rotationPitch;
-        _lastValue = (float) degrees / YAW_DEGREES;
-        if(nNet.entity.getDebug()){
-            ChaosCraft.logger.info("TargetPitchInput    " + degrees + "  " + _lastValue);
-        }
-        return _lastValue;
+  private static final int YAW_DEGREES = 365;
+  private String targetSlotId;
+
+  @Override
+  public float evaluate() {
+    TargetSlot targetSlot = (TargetSlot) nNet.getBiology(targetSlotId);
+    Vec3d targetPosition = targetSlot.getTargetPosition();
+    if (targetPosition == null) {
+      return -1;
     }
-    @Override
-    public void parseData(JSONObject jsonObject){
-        super.parseData(jsonObject);
-        targetSlotId = jsonObject.get("targetSlotId").toString();
+    Vec3d vecToTarget = nNet.entity.getPositionVector().subtract(targetPosition);
+    double pitch = -Math
+        .atan2(vecToTarget.y, Math.sqrt(Math.pow(vecToTarget.x, 2) + Math.pow(vecToTarget.z, 2)));
+
+    double degrees = Math.toDegrees(pitch);
+    degrees -= nNet.entity.rotationPitch;
+    _lastValue = (float) degrees / YAW_DEGREES;
+    if (nNet.entity.getDebug()) {
+      ChaosCraft.logger.info("TargetPitchInput    " + degrees + "  " + _lastValue);
     }
+    return _lastValue;
+  }
+
+  @Override
+  public void parseData(JSONObject jsonObject) {
+    super.parseData(jsonObject);
+    targetSlotId = jsonObject.get("targetSlotId").toString();
+  }
 
 }

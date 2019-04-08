@@ -6,29 +6,31 @@ import net.minecraft.entity.ai.EntityAIBase;
 /**
  * Created by user1a on 12/7/18.
  */
-public class AIEvaluateNeuron extends EntityAIBase
-{
-    protected OutputNeuron outputNeuron;
-    protected Entity entity;
-    public AIEvaluateNeuron(Entity entity)
-    {
-        super();
-        this.entity = entity;
-    }
-    public boolean shouldExecute(){
-        float val = outputNeuron.evaluate();
-        if(val > 0){
-            return true;
-        }
-        return false;
-    }
-    public boolean shouldContinueExecuting() {
+public class AIEvaluateNeuron extends EntityAIBase {
 
-        return false;//super.shouldContinueExecuting();
+  protected OutputNeuron outputNeuron;
+  protected Entity entity;
+
+  public AIEvaluateNeuron(Entity entity) {
+    super();
+    this.entity = entity;
+  }
+
+  public boolean shouldExecute() {
+    float val = outputNeuron.evaluate();
+    if (val > 0) {
+      return true;
     }
-    public void startExecuting()
-    {
-        outputNeuron.execute();
-    }
+    return false;
+  }
+
+  public boolean shouldContinueExecuting() {
+
+    return false;//super.shouldContinueExecuting();
+  }
+
+  public void startExecuting() {
+    outputNeuron.execute();
+  }
 }
 

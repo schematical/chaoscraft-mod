@@ -10,93 +10,92 @@ import net.minecraft.util.ResourceLocation;
  */
 public class CCOrgDetailView extends CCGuiBase {
 
-    protected final EntityOrganism entityOrganism;
+  protected final EntityOrganism entityOrganism;
 
-    public CCOrgDetailView(EntityOrganism entityOrganism) {
-        super(entityOrganism.getName(), new ResourceLocation(ChaosCraft.MODID, "textures/gui/book.png"), 175, 228);
-        this.entityOrganism = entityOrganism;
-    }
+  public CCOrgDetailView(EntityOrganism entityOrganism) {
+    super(entityOrganism.getName(), new ResourceLocation(ChaosCraft.MODID, "textures/gui/book.png"),
+        175, 228);
+    this.entityOrganism = entityOrganism;
+  }
 
-    @Override
-    int initializeButtons() {
-        buttonList.clear();
+  @Override
+  int initializeButtons() {
+    buttonList.clear();
 
-        int ID = super.initializeButtons();
-        int buttonWidth = 100;
-        int buttonHeight = 20;
+    int ID = super.initializeButtons();
+    int buttonWidth = 100;
+    int buttonHeight = 20;
 
-        buttonList.add(
-                new CCGuiButton(
-                        ID++,
-                        this.guiLeft + (this.guiWidth / 2) - buttonWidth / 2,
-                        this.guiTop + (buttonHeight + 10) * ID,
-                        buttonWidth,
-                        buttonHeight,
-                        I18n.format(ChaosCraft.MODID + ".gui.open.score_events"),
-                        ButtonAction.SHOW_SCORE_EVENTS,
-                        entityOrganism
-                )
-        );
+    buttonList.add(
+        new CCGuiButton(
+            ID++,
+            this.guiLeft + (this.guiWidth / 2) - buttonWidth / 2,
+            this.guiTop + (buttonHeight + 10) * ID,
+            buttonWidth,
+            buttonHeight,
+            I18n.format(ChaosCraft.MODID + ".gui.open.score_events"),
+            ButtonAction.SHOW_SCORE_EVENTS,
+            entityOrganism
+        )
+    );
 
+    buttonList.add(
+        new CCGuiButton(
+            ID++,
+            this.guiLeft + (this.guiWidth / 2) - buttonWidth / 2,
+            this.guiTop + (buttonHeight + 10) * ID,
+            buttonWidth,
+            buttonHeight,
+            I18n.format(ChaosCraft.MODID + ".gui.open.nnet"),
+            ButtonAction.SHOW_NNET,
+            entityOrganism
+        )
+    );
 
-        buttonList.add(
-                new CCGuiButton(
-                        ID++,
-                        this.guiLeft + (this.guiWidth / 2) - buttonWidth / 2,
-                        this.guiTop + (buttonHeight + 10) * ID,
-                        buttonWidth,
-                        buttonHeight,
-                        I18n.format(ChaosCraft.MODID + ".gui.open.nnet"),
-                        ButtonAction.SHOW_NNET,
-                        entityOrganism
-                )
-        );
+    buttonList.add(
+        new CCGuiButton(
+            ID++,
+            this.guiLeft + (this.guiWidth / 2) - buttonWidth / 2,
+            this.guiTop + (buttonHeight + 10) * ID,
+            buttonWidth,
+            buttonHeight,
+            I18n.format(ChaosCraft.MODID + ".gui.open.inventory"),
+            ButtonAction.SHOW_INVENTORY,
+            entityOrganism
+        )
+    );
 
+    buttonList.add(
+        new CCGuiButton(
+            ID++,
+            this.guiLeft + (this.guiWidth / 2) - buttonWidth / 2,
+            this.guiTop + (buttonHeight + 10) * ID,
+            buttonWidth,
+            buttonHeight,
+            I18n.format(ChaosCraft.MODID + ".gui.open.biology"),
+            ButtonAction.VIEW_BIOLOGY_LIST_ACTION,
+            entityOrganism
+        )
+    );
+    buttonList.add(
+        new CCGuiButton(
+            ID++,
+            this.guiLeft + (this.guiWidth / 2) - buttonWidth / 2,
+            this.guiTop + (buttonHeight + 10) * ID,
+            buttonWidth,
+            buttonHeight,
+            I18n.format(ChaosCraft.MODID + ".gui.open.areaoffocus"),
+            ButtonAction.VIEW_AREA_OF_FOCUS,
+            entityOrganism
+        )
+    );
 
-        buttonList.add(
-                new CCGuiButton(
-                        ID++,
-                        this.guiLeft + (this.guiWidth / 2) - buttonWidth / 2,
-                        this.guiTop + (buttonHeight + 10) * ID,
-                        buttonWidth,
-                        buttonHeight,
-                        I18n.format(ChaosCraft.MODID + ".gui.open.inventory"),
-                        ButtonAction.SHOW_INVENTORY,
-                        entityOrganism
-                )
-        );
+    return ID;
+  }
 
-        buttonList.add(
-            new CCGuiButton(
-                ID++,
-                this.guiLeft + (this.guiWidth / 2) - buttonWidth / 2,
-                this.guiTop + (buttonHeight + 10) * ID,
-                buttonWidth,
-                buttonHeight,
-                I18n.format(ChaosCraft.MODID + ".gui.open.biology"),
-                ButtonAction.VIEW_BIOLOGY_LIST_ACTION,
-                entityOrganism
-            )
-        );
-        buttonList.add(
-                new CCGuiButton(
-                        ID++,
-                        this.guiLeft + (this.guiWidth / 2) - buttonWidth / 2,
-                        this.guiTop + (buttonHeight + 10) * ID,
-                        buttonWidth,
-                        buttonHeight,
-                        I18n.format(ChaosCraft.MODID + ".gui.open.areaoffocus"),
-                        ButtonAction.VIEW_AREA_OF_FOCUS,
-                        entityOrganism
-                )
-        );
-
-        return ID;
-    }
-
-    @Override
-    public boolean doesGuiPauseGame() {
-        return false;
-    }
+  @Override
+  public boolean doesGuiPauseGame() {
+    return false;
+  }
 
 }

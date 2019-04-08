@@ -18,65 +18,68 @@ import net.minecraftforge.items.SlotItemHandler;
  */
 public class CCOrgAreaOfFocusContainer extends Container {
 
-    public CCOrgAreaOfFocusContainer(EntityOrganism entity) {
-        NeuralNet neuralNet = entity.getNNet();
-        if(neuralNet == null){
-            return;
-        }
-        AreaOfFocus areaOfFocus = (AreaOfFocus)neuralNet.getBiology("AreaOfFocus_0");
+  public CCOrgAreaOfFocusContainer(EntityOrganism entity) {
+    NeuralNet neuralNet = entity.getNNet();
+    if (neuralNet == null) {
+      return;
+    }
+    AreaOfFocus areaOfFocus = (AreaOfFocus) neuralNet.getBiology("AreaOfFocus_0");
 
-        ItemStackHandler itemStackHandler = new ItemStackHandler();
-        itemStackHandler.setSize(64);
-        // CONTAINER INVENTORY
+    ItemStackHandler itemStackHandler = new ItemStackHandler();
+    itemStackHandler.setSize(64);
+    // CONTAINER INVENTORY
 
-        for (int x = 0; x < 5; x++) {
-            for (int y = 0; y < 5; y++) {
-                CCObserviableAttributeCollection observiableAttributeCollection = areaOfFocus.canSeenBlock(x, y, 0);
-                Block block = Block.getBlockFromName(observiableAttributeCollection.resourceId);
-                ItemStack itemStack = new ItemStack(block);
-                itemStack.setCount(1);
-                itemStackHandler.setStackInSlot((y  * 5) + x, itemStack);
-                addSlotToContainer(new SlotItemHandler(itemStackHandler, x + (y * 5), 5 + x * 18, 5 + (4 - y) * 18));
+    for (int x = 0; x < 5; x++) {
+      for (int y = 0; y < 5; y++) {
+        CCObserviableAttributeCollection observiableAttributeCollection = areaOfFocus
+            .canSeenBlock(x, y, 0);
+        Block block = Block.getBlockFromName(observiableAttributeCollection.resourceId);
+        ItemStack itemStack = new ItemStack(block);
+        itemStack.setCount(1);
+        itemStackHandler.setStackInSlot((y * 5) + x, itemStack);
+        addSlotToContainer(
+            new SlotItemHandler(itemStackHandler, x + (y * 5), 5 + x * 18, 5 + (4 - y) * 18));
 
-            }
-        }
-
-
+      }
     }
 
-    //@Override
-    public ItemStack transferStackInSlot(EntityOrganism organism, int index) {
-        ItemStack stack = ItemStack.EMPTY;
-        Slot slot = inventorySlots.get(index);
 
-        if (slot != null && slot.getHasStack()) {
-            ItemStack stackInSlot = slot.getStack();
-            stack = stackInSlot.copy();
+  }
 
-            int containerSlots = inventorySlots.size() - organism.inventory.mainInventory.size();//TODO: Matt look here
+  //@Override
+  public ItemStack transferStackInSlot(EntityOrganism organism, int index) {
+    ItemStack stack = ItemStack.EMPTY;
+    Slot slot = inventorySlots.get(index);
 
-            if (index < containerSlots) {
-                if (!this.mergeItemStack(stackInSlot, containerSlots, inventorySlots.size(), true)) {
-                    return ItemStack.EMPTY;
-                }
-            } else if (!this.mergeItemStack(stackInSlot, 0, containerSlots, false)) {
-                return ItemStack.EMPTY;
-            }
+    if (slot != null && slot.getHasStack()) {
+      ItemStack stackInSlot = slot.getStack();
+      stack = stackInSlot.copy();
 
-            if (stackInSlot.getCount() == 0) {
-                slot.putStack(ItemStack.EMPTY);
-            } else {
-                slot.onSlotChanged();
-            }
+      int containerSlots =
+          inventorySlots.size() - organism.inventory.mainInventory.size();//TODO: Matt look here
 
-            //slot.onTake(organism, stackInSlot);
-
+      if (index < containerSlots) {
+        if (!this.mergeItemStack(stackInSlot, containerSlots, inventorySlots.size(), true)) {
+          return ItemStack.EMPTY;
         }
-        return stack;
-    }
+      } else if (!this.mergeItemStack(stackInSlot, 0, containerSlots, false)) {
+        return ItemStack.EMPTY;
+      }
 
-    @Override
-    public boolean canInteractWith(EntityPlayer player) {
-        return false;
+      if (stackInSlot.getCount() == 0) {
+        slot.putStack(ItemStack.EMPTY);
+      } else {
+        slot.onSlotChanged();
+      }
+
+      //slot.onTake(organism, stackInSlot);
+
     }
+    return stack;
+  }
+
+  @Override
+  public boolean canInteractWith(EntityPlayer player) {
+    return false;
+  }
 }
