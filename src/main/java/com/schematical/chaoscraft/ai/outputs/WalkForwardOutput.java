@@ -12,7 +12,11 @@ public class WalkForwardOutput extends OutputNeuron {
     @Override
     public void execute() {
         float reversedValue = this.reverseSigmoid(this._lastValue);
+        if(this.nNet.entity.observingPlayer != null){
+            ChaosCraft.logger.info("WalkForwardOutput: " + reversedValue);
+        }
         if(Math.abs(reversedValue) < ChaosCraft.activationThreshold){
+            nNet.entity.moveForward = 0;
             return;
         }
 
