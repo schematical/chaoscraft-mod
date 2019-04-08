@@ -35,6 +35,7 @@ import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -886,7 +887,20 @@ public class EntityOrganism extends EntityLiving implements IEntityAdditionalSpa
             if (!flag && itemstack.getItem() instanceof ItemBlock) {
                 ItemBlock itemblock = (ItemBlock) itemstack.getItem();
 
-                if (!itemblock.canPlaceBlockOnSide(world, pos, direction, this.getPlayerWrapper(), itemstack)) {
+                Block block = world.getBlockState(pos).getBlock();
+
+                if (block == Blocks.SNOW_LAYER && block.isReplaceable(world, pos))
+                {
+                    direction = EnumFacing.UP;
+                }
+                else if (!block.isReplaceable(world, pos))
+                {
+                    pos = pos.offset(direction);
+                }
+
+                boolean mayPlace = world.mayPlace(itemblock.getBlock(), pos, false, direction, (Entity)null);
+
+                if (!mayPlace) {
                     return EnumActionResult.FAIL;
                 } else {
 
@@ -1010,6 +1024,11 @@ public class EntityOrganism extends EntityLiving implements IEntityAdditionalSpa
 
     @Override
     public void writeSpawnData(ByteBuf buffer) {
+        if(this.nNet == null){
+            //Something is really wrong
+            ChaosCraft.logger.error("Trying to spawn without a `nNet`");
+            return;
+        }
         ByteBufUtils.writeUTF8String(buffer, this.nNet.jsonObject.toJSONString());
     }
 

@@ -227,10 +227,13 @@ public class CCEventListener {
             }
 
             if(chunkTicket == null) {
-                System.out.println("WTF WHY HOW???");
+                ChaosCraft.logger.error("WTF WHY HOW???");
                 return;
             }
-
+            if(oldChunk == null){
+                ChaosCraft.logger.error("`oldChunk` is null");
+                return;
+            }
             ForgeChunkManager.unforceChunk(chunkTicket, oldChunk.getPos());
 
             ForgeChunkManager.forceChunk(chunkTicket, new ChunkPos(event.getOldChunkX(), event.getNewChunkZ()));
