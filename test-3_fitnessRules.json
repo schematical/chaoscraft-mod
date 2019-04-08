@@ -95,6 +95,15 @@
     "maxOccurrences":1
   },
   {
+    "id":"equip-sapling",
+    "eventType": "EQUIP",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:sapling", //SAPLING
+    "scoreEffect": 20,
+    "lifeEffect": 0,
+    "maxOccurrences":1
+  },
+  {
     "id":"item-crafted-wooden-plank",
     "eventType": "CRAFT",
     "attributeId":"ITEM_ID",
@@ -135,14 +144,14 @@
     "eventType": "CRAFT",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:chest", //CHEST
-    "scoreEffect": 400,
+    "scoreEffect": 350,
     "lifeEffect": 30,
     "maxOccurrences":1
   },
   {
     "id":"block-placed-chest",
     "eventType": "BLOCK_PLACED",
-    "scoreEffect": 100,
+    "scoreEffect": 150,
     "attributeId":"BLOCK_ID",
     "attributeValue": "minecraft:chest", //CHEST
     "maxOccurrences":1
@@ -188,7 +197,7 @@
     "eventType": "EQUIP",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:wooden_pickaxe", //Wooden PICKAXE
-    "scoreEffect": 1000,
+    "scoreEffect": 1250,
     "lifeEffect": 0,
     "maxOccurrences":1
   },
@@ -232,7 +241,7 @@
     "eventType": "EQUIP",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:furnace", //FURNACE
-    "scoreEffect": 500,
+    "scoreEffect": 750,
     "lifeEffect": 0,
     "maxOccurrences":1
   },
@@ -250,7 +259,7 @@
     "eventType": "EQUIP",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:stone_pickaxe", //Stone PICKAXE
-    "scoreEffect": 1000,
+    "scoreEffect": 1500,
     "lifeEffect": 0,
     "maxOccurrences":1
   },
@@ -304,7 +313,7 @@
     "eventType": "EQUIP",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:bow", //BOW
-    "scoreEffect": 1000,
+    "scoreEffect": 1250,
     "lifeEffect": 0,
     "maxOccurrences":1
   },
@@ -349,7 +358,7 @@
     "eventType": "EQUIP",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:flint_and_steel", //FLINT AND STEEL
-    "scoreEffect": 750,
+    "scoreEffect": 525,
     "lifeEffect": 0,
     "maxOccurrences":1
   },
@@ -367,7 +376,7 @@
     "eventType": "EQUIP",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:iron_pickaxe", //Iron PICKAXE
-    "scoreEffect": 1000,
+    "scoreEffect": 2000,
     "lifeEffect": 0,
     "maxOccurrences":1
   },
@@ -421,7 +430,7 @@
     "eventType": "EQUIP",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:iron_sword", //Iron SWORD
-    "scoreEffect": 1000,
+    "scoreEffect": 1750,
     "lifeEffect": 0,
     "maxOccurrences":1
   },
@@ -493,7 +502,7 @@
     "eventType": "EQUIP",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:diamond_sword", //Diamond SWORD
-    "scoreEffect": 1000,
+    "scoreEffect": 2000,
     "lifeEffect": 0,
     "maxOccurrences":1
   },
@@ -511,7 +520,7 @@
     "eventType": "EQUIP",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:diamond_pickaxe", //Diamond PICKAXE
-    "scoreEffect": 1000,
+    "scoreEffect": 2500,
     "lifeEffect": 0,
     "maxOccurrences":1
   },
@@ -680,7 +689,7 @@
     "eventType": "EQUIP",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:tnt", //TNT
-    "scoreEffect": 750,
+    "scoreEffect": 500,
     "lifeEffect": 0,
     "maxOccurrences":1
   },
@@ -875,7 +884,7 @@
     "eventType": "EQUIP",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:brewing_stand", //BREWING STAND
-    "scoreEffect": 300,
+    "scoreEffect": 350,
     "lifeEffect": 0,
     "maxOccurrences":1
   },
@@ -910,7 +919,7 @@
     "eventType": "EQUIP",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:ender_chest", //ENDER CHEST
-    "scoreEffect": 300,
+    "scoreEffect": 350,
     "lifeEffect": 0,
     "maxOccurrences":1
   },
@@ -936,7 +945,7 @@
     "eventType": "EQUIP",
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:bookshelf", //BOOKSHELF
-    "scoreEffect": 150,
+    "scoreEffect": 250,
     "lifeEffect": 0,
     "maxOccurrences":1
   },
