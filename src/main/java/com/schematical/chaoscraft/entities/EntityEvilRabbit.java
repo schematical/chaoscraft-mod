@@ -60,6 +60,31 @@ public class EntityEvilRabbit extends EntityRabbit {
         .addTask(2, new EntityAINearestAttackableTarget(this, EntityPlayer.class, true));
   }
 
+  @Override
+  public void onUpdate() {
+    super.onUpdate();
+
+  }
+    /*
+    @Override
+    protected void applyEntityAttributes()
+    {
+        super.applyEntityAttributes();
+        this.getAttributeMap().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(1.0D);
+        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.10000000149011612D);
+        this.getAttributeMap().registerAttribute(SharedMonsterAttributes.ATTACK_SPEED);
+        this.getAttributeMap().registerAttribute(SharedMonsterAttributes.LUCK);
+        this.getAttributeMap().registerAttribute(EntityPlayer.REACH_DISTANCE);
+    } */
+
+  @Override
+  public void onDeathUpdate() {
+    super.onDeathUpdate();
+    if (!world.isRemote) {
+      ChaosCraft.rick.onOrganisimDeath(this);
+    }
+  }
+
   static class AIRabbitAttack extends EntityAIAttackMelee {
 
     public AIRabbitAttack(EntityEvilRabbit rabbit) {
@@ -77,31 +102,6 @@ public class EntityEvilRabbit extends EntityRabbit {
 
     protected double getAttackReachSqr(EntityLivingBase attackTarget) {
       return (double) (4.0F + attackTarget.width);
-    }
-  }
-    /*
-    @Override
-    protected void applyEntityAttributes()
-    {
-        super.applyEntityAttributes();
-        this.getAttributeMap().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(1.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.10000000149011612D);
-        this.getAttributeMap().registerAttribute(SharedMonsterAttributes.ATTACK_SPEED);
-        this.getAttributeMap().registerAttribute(SharedMonsterAttributes.LUCK);
-        this.getAttributeMap().registerAttribute(EntityPlayer.REACH_DISTANCE);
-    } */
-
-  @Override
-  public void onUpdate() {
-    super.onUpdate();
-
-  }
-
-  @Override
-  public void onDeathUpdate() {
-    super.onDeathUpdate();
-    if (!world.isRemote) {
-      ChaosCraft.rick.onOrganisimDeath(this);
     }
   }
 

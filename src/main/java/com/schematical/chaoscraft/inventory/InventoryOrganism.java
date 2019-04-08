@@ -68,18 +68,22 @@ public class InventoryOrganism implements IInventory {
   }
 
   /**
+   * Get the size of the player hotbar inventory
+   */
+  public static int getHotbarSize() {
+    return 9;
+  }
+
+  public static boolean isHotbar(int index) {
+    return index >= 0 && index < 9;
+  }
+
+  /**
    * Returns the item stack currently held by the player.
    */
   public ItemStack getCurrentItem() {
     return isHotbar(this.currentItem) ? (ItemStack) this.mainInventory.get(this.currentItem)
         : ItemStack.EMPTY;
-  }
-
-  /**
-   * Get the size of the player hotbar inventory
-   */
-  public static int getHotbarSize() {
-    return 9;
   }
 
   private boolean canMergeStacks(ItemStack stack1, ItemStack stack2) {
@@ -140,10 +144,6 @@ public class InventoryOrganism implements IInventory {
     ItemStack itemstack = this.mainInventory.get(this.currentItem);
     this.mainInventory.set(this.currentItem, this.mainInventory.get(index));
     this.mainInventory.set(index, itemstack);
-  }
-
-  public static boolean isHotbar(int index) {
-    return index >= 0 && index < 9;
   }
 
   /**
@@ -775,17 +775,17 @@ public class InventoryOrganism implements IInventory {
   }
 
   /**
-   * Set the stack helds by mouse, used in GUI/Container
-   */
-  public void setItemStack(ItemStack itemStackIn) {
-    this.itemStack = itemStackIn;
-  }
-
-  /**
    * Stack helds by mouse, used in GUI and Containers
    */
   public ItemStack getItemStack() {
     return this.itemStack;
+  }
+
+  /**
+   * Set the stack helds by mouse, used in GUI/Container
+   */
+  public void setItemStack(ItemStack itemStackIn) {
+    this.itemStack = itemStackIn;
   }
 
   /**

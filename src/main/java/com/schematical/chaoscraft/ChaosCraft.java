@@ -96,47 +96,6 @@ public class ChaosCraft {
   @Mod.Instance
   public static ChaosCraft INSTANCE;
 
-  @EventHandler
-  public void preInit(FMLPreInitializationEvent event) {
-    MinecraftForge.EVENT_BUS.register(new CCEventListener().getClass());
-
-    proxy.preInit(event);
-    config = new ChaosCraftConfig();
-    config.load();
-    spawnHash = (int) Math.round(Math.random() * 9999);
-
-    logger = event.getModLog();
-
-    //thread.start();
-
-    sdk = ChaosNet.builder()
-        .connectionConfiguration(
-            new ConnectionConfiguration()
-                .maxConnections(100)
-                .connectionMaxIdleMillis(1000)
-        )
-        .timeoutConfiguration(
-            new TimeoutConfiguration()
-                .httpRequestTimeout(60000)
-                .totalExecutionTimeout(60000)
-                .socketTimeout(60000)
-        )
-        .signer(
-            (ChaosnetCognitoUserPool) request -> ChaosCraft.config.accessToken
-            //new ChaosNetSigner()
-        )
-        .build();
-
-    auth();
-
-    if (config.accessToken != null) {
-      startTrainingSession();
-      loadFitnessFunctions();
-    }
-
-    ForgeChunkManager.setForcedChunkLoadingCallback(this, new ForcedChunkLoadingCallback());
-  }
-
   public static void auth() {
     if (config.refreshToken != null) {
       AuthTokenRequest authTokenRequest = new AuthTokenRequest();
@@ -205,7 +164,6 @@ public class ChaosCraft {
 
   }
 
-
   public static void startTrainingSession() {
     if (
         ChaosCraft.config.trainingRoomNamespace == null ||
@@ -238,6 +196,10 @@ public class ChaosCraft {
 
     }
 
+  }
+
+  public static List<EntityOrganism> spawnOrgs() {
+    return ChaosCraft.spawnOrgs(null);
   }
     /*public static TrainingRoomSessionNextResponse getNextOrgs(List<EntityOrganism> organismList){
         String namespaces = "";
@@ -280,19 +242,6 @@ public class ChaosCraft {
         }
         return response;
     }*/
-
-
-  @EventHandler
-  public void init(FMLInitializationEvent event) {
-
-    // some example code
-    //logger.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
-
-  }
-
-  public static List<EntityOrganism> spawnOrgs() {
-    return ChaosCraft.spawnOrgs(null);
-  }
 
   public static List<EntityOrganism> spawnOrgs(List<Organism> organismList) {
     List<EntityOrganism> spawnedEntityOrganisms = new ArrayList<EntityOrganism>();
@@ -572,22 +521,6 @@ public class ChaosCraft {
     }
   }
 
-  public class ChaosNetSigner implements ChaosnetCognitoUserPool {
-
-    @Override
-    public String generateToken(ImmutableRequest<?> immutableRequest) {
-      return ChaosCraft.config.accessToken;
-    }
-  }
-
-  @EventHandler
-  public void serverLoad(FMLServerStartingEvent event) {
-    // register server commands
-    event.registerServerCommand(new CommandChaosCraftObserve());
-    event.registerServerCommand(new CommandDebug());
-
-  }
-
   public static void repair() {
     try {
 
@@ -603,6 +536,71 @@ public class ChaosCraft {
       String message = StandardCharsets.UTF_8.decode(byteBuffer).toString();
       exception.setMessage(message);
       throw exception;
+    }
+  }
+
+  @EventHandler
+  public void preInit(FMLPreInitializationEvent event) {
+    MinecraftForge.EVENT_BUS.register(new CCEventListener().getClass());
+
+    proxy.preInit(event);
+    config = new ChaosCraftConfig();
+    config.load();
+    spawnHash = (int) Math.round(Math.random() * 9999);
+
+    logger = event.getModLog();
+
+    //thread.start();
+
+    sdk = ChaosNet.builder()
+        .connectionConfiguration(
+            new ConnectionConfiguration()
+                .maxConnections(100)
+                .connectionMaxIdleMillis(1000)
+        )
+        .timeoutConfiguration(
+            new TimeoutConfiguration()
+                .httpRequestTimeout(60000)
+                .totalExecutionTimeout(60000)
+                .socketTimeout(60000)
+        )
+        .signer(
+            (ChaosnetCognitoUserPool) request -> ChaosCraft.config.accessToken
+            //new ChaosNetSigner()
+        )
+        .build();
+
+    auth();
+
+    if (config.accessToken != null) {
+      startTrainingSession();
+      loadFitnessFunctions();
+    }
+
+    ForgeChunkManager.setForcedChunkLoadingCallback(this, new ForcedChunkLoadingCallback());
+  }
+
+  @EventHandler
+  public void init(FMLInitializationEvent event) {
+
+    // some example code
+    //logger.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
+
+  }
+
+  @EventHandler
+  public void serverLoad(FMLServerStartingEvent event) {
+    // register server commands
+    event.registerServerCommand(new CommandChaosCraftObserve());
+    event.registerServerCommand(new CommandDebug());
+
+  }
+
+  public class ChaosNetSigner implements ChaosnetCognitoUserPool {
+
+    @Override
+    public String generateToken(ImmutableRequest<?> immutableRequest) {
+      return ChaosCraft.config.accessToken;
     }
   }
 

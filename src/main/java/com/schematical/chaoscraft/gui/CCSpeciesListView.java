@@ -24,31 +24,6 @@ public class CCSpeciesListView extends CCGuiBase {
   protected List<TaxonomicRank> species;
   protected List<GuiButtonToggle> toggleButtons = new ArrayList<GuiButtonToggle>();
 
-  static class CCSpeciesListViewButton extends CCGuiButton {
-
-    public TaxonomicRank tRank;
-    public boolean showStats = true;
-
-    public CCSpeciesListViewButton(int buttonId, int x, int y, int widthIn, int heightIn,
-        TaxonomicRank tRank, ButtonAction action) {
-      super(buttonId, x, y, widthIn, heightIn, tRank.getName(), action);
-      this.tRank = tRank;
-    }
-
-    public CCSpeciesListViewButton(int buttonId, int x, int y, int widthIn, int heightIn,
-        String buttonText) {
-      super(buttonId, x, y, widthIn, heightIn, buttonText);
-    }
-
-    @Override
-    public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
-      this.displayString =
-          tRank.getName() + " " + tRank.getAge() + " " + (this.showStats ? "ENABLED" : "DISABLED");
-
-      super.drawButton(mc, mouseX, mouseY, partialTicks);
-    }
-  }
-
   public CCSpeciesListView() {
     super("Species", new ResourceLocation(ChaosCraft.MODID, "textures/gui/nn_background.png"), 256,
         256);
@@ -182,6 +157,31 @@ public class CCSpeciesListView extends CCGuiBase {
     GlStateManager.glVertex3f(endX, endY, 0);
     GlStateManager.glEnd();
     GlStateManager.enableTexture2D();
+  }
+
+  static class CCSpeciesListViewButton extends CCGuiButton {
+
+    public TaxonomicRank tRank;
+    public boolean showStats = true;
+
+    public CCSpeciesListViewButton(int buttonId, int x, int y, int widthIn, int heightIn,
+        TaxonomicRank tRank, ButtonAction action) {
+      super(buttonId, x, y, widthIn, heightIn, tRank.getName(), action);
+      this.tRank = tRank;
+    }
+
+    public CCSpeciesListViewButton(int buttonId, int x, int y, int widthIn, int heightIn,
+        String buttonText) {
+      super(buttonId, x, y, widthIn, heightIn, buttonText);
+    }
+
+    @Override
+    public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+      this.displayString =
+          tRank.getName() + " " + tRank.getAge() + " " + (this.showStats ? "ENABLED" : "DISABLED");
+
+      super.drawButton(mc, mouseX, mouseY, partialTicks);
+    }
   }
 
 

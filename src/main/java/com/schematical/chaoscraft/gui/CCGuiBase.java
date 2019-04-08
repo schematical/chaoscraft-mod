@@ -11,26 +11,11 @@ import net.minecraft.util.ResourceLocation;
 
 public abstract class CCGuiBase extends GuiScreen {
 
-  enum ButtonAction {
-    CLOSE,
-    SHOW_NNET,
-    SHOW_INVENTORY,
-    SHOW_SCORE_EVENTS,
-    VIEW_SPECIES_LIST_ACTION,
-    TOGGLE_SPECIES_VISIBILITY_ACTION,
-    VIEW_ORG_DETAIL_ACTION,
-    VIEW_NEURON_DETAIL_ACTION,
-    VIEW_BIOLOGY_LIST_ACTION,
-    VIEW_AREA_OF_FOCUS, VIEW_BIOLOGY_DETAIL_ACTION
-  }
-
   final String title;
   final int guiWidth, guiHeight;
   final ResourceLocation texture;
-
   int guiLeft;
   int guiTop;
-
   public CCGuiBase(String title, ResourceLocation texture, int guiWidth, int guiHeight) {
     this.title = title;
     this.texture = texture;
@@ -135,5 +120,18 @@ public abstract class CCGuiBase extends GuiScreen {
         ChaosCraft.logger.warn("Unknown button action! " + ccButton.action);
         super.actionPerformed(button);
     }
+  }
+
+  enum ButtonAction {
+    CLOSE,
+    SHOW_NNET,
+    SHOW_INVENTORY,
+    SHOW_SCORE_EVENTS,
+    VIEW_SPECIES_LIST_ACTION,
+    TOGGLE_SPECIES_VISIBILITY_ACTION,
+    VIEW_ORG_DETAIL_ACTION,
+    VIEW_NEURON_DETAIL_ACTION,
+    VIEW_BIOLOGY_LIST_ACTION,
+    VIEW_AREA_OF_FOCUS, VIEW_BIOLOGY_DETAIL_ACTION
   }
 }

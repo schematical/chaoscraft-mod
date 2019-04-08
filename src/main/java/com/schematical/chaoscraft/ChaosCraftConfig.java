@@ -21,6 +21,10 @@ public class ChaosCraftConfig {
   public String trainingRoomUsernameNamespace;
   public String trainingRoomNamespace;
 
+  public static String getConfigPath() {
+    return System.getProperty("user.home") + "/chaoscraft/config.json";
+  }
+
   public void save() {
 
     JSONObject obj = new JSONObject();
@@ -51,10 +55,6 @@ public class ChaosCraftConfig {
     } catch (Exception e) {
       ChaosCraft.logger.error("Error saving Config: " + e.getMessage());
     }
-  }
-
-  public static String getConfigPath() {
-    return System.getProperty("user.home") + "/chaoscraft/config.json";
   }
 
   public void load() {

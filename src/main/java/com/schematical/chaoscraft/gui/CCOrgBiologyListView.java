@@ -54,6 +54,11 @@ public class CCOrgBiologyListView extends CCGuiBase {
     return ID;
   }
 
+  @Override
+  public boolean doesGuiPauseGame() {
+    return false;
+  }
+
   public class CCBiologyDetailButton extends CCGuiButton {
 
     public BiologyBase biologyBase;
@@ -96,11 +101,6 @@ public class CCOrgBiologyListView extends CCGuiBase {
       super.drawButton(mc, mouseX, mouseY, partialTicks);
 
     }
-  }
-
-  @Override
-  public boolean doesGuiPauseGame() {
-    return false;
   }
 
 }

@@ -12,11 +12,11 @@ import org.json.simple.parser.JSONParser;
  */
 public class CCIMessage implements IMessage {
 
+  protected String payload;
+
   // A default constructor is always required
   public CCIMessage() {
   }
-
-  protected String payload;
 
   public CCIMessage(JSONObject jsonPayload) {
     this.payload = jsonPayload.toJSONString();

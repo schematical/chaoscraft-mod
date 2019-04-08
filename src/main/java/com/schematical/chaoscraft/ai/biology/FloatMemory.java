@@ -10,12 +10,12 @@ public class FloatMemory extends BiologyBase {
   public int index;
   public float _lastValue = -1;
 
-  public void setValue(float _lastValue) {
-    this._lastValue = _lastValue;
-  }
-
   public float getValue() {
     return this._lastValue;
+  }
+
+  public void setValue(float _lastValue) {
+    this._lastValue = _lastValue;
   }
 
   @Override

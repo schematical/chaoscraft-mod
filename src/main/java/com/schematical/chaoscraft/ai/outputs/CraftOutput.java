@@ -16,8 +16,8 @@ import org.json.simple.JSONObject;
  */
 public class CraftOutput extends OutputNeuron {
 
-  private String recipeId;
   protected IRecipe recipe;
+  private String recipeId;
 
   public void init() {
 

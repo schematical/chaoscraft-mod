@@ -25,10 +25,9 @@ import org.json.simple.JSONObject;
  */
 public class CCObservableAttributeManager {
 
-  protected Organism organism;
-
   public List<ObservedAttributesElement> newAttributes = new ArrayList<ObservedAttributesElement>();
   public HashMap<String, List<String>> attributeMap = new HashMap<String, List<String>>();
+  protected Organism organism;
 
   public CCObservableAttributeManager(Organism _organism) {
     this.organism = _organism;

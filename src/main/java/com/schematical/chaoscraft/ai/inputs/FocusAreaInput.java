@@ -12,12 +12,12 @@ import org.json.simple.JSONObject;
  */
 public class FocusAreaInput extends InputNeuron {
 
-  protected AreaOfFocus areaOfFocus;
   public String attributeId;
   public String attributeValue;
   public float x;
   public float y;
   public float z;
+  protected AreaOfFocus areaOfFocus;
   private int viewRange;
 
   //public PositionRange positionRange;

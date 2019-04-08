@@ -66,6 +66,14 @@ public class EntityRick extends EntityLiving {
 
   }
 
+  public void onOrganisimDeath(EntityCreature creature) {
+    if (!world.isRemote) {
+      if (ChaosCraft.organisims.contains(creature)) {
+        ChaosCraft.organisims.remove(creature);
+      }
+    }
+  }
+
   public static class RickRenderer extends RenderLiving<EntityRick> {
 
     public RickRenderer(RenderManager rendermanagerIn) {
@@ -78,14 +86,6 @@ public class EntityRick extends EntityLiving {
           "chaoscraft:rick.png");//"minecraft:textures/entity/cow/cow.png");//ChaosCraft.MODID, "rick.png");
     }
 
-  }
-
-  public void onOrganisimDeath(EntityCreature creature) {
-    if (!world.isRemote) {
-      if (ChaosCraft.organisims.contains(creature)) {
-        ChaosCraft.organisims.remove(creature);
-      }
-    }
   }
 
 }

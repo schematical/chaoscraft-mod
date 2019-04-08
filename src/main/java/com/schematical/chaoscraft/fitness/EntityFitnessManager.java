@@ -17,9 +17,9 @@ import java.util.List;
  */
 public class EntityFitnessManager {
 
-  protected HashMap<String, Integer> occurences = new HashMap<String, Integer>();
   public EntityOrganism entityOrganism;
   public List<EntityFitnessScoreEvent> scoreEvents = new ArrayList<EntityFitnessScoreEvent>();
+  protected HashMap<String, Integer> occurences = new HashMap<String, Integer>();
 
   public EntityFitnessManager(EntityOrganism entityOrganism) {
     this.entityOrganism = entityOrganism;

@@ -9,25 +9,11 @@ import net.minecraft.item.Item;
  */
 public class CCWorldEvent {
 
-  public enum Type {
-    CRAFT,
-    EQUIP,
-    BLOCK_MINED,
-    BLOCK_PLACED,
-    HEALTH_CHANGE,
-    ITEM_COLLECTED,
-    ENTITY_ATTACKED,
-    TOSSED_EQUIPPED_STACK,
-    HAS_TRAVELED
-  }
-
   public Type eventType;
   public Block block;
   public Item item;
   public Entity entity;
   public float amount = 1;
-
-
   public CCWorldEvent(Type _eventType) {
     eventType = _eventType;
   }
@@ -44,5 +30,17 @@ public class CCWorldEvent {
       response += " " + entity.getName();
     }
     return response;
+  }
+
+  public enum Type {
+    CRAFT,
+    EQUIP,
+    BLOCK_MINED,
+    BLOCK_PLACED,
+    HEALTH_CHANGE,
+    ITEM_COLLECTED,
+    ENTITY_ATTACKED,
+    TOSSED_EQUIPPED_STACK,
+    HAS_TRAVELED
   }
 }

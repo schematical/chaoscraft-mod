@@ -74,41 +74,35 @@ public class EntityOrganism extends EntityLiving {
 
   public final double REACH_DISTANCE = 5.0D;
   private final long spawnTime;
-  protected CCPlayerEntityWrapper playerWrapper;
-
   public EntityFitnessManager entityFitnessManager;
-  protected Organism organism;
-  protected NeuralNet nNet;
-
-  protected ItemStackHandler itemHandler = new ItemStackHandler();
-  protected BlockPos lastMinePos = BlockPos.ORIGIN.down();
-  int rightClickDelay = 0;
-
-  protected int miningTicks = 0;
-  protected int selectedItemIndex = 0;
-  protected float maxLifeSeconds = 10;
-  protected int ticksSinceObservationHack = 0;
-
   public boolean hasAttemptedReport = false;
   public boolean hasFinishedReport = false;
-  protected int spawnHash;
-
-  protected double desiredPitch;
-  protected double desiredYaw;
-  protected boolean debug = false;
   public boolean refreshRender = false;
   public int equippedSlot;
-  protected String skin = "chaoscraft:morty.png";
   public InventoryOrganism inventory;
   public CCObservableAttributeManager observableAttributeManager;
   public HashMap<String, BiologyBase> inputs = new HashMap<String, BiologyBase>();
   public List<OrgEvent> events = new ArrayList<OrgEvent>();
   public EntityPlayerMP observingPlayer;
   public Vec3d spawnPos;
-  private boolean hasTraveled = false;
   public int ticksWithouUpdate = 0;
-
   public ForgeChunkManager.Ticket chunkTicket;
+  protected CCPlayerEntityWrapper playerWrapper;
+  protected Organism organism;
+  protected NeuralNet nNet;
+  protected ItemStackHandler itemHandler = new ItemStackHandler();
+  protected BlockPos lastMinePos = BlockPos.ORIGIN.down();
+  protected int miningTicks = 0;
+  protected int selectedItemIndex = 0;
+  protected float maxLifeSeconds = 10;
+  protected int ticksSinceObservationHack = 0;
+  protected int spawnHash;
+  protected double desiredPitch;
+  protected double desiredYaw;
+  protected boolean debug = false;
+  protected String skin = "chaoscraft:morty.png";
+  int rightClickDelay = 0;
+  private boolean hasTraveled = false;
 
   public EntityOrganism(World worldIn) {
     this(worldIn, "EntityOrganism");
@@ -438,17 +432,12 @@ public class EntityOrganism extends EntityLiving {
     maxLifeSeconds += life;
   }
 
-  public void setSpawnHash(int _spawnHash) {
-    this.spawnHash = _spawnHash;
-  }
-
   public int getSpawnHash() {
     return this.spawnHash;
   }
 
-  public void setSkin(String _skin) {
-    this.skin = _skin;
-    this.refreshRender = true;
+  public void setSpawnHash(int _spawnHash) {
+    this.spawnHash = _spawnHash;
   }
 
   public boolean canCraft(IRecipe recipe) {
@@ -482,7 +471,6 @@ public class EntityOrganism extends EntityLiving {
 
 
   }
-
 
   public ItemStack craft(IRecipe recipe) {
     NonNullList<Ingredient> recipeItems = null;
@@ -666,9 +654,13 @@ public class EntityOrganism extends EntityLiving {
     this.observingPlayer = observingPlayer;
   }
 
-
   private String getSkin() {
     return this.skin;
+  }
+
+  public void setSkin(String _skin) {
+    this.skin = _skin;
+    this.refreshRender = true;
   }
 
   public void onOrganisimDeath(EntityCreature creature) {

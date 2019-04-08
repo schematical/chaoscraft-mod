@@ -18,9 +18,8 @@ public abstract class NeuronBase extends InnovationBase {
 
   public NeuralNet nNet;
   public float _lastValue;
-  protected boolean hasBeenEvaluated = false;
-
   public List<NeuronDep> dependencies = new ArrayList<NeuronDep>();
+  protected boolean hasBeenEvaluated = false;
 
   public abstract String _base_type();
 

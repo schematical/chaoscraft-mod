@@ -8,8 +8,8 @@ import net.minecraft.client.gui.GuiButton;
  */
 public class CCGuiButton extends GuiButton {
 
-  protected EntityOrganism entity;
   public CCGuiBase.ButtonAction action;
+  protected EntityOrganism entity;
 
   @Deprecated
   public CCGuiButton(int buttonId, int x, int y, int width, int height, String buttonText) {
