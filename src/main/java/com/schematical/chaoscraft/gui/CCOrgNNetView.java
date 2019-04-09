@@ -48,16 +48,17 @@ public class CCOrgNNetView extends CCGuiBase {
         fontRenderer.drawString(title, (width - this.fontRenderer.getStringWidth(title)) / 2, this.guiTop, 0x000000);
 
 
-
-        for (GuiButton button : buttonList) {
-            button.drawButton(mc, mouseX, mouseY, partialTicks);
-        }
-
         for (GuiButton button : buttonList) {
             if (button instanceof CCGUINeuronDisplayButton) {
                 ((CCGUINeuronDisplayButton) button).drawDependencies();
             }
         }
+
+        for (GuiButton button : buttonList) {
+            button.drawButton(mc, mouseX, mouseY, partialTicks);
+        }
+
+
 
         for (GuiButton button : buttonList) {
             if (button instanceof CCGUINeuronDisplayButton) {

@@ -56,7 +56,7 @@ public abstract class CCGuiBase extends GuiScreen {
         this.drawTexturedModalRect(centerX, centerY, 0, 0, guiWidth, guiHeight);
 
         fontRenderer.drawString(title, this.guiLeft + (this.guiWidth - this.fontRenderer.getStringWidth(title)) / 2, this.guiTop + 10, 0x000000);
-        Collections.sort(ChaosCraft.organisims, (h1, h2) -> (int) (h2.entityFitnessManager.totalScore() - h1.entityFitnessManager.totalScore()));
+
         initializeButtons();
 
 
@@ -69,7 +69,7 @@ public abstract class CCGuiBase extends GuiScreen {
         this.guiTop = (this.height - this.guiHeight) / 2;
 
 
-        initializeButtons();
+
         super.initGui();
     }
 
