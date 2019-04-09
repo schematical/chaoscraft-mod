@@ -5,8 +5,8 @@ import com.schematical.chaoscraft.commands.*;
 import com.schematical.chaoscraft.entities.EntityOrganism;
 import com.schematical.chaoscraft.entities.EntityRick;
 import com.schematical.chaoscraft.gui.CCKeyBinding;
+import com.schematical.chaoscraft.network.CCIMessage;
 import com.schematical.chaoscraft.rendering.EntityOrganismRenderer;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -59,7 +59,7 @@ public class ClientProxy implements IProxy {
             ClientRegistry.registerKeyBinding(keyBindings.get(i));
         }
         ChaosCraft.networkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel(ChaosCraft.MODID);
-        ChaosCraft.networkWrapper.registerMessage(CAIMessageHandler.class, CCIMessage.class, 0, Side.CLIENT);
+        ChaosCraft.networkWrapper.registerMessage(CCIJSONMessageHandler.class, CCIMessage.class, 0, Side.CLIENT);
     }
     @Override
     public void init(FMLInitializationEvent event) {

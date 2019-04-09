@@ -18,7 +18,8 @@ import com.schematical.chaoscraft.events.OrgEvent;
 import com.schematical.chaoscraft.fitness.EntityFitnessManager;
 import com.schematical.chaoscraft.gui.CCOrgDetailView;
 import com.schematical.chaoscraft.inventory.InventoryOrganism;
-import com.schematical.chaoscraft.proxies.CCIMessage;
+import com.schematical.chaoscraft.network.CCIOutputNeuronMessage;
+
 import com.schematical.chaosnet.model.ChaosNetException;
 import com.schematical.chaosnet.model.NNetRaw;
 import com.schematical.chaosnet.model.Organism;
@@ -96,6 +97,7 @@ public class EntityOrganism extends EntityLiving implements IEntityAdditionalSpa
     public int ticksWithouUpdate = 0;
 
     public ForgeChunkManager.Ticket chunkTicket;
+    private CCIOutputNeuronMessage lastOutputNeuronMessage;
 
     public EntityOrganism(World worldIn) {
         this(worldIn, "EntityOrganism");
@@ -234,8 +236,42 @@ public class EntityOrganism extends EntityLiving implements IEntityAdditionalSpa
         if(getDebug()){
 
         }
-
         if(!world.isRemote){
+            List<EntityItem> items = this.world.getEntitiesWithinAABB(EntityItem.class, this.getEntityBoundingBox().grow(2.0D, 1.0D, 2.0D));
+
+            for (EntityItem item : items) {
+                pickupItem(item);
+            }
+            double yOffset = Math.sin(Math.toRadians(desiredPitch));
+            double zOffset = Math.cos(Math.toRadians(this.desiredYaw)) * Math.cos(Math.toRadians(desiredPitch));
+            double xOffset = Math.sin(Math.toRadians(this.desiredYaw)) * Math.cos(Math.toRadians(desiredPitch));
+            this.getLookHelper().setLookPosition(posX + xOffset, posY + this.getEyeHeight() + yOffset, posZ + zOffset, 360, 360);
+            this.renderYawOffset = 0;
+            this.setRotation(this.rotationYaw, this.rotationPitch);
+            if(this.lastOutputNeuronMessage == null){
+                //Iterate through and find output neurons
+                List<OutputNeuron> outputs = new ArrayList<OutputNeuron>();
+                Iterator<String> keyIterator = lastOutputNeuronMessage.map.keySet().iterator();
+                while(keyIterator.hasNext()) {
+                    String key = keyIterator.next();
+                    if (!this.nNet.neurons.containsKey(key)) {
+                        throw new ChaosNetException(this.getCCNamespace() + " is missing an OutputNeuron: " + key);
+                    }
+                    if (!(this.nNet.neurons.get(key) instanceof  OutputNeuron)) {
+                        throw new ChaosNetException(this.getCCNamespace() + " is found but not an instanceof OutputNeuron: " + key);
+                    }
+                    OutputNeuron outputNeuron = (OutputNeuron)this.nNet.neurons.get(key);
+                    outputNeuron._lastValue = lastOutputNeuronMessage.map.get(key);
+                    outputs.add(outputNeuron);
+                }
+                Iterator<OutputNeuron> iterator = outputs.iterator();
+                while(iterator.hasNext()) {
+                    OutputNeuron outputNeuron = iterator.next();
+                    outputNeuron.execute();
+                }
+                this.lastOutputNeuronMessage = null;
+            }
+        }else{
 
             //Tick neural net
             if(
@@ -254,7 +290,18 @@ public class EntityOrganism extends EntityLiving implements IEntityAdditionalSpa
                 }
 
                 List<OutputNeuron> outputs = this.nNet.evaluate();
+
+
                 Iterator<OutputNeuron> iterator = outputs.iterator();
+                CCIOutputNeuronMessage message = new CCIOutputNeuronMessage();
+                message.namespace = this.getCCNamespace();
+                while (iterator.hasNext()) {
+                    OutputNeuron outputNeuron = iterator.next();
+                    message.map.put(outputNeuron.id, outputNeuron._lastValue);
+                }
+/*
+
+                iterator = outputs.iterator();
                 JSONObject jsonObject = null;
                 JSONArray outputValues = null;
                 if(observingPlayer != null) {
@@ -295,21 +342,12 @@ public class EntityOrganism extends EntityLiving implements IEntityAdditionalSpa
                     jsonObject.put("areaOfFocus", areaOfFocusJSON);
                     ChaosCraft.networkWrapper.sendTo(new CCIMessage(jsonObject), (EntityPlayerMP) observingPlayer);
 
-               }
-
-                List<EntityItem> items = this.world.getEntitiesWithinAABB(EntityItem.class, this.getEntityBoundingBox().grow(2.0D, 1.0D, 2.0D));
-
-                for (EntityItem item : items) {
-                    pickupItem(item);
-                }
+               }*/
 
 
-                double yOffset = Math.sin(Math.toRadians(desiredPitch));
-                double zOffset = Math.cos(Math.toRadians(this.desiredYaw)) * Math.cos(Math.toRadians(desiredPitch));
-                double xOffset = Math.sin(Math.toRadians(this.desiredYaw)) * Math.cos(Math.toRadians(desiredPitch));
-                this.getLookHelper().setLookPosition(posX + xOffset, posY + this.getEyeHeight() + yOffset, posZ + zOffset, 360, 360);
-                this.renderYawOffset = 0;
-                this.setRotation(this.rotationYaw, this.rotationPitch);
+
+
+
                 this.observationHack();
                 Iterator<OrgEvent> eventIterator = events.iterator();
 
@@ -1051,5 +1089,9 @@ public class EntityOrganism extends EntityLiving implements IEntityAdditionalSpa
             }
         }
 
+    }
+
+    public void setLastOutputNeuronMessage(CCIOutputNeuronMessage message) {
+        this.lastOutputNeuronMessage = message;
     }
 }

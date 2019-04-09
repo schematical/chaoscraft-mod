@@ -1,9 +1,7 @@
-package com.schematical.chaoscraft.proxies;
+package com.schematical.chaoscraft.network;
 
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.gui.ChaosCraftGUI;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -19,10 +17,11 @@ import java.util.Iterator;
 /**
  * Created by user1a on 3/8/19.
  */
-public class CAIMessageHandler implements IMessageHandler<CCIMessage, IMessage> {
+public class CCIObservationMessageHandler implements IMessageHandler<CCIObservationMessage, IMessage> {
     // Do note that the default constructor is required, but implicitly defined in this case
-@SideOnly(Side.CLIENT)
-    @Override public IMessage onMessage(CCIMessage message, MessageContext ctx) {
+    @SideOnly(Side.CLIENT)
+    //@Override
+    public IMessage onMessage(CCIObservationMessage message, MessageContext ctx) {
         // This is the player the packet was sent to the server from
         //EntityPlayerMP serverPlayer = ctx.getServerHandler().player;
         // The value that was sent

@@ -8,6 +8,7 @@ import com.schematical.chaoscraft.gui.CCOrgListView;
 import com.schematical.chaoscraft.gui.CCSpeciesListView;
 import com.schematical.chaoscraft.gui.ChaosCraftGUI;
 import com.schematical.chaoscraft.proxies.ClientProxy;
+import com.schematical.chaoscraft.server.ChaosCraftServer;
 import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -21,6 +22,7 @@ import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
@@ -29,6 +31,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -36,56 +39,93 @@ import java.util.List;
  * Created by user1a on 1/6/19.
  */
 public class CCEventListener {
+    @SubscribeEvent
+    public static void onWorldLoadEvent(WorldEvent.Load worldLoadEvent){
+        if(worldLoadEvent.getWorld().isRemote && ChaosCraft.server == null){
+            ChaosCraft.server = new ChaosCraftServer(worldLoadEvent.getWorld());
+        }
+    }
 
     @SubscribeEvent
     public static void onWorldTickEvent(TickEvent.WorldTickEvent worldTickEvent){
+
         ChaosCraft.ticksSinceLastSpawn += 1;
 
-        if(ChaosCraft.rick != null && ChaosCraft.rick.isDead){
+    /*    if(ChaosCraft.rick != null && ChaosCraft.rick.isDead){
             ChaosCraft.rick = null;
             ChaosCraft.spawnRick(worldTickEvent.world, ChaosCraft.rickPos);
         }
+*/
 
-        Iterator<EntityOrganism> iterator = ChaosCraft.organisims.iterator();
+        if(worldTickEvent.world.isRemote) {
 
-        while(iterator.hasNext()){
-            EntityOrganism organism = iterator.next();
-            organism.manualUpdateCheck();
-            if(
-                organism.getOrganism() == null ||
-                organism.getSpawnHash() != ChaosCraft.spawnHash
-            ){
-                organism.setDead();
-                iterator.remove();
-                //ChaosCraft.logger.info("Setting Dead: " + organism.getName() + " - Has no `Organism` record");
+            Iterator<EntityOrganism> iterator = ChaosCraft.organisims.iterator();
+            int liveOrgCount = 0;
+            while (iterator.hasNext()) {
+                EntityOrganism organism = iterator.next();
+                organism.manualUpdateCheck();
+                if (
+                        organism.getOrganism() == null ||
+                                organism.getSpawnHash() != ChaosCraft.spawnHash
+                        ) {
+                    organism.setDead();
+                    iterator.remove();
+                    //ChaosCraft.logger.info("Setting Dead: " + organism.getName() + " - Has no `Organism` record");
+                }
+                if (!organism.isDead) {
+                    liveOrgCount += 1;
+                }
             }
-        }
 
 
-        if(
-            ChaosCraft.orgsToSpawn != null &&
-            ChaosCraft.orgsToSpawn.size() > 0
-        ){
-            ChaosCraft.spawnOrgs(ChaosCraft.orgsToSpawn);
-            ChaosCraft.orgsToSpawn.clear();
+            if (
+                    ChaosCraft.ticksSinceLastSpawn < (20 * 20) ||
+                            liveOrgCount >= ChaosCraft.config.maxBotCount
+                    ) {
+
+                List<EntityOrganism> deadOrgs = new ArrayList<EntityOrganism>();
+                iterator = ChaosCraft.organisims.iterator();
+
+                while (iterator.hasNext()) {
+                    EntityOrganism organism = iterator.next();
+                    if (organism.isDead) {
+                        if (
+                                organism.getCCNamespace() != null &&
+                                        organism.getSpawnHash() == ChaosCraft.spawnHash &&
+                                        !organism.getDebug()//Dont report Adam-0
+                                ) {
+                            deadOrgs.add(organism);
+                        }
+                        //ChaosCraft.logger.info("Removing: " + organism.getName() + " - Org Size Before" + ChaosCraft.organisims.size());
+                        iterator.remove();
+
+                        //ChaosCraft.logger.info("Dead Orgs: " + deadOrgs.size() + " / " + ChaosCraft.organisims.size());
+                    }
+                }
+
+                ChaosCraft.queueSpawn(deadOrgs);
+            }
+        }else{
+            ChaosCraft.server.worldTick();
         }
+
         if(ChaosCraft.consecutiveErrorCount > 5){
             throw new ChaosNetException("ChaosCraft.consecutiveErrorCount > 5");
         }
-        
+
         if(ChaosCraft.organisims.size() > 0) {
             for (EntityPlayerMP observingPlayer : ChaosCraft.observingPlayers) {
                 Entity entity = observingPlayer.getSpectatingEntity();
 
                 if (
-                    entity.equals(observingPlayer) ||
-                    entity == null ||
-                    entity.isDead
-                ) {
+                        entity.equals(observingPlayer) ||
+                                entity == null ||
+                                entity.isDead
+                        ) {
                     if(
-                        entity != null &&
-                        entity instanceof EntityOrganism
-                    ){
+                            entity != null &&
+                                    entity instanceof EntityOrganism
+                            ){
                         ((EntityOrganism) entity).setObserving(null);
                     }
                     int index = (int) Math.floor(ChaosCraft.organisims.size() * Math.random());
@@ -95,8 +135,6 @@ public class CCEventListener {
                 }
             }
         }
-
-
     }
 
 
@@ -124,33 +162,6 @@ public class CCEventListener {
         if(player == null){
             return;
         }
-       /* ChaosCraftGUI.drawDebugBox(
-                new Vec3d(
-                        axisAlignedBB.minX,
-                        axisAlignedBB.minY,
-                        axisAlignedBB.minZ
-                        //-256, 64, 266
-                ),
-                new Vec3d(
-                        axisAlignedBB.maxX,
-                        axisAlignedBB.maxY,
-                        axisAlignedBB.maxZ
-                        //-300,80,300
-                ),
-                Color.GREEN
-        );
-
-        ChaosCraftGUI.drawDebugLine(
-                new BlockPos(
-                        -256, 64, 266
-                ),
-                new BlockPos(
-                        -300,80,300
-                ),
-                new Color(255, 155, 61, 255)
-        );*/
-
-//       for(ChunkPos pos : ForgeChunkManager.getPersistentChunksFor())
 
         ChaosCraftGUI.render(event);
 

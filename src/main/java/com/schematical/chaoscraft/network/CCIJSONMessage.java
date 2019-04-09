@@ -1,4 +1,4 @@
-package com.schematical.chaoscraft.proxies;
+package com.schematical.chaoscraft.network;
 
 import com.schematical.chaosnet.model.ChaosNetException;
 import io.netty.buffer.ByteBuf;
@@ -12,15 +12,15 @@ import java.io.FileReader;
 /**
  * Created by user1a on 3/8/19.
  */
-public class CCIMessage implements IMessage {
+public class CCIJSONMessage implements IMessage {
     // A default constructor is always required
-    public CCIMessage(){}
+    public CCIJSONMessage(){}
 
     protected String payload;
-    public CCIMessage(JSONObject jsonPayload) {
+    public CCIJSONMessage(JSONObject jsonPayload) {
         this.payload = jsonPayload.toJSONString();
     }
-    public CCIMessage(String payload) {
+    public CCIJSONMessage(String payload) {
         this.payload = payload;
     }
 

@@ -62,11 +62,7 @@ public class ChaosThread implements Runnable {
 
             ChaosCraft.lastResponse = result.getTrainingRoomSessionNextResponse();
             ChaosCraft.orgsToSpawn = ChaosCraft.lastResponse.getOrganisms();
-            String namespacesToSpawn = "";
-            for(Organism org : ChaosCraft.orgsToSpawn){
-                namespacesToSpawn += org.getNamespace() + ", ";
-            }
-            //ChaosCraft.logger.info("SUCCESS getNextOrgs: " + ChaosCraft.orgsToSpawn.size() + " - " + namespacesToSpawn);
+
 
             for (EntityOrganism organism : ChaosCraft.orgsToReport) {
                 organism.hasFinishedReport = true;

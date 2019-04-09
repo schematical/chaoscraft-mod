@@ -13,12 +13,15 @@ import com.schematical.chaoscraft.entities.ChaosCraftFitnessManager;
 import com.schematical.chaoscraft.entities.EntityOrganism;
 import com.schematical.chaoscraft.entities.EntityRick;
 import com.schematical.chaoscraft.proxies.IProxy;
+import com.schematical.chaoscraft.server.ChaosCraftServer;
 import com.schematical.chaosnet.ChaosNet;
 import com.schematical.chaosnet.auth.ChaosnetCognitoUserPool;
 import com.schematical.chaosnet.model.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.math.BlockPos;
@@ -56,6 +59,11 @@ public class ChaosCraft
     public static final String NAME = "ChaosCraft";
     public static final String VERSION = "1.0";
     public static ChaosNet sdk;
+    public enum CCNNetTickMode {
+            Client,
+            Server
+    }
+    public static CCNNetTickMode nNetTickMode = CCNNetTickMode.Client;
 
     @SidedProxy(modId=ChaosCraft.MODID,clientSide="com.schematical.chaoscraft.proxies.ClientProxy", serverSide="com.schematical.chaoscraft.proxies.ServerProxy")
     public static IProxy proxy;
@@ -81,9 +89,10 @@ public class ChaosCraft
     public static EntityOrganism highScoreOrg;
     public static BlockPos rickPos;
     public static SimpleNetworkWrapper networkWrapper;
-
+    public static ChaosCraftServer server;
     @Mod.Instance
     public static ChaosCraft INSTANCE;
+    public static WorldClient world;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
@@ -127,6 +136,12 @@ public class ChaosCraft
         }
 
         ForgeChunkManager.setForcedChunkLoadingCallback(this, new ForcedChunkLoadingCallback());
+    }
+    public static boolean isTicking(){
+        return (
+                (!world.isRemote && ChaosCraft.nNetTickMode == ChaosCraft.CCNNetTickMode.Server) ||
+                (world.isRemote && ChaosCraft.nNetTickMode == ChaosCraft.CCNNetTickMode.Client)
+        );
     }
     public static void auth(){
         if(config.refreshToken != null){
@@ -274,8 +289,7 @@ public class ChaosCraft
     {
 
 
-        // some example code
-        //logger.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
+
 
 
     }
@@ -337,9 +351,9 @@ public class ChaosCraft
                             }
                             String observedAttributesRaw = taxonomicRank.getObservedAttributesRaw();
                             if (
-                                    observedAttributesRaw == null ||
-                                            observedAttributesRaw.length() == 0
-                                    ) {
+                                observedAttributesRaw == null ||
+                                observedAttributesRaw.length() == 0
+                            ) {
 
                             } else {
                                 try {
