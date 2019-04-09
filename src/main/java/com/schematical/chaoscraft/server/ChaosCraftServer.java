@@ -36,11 +36,13 @@ public class ChaosCraftServer {
             pendingActions.size() > 0
         ){
 
-            Iterator<ChaosCraftServerAction> iterator = pendingActions.iterator();
+            List<ChaosCraftServerAction> _pendingActions = (ArrayList<ChaosCraftServerAction>)pendingActions.clone();
+            pendingActions.clear();
+            Iterator<ChaosCraftServerAction> iterator = _pendingActions.iterator();
             List<Organism> orgsToSpawn = new ArrayList<Organism>();
             while (iterator.hasNext()) {
                 ChaosCraftServerAction action = iterator.next();
-                if(action.action.equals(ChaosCraftServerAction.Action.Spawn)){
+                if(action.message.getAction().equals(ChaosCraftServerAction.Action.Spawn)){
                     orgsToSpawn.add(action.message.getOrganism());
                 }
             }

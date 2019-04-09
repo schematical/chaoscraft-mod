@@ -51,8 +51,13 @@ public class CCIServerActionMessage implements IMessage {
     }
 
     @Override public void fromBytes(ByteBuf buf) {
+
+        int len = ByteBufUtils.readVarInt(buf,5);
+        payload = buf.toString(buf.readerIndex(), len, StandardCharsets.UTF_8);
+        buf.readerIndex(buf.readerIndex() + len);
+
         // Reads the int back from the buf. Note that if you have multiple values, you must read in the same order you wrote.
-        payload = ByteBufUtils.readUTF8String(buf);
+        //payload = ByteBufUtils.readUTF8String(buf);
         JSONObject jsonPayload = this.getPayloadJSON();
         action = ChaosCraftServerAction.Action.valueOf(jsonPayload.get("action").toString());
         if(jsonPayload.containsKey("organism")) {
@@ -72,6 +77,9 @@ public class CCIServerActionMessage implements IMessage {
     public Organism getOrganism() {
         return organism;
     }
+    public ChaosCraftServerAction.Action getAction(){
+        return action;
+    }
     public void setOrganism(Organism organism) {
         this.organism = organism;
     }
@@ -84,7 +92,7 @@ public class CCIServerActionMessage implements IMessage {
 
             JSONParser parser = new JSONParser();
             return  (JSONObject) parser.parse(
-                    this.payload
+                this.payload
             );
         } catch (Exception e) {
             throw new ChaosNetException("Error `JSON.parse`: " + e.getMessage() + " -> " + this.payload);
