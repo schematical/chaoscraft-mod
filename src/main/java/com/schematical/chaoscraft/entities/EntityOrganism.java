@@ -680,8 +680,8 @@ public class EntityOrganism extends EntityLiving implements IEntityAdditionalSpa
 
     public void onOrganisimDeath(EntityCreature creature){
         if(!world.isRemote) {
-            if(ChaosCraft.organisims.contains(creature)) {
-                ChaosCraft.organisims.remove(creature);
+            if(ChaosCraft.server.organisims.contains(creature)) {
+                ChaosCraft.server.organisims.remove(creature);
             }
         }
     }

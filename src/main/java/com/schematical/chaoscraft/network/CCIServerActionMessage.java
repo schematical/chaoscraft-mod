@@ -59,4 +59,10 @@ public class CCIServerActionMessage extends CCIJSONMessage implements IMessage {
     public Organism getOrganism() {
         return organism;
     }
+    public void setOrganism(Organism organism) {
+        this.organism = organism;
+    }
+    public void setAction(ChaosCraftServerAction.Action action){
+        this.action = action;
+    }
 }

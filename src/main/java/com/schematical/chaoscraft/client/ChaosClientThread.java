@@ -1,6 +1,7 @@
-package com.schematical.chaoscraft;
+package com.schematical.chaoscraft.client;
 
 import com.google.common.primitives.Bytes;
+import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.entities.EntityOrganism;
 import com.schematical.chaosnet.model.*;
 import io.netty.buffer.ByteBuf;
@@ -15,12 +16,11 @@ import java.util.List;
 /**
  * Created by user1a on 1/30/19.
  */
-public class ChaosThread implements Runnable {
+public class ChaosClientThread implements Runnable {
 
     public void run(){
 
 
-        String namespaces = "";
 
         PostUsernameTrainingroomsTrainingroomSessionsSessionNextRequest request = new PostUsernameTrainingroomsTrainingroomSessionsSessionNextRequest();
         request.setTrainingroom(ChaosCraft.config.trainingRoomNamespace);
@@ -31,8 +31,8 @@ public class ChaosThread implements Runnable {
         Collection<ObservedAttributesElement> newAttributes = new ArrayList<ObservedAttributesElement>();
 
         Collection<TrainingRoomSessionNextReport> report = new ArrayList<TrainingRoomSessionNextReport>();
-        if(ChaosCraft.orgsToReport != null) {
-            for (EntityOrganism organism : ChaosCraft.orgsToReport) {
+        if( ChaosCraft.client.orgsToReport != null) {
+            for (EntityOrganism organism :  ChaosCraft.client.orgsToReport) {
                 String namespace = organism.getCCNamespace();
                 if(namespace != null) {
                     TrainingRoomSessionNextReport reportEntry = new TrainingRoomSessionNextReport();
@@ -45,7 +45,7 @@ public class ChaosThread implements Runnable {
                     organism.hasAttemptedReport = true;
                     newAttributes.addAll(organism.observableAttributeManager.newAttributes);
                 }
-                namespaces += namespace + "    ";
+
             }
 
         }
@@ -61,23 +61,23 @@ public class ChaosThread implements Runnable {
 
 
             ChaosCraft.lastResponse = result.getTrainingRoomSessionNextResponse();
-            ChaosCraft.orgsToSpawn = ChaosCraft.lastResponse.getOrganisms();
+            ChaosCraft.client.orgsToSpawn = ChaosCraft.lastResponse.getOrganisms();
 
 
-            for (EntityOrganism organism : ChaosCraft.orgsToReport) {
+            for (EntityOrganism organism :  ChaosCraft.client.orgsToReport) {
                 organism.hasFinishedReport = true;
             }
-            ChaosCraft.orgsToReport.clear();
-            ChaosCraft.consecutiveErrorCount = 0;
-            ChaosCraft.thread = null;
+            ChaosCraft.client.orgsToReport.clear();
+            ChaosCraft.client.consecutiveErrorCount = 0;
+            ChaosCraft.client.thread = null;
         }catch(ChaosNetException exception){
             //logger.error(exeception.getMessage());
-            ChaosCraft.consecutiveErrorCount += 1;
+            ChaosCraft.client.consecutiveErrorCount += 1;
 
             int statusCode = exception.sdkHttpMetadata().httpStatusCode();
             switch(statusCode){
                 case(400):
-                    ChaosCraft.orgsToReport.clear();
+                    ChaosCraft.client.orgsToReport.clear();
                     ChaosCraft.repair();
                     break;
                 case(401):
@@ -89,14 +89,14 @@ public class ChaosThread implements Runnable {
             }
             ByteBuffer byteBuffer = exception.sdkHttpMetadata().responseContent();
             String message = StandardCharsets.UTF_8.decode(byteBuffer).toString();//new String(byteBuffer.as().array(), StandardCharsets.UTF_8 );
-            ChaosCraft.chat("ChaosThread `/next` Error: " + message + " - statusCode: " + statusCode);
-            ChaosCraft.thread = null;
+            //ChaosCraft.chat("ChaosClientThread `/next` Error: " + message + " - statusCode: " + statusCode);
+            ChaosCraft.client.thread = null;
 
         }catch(Exception exception){
-            ChaosCraft.consecutiveErrorCount += 1;
+            ChaosCraft.client.consecutiveErrorCount += 1;
 
-            ChaosCraft.chat("ChaosThread `/next` Error: " + exception.getMessage() + " - exception type: " + exception.getClass().getName());
-            ChaosCraft.thread = null;
+            //ChaosCraft.chat("ChaosClientThread `/next` Error: " + exception.getMessage() + " - exception type: " + exception.getClass().getName());
+            ChaosCraft.client.thread = null;
 
         }
 

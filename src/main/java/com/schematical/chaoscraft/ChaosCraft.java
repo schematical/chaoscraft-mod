@@ -76,8 +76,7 @@ public class ChaosCraft
     public static int ticksSinceLastSpawn = 0;
 
 
-    public static List<Organism> orgsToSpawn;
-    public static List<EntityOrganism> orgsToReport = new ArrayList<EntityOrganism>();
+
     public static TrainingRoomSessionNextResponse lastResponse;
 
 
@@ -85,10 +84,6 @@ public class ChaosCraft
     public static int spawnHash;
     public static float activationThreshold = .3f;
 
-
-    public static double highScore = -99999;
-    public static EntityOrganism highScoreOrg;
-    public static BlockPos rickPos;
     public static SimpleNetworkWrapper networkWrapper;
     public static ChaosCraftServer server;
     public static ChaosCraftClient client;

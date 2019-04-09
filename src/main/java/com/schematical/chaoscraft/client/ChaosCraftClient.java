@@ -1,9 +1,11 @@
 package com.schematical.chaoscraft.client;
 
 import com.schematical.chaoscraft.ChaosCraft;
-import com.schematical.chaoscraft.ChaosThread;
 import com.schematical.chaoscraft.entities.EntityOrganism;
+import com.schematical.chaoscraft.network.CCIServerActionMessage;
+import com.schematical.chaoscraft.server.ChaosCraftServerAction;
 import com.schematical.chaosnet.model.ChaosNetException;
+import com.schematical.chaosnet.model.Organism;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.GameType;
@@ -21,17 +23,33 @@ public class ChaosCraftClient {
     public static List<EntityPlayerMP> observingPlayers = new ArrayList<EntityPlayerMP>();
     public static EntityOrganism adam = null;
     public static int consecutiveErrorCount = 0;
+    public static List<Organism> orgsToSpawn;
+    public static List<EntityOrganism> orgsToReport = new ArrayList<EntityOrganism>();
     public List<EntityOrganism> myOrganisims = new ArrayList<EntityOrganism>();
     public void worldTick() {
+        if(orgsToSpawn.size() > 0){
+            Iterator<Organism> iterator = orgsToSpawn.iterator();
+
+            while (iterator.hasNext()) {
+                Organism organism = iterator.next();
+                CCIServerActionMessage message = new CCIServerActionMessage();
+                message.setAction(ChaosCraftServerAction.Action.Spawn);
+                message.setOrganism(organism);
+                ChaosCraft.networkWrapper.sendToServer(message);
+            }
+
+        }
+
+
         Iterator<EntityOrganism> iterator = myOrganisims.iterator();
         int liveOrgCount = 0;
         while (iterator.hasNext()) {
             EntityOrganism organism = iterator.next();
             organism.manualUpdateCheck();
             if (
-                    organism.getOrganism() == null ||
-                            organism.getSpawnHash() != ChaosCraft.spawnHash
-                    ) {
+                organism.getOrganism() == null ||
+                organism.getSpawnHash() != ChaosCraft.spawnHash
+            ) {
                 organism.setDead();
                 iterator.remove();
                 //ChaosCraft.logger.info("Setting Dead: " + organism.getName() + " - Has no `Organism` record");
@@ -43,8 +61,8 @@ public class ChaosCraftClient {
 
 
         if (
-                ChaosCraft.ticksSinceLastSpawn < (20 * 20) ||
-                liveOrgCount >= ChaosCraft.config.maxBotCount
+            ChaosCraft.ticksSinceLastSpawn < (20 * 20) ||
+            liveOrgCount >= ChaosCraft.config.maxBotCount
         ) {
 
             List<EntityOrganism> deadOrgs = new ArrayList<EntityOrganism>();
@@ -67,7 +85,7 @@ public class ChaosCraftClient {
                 }
             }
 
-            queueSpawn(deadOrgs);
+            reportOrgs(deadOrgs);
         }
 
         if(consecutiveErrorCount > 5){
@@ -97,21 +115,17 @@ public class ChaosCraftClient {
             }
         }
     }
-    public static void queueSpawn(List<EntityOrganism> _orgsToReport){
+    public static void reportOrgs(List<EntityOrganism> _orgsToReport){
         _orgsToReport.forEach((EntityOrganism organism)->{
-            double totalScore = organism.entityFitnessManager.totalScore();
-            if(totalScore > ChaosCraft.highScore){
-                ChaosCraft.highScore = totalScore;
-                ChaosCraft.highScoreOrg = organism;
-            }
-            ChaosCraft.orgsToReport.add(organism);
+
+            ChaosCraft.client.orgsToReport.add(organism);
         });
         if(thread != null){
             return;
         }
         ChaosCraft.ticksSinceLastSpawn = 0;
 
-        thread = new Thread(new ChaosThread(), "ChaosThread");
+        thread = new Thread(new ChaosClientThread(), "ChaosClientThread");
         thread.start();
     }
 
