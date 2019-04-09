@@ -264,6 +264,24 @@
     "maxOccurrences":1
   },
   {
+    "id":"item-crafted-stone-sword",
+    "eventType": "CRAFT",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:stone_sword", //Stone SWORD
+    "scoreEffect": 2000,
+    "lifeEffect": 60,
+    "maxOccurrences":1
+  },
+  {
+    "id":"equip-stone-sword",
+    "eventType": "EQUIP",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:stone_sword", //Stone SWORD
+    "scoreEffect": 750,
+    "lifeEffect": 0,
+    "maxOccurrences":1
+  },
+  {
     "id":"block-mined-iron-ore",
     "eventType": "BLOCK_MINED",
     "attributeId":"BLOCK_ID",
@@ -431,6 +449,42 @@
     "attributeId":"ITEM_ID",
     "attributeValue": "minecraft:iron_sword", //Iron SWORD
     "scoreEffect": 1750,
+    "lifeEffect": 0,
+    "maxOccurrences":1
+  },
+  {
+    "id":"item-crafted-iron-shovel",
+    "eventType": "CRAFT",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:iron_shovel", //Iron SHOVEL
+    "scoreEffect": 1500,
+    "lifeEffect": 80,
+    "maxOccurrences":1
+  },
+  {
+    "id":"equip-iron-shovel",
+    "eventType": "EQUIP",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:iron_shovel", //Iron SHOVEL
+    "scoreEffect": 500,
+    "lifeEffect": 0,
+    "maxOccurrences":1
+  },
+  {
+    "id":"item-crafted-iron-axe",
+    "eventType": "CRAFT",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:iron_axe", //Iron AXE
+    "scoreEffect": 1250,
+    "lifeEffect": 60,
+    "maxOccurrences":1
+  },
+  {
+    "id":"equip-iron-axe",
+    "eventType": "EQUIP",
+    "attributeId":"ITEM_ID",
+    "attributeValue": "minecraft:iron_axe", //Iron AXE
+    "scoreEffect": 450,
     "lifeEffect": 0,
     "maxOccurrences":1
   },
