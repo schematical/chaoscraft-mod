@@ -61,8 +61,6 @@ public class ClientProxy implements IProxy {
         {
             ClientRegistry.registerKeyBinding(keyBindings.get(i));
         }
-        ChaosCraft.networkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel(ChaosCraft.MODID);
-        ChaosCraft.networkWrapper.registerMessage(CCIObservationMessageHandler.class, CCIObservationMessage.class, 0, Side.CLIENT);
 
     }
     @Override

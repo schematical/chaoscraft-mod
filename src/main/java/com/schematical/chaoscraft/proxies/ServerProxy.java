@@ -22,9 +22,7 @@ public class ServerProxy implements IProxy {
 
     @Override
     public void preInit(FMLPreInitializationEvent event) {
-        ChaosCraft.networkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel(ChaosCraft.MODID);
-        ChaosCraft.networkWrapper.registerMessage(CCIServerActionMessageHandler.class, CCIServerActionMessage.class, 0, Side.SERVER);
-        ChaosCraft.networkWrapper.registerMessage(CCIOutputNeuronMessageHandler.class, CCIOutputNeuronMessage.class, 0, Side.SERVER);
+
     }
 
     @Override

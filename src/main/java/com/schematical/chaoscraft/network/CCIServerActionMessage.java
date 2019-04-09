@@ -9,6 +9,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import org.json.simple.JSONObject;
 
 import java.lang.reflect.Type;
+import java.nio.charset.Charset;
 
 /**
  * Created by user1a on 3/8/19.
@@ -32,8 +33,9 @@ public class CCIServerActionMessage extends CCIJSONMessage implements IMessage {
             jsonOrg.put("trainingRoomNamespace", organism.getTrainingRoomNamespace());
             jsonPayload.put("organism", jsonOrg);
         }
-        //organism.marshall(new JsonProtocolMarshaller<Organism>());
+
         // Writes the int into the buf
+
         ByteBufUtils.writeUTF8String(buf, jsonPayload.toJSONString());
     }
 

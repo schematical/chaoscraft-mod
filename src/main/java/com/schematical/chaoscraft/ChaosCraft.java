@@ -12,6 +12,7 @@ import com.schematical.chaoscraft.commands.CommandChaosCraftSessionStart;
 import com.schematical.chaoscraft.commands.CommandDebug;
 import com.schematical.chaoscraft.entities.ChaosCraftFitnessManager;
 
+import com.schematical.chaoscraft.network.*;
 import com.schematical.chaoscraft.proxies.IProxy;
 import com.schematical.chaoscraft.server.ChaosCraftServer;
 import com.schematical.chaosnet.ChaosNet;
@@ -26,7 +27,9 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONArray;
 
@@ -118,6 +121,12 @@ public class ChaosCraft
         }
 
         ForgeChunkManager.setForcedChunkLoadingCallback(this, new ForcedChunkLoadingCallback());
+        ChaosCraft.networkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel(ChaosCraft.MODID);
+        int ID = 0;
+        ChaosCraft.networkWrapper.registerMessage(CCIServerActionMessageHandler.class, CCIServerActionMessage.class, ID++, Side.SERVER);
+        ChaosCraft.networkWrapper.registerMessage(CCIOutputNeuronMessageHandler.class, CCIOutputNeuronMessage.class, ID++, Side.SERVER);
+        ChaosCraft.networkWrapper.registerMessage(CCIObservationMessageHandler.class, CCIObservationMessage.class, ID++, Side.CLIENT);
+
     }
 
     public static void auth(){
