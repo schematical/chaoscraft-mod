@@ -18,7 +18,7 @@ public class CCOrgListView extends CCGuiBase {
 
         int buttonWidth = 150;
         int buttonHeight = 10;
-        for (EntityOrganism entityOrganism : ChaosCraft.organisims) {
+        for (EntityOrganism entityOrganism : ChaosCraft.client.myOrganisims) {
             buttonList.add(new CCGuiButton(
                             ID++,
                             this.guiLeft + (this.guiWidth / 2) - buttonWidth / 2,

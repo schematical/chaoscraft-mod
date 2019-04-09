@@ -10,6 +10,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 
+import net.minecraft.util.text.TextComponentString;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
@@ -61,11 +62,17 @@ public class CommandChaosCraftAdam extends CommandBase{
         if (!sender.getEntityWorld().isRemote) {
             return;
         }
+//TODO: Rebuild this
+        sender.sendMessage(
+            new TextComponentString("TODO: Rebuild this")
+        );
+        return;
         //Check to see if adam is alive? If so kill him
+/*
 
-        if(ChaosCraft.adam != null){
-            ChaosCraft.adam.setDead();
-            ChaosCraft.adam = null;
+        if(ChaosCraft.client.adam != null){
+            ChaosCraft.client.adam.setDead();
+            ChaosCraft.client.adam = null;
         }
 
 
@@ -76,11 +83,16 @@ public class CommandChaosCraftAdam extends CommandBase{
             File f = new File(resourcePath);
             JSONObject obj = null;
             if(!f.exists()){
-                ChaosCraft.chat("Error Spawning Adam: " + resourcePath + " does not exist");
+                sender.sendMessage(
+                    new TextComponentString("Error Spawning Adam: " + resourcePath + " does not exist")
+                );
+
                 return;
             }
             if(f.isDirectory()) {
-                ChaosCraft.chat("Error Spawning Adam: " + resourcePath + " is a directory");
+                sender.sendMessage(
+                    new TextComponentString("Error Spawning Adam: " + resourcePath +  " is a directory")
+                );
                 return;
             }
             JSONParser parser = new JSONParser();
@@ -96,9 +108,8 @@ public class CommandChaosCraftAdam extends CommandBase{
             JSONObject nNet = (JSONObject) obj.get("nNet");
             organism.setNNetRaw(nNet.toJSONString());
 
-            List<Organism> organismList = new ArrayList<Organism>();
-            organismList.add(organism);
-            List<EntityOrganism> entitys = ChaosCraft.spawnOrgs(organismList);
+
+            ChaosCraft.client.orgsToSpawn.add(organism);
             if(entitys.size() != 1){
                 throw new ChaosNetException("Did not get the right amount of adams back: " + entitys.size());
             }
@@ -108,18 +119,19 @@ public class CommandChaosCraftAdam extends CommandBase{
                 org.adjustMaxLife(1000);
                 org.setCustomNameTag("adam");
             });
-            ChaosCraft.chat("Adam Successfully Spawned!");
-            ChaosCraft.adam = entitys.get(0);
+            sender.sendMessage(
+                new TextComponentString(  "Adam Successfully Spawned!")
+            );
+            ChaosCraft.client.adam = entitys.get(0);
         } catch (Exception e) {
             ChaosCraft.logger.error(e.getMessage());
             e.printStackTrace();
-            ChaosCraft.chat("Error Spawning Adam: " + e.getMessage());
+            sender.sendMessage(
+                new TextComponentString( "Error Spawning Adam: " + e.getMessage())
+            );
 
         }
-
-
-        //Spawn an Adam-> Change skin
-
+*/
 
 
     }

@@ -66,18 +66,7 @@ public class CommandChaosCraftSessionStart extends CommandBase {
         p_execute_2_.sendMessage(
             new TextComponentString("Successfully started a session - " + ChaosCraft.config.sessionNamespace)
         );
-        if(ChaosCraft.rick == null) {
 
-            p_execute_2_.sendMessage(
-                new TextComponentString("Spawning Rick...")
-            );
-            BlockPos pos = p_execute_2_.getPosition();
-            ChaosCraft.spawnRick(world, pos);
-            p_execute_2_.sendMessage(
-                new TextComponentString("Rick Spawned")
-            );
-
-        }
     }
 
     public List<String> getTabCompletions(MinecraftServer p_getTabCompletions_1_, ICommandSender p_getTabCompletions_2_, String[] p_getTabCompletions_3_, @Nullable BlockPos p_getTabCompletions_4_) {

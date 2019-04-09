@@ -1,6 +1,7 @@
 package com.schematical.chaoscraft;
 
 import com.google.common.base.Predicate;
+import com.schematical.chaoscraft.client.ChaosCraftClient;
 import com.schematical.chaoscraft.entities.EntityOrganism;
 import com.schematical.chaoscraft.entities.EntityRick;
 import com.schematical.chaoscraft.gui.CCKeyBinding;
@@ -41,9 +42,28 @@ import java.util.List;
 public class CCEventListener {
     @SubscribeEvent
     public static void onWorldLoadEvent(WorldEvent.Load worldLoadEvent){
-        if(worldLoadEvent.getWorld().isRemote && ChaosCraft.server == null){
-            ChaosCraft.server = new ChaosCraftServer(worldLoadEvent.getWorld());
+        if(!worldLoadEvent.getWorld().isRemote){
+            if(ChaosCraft.server == null) {
+
+                ChaosCraft.server = new ChaosCraftServer(worldLoadEvent.getWorld());
+            }
+        }else{
+            if(ChaosCraft.client == null) {
+                ChaosCraft.client = new ChaosCraftClient();
+            }
         }
+    }
+
+
+
+    @SubscribeEvent
+    public static void onWorldTickEvent(TickEvent.ClientTickEvent clientTickEvent){
+        if(ChaosCraft.client != null){
+            //ChaosCraft.client = new ChaosCraftClient(worldTickEvent.get);
+            ChaosCraft.client.worldTick();
+        }
+
+
     }
 
     @SubscribeEvent
@@ -59,9 +79,13 @@ public class CCEventListener {
 
         if(worldTickEvent.world.isRemote) {
 
-           ChaosCraft.client.worldTick();
+          // ChaosCraft.client.worldTick();
         }else{
-            ChaosCraft.server.worldTick();
+            if(ChaosCraft.server != null){
+                //ChaosCraft.server = new ChaosCraftServer(worldTickEvent.world);
+                ChaosCraft.server.worldTick();
+            }
+
         }
 
 

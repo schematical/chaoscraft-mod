@@ -23,7 +23,7 @@ public class ChaosCraftClient {
     public static List<EntityPlayerMP> observingPlayers = new ArrayList<EntityPlayerMP>();
     public static EntityOrganism adam = null;
     public static int consecutiveErrorCount = 0;
-    public static List<Organism> orgsToSpawn;
+    public static List<Organism> orgsToSpawn = new ArrayList<Organism>();
     public static List<EntityOrganism> orgsToReport = new ArrayList<EntityOrganism>();
     public List<EntityOrganism> myOrganisims = new ArrayList<EntityOrganism>();
     public void worldTick() {

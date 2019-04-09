@@ -17,7 +17,7 @@ public class CCIOutputNeuronMessageHandler implements IMessageHandler<CCIOutputN
     @SideOnly(Side.SERVER)
     @Override
     public IMessage onMessage(CCIOutputNeuronMessage message, MessageContext ctx) {
-        EntityOrganism org = ChaosCraft.getEntityOrganismById(message.namespace);
+        EntityOrganism org = ChaosCraft.server.getEntityOrganismById(message.namespace);
 
         if(org == null){
             throw new ChaosNetException("Could not find org: " + message.namespace);

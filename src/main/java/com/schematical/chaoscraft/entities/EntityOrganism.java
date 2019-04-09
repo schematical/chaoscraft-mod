@@ -248,7 +248,7 @@ public class EntityOrganism extends EntityLiving implements IEntityAdditionalSpa
             this.getLookHelper().setLookPosition(posX + xOffset, posY + this.getEyeHeight() + yOffset, posZ + zOffset, 360, 360);
             this.renderYawOffset = 0;
             this.setRotation(this.rotationYaw, this.rotationPitch);
-            if(this.lastOutputNeuronMessage == null){
+            if(this.lastOutputNeuronMessage != null){
                 //Iterate through and find output neurons
                 List<OutputNeuron> outputs = new ArrayList<OutputNeuron>();
                 Iterator<String> keyIterator = lastOutputNeuronMessage.map.keySet().iterator();

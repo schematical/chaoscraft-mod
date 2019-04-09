@@ -49,50 +49,11 @@ public class CommandChaosCraftRefresh extends CommandBase {
         if (world.isRemote) {
             return;
         }
-        if(ChaosCraft.rick == null || ChaosCraft.rick.isDead) {
-            ChaosCraft.rick = null;
 
+        p_execute_2_.sendMessage(
+            new TextComponentString("TODO: Fix me")
+        );
 
-            p_execute_2_.sendMessage(
-                    new TextComponentString("Spawning Rick...")
-            );
-            BlockPos pos = p_execute_2_.getPosition();
-            ChaosCraft.spawnRick(world, pos);
-            p_execute_2_.sendMessage(
-                    new TextComponentString("Rick Spawned")
-            );
-
-        }
-        //Cycle mortys?
-        p_execute_2_.sendMessage(
-            new TextComponentString("Clearing Organisms")
-        );
-        List<EntityOrganism> deadOrgs = new ArrayList<EntityOrganism>();
-        for (EntityOrganism organsim : ChaosCraft.organisims) {
-            if(organsim.getNNet() == null) {
-                organsim.setHealth(0);
-                organsim.setDead();
-                deadOrgs.add(organsim);
-                p_execute_2_.sendMessage(
-                        new TextComponentString("Cleared Dead: " + organsim.getName())
-                );
-            }
-        }
-        for (EntityOrganism organisim : deadOrgs) {
-            ChaosCraft.organisims.remove(organisim);
-        }
-        p_execute_2_.sendMessage(
-                new TextComponentString("Cleared Dead, spawning orgs")
-        );
-        List<EntityOrganism> spawnedEntityOrganisms = ChaosCraft.spawnOrgs();
-        for (EntityOrganism organism:spawnedEntityOrganisms) {
-            p_execute_2_.sendMessage(
-                new TextComponentString("Spawned: " + organism.getName())
-            );
-        }
-        p_execute_2_.sendMessage(
-            new TextComponentString("Orgs spawned")
-        );
     }
 
     public List<String> getTabCompletions(MinecraftServer p_getTabCompletions_1_, ICommandSender p_getTabCompletions_2_, String[] p_getTabCompletions_3_, @Nullable BlockPos p_getTabCompletions_4_) {

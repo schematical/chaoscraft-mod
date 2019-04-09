@@ -66,7 +66,7 @@ public class CommandChaosCraftList extends CommandBase{
         String message = "";
         int liveCount = 0;
 
-        for(EntityOrganism entityOrganism : ChaosCraft.organisims){
+        for(EntityOrganism entityOrganism : ChaosCraft.server.organisims){
             message += entityOrganism.getCCNamespace() + "  ";
             message += "MaxLife: " + entityOrganism.getAgeSeconds() + " / " + entityOrganism.getMaxLife() + "  ";
             message += "Score: " + entityOrganism.entityFitnessManager.totalScore() + "  ";
@@ -79,7 +79,7 @@ public class CommandChaosCraftList extends CommandBase{
             message += "\n";
         }
         message += "------------------------------\n";
-        message += "Live: " + liveCount + " - Total: " + ChaosCraft.organisims.size();
+        message += "Live: " + liveCount + " - Total: " + ChaosCraft.server.organisims.size();
         sender.sendMessage(
             new TextComponentString(message)
         );
@@ -107,7 +107,7 @@ public class CommandChaosCraftList extends CommandBase{
     }
     public String[] getOrgNames(){
         List<EntityOrganism> orgs = new ArrayList<EntityOrganism>();
-        for (EntityOrganism organism: ChaosCraft.organisims) {
+        for (EntityOrganism organism: ChaosCraft.server.organisims) {
             if(organism.isEntityAlive() && organism.getNNet() != null){
                 orgs.add(organism);
             }

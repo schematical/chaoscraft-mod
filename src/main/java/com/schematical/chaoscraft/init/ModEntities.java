@@ -58,7 +58,7 @@ public class ModEntities {
             return;
         }
         if (entity instanceof EntityRick) {
-            ChaosCraft.rick = (EntityRick) event.getEntity();
+            //ChaosCraft.rick = (EntityRick) event.getEntity();
         }else if (entity instanceof EntityOrganism) {
             //ChaosCraft.organisims.add((EntityOrganism)entity);
         }

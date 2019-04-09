@@ -7,11 +7,9 @@ package com.schematical.chaoscraft.entities;
 
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.AIFindExistingOrganisims;
-import com.schematical.chaoscraft.ai.AISpawnOrganisim;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
@@ -41,7 +39,7 @@ public class EntityRick extends EntityLiving {
 
         this.tasks.taskEntries.clear();
 
-        this.tasks.addTask(3, new AISpawnOrganisim(this));
+        //this.tasks.addTask(3, new AISpawnOrganisim(this));
         this.tasks.addTask(1, new EntityAISwimming(this));
         //this.tasks.addTask(6, new EntityAIWander(this, 0.6D));
         this.tasks.addTask(11, new EntityAIWatchClosest(this, EntityPlayer.class, 10.0F));
@@ -61,7 +59,7 @@ public class EntityRick extends EntityLiving {
             }
         }
 
-        ChaosCraft.rickPos = this.getPosition();
+
         super.onUpdate();
 
     }
@@ -77,12 +75,5 @@ public class EntityRick extends EntityLiving {
 
     }
 
-    public void onOrganisimDeath(EntityCreature creature){
-        if(!world.isRemote) {
-            if(ChaosCraft.organisims.contains(creature)) {
-                ChaosCraft.organisims.remove(creature);
-            }
-        }
-    }
 
 }

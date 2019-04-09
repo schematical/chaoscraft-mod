@@ -11,6 +11,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.text.TextComponentString;
 
 /**
  * Created by user1a on 12/8/18.
@@ -50,9 +51,9 @@ public class UseItemOutput extends OutputNeuron {
             EnumHand.MAIN_HAND
         );
         if(rcResult.getType().equals(EnumActionResult.SUCCESS)){
-            ChaosCraft.chat(nNet.entity.getCCNamespace() + " successfully rightClicked " + heldItem.getRegistryName().toString());
+            this.nNet.entity.sendMessage(new TextComponentString(nNet.entity.getCCNamespace() + " successfully rightClicked " + heldItem.getRegistryName().toString()));
         }else if(rcResult.getType().equals(EnumActionResult.SUCCESS)){
-            ChaosCraft.chat(nNet.entity.getCCNamespace() + " failed to rightClick " + heldItem.getRegistryName().toString());
+            this.nNet.entity.sendMessage(new TextComponentString(nNet.entity.getCCNamespace() + " failed to rightClick " + heldItem.getRegistryName().toString()));
         }
         RayTraceResult rayTraceResult = nNet.entity.rayTraceBlocks(nNet.entity.REACH_DISTANCE);
         if(rayTraceResult == null){
@@ -78,9 +79,9 @@ public class UseItemOutput extends OutputNeuron {
             (float)rayTraceResult.hitVec.z
         );
         if(result.equals(EnumActionResult.SUCCESS)) {
-            ChaosCraft.chat(nNet.entity.getCCNamespace() + " successfully used " + heldItem.getRegistryName().toString());
+            this.nNet.entity.sendMessage(new TextComponentString(nNet.entity.getCCNamespace() + " successfully used " + heldItem.getRegistryName().toString()));
         }else if(result.equals(EnumActionResult.FAIL)){
-            ChaosCraft.chat(nNet.entity.getCCNamespace() + " failed to use " + heldItem.getRegistryName().toString());
+            this.nNet.entity.sendMessage(new TextComponentString(nNet.entity.getCCNamespace() + " failed to use " + heldItem.getRegistryName().toString()));
         }
     }
     /*@Override

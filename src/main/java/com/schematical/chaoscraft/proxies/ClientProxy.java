@@ -5,7 +5,10 @@ import com.schematical.chaoscraft.commands.*;
 import com.schematical.chaoscraft.entities.EntityOrganism;
 import com.schematical.chaoscraft.entities.EntityRick;
 import com.schematical.chaoscraft.gui.CCKeyBinding;
-import com.schematical.chaoscraft.network.CCIMessage;
+import com.schematical.chaoscraft.network.CCIObservationMessage;
+import com.schematical.chaoscraft.network.CCIObservationMessageHandler;
+import com.schematical.chaoscraft.network.CCIServerActionMessage;
+import com.schematical.chaoscraft.network.CCIServerActionMessageHandler;
 import com.schematical.chaoscraft.rendering.EntityOrganismRenderer;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.ClientCommandHandler;
@@ -32,7 +35,7 @@ public class ClientProxy implements IProxy {
         ClientCommandHandler.instance.registerCommand(new CommandChaosCraftAuth());
         ClientCommandHandler.instance.registerCommand(new CommandChaosCraftSetConfig());
 
-        ClientCommandHandler.instance.registerCommand(new CommandChaosCraftTP());
+
         ClientCommandHandler.instance.registerCommand(new CommandChaosCraftList());
         ClientCommandHandler.instance.registerCommand(new CommandChaosCraftAdam());
         ClientCommandHandler.instance.registerCommand(new CommandChaosCraftRepair());
@@ -59,7 +62,8 @@ public class ClientProxy implements IProxy {
             ClientRegistry.registerKeyBinding(keyBindings.get(i));
         }
         ChaosCraft.networkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel(ChaosCraft.MODID);
-        ChaosCraft.networkWrapper.registerMessage(CCIJSONMessageHandler.class, CCIMessage.class, 0, Side.CLIENT);
+        ChaosCraft.networkWrapper.registerMessage(CCIObservationMessageHandler.class, CCIObservationMessage.class, 0, Side.CLIENT);
+
     }
     @Override
     public void init(FMLInitializationEvent event) {

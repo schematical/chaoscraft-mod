@@ -6,6 +6,8 @@ import com.schematical.chaoscraft.entities.EntityOrganism;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 
 import java.util.List;
 
@@ -18,7 +20,7 @@ public class ChatOutput extends OutputNeuron {
         if(this._lastValue <= .5){
             return;
         }
-        ChaosCraft.chat("I see something");
+        this.nNet.entity.sendMessage(new TextComponentString("I am chatting"));
 
 
     }

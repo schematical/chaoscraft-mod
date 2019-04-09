@@ -10,6 +10,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.GameType;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -66,9 +67,11 @@ public class CommandChaosCraftObserve extends CommandBase{
         {
             throw new PlayerNotFoundException("commands.generic.player.unspecified");
         }
+        sender.sendMessage(
+                new TextComponentString("TODO: Write me")
+        );
 
-
-        ChaosCraft.toggleObservingPlayer(player);
+        //ChaosCraft.client.toggleObservingPlayer(player);
 
     }
 

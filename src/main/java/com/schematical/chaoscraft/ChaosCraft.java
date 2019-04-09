@@ -4,33 +4,20 @@ package com.schematical.chaoscraft;
 import com.amazonaws.ImmutableRequest;
 import com.amazonaws.opensdk.config.ConnectionConfiguration;
 import com.amazonaws.opensdk.config.TimeoutConfiguration;
-import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
+
 import com.schematical.chaoscraft.client.ChaosCraftClient;
 import com.schematical.chaoscraft.commands.CommandChaosCraftObserve;
 import com.schematical.chaoscraft.commands.CommandChaosCraftRefresh;
 import com.schematical.chaoscraft.commands.CommandChaosCraftSessionStart;
 import com.schematical.chaoscraft.commands.CommandDebug;
 import com.schematical.chaoscraft.entities.ChaosCraftFitnessManager;
-import com.schematical.chaoscraft.entities.EntityOrganism;
-import com.schematical.chaoscraft.entities.EntityRick;
+
 import com.schematical.chaoscraft.proxies.IProxy;
 import com.schematical.chaoscraft.server.ChaosCraftServer;
 import com.schematical.chaosnet.ChaosNet;
 import com.schematical.chaosnet.auth.ChaosnetCognitoUserPool;
 import com.schematical.chaosnet.model.*;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.WorldClient;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.management.PlayerList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.world.GameType;
-import net.minecraft.world.World;
-import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
@@ -42,15 +29,13 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+
 
 @Mod(modid = ChaosCraft.MODID, name = ChaosCraft.NAME, version = ChaosCraft.VERSION)
 public class ChaosCraft
@@ -89,7 +74,7 @@ public class ChaosCraft
     public static ChaosCraftClient client;
     @Mod.Instance
     public static ChaosCraft INSTANCE;
-    public static WorldClient world;
+
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)

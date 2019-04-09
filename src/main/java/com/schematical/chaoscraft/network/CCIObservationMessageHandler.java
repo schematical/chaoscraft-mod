@@ -28,12 +28,12 @@ public class CCIObservationMessageHandler implements IMessageHandler<CCIObservat
         JSONObject payload = message.getPayloadJSON();
         JSONArray ouputValues = (JSONArray)payload.get("outputs");
         Iterator<Object> jsonObjectIterable = ouputValues.iterator();
-        ChaosCraft.topLeftMessage = payload.get("namespace").toString() + "\n";
+        /*ChaosCraft.topLeftMessage = payload.get("namespace").toString() + "\n";
         ChaosCraft.topLeftMessage += "Score: " + payload.get("score") + " - Age: " +  payload.get("age") + " / " + payload.get("maxAge") + "\n";
         while(jsonObjectIterable.hasNext()){
             JSONObject ouputValue = (JSONObject)jsonObjectIterable.next();
             ChaosCraft.topLeftMessage += ouputValue.get("summary") + " = " + ouputValue.get("_lastValue") + "\n";
-        }
+        }*/
         JSONObject areaOfFocusJSON = (JSONObject)payload.get("areaOfFocus");
         Vec3d vec3d = new Vec3d(
             (double)areaOfFocusJSON.get("x"),

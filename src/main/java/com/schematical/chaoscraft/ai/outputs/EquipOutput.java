@@ -11,6 +11,7 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextComponentString;
 import org.json.simple.JSONObject;
 
 /**
@@ -74,7 +75,7 @@ public class EquipOutput extends OutputNeuron {
         ChaosCraft.logger.info(message);
         if(itemStack.getItem().getRegistryName().toString().equals("minecraft:crafting_table")){
             //String message = nNet.entity.getCCNamespace() + " Equipped " + itemStack.getItem().getRegistryName();
-            ChaosCraft.chat(message);
+            this.nNet.entity.sendMessage(new TextComponentString(message));
         }
 
     }

@@ -96,9 +96,7 @@ public class EntityEvilRabbit extends EntityRabbit {
     @Override
     public void onDeathUpdate(){
         super.onDeathUpdate();
-        if(!world.isRemote) {
-            ChaosCraft.rick.onOrganisimDeath(this);
-        }
+
     }
 
 
