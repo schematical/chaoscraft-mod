@@ -164,7 +164,17 @@ public class CCEventListener {
     }
     @SubscribeEvent
     public static void spawnEvent(EntityJoinWorldEvent event) {
-       /* if (event.getEntity() instanceof EntityMob) {
+        if(event.getEntity().world.isRemote){
+
+            if (event.getEntity() instanceof EntityOrganism) {
+                EntityOrganism entityOrganism = (EntityOrganism) event.getEntity();
+                if(ChaosCraft.client.orgsQueuedToSpawn.containsKey(entityOrganism.getCCNamespace())){
+                    ChaosCraft.client.orgsQueuedToSpawn.remove(entityOrganism.getCCNamespace());
+                    ChaosCraft.client.myOrganisims.put(entityOrganism.getCCNamespace(), entityOrganism);
+                }
+            }
+        }
+        /*if (event.getEntity() instanceof EntityMob) {
             EntityMob mob = (EntityMob) event.getEntity();
 
             if (!(mob instanceof EntityPigZombie)) {

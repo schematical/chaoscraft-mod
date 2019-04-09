@@ -11,6 +11,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.GameType;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -18,30 +19,34 @@ import java.util.List;
  * Created by user1a on 4/9/19.
  */
 public class ChaosCraftClient {
-    public static Thread thread;
-    public static String topLeftMessage;
-    public static List<EntityPlayerMP> observingPlayers = new ArrayList<EntityPlayerMP>();
-    public static EntityOrganism adam = null;
-    public static int consecutiveErrorCount = 0;
-    public static List<Organism> orgsToSpawn = new ArrayList<Organism>();
-    public static List<EntityOrganism> orgsToReport = new ArrayList<EntityOrganism>();
-    public List<EntityOrganism> myOrganisims = new ArrayList<EntityOrganism>();
+    public Thread thread;
+    public String topLeftMessage;
+    public List<EntityPlayerMP> observingPlayers = new ArrayList<EntityPlayerMP>();
+    public EntityOrganism adam = null;
+    public int consecutiveErrorCount = 0;
+    public List<Organism> orgsToSpawn = new ArrayList<Organism>();
+    public HashMap<String, Organism> orgsQueuedToSpawn = new HashMap<String, Organism>();
+    public List<EntityOrganism> orgsToReport = new ArrayList<EntityOrganism>();
+    public HashMap<String, EntityOrganism> myOrganisims = new HashMap<String, EntityOrganism>();
     public void worldTick() {
         if(orgsToSpawn.size() > 0){
             Iterator<Organism> iterator = orgsToSpawn.iterator();
 
             while (iterator.hasNext()) {
                 Organism organism = iterator.next();
-                CCIServerActionMessage message = new CCIServerActionMessage();
-                message.setAction(ChaosCraftServerAction.Action.Spawn);
-                message.setOrganism(organism);
-                ChaosCraft.networkWrapper.sendToServer(message);
+                if(!orgsQueuedToSpawn.containsKey(organism.getNamespace())) {
+                    CCIServerActionMessage message = new CCIServerActionMessage();
+                    message.setAction(ChaosCraftServerAction.Action.Spawn);
+                    message.setOrganism(organism);
+                    orgsQueuedToSpawn.put(organism.getNamespace(), organism);
+                    ChaosCraft.networkWrapper.sendToServer(message);
+                }
             }
 
         }
 
 
-        Iterator<EntityOrganism> iterator = myOrganisims.iterator();
+        Iterator<EntityOrganism> iterator = myOrganisims.values().iterator();
         int liveOrgCount = 0;
         while (iterator.hasNext()) {
             EntityOrganism organism = iterator.next();
@@ -66,7 +71,7 @@ public class ChaosCraftClient {
         ) {
 
             List<EntityOrganism> deadOrgs = new ArrayList<EntityOrganism>();
-            iterator = myOrganisims.iterator();
+            iterator = myOrganisims.values().iterator();
 
             while (iterator.hasNext()) {
                 EntityOrganism organism = iterator.next();
@@ -115,7 +120,7 @@ public class ChaosCraftClient {
             }
         }
     }
-    public static void reportOrgs(List<EntityOrganism> _orgsToReport){
+    public void reportOrgs(List<EntityOrganism> _orgsToReport){
         _orgsToReport.forEach((EntityOrganism organism)->{
 
             ChaosCraft.client.orgsToReport.add(organism);
@@ -130,7 +135,7 @@ public class ChaosCraftClient {
     }
 
 
-    public static void toggleObservingPlayer(EntityPlayerMP player) {
+    public void toggleObservingPlayer(EntityPlayerMP player) {
         if(observingPlayers.contains(player)){
             observingPlayers.remove(player);
             player.setGameType(GameType.CREATIVE);

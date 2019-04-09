@@ -68,7 +68,7 @@ public class ChaosCraftServer {
 
 
 
-        if(organismList != null && ChaosCraft.lastResponse != null) {
+        if(organismList != null) {
             for (int i = 0; i < organismList.size(); i++) {
                 Organism organism = organismList.get(i);
 
@@ -119,8 +119,8 @@ public class ChaosCraftServer {
                         String observedAttributesRaw = taxonomicRank.getObservedAttributesRaw();
                         if (
                                 observedAttributesRaw == null ||
-                                        observedAttributesRaw.length() == 0
-                                ) {
+                                observedAttributesRaw.length() == 0
+                        ) {
 
                         } else {
                             try {

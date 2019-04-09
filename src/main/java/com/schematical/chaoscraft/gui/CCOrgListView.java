@@ -18,17 +18,18 @@ public class CCOrgListView extends CCGuiBase {
 
         int buttonWidth = 150;
         int buttonHeight = 10;
-        for (EntityOrganism entityOrganism : ChaosCraft.client.myOrganisims) {
-            buttonList.add(new CCGuiButton(
-                            ID++,
-                            this.guiLeft + (this.guiWidth / 2) - buttonWidth / 2,
-                            this.guiTop + (buttonHeight) * (ID - 1),
-                            buttonWidth,
-                            buttonHeight,
-                            entityOrganism.getName() + " - " + entityOrganism.entityFitnessManager.totalScore(),
-                            ButtonAction.VIEW_ORG_DETAIL_ACTION,
-                            entityOrganism
-                    )
+        for (EntityOrganism entityOrganism : ChaosCraft.client.myOrganisims.values()) {
+            buttonList.add(
+                new CCGuiButton(
+                    ID++,
+                    this.guiLeft + (this.guiWidth / 2) - buttonWidth / 2,
+                    this.guiTop + (buttonHeight) * (ID - 1),
+                    buttonWidth,
+                    buttonHeight,
+                    entityOrganism.getName() + " - " + entityOrganism.entityFitnessManager.totalScore(),
+                    ButtonAction.VIEW_ORG_DETAIL_ACTION,
+                    entityOrganism
+                )
             );
         }
 
