@@ -6,10 +6,12 @@ import com.schematical.chaosnet.model.Organism;
 import io.netty.buffer.ByteBuf;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import org.apache.commons.lang3.Validate;
 import org.json.simple.JSONObject;
 
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Created by user1a on 3/8/19.
@@ -36,7 +38,12 @@ public class CCIServerActionMessage extends CCIJSONMessage implements IMessage {
 
         // Writes the int into the buf
 
-        ByteBufUtils.writeUTF8String(buf, jsonPayload.toJSONString());
+        //ByteBufUtils.writeUTF8String(buf, jsonPayload.toJSONString());
+
+        byte[] utf8Bytes = jsonPayload.toJSONString().getBytes(StandardCharsets.UTF_8);
+        //Validate.isTrue(varIntByteCount(utf8Bytes.length) < 3, "The string is too long for this encoding.");
+        ByteBufUtils.writeVarInt(buf, utf8Bytes.length, 32);
+        buf.writeBytes(utf8Bytes);
     }
 
     @Override public void fromBytes(ByteBuf buf) {
@@ -53,7 +60,7 @@ public class CCIServerActionMessage extends CCIJSONMessage implements IMessage {
             organism.setGeneration(Double.parseDouble(jsonOrg.get("generation").toString()));
             organism.setNNetRaw(jsonOrg.get("nNetRaw").toString());
             organism.setOwnerUsername(jsonOrg.get("owner_username").toString());
-            organism.setParentNamespace(jsonOrg.get("parentNamespace").toString());
+            //organism.setParentNamespace(jsonOrg.get("parentNamespace").toString());
             organism.setTrainingRoomNamespace(jsonOrg.get("trainingRoomNamespace").toString());
         }
     }
