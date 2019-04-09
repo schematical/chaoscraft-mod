@@ -20,21 +20,14 @@ public class CCIServerActionMessageHandler implements IMessageHandler<CCIServerA
     @SideOnly(Side.SERVER)
     //@Override
     public IMessage onMessage(CCIServerActionMessage message, MessageContext ctx) {
-        // This is the player the packet was sent to the server from
-        //EntityPlayerMP serverPlayer = ctx.getServerHandler().player;
-        // The value that was sent
-        JSONObject payload = message.getPayloadJSON();
-        JSONArray actions = (JSONArray)payload.get("actions");
-        Iterator<Integer> iterator = actions.iterator();
-        while(iterator.hasNext()){
-            Integer key = iterator.next();
-            ChaosCraftServerAction serverAction = new ChaosCraftServerAction();
-            JSONObject jsonAction = (JSONObject) actions.get(key);
-            serverAction.orgNamespace = jsonAction.get("namespace").toString();
-            serverAction.action = ChaosCraftServerAction.Action.valueOf(jsonAction.get("action").toString());
-            serverAction.jsonObject = jsonAction;
-            ChaosCraft.server.pendingActions.add(serverAction);
-        }
+
+
+        ChaosCraftServerAction serverAction = new ChaosCraftServerAction();
+
+
+        serverAction.message = message;
+        ChaosCraft.server.pendingActions.add(serverAction);
+
 
         return null;
 

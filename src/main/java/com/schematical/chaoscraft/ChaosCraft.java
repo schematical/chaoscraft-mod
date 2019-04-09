@@ -5,6 +5,7 @@ import com.amazonaws.ImmutableRequest;
 import com.amazonaws.opensdk.config.ConnectionConfiguration;
 import com.amazonaws.opensdk.config.TimeoutConfiguration;
 import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
+import com.schematical.chaoscraft.client.ChaosCraftClient;
 import com.schematical.chaoscraft.commands.CommandChaosCraftObserve;
 import com.schematical.chaoscraft.commands.CommandChaosCraftRefresh;
 import com.schematical.chaoscraft.commands.CommandChaosCraftSessionStart;
@@ -69,27 +70,28 @@ public class ChaosCraft
     public static IProxy proxy;
     public static Logger logger;
     public static ChaosCraftConfig config;
-    public static EntityRick rick;
-    public static List<EntityOrganism> organisims = new ArrayList<EntityOrganism>();
+
+
     public static ChaosCraftFitnessManager fitnessManager;
     public static int ticksSinceLastSpawn = 0;
-    public static Thread thread;
+
 
     public static List<Organism> orgsToSpawn;
     public static List<EntityOrganism> orgsToReport = new ArrayList<EntityOrganism>();
     public static TrainingRoomSessionNextResponse lastResponse;
-    public static int consecutiveErrorCount = 0;
 
-    public static String topLeftMessage;
+
+
     public static int spawnHash;
     public static float activationThreshold = .3f;
-    public static EntityOrganism adam = null;
-    public static List<EntityPlayerMP> observingPlayers = new ArrayList<EntityPlayerMP>();
+
+
     public static double highScore = -99999;
     public static EntityOrganism highScoreOrg;
     public static BlockPos rickPos;
     public static SimpleNetworkWrapper networkWrapper;
     public static ChaosCraftServer server;
+    public static ChaosCraftClient client;
     @Mod.Instance
     public static ChaosCraft INSTANCE;
     public static WorldClient world;
@@ -137,12 +139,7 @@ public class ChaosCraft
 
         ForgeChunkManager.setForcedChunkLoadingCallback(this, new ForcedChunkLoadingCallback());
     }
-    public static boolean isTicking(){
-        return (
-                (!world.isRemote && ChaosCraft.nNetTickMode == ChaosCraft.CCNNetTickMode.Server) ||
-                (world.isRemote && ChaosCraft.nNetTickMode == ChaosCraft.CCNNetTickMode.Client)
-        );
-    }
+
     public static void auth(){
         if(config.refreshToken != null){
             AuthTokenRequest authTokenRequest = new AuthTokenRequest();
@@ -160,23 +157,7 @@ public class ChaosCraft
 
         }
     }
-    public static void queueSpawn(List<EntityOrganism> _orgsToReport){
-        _orgsToReport.forEach((EntityOrganism organism)->{
-            double totalScore = organism.entityFitnessManager.totalScore();
-            if(totalScore > ChaosCraft.highScore){
-                ChaosCraft.highScore = totalScore;
-                ChaosCraft.highScoreOrg = organism;
-            }
-            ChaosCraft.orgsToReport.add(organism);
-        });
-        if(thread != null){
-            return;
-        }
-        ChaosCraft.ticksSinceLastSpawn = 0;
 
-        thread = new Thread(new ChaosThread(), "ChaosThread");
-        thread.start();
-    }
 
     public static void loadFitnessFunctions(){
         if(
@@ -293,274 +274,9 @@ public class ChaosCraft
 
 
     }
-    public static List<EntityOrganism> spawnOrgs() {
-        return ChaosCraft.spawnOrgs(null);
-    }
-    public static List<EntityOrganism> spawnOrgs(List<Organism> organismList){
-        List<EntityOrganism> spawnedEntityOrganisms = new ArrayList<EntityOrganism>();
-        World world = rick.getEntityWorld();
-        String generation = "-1";
-        if(!world.isRemote) {
-
-            if(organismList != null && ChaosCraft.lastResponse != null) {
-                for (int i = 0; i < organismList.size(); i++) {
-                    Organism organism = organismList.get(i);
-                    generation =  organism.getGeneration().toString();
-
-                    boolean orgIsAlreadyAlive = false;
-                    for (int ii = 0; ii < organisims.size(); ii++) {
-                        EntityOrganism entityOrganism = organisims.get(ii);
-                        if (entityOrganism.getCCNamespace().equals(organism.getNamespace())) {
-                            orgIsAlreadyAlive = true;
-                        }
-                    }
 
 
-                    if (!orgIsAlreadyAlive) {
-                        NNetRaw nNetRaw = null;
-                        String nNetRawStr = organism.getNNetRaw();
-                        if (nNetRawStr != null) {
-                            nNetRaw = new NNetRaw();
-                            nNetRaw.setNNetRaw(nNetRawStr);
-                        } else {
-                            GetUsernameTrainingroomsTrainingroomOrganismsOrganismNnetRequest request = new GetUsernameTrainingroomsTrainingroomOrganismsOrganismNnetRequest();
-                            request.setUsername(ChaosCraft.config.trainingRoomUsernameNamespace);
-                            request.setTrainingroom(ChaosCraft.config.trainingRoomNamespace);
-                            request.setOrganism(organism.getNamespace());
-                            GetUsernameTrainingroomsTrainingroomOrganismsOrganismNnetResult result = ChaosCraft.sdk.getUsernameTrainingroomsTrainingroomOrganismsOrganismNnet(request);
-                            nNetRaw = result.getNNetRaw();
-                        }
 
-                        EntityOrganism entityOrganism = new EntityOrganism(world, organism.getNamespace());
-                        entityOrganism.attachOrganism(organism);
-                        entityOrganism.attachNNetRaw(nNetRaw);
-                        entityOrganism.observableAttributeManager = new CCObservableAttributeManager(organism);
-                        if(!organism.getName().equals("adam")){
-                            TaxonomicRank taxonomicRank = null;
-                            if (ChaosCraft.lastResponse == null) {
-                                throw new ChaosNetException("`ChaosCraft.lastResponse` is `null`");
-                            }
-                            for (TaxonomicRank _taxonomicRank : ChaosCraft.lastResponse.getSpecies()) {
-                                //ChaosCraft.logger.info(_taxonomicRank.getNamespace() + " == " + organism.getSpeciesNamespace());
-                                if (_taxonomicRank.getNamespace().equals(organism.getSpeciesNamespace())) {
-                                    taxonomicRank = _taxonomicRank;
-                                }
-                            }
-                            if (taxonomicRank == null) {
-                                throw new ChaosNetException("Could not find species: " + organism.getSpeciesNamespace());
-                            }
-                            String observedAttributesRaw = taxonomicRank.getObservedAttributesRaw();
-                            if (
-                                observedAttributesRaw == null ||
-                                observedAttributesRaw.length() == 0
-                            ) {
-
-                            } else {
-                                try {
-                                    JSONParser parser = new JSONParser();
-                                    JSONObject jsonObject = (JSONObject) parser.parse(
-                                            taxonomicRank.getObservedAttributesRaw()
-                                    );
-                                    entityOrganism.observableAttributeManager.parseData(jsonObject);
-                                } catch (Exception exeception) {
-                                    throw new ChaosNetException("Invalid `species.observedAttributes` JSON Found: " + taxonomicRank.getObservedAttributesRaw() + "\n\n-- " + exeception.getMessage());
-                                }
-                            }
-                        }
-
-                        entityOrganism.setCustomNameTag(organism.getName() + " - " + organism.getGeneration());
-
-                        BlockPos pos = rick.getPosition();
-                        if(organism.getName().equals("adam")) {
-
-                            entityOrganism.setPosition(
-                                pos.getX(),
-                                pos.getY() + 2,
-                                pos.getZ()
-                            );
-
-                        }else{
-                           placeEntity(pos, entityOrganism);
-
-
-                        }
-
-                        entityOrganism.setSpawnHash(ChaosCraft.spawnHash);
-                        ChaosCraft.organisims.add(entityOrganism);
-                        spawnedEntityOrganisms.add(entityOrganism);
-                        world.spawnEntity(entityOrganism);
-                    }
-                }
-            }
-        }
-        String message = "";
-
-        message += "Generation: " + generation + "\n";
-        if(ChaosCraft.lastResponse != null) {
-            Stats stats = ChaosCraft.lastResponse.getStats();
-            if (stats != null) {
-                message += "Gen Progress: " + stats.getGenProgress() + "\n";
-            } else {
-                message += "MISSING STATS \n";
-            }
-
-        }
-        if(ChaosCraft.highScoreOrg != null){
-            message += "High Score: " + ChaosCraft.highScore + " - " + ChaosCraft.highScoreOrg.getCCNamespace() + "\n";
-        }
-        message += "Orgs in memory: " + ChaosCraft.organisims.size() + "\n";
-        topLeftMessage = message;
-
-        return spawnedEntityOrganisms;
-    }
-    public static void placeEntity(BlockPos pos, EntityOrganism entityOrganism){
-        int range = 30;
-        int minRange = 5;
-        int yRange = 20;
-        Vec3d rndPos = null;
-        int saftyCatch = 0;
-        int saftyMax = 10;
-        while (
-                rndPos == null &&
-                        saftyCatch < saftyMax
-                ) {
-            saftyCatch++;
-            double xPos = Math.floor((Math.random() * (range) * 2) - range);
-            if (xPos > 0) {
-                xPos += minRange;
-            } else {
-                xPos -= minRange;
-            }
-            double zPos = Math.floor((Math.random() * (range) * 2) - range);
-            if (zPos > 0) {
-                zPos += minRange;
-            } else {
-                zPos -= minRange;
-            }
-            rndPos = new Vec3d(
-                    pos.getX() + xPos,
-                    pos.getY() + Math.floor((Math.random() * yRange)),
-                    pos.getZ() + zPos
-            );
-            if (!entityOrganism.getCanSpawnHere()) {
-                rndPos = null;
-            } else {
-                BlockPos blockPos = new BlockPos(rndPos);
-
-                IBlockState state = entityOrganism.world.getBlockState(blockPos);
-                Material material = state.getMaterial();
-                if (
-                    !(
-                        material == Material.WATER ||
-                        material == Material.AIR
-                    )
-                ) {
-                    rndPos = null;
-                }else{
-                    int saftyCatch2 = 0;
-                    Vec3d lastPos = null;
-                    boolean foundBottom = false;
-                    int saftyMax2 = 40;
-                    while(
-                            saftyCatch2 < saftyMax2 &&
-                            !foundBottom
-                    ){
-                        saftyCatch2 += 1;
-                        lastPos = rndPos;
-                        rndPos = new Vec3d(lastPos.x, lastPos.y - 1, lastPos.z);
-                        blockPos = new BlockPos(rndPos);
-
-                        state = entityOrganism.world.getBlockState(blockPos);
-                        material = state.getMaterial();
-                        if (material != Material.AIR){
-                            rndPos = lastPos;
-                            foundBottom = true;
-                        }
-                    }
-                    if(saftyCatch2 >= saftyMax2){
-                        rndPos = null;
-                        //throw new ChaosNetException("Could not find good spawn pos after " + saftyCatch2 + " attempts");
-                    }
-                }
-            }
-            if(rndPos != null){
-                entityOrganism.setPositionAndRotation(
-                    rndPos.x,
-                    rndPos.y,
-                    rndPos.z,
-                    (float) Math.random() * 360,
-                    (float)Math.random() * 360
-                );
-
-                if(entityOrganism.isEntityInsideOpaqueBlock()){
-                    rndPos = null;
-                }
-            }
-
-
-        }
-        if(saftyCatch == saftyMax){
-            throw new ChaosNetException("Could not find good spawn pos after " + saftyCatch + " attempts");
-        }
-        if(rndPos == null){
-            throw new ChaosNetException("This should be impossible");
-        }
-
-    }
-    public static void chat(String message){
-        PlayerList players =  rick.world.getMinecraftServer().getPlayerList();
-        players.sendMessage(
-                new TextComponentString(message)
-        );
-    }
-    public static EntityOrganism getEntityOrganismByName(String name){
-        Iterator<EntityOrganism> iterator = ChaosCraft.organisims.iterator();
-        while(iterator.hasNext()){
-            EntityOrganism org = iterator.next();
-            if(org.getName().equals(name)){
-                return org;
-            }
-        }
-        return null;
-    }
-    public static EntityOrganism getEntityOrganismById(String id){
-        for(EntityOrganism org : ChaosCraft.organisims){
-            if(org.getCCNamespace() == id){
-                return org;
-            }
-        }
-        return null;
-    }
-    public static EntityRick spawnRick(World world, BlockPos pos ){
-        if(ChaosCraft.rick != null) {
-            return ChaosCraft.rick;
-        }
-
-        if (!world.isRemote) {
-            ChaosCraft.rickPos = pos;
-            EntityRick rick = new EntityRick(world, "Rick");
-            rick.setCustomNameTag("Rick");
-
-            rick.setPosition(ChaosCraft.rickPos.getX(), ChaosCraft.rickPos.getY(),ChaosCraft.rickPos.getZ());
-
-            world.spawnEntity(rick);
-            ChaosCraft.rick = rick;
-
-        }
-        return ChaosCraft.rick;
-
-
-    }
-
-    public static void toggleObservingPlayer(EntityPlayerMP player) {
-        if(ChaosCraft.observingPlayers.contains(player)){
-            ChaosCraft.observingPlayers.remove(player);
-            player.setGameType(GameType.CREATIVE);
-        }else {
-            player.setGameType(GameType.SPECTATOR);
-            ChaosCraft.observingPlayers.add(player);
-        }
-    }
 
     public class ChaosNetSigner implements ChaosnetCognitoUserPool {
         @Override

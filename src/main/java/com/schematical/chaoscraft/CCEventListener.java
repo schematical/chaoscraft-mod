@@ -59,82 +59,12 @@ public class CCEventListener {
 
         if(worldTickEvent.world.isRemote) {
 
-            Iterator<EntityOrganism> iterator = ChaosCraft.organisims.iterator();
-            int liveOrgCount = 0;
-            while (iterator.hasNext()) {
-                EntityOrganism organism = iterator.next();
-                organism.manualUpdateCheck();
-                if (
-                        organism.getOrganism() == null ||
-                                organism.getSpawnHash() != ChaosCraft.spawnHash
-                        ) {
-                    organism.setDead();
-                    iterator.remove();
-                    //ChaosCraft.logger.info("Setting Dead: " + organism.getName() + " - Has no `Organism` record");
-                }
-                if (!organism.isDead) {
-                    liveOrgCount += 1;
-                }
-            }
-
-
-            if (
-                    ChaosCraft.ticksSinceLastSpawn < (20 * 20) ||
-                            liveOrgCount >= ChaosCraft.config.maxBotCount
-                    ) {
-
-                List<EntityOrganism> deadOrgs = new ArrayList<EntityOrganism>();
-                iterator = ChaosCraft.organisims.iterator();
-
-                while (iterator.hasNext()) {
-                    EntityOrganism organism = iterator.next();
-                    if (organism.isDead) {
-                        if (
-                                organism.getCCNamespace() != null &&
-                                        organism.getSpawnHash() == ChaosCraft.spawnHash &&
-                                        !organism.getDebug()//Dont report Adam-0
-                                ) {
-                            deadOrgs.add(organism);
-                        }
-                        //ChaosCraft.logger.info("Removing: " + organism.getName() + " - Org Size Before" + ChaosCraft.organisims.size());
-                        iterator.remove();
-
-                        //ChaosCraft.logger.info("Dead Orgs: " + deadOrgs.size() + " / " + ChaosCraft.organisims.size());
-                    }
-                }
-
-                ChaosCraft.queueSpawn(deadOrgs);
-            }
+           ChaosCraft.client.worldTick();
         }else{
             ChaosCraft.server.worldTick();
         }
 
-        if(ChaosCraft.consecutiveErrorCount > 5){
-            throw new ChaosNetException("ChaosCraft.consecutiveErrorCount > 5");
-        }
 
-        if(ChaosCraft.organisims.size() > 0) {
-            for (EntityPlayerMP observingPlayer : ChaosCraft.observingPlayers) {
-                Entity entity = observingPlayer.getSpectatingEntity();
-
-                if (
-                        entity.equals(observingPlayer) ||
-                                entity == null ||
-                                entity.isDead
-                        ) {
-                    if(
-                            entity != null &&
-                                    entity instanceof EntityOrganism
-                            ){
-                        ((EntityOrganism) entity).setObserving(null);
-                    }
-                    int index = (int) Math.floor(ChaosCraft.organisims.size() * Math.random());
-                    EntityOrganism orgToObserve = ChaosCraft.organisims.get(index);
-                    orgToObserve.setObserving(observingPlayer);
-                    observingPlayer.setSpectatingEntity(orgToObserve);
-                }
-            }
-        }
     }
 
 
@@ -144,8 +74,8 @@ public class CCEventListener {
         if(ChaosCraftGUI.fontRenderer == null){
             ChaosCraftGUI.fontRenderer = Minecraft.getMinecraft().fontRenderer;
         }
-        if(ChaosCraft.topLeftMessage != null) {
-            String[] parts = ChaosCraft.topLeftMessage.split("\n");
+        if(ChaosCraft.client.topLeftMessage != null) {
+            String[] parts = ChaosCraft.client.topLeftMessage.split("\n");
             int placement = 5;
             for (String part : parts) {
                 ChaosCraftGUI.fontRenderer.drawStringWithShadow(part, 5, placement, 0xFFFFFF);
@@ -194,7 +124,7 @@ public class CCEventListener {
                             }
                         });
                         for(EntityPlayerMP player: players){
-                            ChaosCraft.toggleObservingPlayer(player);
+                            ChaosCraft.client.toggleObservingPlayer(player);
                         }
                     break;
                 }
