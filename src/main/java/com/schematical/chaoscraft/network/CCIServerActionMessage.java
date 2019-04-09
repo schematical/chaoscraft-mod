@@ -2,12 +2,14 @@ package com.schematical.chaoscraft.network;
 
 
 import com.schematical.chaoscraft.server.ChaosCraftServerAction;
+import com.schematical.chaosnet.model.ChaosNetException;
 import com.schematical.chaosnet.model.Organism;
 import io.netty.buffer.ByteBuf;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import org.apache.commons.lang3.Validate;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
@@ -16,11 +18,13 @@ import java.nio.charset.StandardCharsets;
 /**
  * Created by user1a on 3/8/19.
  */
-public class CCIServerActionMessage extends CCIJSONMessage implements IMessage {
+public class CCIServerActionMessage implements IMessage {
+    protected String payload;
     protected ChaosCraftServerAction.Action action;
     protected Organism organism;
     @Override
     public void toBytes(ByteBuf buf) {
+
         JSONObject jsonPayload = new JSONObject();
         jsonPayload.put("action", action.toString());
         if(organism != null){
@@ -73,5 +77,19 @@ public class CCIServerActionMessage extends CCIJSONMessage implements IMessage {
     }
     public void setAction(ChaosCraftServerAction.Action action){
         this.action = action;
+    }
+    public JSONObject getPayloadJSON() {
+
+        try {
+
+            JSONParser parser = new JSONParser();
+            return  (JSONObject) parser.parse(
+                    this.payload
+            );
+        } catch (Exception e) {
+            throw new ChaosNetException("Error `JSON.parse`: " + e.getMessage() + " -> " + this.payload);
+
+        }
+
     }
 }

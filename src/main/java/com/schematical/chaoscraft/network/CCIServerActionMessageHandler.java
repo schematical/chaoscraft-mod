@@ -17,7 +17,7 @@ import java.util.Iterator;
  */
 public class CCIServerActionMessageHandler implements IMessageHandler<CCIServerActionMessage, IMessage> {
     // Do note that the default constructor is required, but implicitly defined in this case
-    @SideOnly(Side.SERVER)
+    //@SideOnly(Side.SERVER)
     //@Override
     public IMessage onMessage(CCIServerActionMessage message, MessageContext ctx) {
 
