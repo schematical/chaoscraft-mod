@@ -66,6 +66,7 @@ public abstract class NeuronBase extends InnovationBase {
         }
         _lastValue = sigmoid(totalScore);
         hasBeenEvaluated = true;
+        nNet.neuronEvalDepth -= 1;
         return _lastValue;
 
     }
