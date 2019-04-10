@@ -71,7 +71,7 @@ public class EquipOutput extends OutputNeuron {
         worldEvent.item = itemStack.getItem();
         nNet.entity.entityFitnessManager.test(worldEvent);
         String message = nNet.entity.getCCNamespace() +" Equipped " + this.toLongString();
-        ChaosCraft.logger.info(message);
+
         if(itemStack.getItem().getRegistryName().toString().equals("minecraft:crafting_table")){
             //String message = nNet.entity.getCCNamespace() + " Equipped " + itemStack.getItem().getRegistryName();
             ChaosCraft.chat(message);
