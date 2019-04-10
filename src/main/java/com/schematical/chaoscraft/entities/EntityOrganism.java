@@ -488,7 +488,7 @@ public class EntityOrganism extends EntityLiving {
         }
 
         ItemStack outputStack = recipe.getRecipeOutput().copy();
-        ChaosCraft.logger.info(this.getCCNamespace() + " - Crafted: " + outputStack.getDisplayName());
+        //ChaosCraft.logger.info(this.getCCNamespace() + " - Crafted: " + outputStack.getDisplayName());
         if(emptySlot != -1) {
             itemHandler.insertItem(emptySlot, outputStack, false);
             observableAttributeManager.ObserveCraftableRecipes(this);
@@ -583,7 +583,7 @@ public class EntityOrganism extends EntityLiving {
             return null;
         }
         Vec3d itemVec3d = null;
-        ChaosCraft.logger.info(this.getCCNamespace() + " - Tossing: " + itemStack.getItem().getRegistryName());
+        //ChaosCraft.logger.info(this.getCCNamespace() + " - Tossing: " + itemStack.getItem().getRegistryName());
 
 
 
@@ -755,7 +755,7 @@ public class EntityOrganism extends EntityLiving {
 
     private void pickupItem(EntityItem item) {
         if (item.cannotPickup()) return;
-        ChaosCraft.logger.info(this.getCCNamespace() + " - Picked up: " + item.getItem().getItem().getRegistryName());
+        //ChaosCraft.logger.info(this.getCCNamespace() + " - Picked up: " + item.getItem().getItem().getRegistryName());
         ItemStack stack = item.getItem();
 
         Item worldEventItem = stack.getItem();

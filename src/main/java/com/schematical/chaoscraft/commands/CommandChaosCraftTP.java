@@ -73,7 +73,7 @@ public class CommandChaosCraftTP extends CommandBase{
             }else{
                 for (EntityOrganism organism : ChaosCraft.organisims) {
                     String orgName = organism.getOrganism().getName();
-                    ChaosCraft.logger.info(orgName + " == " + name);
+                    //ChaosCraft.logger.info(orgName + " == " + name);
                     if (orgName.equals(name)) {
                         entity1 = organism;
                     }
