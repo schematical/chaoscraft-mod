@@ -57,6 +57,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import javax.annotation.Nonnull;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class EntityOrganism extends EntityLiving implements IEntityAdditionalSpawnData {
@@ -1067,13 +1068,22 @@ public class EntityOrganism extends EntityLiving implements IEntityAdditionalSpa
             ChaosCraft.logger.error("Trying to spawn without a `nNet`");
             return;
         }
-        ByteBufUtils.writeUTF8String(buffer, this.nNet.jsonObject.toJSONString());
+        //ByteBufUtils.writeUTF8String(buffer, this.nNet.jsonObject.toJSONString());
+
+        byte[] utf8Bytes =  this.nNet.jsonObject.toJSONString().getBytes(StandardCharsets.UTF_8);
+
+        ByteBufUtils.writeVarInt(buffer, utf8Bytes.length, 32);
+        buffer.writeBytes(utf8Bytes);
     }
 
     @Override
     public void readSpawnData(ByteBuf buf) {
         if(this.nNet == null){
-            String nNetString = ByteBufUtils.readUTF8String(buf);
+            //String nNetString = ByteBufUtils.readUTF8String(buf);
+
+            int len = ByteBufUtils.readVarInt(buf,5);
+            String nNetString = buf.toString(buf.readerIndex(), len, StandardCharsets.UTF_8);
+            buf.readerIndex(buf.readerIndex() + len);
             try {
 
                 org.json.simple.parser.JSONParser parser = new org.json.simple.parser.JSONParser();
