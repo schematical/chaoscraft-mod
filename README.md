@@ -57,20 +57,28 @@ AWS APIGateway Build Commands (I now have a script for this).
 ```
 mvn clean package -Pstandalone-jar
 cp target/ChaosNet-1.0-SNAPSHOT.jar  ~/IdeaProjects/chaoscraft/libs/ChaosNet-1.0-SNAPSHOT.jar
-
+```
 
 ### Get Time of day:
 
+```
 World#getWorldTime() % 24000
+```
 
 ###Stop Mobs from Spawning:
 ```
 /gamerule doMobSpawning false
+```
+
+```
 /kill @e[type=!player,name=!rick]
 ```
 
 ```
 /kill @e[type=slime]
+```
+
+```
 /kill @e[type=!player]
 ```
 
@@ -86,12 +94,12 @@ World#getWorldTime() % 24000
 /tp @e[type=chaoscraft:rick] @p
 ```
 
-
+```
 /tp @e[name=adam] @p
-
+```
 
 
 
 shift click on a item in creative tab it grabs a max stack for you
-ctrl+q to drop a stack
+```ctrl+q``` to drop a stack
 
