@@ -2,6 +2,8 @@
 
 ## Getting Started:
 
+Make sure you have a 64bit java installation and at least 3 gb of free memory.
+
 ## Clone repo:
 ```
 git clone https://github.com/schematical/chaoscraft-mod.git
