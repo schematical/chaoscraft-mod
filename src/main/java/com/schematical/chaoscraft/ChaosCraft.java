@@ -1,6 +1,6 @@
 package com.schematical.chaoscraft;
 
-
+import org.apache.logging.log4j.LogManager;
 import com.amazonaws.ImmutableRequest;
 import com.amazonaws.opensdk.config.ConnectionConfiguration;
 import com.amazonaws.opensdk.config.TimeoutConfiguration;
@@ -93,8 +93,8 @@ public class ChaosCraft
         spawnHash = (int)Math.round(Math.random() * 9999);
 
 
-        logger = event.getModLog();
-
+        //logger = event.getModLog();
+logger = LogManager.getLogger(ChaosCraft.MODID);
 
         //thread.start();
 

@@ -1,7 +1,9 @@
 # chaoscraft-mod
 
 ## Getting Started:
+## Install jdk1.8.0_202:
 
+https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
 ## Clone repo:
 ```
 git clone https://github.com/schematical/chaoscraft-mod.git
