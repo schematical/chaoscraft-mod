@@ -97,3 +97,4 @@ World#getWorldTime() % 24000
 shift click on a item in creative tab it grabs a max stack for you
 ctrl+q to drop a stack
 
+https://github.com/socketio/socket.io-client-java

@@ -1,4 +1,5 @@
 # eclipse
+run/*
 bin
 *.launch
 .settings

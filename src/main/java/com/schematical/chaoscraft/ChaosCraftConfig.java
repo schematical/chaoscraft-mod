@@ -53,7 +53,7 @@ public class ChaosCraftConfig {
         }
     }
     public static String getConfigPath(){
-        return System.getProperty("user.home") +"/chaoscraft/config.json";
+        return System.getProperty("user.home") + "/chaoscraft/config.json";
     }
     public void load(){
         File f = new File(getConfigPath());
