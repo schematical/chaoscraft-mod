@@ -1,0 +1,111 @@
+[23Dec2019 12:12:25.664] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher running: args [--username, schematical, --gameDir, ., --launchTarget, fmluserdevclient, --fml.mcpVersion, 20191217.105819, --fml.mcVersion, 1.15.1, --fml.forgeGroup, net.minecraftforge, --fml.forgeVersion, 30.0.14, --version, MOD_DEV, --assetIndex, 1.15, --assetsDir, C:\Users\mlea\.gradle\caches\forge_gradle\assets, --accessToken, ❄❄❄❄❄❄❄❄, --userProperties, {}]
+[23Dec2019 12:12:25.668] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher 5.0.0-milestone.4+67+b1a340b starting: java version 1.8.0_202 by Oracle Corporation
+[23Dec2019 12:12:25.960] [main/INFO] [net.minecraftforge.fml.loading.FixSSL/CORE]: Added Lets Encrypt root certificates as additional trust
+[23Dec2019 12:12:26.845] [main/INFO] [cpw.mods.modlauncher.LaunchServiceHandler/MODLAUNCHER]: Launching target 'fmluserdevclient' with arguments [--version, MOD_DEV, --gameDir, ., --assetsDir, C:\Users\mlea\.gradle\caches\forge_gradle\assets, --username, schematical, --assetIndex, 1.15, --accessToken, ❄❄❄❄❄❄❄❄, --userProperties, {}]
+[23Dec2019 12:12:28.339] [Render thread/INFO] [net.minecraft.client.Minecraft/]: Setting user: schematical
+[23Dec2019 12:12:36.281] [Render thread/INFO] [net.minecraft.client.Minecraft/]: Backend library: LWJGL version 3.2.2 build 10
+[23Dec2019 12:12:37.341] [modloading-worker-9/INFO] [net.minecraftforge.common.ForgeMod/FORGEMOD]: Forge mod loading, version 30.0.14, for MC 1.15.1 with MCP 20191217.105819
+[23Dec2019 12:12:37.341] [modloading-worker-9/INFO] [net.minecraftforge.common.MinecraftForge/FORGE]: MinecraftForge v30.0.14 Initialized
+[23Dec2019 12:12:37.346] [modloading-worker-2/INFO] [com.schematical.chaoscraft.ChaosCraft/]: Config Loaded...
+[23Dec2019 12:12:37.346] [modloading-worker-2/INFO] [com.schematical.chaoscraft.ChaosCraft/]: Config Username: testman
+[23Dec2019 12:12:39.954] [Render thread/INFO] [com.schematical.chaoscraft.ChaosCraft/]: HELLO from Register Block
+[23Dec2019 12:12:39.966] [Render thread/WARN] [net.minecraft.entity.EntityType/]: No data fixer registered for entity chaoscraft:org
+[23Dec2019 12:12:42.008] [Render thread/INFO] [com.mojang.text2speech.NarratorWindows/]: Narrator library for x64 successfully loaded
+[23Dec2019 12:12:42.126] [Render thread/INFO] [net.minecraft.resources.SimpleReloadableResourceManager/]: Reloading ResourceManager: Mod Resources, Default
+[23Dec2019 12:12:42.150] [modloading-worker-11/INFO] [com.schematical.chaoscraft.ChaosCraft/]: HELLO FROM PREINIT
+[23Dec2019 12:12:42.150] [modloading-worker-11/INFO] [com.schematical.chaoscraft.ChaosCraft/]: DIRT BLOCK >> minecraft:dirt
+[23Dec2019 12:12:42.255] [Forge Version Check/INFO] [net.minecraftforge.fml.VersionChecker/]: [forge] Starting version check at https://files.minecraftforge.net/maven/net/minecraftforge/forge/promotions_slim.json
+[23Dec2019 12:12:42.256] [modloading-worker-2/INFO] [com.schematical.chaoscraft.ChaosCraft/]: Got game settings net.minecraft.client.GameSettings@3cee8d58
+[23Dec2019 12:12:42.268] [modloading-worker-2/ERROR] [net.minecraftforge.fml.javafmlmod.FMLModContainer/]: Exception caught during firing event: null
+	Index: 1
+	Listeners:
+		0: NORMAL
+		1: net.minecraftforge.eventbus.EventBus$$Lambda$2129/327662980@5533a11e
+java.lang.NullPointerException
+	at java.util.concurrent.ConcurrentHashMap.putVal(ConcurrentHashMap.java:1011)
+	at java.util.concurrent.ConcurrentHashMap.put(ConcurrentHashMap.java:1006)
+	at net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(RenderingRegistry.java:44)
+	at com.schematical.chaoscraft.ChaosCraft.doClientStuff(ChaosCraft.java:115)
+	at net.minecraftforge.eventbus.EventBus.doCastFilter(EventBus.java:212)
+	at net.minecraftforge.eventbus.EventBus.lambda$addListener$11(EventBus.java:204)
+	at net.minecraftforge.eventbus.EventBus.post(EventBus.java:258)
+	at net.minecraftforge.fml.javafmlmod.FMLModContainer.fireEvent(FMLModContainer.java:106)
+	at java.util.function.Consumer.lambda$andThen$0(Consumer.java:65)
+	at java.util.function.Consumer.lambda$andThen$0(Consumer.java:65)
+	at net.minecraftforge.fml.ModContainer.transitionState(ModContainer.java:112)
+	at net.minecraftforge.fml.ModList.lambda$null$10(ModList.java:134)
+	at java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1382)
+	at java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:481)
+	at java.util.stream.ForEachOps$ForEachTask.compute(ForEachOps.java:291)
+	at java.util.concurrent.CountedCompleter.exec(CountedCompleter.java:731)
+	at java.util.concurrent.ForkJoinTask.doExec(ForkJoinTask.java:289)
+	at java.util.concurrent.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1056)
+	at java.util.concurrent.ForkJoinPool.runWorker(ForkJoinPool.java:1692)
+	at java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:157)
+
+[23Dec2019 12:12:42.270] [modloading-worker-2/ERROR] [net.minecraftforge.fml.javafmlmod.FMLModContainer/LOADING]: Caught exception during event FMLClientSetupEvent dispatch for modid chaoscraft
+java.lang.NullPointerException: null
+	at java.util.concurrent.ConcurrentHashMap.putVal(ConcurrentHashMap.java:1011) ~[?:1.8.0_202]
+	at java.util.concurrent.ConcurrentHashMap.put(ConcurrentHashMap.java:1006) ~[?:1.8.0_202]
+	at net.minecraftforge.fml.client.registry.RenderingRegistry.registerEntityRenderingHandler(RenderingRegistry.java:44) ~[forge-1.15.1-30.0.14_mapped_snapshot_20190719-1.14.3-recomp.jar:?]
+	at com.schematical.chaoscraft.ChaosCraft.doClientStuff(ChaosCraft.java:115) ~[main/:?]
+	at net.minecraftforge.eventbus.EventBus.doCastFilter(EventBus.java:212) ~[eventbus-2.0.0-milestone.1-service.jar:?]
+	at net.minecraftforge.eventbus.EventBus.lambda$addListener$11(EventBus.java:204) ~[eventbus-2.0.0-milestone.1-service.jar:?]
+	at net.minecraftforge.eventbus.EventBus.post(EventBus.java:258) ~[eventbus-2.0.0-milestone.1-service.jar:?]
+	at net.minecraftforge.fml.javafmlmod.FMLModContainer.fireEvent(FMLModContainer.java:106) ~[?:30.0]
+	at java.util.function.Consumer.lambda$andThen$0(Consumer.java:65) ~[?:1.8.0_202]
+	at java.util.function.Consumer.lambda$andThen$0(Consumer.java:65) ~[?:1.8.0_202]
+	at net.minecraftforge.fml.ModContainer.transitionState(ModContainer.java:112) ~[?:?]
+	at net.minecraftforge.fml.ModList.lambda$null$10(ModList.java:134) ~[?:?]
+	at java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184) [?:1.8.0_202]
+	at java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1382) [?:1.8.0_202]
+	at java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:481) [?:1.8.0_202]
+	at java.util.stream.ForEachOps$ForEachTask.compute(ForEachOps.java:291) [?:1.8.0_202]
+	at java.util.concurrent.CountedCompleter.exec(CountedCompleter.java:731) [?:1.8.0_202]
+	at java.util.concurrent.ForkJoinTask.doExec(ForkJoinTask.java:289) [?:1.8.0_202]
+	at java.util.concurrent.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1056) [?:1.8.0_202]
+	at java.util.concurrent.ForkJoinPool.runWorker(ForkJoinPool.java:1692) [?:1.8.0_202]
+	at java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:157) [?:1.8.0_202]
+[23Dec2019 12:12:42.282] [Server-Worker-4/FATAL] [net.minecraftforge.fml.ModLoader/LOADING]: Failed to complete lifecycle event SIDED_SETUP, 1 errors found
+[23Dec2019 12:12:42.282] [Server-Worker-4/FATAL] [net.minecraftforge.eventbus.EventBus/EVENTBUS]: EventBus 0 shutting down - future events will not be posted.
+java.lang.Exception: stacktrace
+	at net.minecraftforge.eventbus.EventBus.shutdown(EventBus.java:278) ~[eventbus-2.0.0-milestone.1-service.jar:?]
+	at net.minecraftforge.fml.client.ClientModLoader.lambda$createRunnableWithCatch$5(ClientModLoader.java:115) ~[?:?]
+	at net.minecraftforge.fml.client.ClientModLoader.startModLoading(ClientModLoader.java:123) ~[?:?]
+	at net.minecraftforge.fml.client.ClientModLoader.lambda$onreload$3(ClientModLoader.java:105) ~[?:?]
+	at net.minecraftforge.fml.client.ClientModLoader.lambda$createRunnableWithCatch$5(ClientModLoader.java:113) ~[?:?]
+	at java.util.concurrent.CompletableFuture$AsyncRun.run(CompletableFuture.java:1626) [?:1.8.0_202]
+	at java.util.concurrent.CompletableFuture$AsyncRun.exec(CompletableFuture.java:1618) [?:1.8.0_202]
+	at java.util.concurrent.ForkJoinTask.doExec(ForkJoinTask.java:289) [?:1.8.0_202]
+	at java.util.concurrent.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1056) [?:1.8.0_202]
+	at java.util.concurrent.ForkJoinPool.runWorker(ForkJoinPool.java:1692) [?:1.8.0_202]
+	at java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:157) [?:1.8.0_202]
+[23Dec2019 12:12:42.489] [Forge Version Check/INFO] [net.minecraftforge.fml.VersionChecker/]: [forge] Found status: BETA_OUTDATED Current: 30.0.14 Target: 30.0.15
+[23Dec2019 12:12:45.980] [Server-Worker-1/ERROR] [net.minecraftforge.fml.ModLoader/LOADING]: Skipping lifecycle event ENQUEUE_IMC, 1 errors found.
+[23Dec2019 12:12:45.980] [Server-Worker-1/FATAL] [net.minecraftforge.fml.ModLoader/LOADING]: Failed to complete lifecycle event ENQUEUE_IMC, 1 errors found
+[23Dec2019 12:12:45.980] [Server-Worker-1/FATAL] [net.minecraftforge.eventbus.EventBus/EVENTBUS]: EventBus 0 shutting down - future events will not be posted.
+java.lang.Exception: stacktrace
+	at net.minecraftforge.eventbus.EventBus.shutdown(EventBus.java:278) ~[eventbus-2.0.0-milestone.1-service.jar:?]
+	at net.minecraftforge.fml.client.ClientModLoader.lambda$createRunnableWithCatch$5(ClientModLoader.java:115) ~[?:?]
+	at net.minecraftforge.fml.client.ClientModLoader.finishModLoading(ClientModLoader.java:136) ~[?:?]
+	at net.minecraftforge.fml.client.ClientModLoader.lambda$onreload$4(ClientModLoader.java:107) ~[?:?]
+	at java.util.concurrent.CompletableFuture.uniRun(CompletableFuture.java:705) [?:1.8.0_202]
+	at java.util.concurrent.CompletableFuture$UniRun.tryFire(CompletableFuture.java:687) [?:1.8.0_202]
+	at java.util.concurrent.CompletableFuture$Completion.exec(CompletableFuture.java:443) [?:1.8.0_202]
+	at java.util.concurrent.ForkJoinTask.doExec(ForkJoinTask.java:289) [?:1.8.0_202]
+	at java.util.concurrent.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1056) [?:1.8.0_202]
+	at java.util.concurrent.ForkJoinPool.runWorker(ForkJoinPool.java:1692) [?:1.8.0_202]
+	at java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:157) [?:1.8.0_202]
+[23Dec2019 12:12:46.316] [Render thread/INFO] [net.minecraft.client.audio.SoundSystem/]: OpenAL initialized.
+[23Dec2019 12:12:46.317] [Render thread/INFO] [net.minecraft.client.audio.SoundEngine/SOUNDS]: Sound engine started
+[23Dec2019 12:12:46.433] [Render thread/INFO] [net.minecraft.client.renderer.texture.AtlasTexture/]: Created: 1024x512x4 minecraft:textures/atlas/blocks.png-atlas
+[23Dec2019 12:12:46.536] [Render thread/INFO] [net.minecraft.client.renderer.texture.AtlasTexture/]: Created: 128x128x4 minecraft:textures/atlas/signs.png-atlas
+[23Dec2019 12:12:46.538] [Render thread/INFO] [net.minecraft.client.renderer.texture.AtlasTexture/]: Created: 512x512x4 minecraft:textures/atlas/banner_patterns.png-atlas
+[23Dec2019 12:12:46.556] [Render thread/INFO] [net.minecraft.client.renderer.texture.AtlasTexture/]: Created: 512x512x4 minecraft:textures/atlas/shield_patterns.png-atlas
+[23Dec2019 12:12:46.574] [Render thread/INFO] [net.minecraft.client.renderer.texture.AtlasTexture/]: Created: 256x256x4 minecraft:textures/atlas/chest.png-atlas
+[23Dec2019 12:12:46.579] [Render thread/INFO] [net.minecraft.client.renderer.texture.AtlasTexture/]: Created: 512x256x4 minecraft:textures/atlas/beds.png-atlas
+[23Dec2019 12:12:46.589] [Render thread/INFO] [net.minecraft.client.renderer.texture.AtlasTexture/]: Created: 512x256x4 minecraft:textures/atlas/shulker_boxes.png-atlas
+[23Dec2019 12:12:47.044] [Render thread/INFO] [net.minecraft.client.renderer.texture.AtlasTexture/]: Created: 256x256x0 minecraft:textures/atlas/particles.png-atlas
+[23Dec2019 12:12:47.057] [Render thread/INFO] [net.minecraft.client.renderer.texture.AtlasTexture/]: Created: 256x256x0 minecraft:textures/atlas/paintings.png-atlas
+[23Dec2019 12:12:47.063] [Render thread/INFO] [net.minecraft.client.renderer.texture.AtlasTexture/]: Created: 128x128x0 minecraft:textures/atlas/mob_effects.png-atlas

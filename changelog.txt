@@ -1,0 +1,94 @@
+Build: 1.15.1-30.0.14 - Fri Dec 20 04:14:34 GMT 2019
+	tterrag:
+		Fix diffuse lighting being baked into models, fixes dark items
+
+=========
+Build: 1.15.1-30.0.13 - Fri Dec 20 03:50:53 GMT 2019
+	David Quintana:
+		Fix item quads not using the existing vertex color when applying tint colors.
+
+=========
+Build: 1.15.1-30.0.12 - Fri Dec 20 01:44:40 GMT 2019
+	David Quintana:
+		Fix bucket model. Some mask textures were not added to the repository, and the bucket override generation was broken.
+		Fix OBJ loading crash due to a float value being parsed as int.
+		Fixes 6377
+
+=========
+Build: 1.15.1-30.0.11 - Thu Dec 19 05:56:10 GMT 2019
+	bl4ckscor33:
+		Fix game crashing when modded entities are present (#6364)
+
+=========
+Build: 1.15.1-30.0.10 - Thu Dec 19 05:02:29 GMT 2019
+	ichttt:
+		Fix warning screen about missing minecraft registry entries (#6363)
+
+	richard:
+		Fix capabilities becoming inaccessible on returning from end (#6368)
+
+=========
+Build: 1.15.1-30.0.8 - Thu Dec 19 04:39:52 GMT 2019
+	ichttt:
+		Some code cleanup for 1.15 (#6362)
+
+=========
+Build: 1.15.1-30.0.7 - Wed Dec 18 02:11:01 GMT 2019
+	tterrag:
+		Fix MainMenuScreen patch
+
+	tterrag:
+		Mod list GUI detail pass
+		
+		- Make padding consistent on all elements
+		- Properly horizontally center the "Search" text
+		- Update and resize forge/mcp logos
+		- Enable linear filtering on logo rendering by default
+		  - Can be disabled with the "logoBlur" mods.toml property
+
+=========
+Build: 1.15.1-30.0.5 - Wed Dec 18 01:03:20 GMT 2019
+	ichttt:
+		Fix mod list screen (#6367)
+
+=========
+Build: 1.15.1-30.0.4 - Tue Dec 17 23:47:00 GMT 2019
+	David Quintana:
+		Fix items in ground being too small, we were applying perspectives twice.
+		Restore forge patch and fix a tiny mistake in it.
+
+	tobias.hotz:
+		Fix keybinds not loading/saving correctly
+
+=========
+Build: 1.15.1-30.0.2 - Tue Dec 17 22:38:00 GMT 2019
+	tterrag:
+		Remove uvlock hook, fixes broken stair/fence/etc models
+
+	tterrag:
+		Update fallback spec version
+
+=========
+Build: 1.15.1-30.0.0 - Tue Dec 17 19:42:28 GMT 2019
+	tterrag:
+		Update to 1.15.1
+
+=========
+Build: 1.15-29.0.4 - Tue Dec 17 18:15:10 GMT 2019
+	David Quintana:
+		Finish converting the code from javax.vecmath to the vanilla vector classes. Forge is now vecmath-free!
+
+=========
+Build: 1.15-29.0.3 - Tue Dec 17 09:50:53 GMT 2019
+	tterrag:
+		Remove deprecations
+
+=========
+Build: 1.15-29.0.2 - Tue Dec 17 04:47:01 GMT 2019
+	tterrag:
+		Fix incorrect item lighting
+
+=========
+Build: 1.15-29.0.1 - Tue Dec 17 04:22:29 GMT 2019
+	tterrag:
+		Revert fluid change to use Material, fixes server crash

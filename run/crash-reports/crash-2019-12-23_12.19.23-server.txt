@@ -1,0 +1,106 @@
+---- Minecraft Crash Report ----
+// Who set us up the TNT?
+
+Time: 12/23/19 12:19 PM
+Description: Ticking entity
+
+java.lang.NullPointerException: Ticking entity
+	at net.minecraft.enchantment.Enchantment.getEntityEquipment(Enchantment.java:51) ~[?:?] {re:classloading}
+	at net.minecraft.enchantment.EnchantmentHelper.getMaxEnchantmentLevel(EnchantmentHelper.java:185) ~[?:?] {re:classloading}
+	at net.minecraft.entity.LivingEntity.frostWalk(LivingEntity.java:388) ~[?:?] {re:classloading}
+	at net.minecraft.entity.LivingEntity.baseTick(LivingEntity.java:339) ~[?:?] {re:classloading}
+	at net.minecraft.entity.Entity.tick(Entity.java:390) ~[?:?] {re:classloading,pl:accesstransformer:B}
+	at net.minecraft.entity.LivingEntity.tick(LivingEntity.java:2176) ~[?:?] {re:classloading}
+	at net.minecraft.world.server.ServerWorld.updateEntity(ServerWorld.java:613) ~[?:?] {re:classloading}
+	at net.minecraft.world.World.func_217390_a(World.java:574) ~[?:?] {re:classloading,pl:accesstransformer:B}
+	at net.minecraft.world.server.ServerWorld.tick(ServerWorld.java:404) ~[?:?] {re:classloading}
+	at net.minecraft.server.MinecraftServer.updateTimeLightAndEntities(MinecraftServer.java:877) ~[?:?] {re:classloading,pl:accesstransformer:B}
+	at net.minecraft.server.MinecraftServer.tick(MinecraftServer.java:812) ~[?:?] {re:classloading,pl:accesstransformer:B}
+	at net.minecraft.server.integrated.IntegratedServer.tick(IntegratedServer.java:118) ~[?:?] {re:classloading,pl:runtimedistcleaner:A}
+	at net.minecraft.server.MinecraftServer.run(MinecraftServer.java:658) [?:?] {re:classloading,pl:accesstransformer:B}
+	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_202] {}
+
+
+A detailed walkthrough of the error, its code path and all known details is as follows:
+---------------------------------------------------------------------------------------
+
+-- Head --
+Thread: Server thread
+Stacktrace:
+	at net.minecraft.enchantment.Enchantment.getEntityEquipment(Enchantment.java:51)
+	at net.minecraft.enchantment.EnchantmentHelper.getMaxEnchantmentLevel(EnchantmentHelper.java:185)
+	at net.minecraft.entity.LivingEntity.frostWalk(LivingEntity.java:388)
+	at net.minecraft.entity.LivingEntity.baseTick(LivingEntity.java:339)
+	at net.minecraft.entity.Entity.tick(Entity.java:390)
+	at net.minecraft.entity.LivingEntity.tick(LivingEntity.java:2176)
+	at net.minecraft.world.server.ServerWorld.updateEntity(ServerWorld.java:613)
+
+-- Entity being ticked --
+Details:
+	Entity Type: chaoscraft:org_entity (com.schematical.chaoscraft.entities.OrgEntity)
+	Entity ID: 847
+	Entity Name: entity.chaoscraft.org_entity
+	Entity's Exact location: -100.79, 72.00, 244.83
+	Entity's Block location: World: (-101,72,244), Chunk: (at 11,4,4 in -7,15; contains blocks -112,0,240 to -97,255,255), Region: (-1,0; contains chunks -32,0 to -1,31, blocks -512,0,0 to -1,255,511)
+	Entity's Momentum: 0.00, 0.00, 0.00
+	Entity's Passengers: []
+	Entity's Vehicle: ~~ERROR~~ NullPointerException: null
+Stacktrace:
+	at net.minecraft.world.World.func_217390_a(World.java:574)
+	at net.minecraft.world.server.ServerWorld.tick(ServerWorld.java:404)
+
+-- Affected level --
+Details:
+	All players: 1 total; [ServerPlayerEntity['schematical'/337, l='Party Time', x=-100.79, y=72.00, z=244.83]]
+	Chunk stats: ServerChunkCache: 2278
+	Level dimension: DimensionType{minecraft:overworld}
+	Level name: Party Time
+	Level seed: 8047947220028665344
+	Level generator: ID 00 - default, ver 1. Features enabled: true
+	Level generator options: {}
+	Level spawn location: World: (-112,73,240), Chunk: (at 0,4,0 in -7,15; contains blocks -112,0,240 to -97,255,255), Region: (-1,0; contains chunks -32,0 to -1,31, blocks -512,0,0 to -1,255,511)
+	Level time: 18056 game time, 18056 day time
+	Level storage version: 0x04ABD - Anvil
+	Level weather: Rain time: 53521 (now: false), thunder time: 2020 (now: true)
+	Level game mode: Game mode: survival (ID 0). Hardcore: false. Cheats: true
+Stacktrace:
+	at net.minecraft.server.MinecraftServer.updateTimeLightAndEntities(MinecraftServer.java:877)
+	at net.minecraft.server.MinecraftServer.tick(MinecraftServer.java:812)
+	at net.minecraft.server.integrated.IntegratedServer.tick(IntegratedServer.java:118)
+	at net.minecraft.server.MinecraftServer.run(MinecraftServer.java:658)
+	at java.lang.Thread.run(Thread.java:748)
+
+-- System Details --
+Details:
+	Minecraft Version: 1.15.1
+	Minecraft Version ID: 1.15.1
+	Operating System: Windows 10 (amd64) version 10.0
+	Java Version: 1.8.0_202, Oracle Corporation
+	Java VM Version: Java HotSpot(TM) 64-Bit Server VM (mixed mode), Oracle Corporation
+	Memory: 1849232048 bytes (1763 MB) / 3770155008 bytes (3595 MB) up to 7572291584 bytes (7221 MB)
+	CPUs: 16
+	JVM Flags: 1 total; -XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump
+	ModLauncher: 5.0.0-milestone.4+67+b1a340b
+	ModLauncher launch target: fmluserdevclient
+	ModLauncher naming: mcp
+	ModLauncher services: 
+		/eventbus-2.0.0-milestone.1-service.jar eventbus PLUGINSERVICE 
+		/forge-1.15.1-30.0.14_mapped_snapshot_20190719-1.14.3-launcher.jar object_holder_definalize PLUGINSERVICE 
+		/forge-1.15.1-30.0.14_mapped_snapshot_20190719-1.14.3-launcher.jar runtime_enum_extender PLUGINSERVICE 
+		/accesstransformers-2.0.0-milestone.1-shadowed.jar accesstransformer PLUGINSERVICE 
+		/forge-1.15.1-30.0.14_mapped_snapshot_20190719-1.14.3-launcher.jar capability_inject_definalize PLUGINSERVICE 
+		/forge-1.15.1-30.0.14_mapped_snapshot_20190719-1.14.3-launcher.jar runtimedistcleaner PLUGINSERVICE 
+		/forge-1.15.1-30.0.14_mapped_snapshot_20190719-1.14.3-launcher.jar fml TRANSFORMATIONSERVICE 
+	FML: 30.0
+	Forge: net.minecraftforge:30.0.14
+	FML Language Providers: 
+		javafml@30.0
+		minecraft@1
+	Mod List: 
+		client-extra.jar Minecraft {minecraft@1.15.1 DONE}
+		forge-1.15.1-30.0.14_mapped_snapshot_20190719-1.14.3-recomp.jar Forge {forge@30.0.14 DONE}
+		main Example Mod {chaoscraft@NONE DONE}
+	Player Count: 1 / 8; [ServerPlayerEntity['schematical'/337, l='Party Time', x=-100.79, y=72.00, z=244.83]]
+	Data Packs: vanilla, mod:chaoscraft, mod:forge (incompatible)
+	Type: Integrated Server (map_client.txt)
+	Is Modded: Definitely; Client brand changed to 'forge'

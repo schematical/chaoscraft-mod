@@ -1,0 +1,130 @@
+{
+  "minecraft:adventure/throw_trident": {
+    "criteria": {
+      "shot_trident": "2019-12-22 15:43:14 -0600"
+    },
+    "done": true
+  },
+  "minecraft:story/lava_bucket": {
+    "criteria": {
+      "lava_bucket": "2019-12-22 13:37:27 -0600"
+    },
+    "done": true
+  },
+  "minecraft:husbandry/root": {
+    "criteria": {
+      "consumed_item": "2019-12-22 13:40:24 -0600"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/dark_oak_boat": {
+    "criteria": {
+      "in_water": "2019-12-22 13:44:34 -0600"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/birch_boat": {
+    "criteria": {
+      "in_water": "2019-12-22 13:44:34 -0600"
+    },
+    "done": true
+  },
+  "minecraft:recipes/decorations/chest": {
+    "criteria": {
+      "has_lots_of_items": "2019-12-22 15:50:36 -0600"
+    },
+    "done": true
+  },
+  "minecraft:adventure/kill_a_mob": {
+    "criteria": {
+      "minecraft:zombie": "2019-12-22 12:25:00 -0600"
+    },
+    "done": true
+  },
+  "minecraft:end/elytra": {
+    "criteria": {
+      "elytra": "2019-12-22 16:07:20 -0600"
+    },
+    "done": true
+  },
+  "minecraft:adventure/kill_all_mobs": {
+    "criteria": {
+      "minecraft:creeper": "2019-12-22 15:45:02 -0600",
+      "minecraft:slime": "2019-12-22 15:43:14 -0600",
+      "minecraft:zombie": "2019-12-22 12:25:00 -0600"
+    },
+    "done": false
+  },
+  "minecraft:recipes/food/cake": {
+    "criteria": {
+      "has_egg": "2019-12-22 16:11:40 -0600"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/acacia_boat": {
+    "criteria": {
+      "in_water": "2019-12-22 13:44:34 -0600"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/oak_boat": {
+    "criteria": {
+      "in_water": "2019-12-22 13:44:34 -0600"
+    },
+    "done": true
+  },
+  "minecraft:adventure/ol_betsy": {
+    "criteria": {
+      "shot_crossbow": "2019-12-22 16:05:07 -0600"
+    },
+    "done": true
+  },
+  "minecraft:adventure/root": {
+    "criteria": {
+      "killed_something": "2019-12-22 12:25:00 -0600"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/jungle_boat": {
+    "criteria": {
+      "in_water": "2019-12-22 13:44:34 -0600"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/spruce_boat": {
+    "criteria": {
+      "in_water": "2019-12-22 13:44:34 -0600"
+    },
+    "done": true
+  },
+  "minecraft:adventure/shoot_arrow": {
+    "criteria": {
+      "shot_arrow": "2019-12-22 16:05:24 -0600"
+    },
+    "done": true
+  },
+  "minecraft:recipes/brewing/cauldron": {
+    "criteria": {
+      "has_water_bucket": "2019-12-22 14:02:58 -0600"
+    },
+    "done": true
+  },
+  "minecraft:adventure/adventuring_time": {
+    "criteria": {
+      "minecraft:cold_ocean": "2019-12-22 16:12:14 -0600",
+      "minecraft:mountains": "2019-12-22 13:46:50 -0600",
+      "minecraft:forest": "2019-12-22 15:58:37 -0600",
+      "minecraft:taiga": "2019-12-22 13:21:55 -0600",
+      "minecraft:giant_tree_taiga": "2019-12-22 13:21:40 -0600",
+      "minecraft:deep_cold_ocean": "2019-12-22 16:12:23 -0600",
+      "minecraft:taiga_hills": "2019-12-22 12:24:48 -0600",
+      "minecraft:deep_frozen_ocean": "2019-12-22 16:12:22 -0600",
+      "minecraft:beach": "2019-12-22 16:14:21 -0600",
+      "minecraft:dark_forest": "2019-12-22 13:46:57 -0600",
+      "minecraft:river": "2019-12-22 13:46:56 -0600",
+      "minecraft:plains": "2019-12-22 15:55:07 -0600"
+    },
+    "done": false
+  },
+  "DataVersion": 2227
+}
