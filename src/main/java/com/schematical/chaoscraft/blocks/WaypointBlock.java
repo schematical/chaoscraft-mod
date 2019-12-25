@@ -8,8 +8,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class SpawnBlock extends Block {
-    public SpawnBlock(Properties properties) {
+public class WaypointBlock extends Block {
+    public WaypointBlock(Properties properties) {
         super(properties);
     }
     @Override
@@ -20,7 +20,8 @@ public class SpawnBlock extends Block {
     @Override
     public void onEntityWalk(World worldIn, BlockPos pos, Entity entityIn) {
         ChaosCraft.LOGGER.debug("Walked! " + entityIn.getName());
+        //If it is a OrgEntity give it points
     }
-
+    
 
 }
