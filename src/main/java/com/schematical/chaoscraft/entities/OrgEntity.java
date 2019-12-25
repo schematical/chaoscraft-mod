@@ -4,6 +4,7 @@ import com.mojang.authlib.GameProfile;
 import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
 import com.schematical.chaoscraft.events.OrgEvent;
 import jdk.nashorn.internal.codegen.Compiler;
+import net.minecraft.command.arguments.EntityAnchorArgument;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -92,7 +93,7 @@ public class OrgEntity extends LivingEntity {
         double yOffset = Math.sin(Math.toRadians(desiredPitch));
         double zOffset = Math.cos(Math.toRadians(this.desiredYaw)) * Math.cos(Math.toRadians(desiredPitch));
         double xOffset = Math.sin(Math.toRadians(this.desiredYaw)) * Math.cos(Math.toRadians(desiredPitch));
-        this.getLookHelper().setLookPosition(posX + xOffset, posY + this.getEyeHeight() + yOffset, posZ + zOffset, 360, 360);
+        this.lookAt(EntityAnchorArgument.Type.EYES, new Vec3d(getPositionVec().x + xOffset, getPositionVec().y + this.getEyeHeight() + yOffset, getPositionVec().z + zOffset));
         this.renderYawOffset = 0;
         this.setRotation(this.rotationYaw, this.rotationPitch);
 
@@ -116,9 +117,7 @@ public class OrgEntity extends LivingEntity {
         playerWrapper.prevPosX  = this.prevPosX;
         playerWrapper.prevPosY  = this.prevPosY;
         playerWrapper.prevPosZ  = this.prevPosZ;
-        playerWrapper.posX = this.posX;
-        playerWrapper.posY = this.posY;
-        playerWrapper.posZ = this.posZ;
+        playerWrapper.setPosition(getPositionVec().x, getPositionVec().y, getPositionVec().z);
         playerWrapper.onGround = this.onGround;
         //playerWrapper.setHeldItem(EnumHand.MAIN_HAND, getHeldItemMainhand());
         return playerWrapper;

@@ -2,9 +2,8 @@ package com.schematical.chaoscraft.ai.outputs;
 
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.OutputNeuron;
-import com.schematical.chaoscraft.entities.EntityOrganism;
 import com.schematical.chaoscraft.entities.OrgEntity;
-import net.minecraft.entity.EntityLiving;
+
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.RayTraceResult;
 
