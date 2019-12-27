@@ -8,14 +8,19 @@ buildscript {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
     }
 }
+
+plugins {
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
+}
+
 apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
 version = '1.0'
-group = 'com.schematical.chaoschraft' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = 'chaoschraft'
+group = 'com.schematical.chaoscraft' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = 'chaoscraft'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
@@ -85,6 +90,10 @@ minecraft {
     }
 }
 
+configurations {
+    shade
+}
+
 dependencies {
     // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
@@ -108,26 +117,26 @@ dependencies {
     // For more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
-    compile fileTree(dir: 'libs', include: '*.jar')
+    implementation fileTree(dir: 'libs', include: '*.jar')
+    shade fileTree(dir: 'libs', include: '*.jar') //Shade means to put it into the final jar file
 
-    // https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple
+//    // https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple
     compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
-    compile group: 'io.mikael', name: 'urlbuilder', version: '2.0.8'
-
-
-
-    compile group: 'com.amazonaws', name: 'aws-java-sdk-opensdk', version: '1.11.392'
-
-
-
-    compile ('io.socket:socket.io-client:1.0.0') {
-        // excluding org.json which is provided by Android
-        exclude group: 'org.json', module: 'json'
-    }
+//    compile group: 'io.mikael', name: 'urlbuilder', version: '2.0.8'
+//
+//    compile group: 'com.amazonaws', name: 'aws-java-sdk-opensdk', version: '1.11.392'
+//
+//    compile ('io.socket:socket.io-client:1.0.0') {
+//        // excluding org.json which is provided by Android
+//        exclude group: 'org.json', module: 'json'
+//    }
 }
 
-// Example for how to get properties into the manifest for reading by the runtime..
-jar {
+shadowJar {
+    configurations = [project.configurations.shade]
+    relocate 'org.apache.http', 'com.suppergerrie2.org.apache.http'
+
+    // Example for how to get properties into the manifest for reading by the runtime..
     manifest {
         attributes([
             "Specification-Title": "chaoscraft",
@@ -139,7 +148,11 @@ jar {
             "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
+    classifier = ''
 }
+
+jar.enabled(false)
+jar.dependsOn(shadowJar)
 
 // Example configuration to allow publishing using the maven-publish task
 // we define a custom artifact that is sourced from the reobfJar output task
