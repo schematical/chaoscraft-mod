@@ -43,9 +43,9 @@ public class CraftOutput extends OutputNeuron {
         if(hasBeenEvaluated){
             return _lastValue;
         }
-        if(nNet.entity.getDebug()) {
+       /* if(nNet.entity.getDebug()) {
             ChaosCraft.logger.info(nNet.entity.getCCNamespace() + " Checking to see if they can Craft: " + recipe.getRegistryName() + " - " + recipe.getRecipeOutput().getDisplayName());
-        }
+        }*/
         if(!nNet.entity.canCraft(recipe)){
             return _lastValue;
         }
@@ -56,9 +56,9 @@ public class CraftOutput extends OutputNeuron {
         if(this._lastValue <= .5){
             return;
         }
-        if(nNet.entity.getDebug()) {
+       /* if(nNet.entity.getDebug()) {
             ChaosCraft.logger.info(nNet.entity.getCCNamespace() + " Attempting to Craft: " + recipe.getRegistryName() + " - " + recipe.getRecipeOutput().getDisplayName());
-        }
+        }*/
 
        //ChaosCraft.logger.info("Attempting to Craft: " + recipe.getRegistryName().toString());
         ItemStack outputStack = null;
@@ -66,14 +66,14 @@ public class CraftOutput extends OutputNeuron {
         outputStack = nNet.entity.craft(recipe);
 
         if(outputStack == null){
-            throw new ChaosNetException("Something went wrong crafting: " + recipe.getRegistryName().toString() + " this should not be possible with the `evaluate` check above");
+            throw new ChaosNetException("Something went wrong crafting: " + recipe.getType().toString() + " this should not be possible with the `evaluate` check above");
         }
 
         CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.CRAFT);
         worldEvent.item = outputStack.getItem();
         nNet.entity.entityFitnessManager.test(worldEvent);
         //TODO: Move this to a GUI thing.
-        String message = nNet.entity.getCCNamespace() +" Crafted Recipe: " + recipe.getRegistryName().toString() + " - Item: " + worldEvent.item.getRegistryName();
+        String message = nNet.entity.getCCNamespace() +" Crafted Recipe: " + recipe.getType().toString() + " - Item: " + worldEvent.item.getRegistryName();
 
     }
     @Override

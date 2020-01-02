@@ -89,16 +89,14 @@ public class Eye  extends BiologyBase {
 
             if(!target.equals(entity)) {
 
-
-                RayTraceResult rayTraceResult = target.getCollisionBoundingBox().rayTrace(vec3d, vec3d2);
-                if (rayTraceResult != null) {
-
+                target.getCollisionBoundingBox().rayTrace(vec3d, vec3d2).ifPresent(position -> {
                     CCObserviableAttributeCollection attributeCollection = entity.observableAttributeManager.Observe(target);
                     if (attributeCollection != null) {
                         //ChaosCraft.logger.info(entity.getCCNamespace() + " can see " + attributeCollection.resourceId);
                         seenEntities.add(attributeCollection);
                     }
-                }
+                });
+
             }
         }
         _entitiesCached = true;

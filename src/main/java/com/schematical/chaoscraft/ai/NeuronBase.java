@@ -1,6 +1,6 @@
 package com.schematical.chaoscraft.ai;
 
-import com.schematical.chaoscraft.gui.CCOrgNNetView;
+
 import com.schematical.chaosnet.model.ChaosNetException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -104,7 +104,7 @@ public abstract class NeuronBase extends InnovationBase {
         return response;
     }
 
-    public void setDistanceFromIO(int distanceFromOutput, int width, int height, int neuronSize, HashMap<NeuronBase, CCOrgNNetView.CCNeuronInformation> neuronInformation) {
+   /* public void setDistanceFromIO(int distanceFromOutput, int width, int height, int neuronSize, HashMap<NeuronBase, CCOrgNNetView.CCNeuronInformation> neuronInformation) {
         CCOrgNNetView.CCNeuronInformation information = neuronInformation.get(this);
         information.distanceFromOutput = distanceFromOutput;
 
@@ -128,5 +128,5 @@ public abstract class NeuronBase extends InnovationBase {
             information.y = (int) (Math.random() * height);
             information.layer = information.distanceFromInput / (float) (information.distanceFromInput + information.distanceFromOutput);
         }
-    }
+    }*/
 }

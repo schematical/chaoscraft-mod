@@ -1,18 +1,19 @@
 package com.schematical.chaoscraft.ai;
 
-import com.schematical.chaoscraft.entities.EntityOrganism;
+import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaosnet.model.ChaosNetException;
 import com.schematical.chaosnet.model.ObservedAttributesElement;
 import com.schematical.chaosnet.model.Organism;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.EntityEntry;
-import net.minecraftforge.fml.common.registry.EntityRegistry;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -51,7 +52,7 @@ public class CCObservableAttributeManager {
         }
         return false;
     }
-    public CCObserviableAttributeCollection Observe(IBlockState blockState){
+    public CCObserviableAttributeCollection Observe(BlockState blockState){
         CCObserviableAttributeCollection atts = Observe(blockState.getBlock());
 
         return atts;
@@ -79,12 +80,12 @@ public class CCObservableAttributeManager {
         if(entity == null){
             throw new ChaosNetException("Entity is null");
         }
-        EntityEntry entityEntry = EntityRegistry.getEntry(entity.getClass());
-        if(entityEntry == null){
+
+        if(entity.getType() == null){
             return null;
             //throw new ChaosNetException("EntityEntry is null");
         }
-        ResourceLocation resourceLocation = entityEntry.getRegistryName();
+        ResourceLocation resourceLocation = entity.getType().getRegistryName();
         if(resourceLocation == null){
             throw new ChaosNetException("ResourceLocation is null");
         }
@@ -98,12 +99,12 @@ public class CCObservableAttributeManager {
     public CCObserviableAttributeCollection Observe(IRecipe recipe){
         CCObserviableAttributeCollection atts = new CCObserviableAttributeCollection();
         atts.resourceType = CCResourceType.RECIPE;
-        atts.resourceId = recipe.getRegistryName().toString();
+        atts.resourceId = recipe.getType().toString();
         TestUnique(CCAttributeId.RECIPE_ID, atts.resourceId);
         return atts;
     }
 
-    public void ObserveCraftableRecipes(EntityOrganism entityOrganism) {
+    public void ObserveCraftableRecipes(OrgEntity entityOrganism) {
         //TODO: Go through each craftable recipe and figure out what it can craft
         //List<IRecipe> craftableRecipes = new ArrayList<IRecipe>();
         for (IRecipe irecipe : CraftingManager.REGISTRY)
