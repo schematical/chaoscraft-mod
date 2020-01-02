@@ -17,16 +17,17 @@ import net.minecraft.block.material.Material;
 import net.minecraft.command.arguments.EntityAnchorArgument;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.RecipeItemHelper;
-import net.minecraft.util.Hand;
-import net.minecraft.util.HandSide;
-import net.minecraft.util.NonNullList;
+import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import net.minecraftforge.items.ItemStackHandler;
@@ -34,8 +35,9 @@ import net.minecraftforge.registries.ObjectHolder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
-public class OrgEntity extends LivingEntity {
+public class OrgEntity extends MobEntity {
 
     @ObjectHolder("chaoscraft:org_entity")
     public static final EntityType<OrgEntity> ORGANISM_TYPE = null;
@@ -65,9 +67,10 @@ public class OrgEntity extends LivingEntity {
 
     public List<AlteredBlockInfo> alteredBlocks = new ArrayList<AlteredBlockInfo>();
     private int equippedSlot = -1;
+    private int rightClickDelay;
 
     public OrgEntity(EntityType<? extends LivingEntity> type, World world) {
-        super(type, world);
+        super((EntityType<? extends MobEntity>) type, world);
     }
 
     @Override
@@ -89,7 +92,9 @@ public class OrgEntity extends LivingEntity {
     public ItemStackHandler getItemStack(){
         return this.itemHandler;
     }
-
+    public void jump(){
+        this.jump();
+    }
     @Override
     public HandSide getPrimaryHand() {
         return null;
@@ -400,5 +405,176 @@ public class OrgEntity extends LivingEntity {
             return -1;
         }
         return slot;
+    }
+
+    public void rightClick(BlockRayTraceResult result) {
+        this.rightClickDelay = 4;
+        for (Hand hand : Hand.values()) {
+
+
+            BlockPos blockpos = result.getPos();
+            BlockState state = this.world.getBlockState(blockpos);
+            if (state.getMaterial() != Material.AIR) {
+
+                ActionResultType enumactionresult = rightClickBlock(blockpos, hand, result);
+
+
+                if (enumactionresult == ActionResultType.SUCCESS) {
+                    this.swingArm(hand);
+
+                    CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.BLOCK_PLACED);
+                    worldEvent.block = state.getBlock();
+                    entityFitnessManager.test(worldEvent);
+                    return;
+                }
+            }
+
+            List<UUID> uuids = new ArrayList<>();
+
+            ItemStack itemstack = getHeldItem(hand);
+
+            if (!itemstack.isEmpty() && itemRightClick(hand) == ActionResultType.SUCCESS) {
+                //                this.entityRenderer.itemRenderer.resetEquippedProgress(enumhand);
+                return;
+            }
+        }
+    }
+
+    private ActionResultType rightClickBlock(BlockPos pos,  Hand hand, BlockRayTraceResult blockRayTraceResult) {
+       /* ItemStack itemstack = getHeldItem(hand);
+
+        if (itemstack.isEmpty()) return ActionResultType.PASS;
+
+        float f = (float) (blockRayTraceResult.getHitVec().x - (double) pos.getX());
+        float f1 = (float) (blockRayTraceResult.getHitVec().y - (double) pos.getY());
+        float f2 = (float) (blockRayTraceResult.getHitVec().z - (double) pos.getZ());
+        boolean flag = false;
+
+        if (!world.getWorldBorder().contains(pos)) {
+            return ActionResultType.FAIL;
+        } else {
+
+            ItemUseContext itemUseContext = new ItemUseContext(
+                    this.getPlayerWrapper(),
+                    hand,
+                    blockRayTraceResult
+            );
+            ActionResultType ret = itemstack.onItemUseFirst(itemUseContext);
+            if (ret != ActionResultType.PASS) {
+                return ret;
+            }
+
+            BlockState iblockstate = world.getBlockState(pos);
+            boolean bypass = getHeldItemMainhand().doesSneakBypassUse(world, pos, this.getPlayerWrapper()) && getHeldItemOffhand().doesSneakBypassUse(world, pos, this.getPlayerWrapper());
+
+            if ((!this.isSneaking() || bypass)) {//BlockState state, World worldIn, BlockPos pos, PlayerEntity player
+                flag = iblockstate.getBlock().onBlockClicked(iblockstate, world, pos, this.getPlayerWrapper());
+            }
+
+            if (!flag && itemstack.getItem() instanceof ItemBlock) {
+                ItemBlock itemblock = (ItemBlock) itemstack.getItem();
+
+                if (!itemblock.canPlaceBlockOnSide(world, pos, direction, this.getPlayerWrapper(), itemstack)) {
+                    return ActionResultType.FAIL;
+                } else {
+
+
+
+                }
+            }
+
+            if (!flag) {
+                if (itemstack.isEmpty()) {
+                    return ActionResultType.PASS;
+                } else if (this.getPlayerWrapper().getCooldownTracker().hasCooldown(itemstack.getItem())) {
+                    return ActionResultType.PASS;
+                } else {
+                    ActionResultType result = itemstack.onItemUse(this.getPlayerWrapper(), world, pos, hand, direction, f, f1, f2);
+                    if (result == ActionResultType.SUCCESS) {
+                    }
+                    return result;
+                }
+            } else {
+                return ActionResultType.SUCCESS;
+            }
+        }
+*/
+        return ActionResultType.SUCCESS;
+    }
+
+    private ActionResultType itemRightClick(Hand hand) {
+        ItemStack itemstack = getHeldItem(hand);
+
+        if (this.getPlayerWrapper().getCooldownTracker().hasCooldown(itemstack.getItem())) {
+            return ActionResultType.PASS;
+
+
+        } else {
+            int i = itemstack.getCount();
+            ActionResult<ItemStack> actionresult = itemstack.useItemRightClick(world, this.getPlayerWrapper(), hand);
+            ItemStack itemstack1 = actionresult.getResult();
+
+            if (itemstack1 != itemstack || itemstack1.getCount() != i) {
+                this.setHeldItem(hand, itemstack1);
+
+
+                if (itemstack1.isEmpty()) {
+                    net.minecraftforge.event.ForgeEventFactory.onPlayerDestroyItem(this.getPlayerWrapper(), itemstack, hand);
+                }
+            }
+
+            return actionresult.getType();
+        }
+    }
+
+
+    public ItemStack tossEquippedStack() {
+        ItemStack itemStack = getHeldItem(Hand.MAIN_HAND);
+        if(
+                itemStack == null ||
+                        itemStack.isEmpty()
+        ){
+            return null;
+        }
+        Vec3d itemVec3d = null;
+        //ChaosCraft.logger.info(this.getCCNamespace() + " - Tossing: " + itemStack.getItem().getRegistryName());
+
+
+
+        Vec3d vec3d = this.getEyePosition(1);
+        Vec3d vec3d1 = this.getLook(1);
+        itemVec3d = vec3d.add(
+            new Vec3d(
+                vec3d1.x * 5d,
+                vec3d1.y * 5d,
+                vec3d1.z * 5d
+            )
+        );
+
+        itemHandler.extractItem(equippedSlot, itemStack.getCount(), false);
+        equippedSlot = -1;
+        this.setHeldItem(Hand.MAIN_HAND, ItemStack.EMPTY);
+        ItemEntity entityItem = new ItemEntity(world, itemVec3d.x, itemVec3d.y, itemVec3d.z);
+        entityItem.setItem(itemStack);
+        //world.spawnEntity(entityItem);
+
+
+        return itemStack;
+    }
+    public ItemStack getItemStackFromInventory(String resourceId) {
+        int slots = itemHandler.getSlots();
+        for(int i = 0; i < slots; i++) {
+            ItemStack itemStack = itemHandler.getStackInSlot(i);
+            if(!itemStack.isEmpty()){
+                CCObserviableAttributeCollection observiableAttributeCollection = observableAttributeManager.Observe(itemStack.getItem());
+                if(
+                    observiableAttributeCollection != null &&
+                    observiableAttributeCollection.resourceId.equals(resourceId)
+                ){
+                    return itemStack;
+                }
+            }
+        }
+        return null;
     }
 }

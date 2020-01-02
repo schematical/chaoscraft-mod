@@ -25,7 +25,7 @@ public class SwimOutput extends OutputNeuron {
         }
         if (this.nNet.entity.getRNG().nextFloat() < 0.8F)
         {
-            this.nNet.entity.getJumpHelper().setJumping();
+            this.nNet.entity.jump();//getJumpHelper().setJumping();
         }
 
     }

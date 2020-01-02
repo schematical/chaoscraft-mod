@@ -2,6 +2,7 @@ package com.schematical.chaoscraft.ai.outputs;
 
 import com.schematical.chaoscraft.ai.OutputNeuron;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3i;
 
@@ -20,14 +21,14 @@ public class PlaceBlockOutput extends OutputNeuron {
             return;
         }
 
-        RayTraceResult rayTraceResult = nNet.entity.rayTraceBlocks(nNet.entity.REACH_DISTANCE);
+        BlockRayTraceResult rayTraceResult = nNet.entity.rayTraceBlocks(nNet.entity.REACH_DISTANCE);
         if(rayTraceResult == null){
             return;
         }
 
 
-        Vec3i vec3i = rayTraceResult.sideHit.getDirectionVec();
-        BlockPos destBlockPos = rayTraceResult.getBlockPos().add(vec3i);
+        Vec3i vec3i = rayTraceResult.getFace().getDirectionVec();
+        BlockPos destBlockPos = rayTraceResult.getPos().add(vec3i);
 
         nNet.entity.rightClick(rayTraceResult);
 

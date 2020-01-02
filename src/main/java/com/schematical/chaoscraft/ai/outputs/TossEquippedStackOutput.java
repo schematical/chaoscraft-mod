@@ -17,9 +17,7 @@ public class TossEquippedStackOutput extends OutputNeuron {
         if(this._lastValue <= .5){
             return;
         }
-        if(nNet.entity.getDebug()) {
-            //ChaosCraft.logger.info(nNet.entity.getCCNamespace() + " Attempting to Craft: " + recipe.getRegistryName() + " - " + recipe.getRecipeOutput().getDisplayName());
-        }
+
         ItemStack itemStack = nNet.entity.tossEquippedStack();
         if(
                 itemStack == null ||
@@ -42,18 +40,5 @@ public class TossEquippedStackOutput extends OutputNeuron {
         nNet.entity.entityFitnessManager.test(worldEvent);
 
     }
-    /*
-    @Override
-    public void parseData(JSONObject jsonObject){
-        super.parseData(jsonObject);
-        attributeId = jsonObject.get("attributeId").toString();
-        attributeValue = jsonObject.get("attributeValue").toString();
 
-    }
-    public String toLongString(){
-        String response = super.toLongString();
-        response += " " + this.attributeId + " - " + this.attributeValue;
-        return response;
-
-    }*/
 }
