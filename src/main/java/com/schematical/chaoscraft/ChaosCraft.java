@@ -6,6 +6,8 @@ import com.schematical.chaoscraft.blocks.SpawnBlock;
 import com.schematical.chaoscraft.commands.CCSummonCommand;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.entities.OrgEntityRenderer;
+import com.schematical.chaoscraft.fitness.ChaosCraftFitnessManager;
+import com.schematical.chaoscraft.fitness.EntityFitnessManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
@@ -41,6 +43,8 @@ public class ChaosCraft
     public static ChaosNet sdk;
     // Directly reference a log4j logger.
     public static final Logger LOGGER = LogManager.getLogger();
+    public static ChaosCraftFitnessManager fitnessManager;
+    public static float activationThreshold = .3f;
 
     public ChaosCraft() {
 

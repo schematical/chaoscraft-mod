@@ -10,7 +10,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
-import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
 
@@ -107,7 +106,7 @@ public class CCObservableAttributeManager {
     public void ObserveCraftableRecipes(OrgEntity entityOrganism) {
         //TODO: Go through each craftable recipe and figure out what it can craft
         //List<IRecipe> craftableRecipes = new ArrayList<IRecipe>();
-        for (IRecipe irecipe : CraftingManager.REGISTRY)
+        for (IRecipe irecipe : entityOrganism.getServer().getRecipeManager().getRecipes())
         {
             if(entityOrganism.canCraft(irecipe)){
                 Observe(irecipe);

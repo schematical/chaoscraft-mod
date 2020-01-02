@@ -12,7 +12,7 @@ public class ChatOutput extends OutputNeuron {
         if(this._lastValue <= .5){
             return;
         }
-        ChaosCraft.chat("I see something");
+        ChaosCraft.LOGGER.debug("TODO: Make a chat thingy");
 
 
     }

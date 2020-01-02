@@ -30,8 +30,8 @@ public class AttackOutput extends OutputNeuron {
                     ChaosCraft.logger.info(nNet.entity.getCCNamespace() + " Attempting to Attack: " + target.getName());
                 }*/
 
-                RayTraceResult rayTraceResult = entity.isEntityInLineOfSight(target, 3d);
-                if (rayTraceResult != null) {
+
+                if (entity.isEntityInLineOfSight(target, 3d)) {
                     entity.attackEntityAsMob(target);
                     /*if (nNet.entity.getDebug()) {
                         ChaosCraft.logger.info(nNet.entity.getCCNamespace() + "Attacked: " + target.getName());

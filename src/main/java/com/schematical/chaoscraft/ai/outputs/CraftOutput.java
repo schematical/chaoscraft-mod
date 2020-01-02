@@ -5,8 +5,8 @@ import com.schematical.chaoscraft.ai.OutputNeuron;
 import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.RecipeManager;
 import net.minecraft.util.ResourceLocation;
 import org.json.simple.JSONObject;
 
@@ -19,11 +19,10 @@ public class CraftOutput extends OutputNeuron {
     protected IRecipe recipe;
     public void init(){
 
-        for (IRecipe irecipe : CraftingManager.REGISTRY)
+        for (IRecipe irecipe : this.nNet.entity.getServer().getRecipeManager().getRecipes())
         {
 
-            ResourceLocation resourceLocation = irecipe.getRegistryName();
-            String key = resourceLocation.getNamespace() + ":" + resourceLocation.getPath();
+            String key = irecipe.getId().getNamespace() + ":" + irecipe.getId().getPath();
             if(recipeId.equals(key)){
                 recipe = irecipe;
             }

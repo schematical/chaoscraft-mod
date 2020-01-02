@@ -1,9 +1,9 @@
 package com.schematical.chaoscraft.fitness;
 
 import com.schematical.chaoscraft.ChaosCraft;
-import com.schematical.chaoscraft.entities.EntityFitnessScoreEvent;
-import com.schematical.chaoscraft.entities.EntityOrganism;
+import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.events.CCWorldEvent;
+import com.schematical.chaoscraft.events.EntityFitnessScoreEvent;
 import com.schematical.chaoscraft.events.OrgEvent;
 import com.schematical.chaoscraft.events.OrgPredictionEvent;
 import com.schematical.chaosnet.model.ChaosNetException;
@@ -18,10 +18,10 @@ import java.util.List;
  */
 public class EntityFitnessManager {
     protected HashMap<String, Integer> occurences = new HashMap<String, Integer>();
-    public EntityOrganism entityOrganism;
+    public OrgEntity entityOrganism;
     public List<EntityFitnessScoreEvent> scoreEvents = new ArrayList<EntityFitnessScoreEvent>();
 
-    public EntityFitnessManager(EntityOrganism entityOrganism) {
+    public EntityFitnessManager(OrgEntity entityOrganism) {
         this.entityOrganism = entityOrganism;
     }
 
