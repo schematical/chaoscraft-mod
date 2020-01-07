@@ -69,7 +69,7 @@ public class OrgEntity extends MobEntity {
     private int equippedSlot = -1;
     private int rightClickDelay;
 
-    public OrgEntity(EntityType<? extends LivingEntity> type, World world) {
+    public OrgEntity(EntityType<? extends MobEntity> type, World world) {
         super((EntityType<? extends MobEntity>) type, world);
     }
 

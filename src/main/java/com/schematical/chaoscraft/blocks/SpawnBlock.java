@@ -21,6 +21,8 @@ public class SpawnBlock extends Block {
     public void onEntityWalk(World worldIn, BlockPos pos, Entity entityIn) {
         ChaosCraft.LOGGER.debug("Walked! " + entityIn.getName());
     }
+    //Load some stuff
+
 
 
 }

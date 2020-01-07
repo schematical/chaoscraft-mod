@@ -16,7 +16,9 @@ import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.FMLWorldPersistenceHook;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
@@ -80,6 +82,8 @@ public class ChaosCraft
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
         // Register the doClientStuff method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onWorldTickEvent);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onServerTickEvent);
         FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(EntityType.class, this::onEntityRegistry);
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
@@ -148,7 +152,16 @@ public class ChaosCraft
         CCSummonCommand.register(event.getCommandDispatcher());
         CCAuthCommand.register(event.getCommandDispatcher());
     }
+    @SubscribeEvent
+    public void onWorldTickEvent(TickEvent.WorldTickEvent worldTickEvent) {
+        //LOGGER.info("WorldTickEvent...." + worldTickEvent.side);
 
+    }
+    @SubscribeEvent
+    public void onServerTickEvent(TickEvent.ServerTickEvent serverTickEvent) {
+        //LOGGER.info("ServerTickEvent...." + serverTickEvent.side);
+
+    }
     public void onEntityRegistry(final RegistryEvent.Register<EntityType<?>> event) {
         event.getRegistry().registerAll(
 
