@@ -4,3 +4,5 @@ chaoscraft.gui.open.nnet=Neural Network
 chaoscraft.gui.open.inventory=Inventory
 chaoscraft.gui.open.biology=Biology
 chaoscraft.gui.open.areaoffocus=Area Of Focus
+chaoscraft.commands.auth.success=Auth successful: %s
+chaoscraft.commands.auth.failed=Auth Failed: %s

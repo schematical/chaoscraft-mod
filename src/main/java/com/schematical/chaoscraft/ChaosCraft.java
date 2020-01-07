@@ -3,6 +3,7 @@ package com.schematical.chaoscraft;
 import com.amazonaws.opensdk.config.ConnectionConfiguration;
 import com.amazonaws.opensdk.config.TimeoutConfiguration;
 import com.schematical.chaoscraft.blocks.SpawnBlock;
+import com.schematical.chaoscraft.commands.CCAuthCommand;
 import com.schematical.chaoscraft.commands.CCSummonCommand;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.entities.OrgEntityRenderer;
@@ -87,6 +88,7 @@ public class ChaosCraft
 
 
     public static void auth(){
+        LOGGER.info("REFRESH TOKEN:" + config.refreshToken );
         if(config.refreshToken != null){
             AuthTokenRequest authTokenRequest = new AuthTokenRequest();
             authTokenRequest.setUsername(config.username);
@@ -97,6 +99,7 @@ public class ChaosCraft
             try {
                 AuthLoginResponse authLoginResponse = ChaosCraft.sdk.postAuthToken(postAuthTokenRequest).getAuthLoginResponse();
                 config.accessToken = authLoginResponse.getAccessToken();
+                LOGGER.info("ACCESS TOKEN:" + config.refreshToken.substring(0, 10) + "'....");
             }catch (ChaosNetException e) {
                 LOGGER.error(e);
             }
@@ -143,6 +146,7 @@ public class ChaosCraft
 
 
         CCSummonCommand.register(event.getCommandDispatcher());
+        CCAuthCommand.register(event.getCommandDispatcher());
     }
 
     public void onEntityRegistry(final RegistryEvent.Register<EntityType<?>> event) {

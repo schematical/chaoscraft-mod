@@ -1,0 +1,4 @@
+{
+  "chaoscraft.commands.auth.success":"Auth successful: {0}",
+  "chaoscraft.commands.auth.failed":"Auth Failed: {0}"
+}
