@@ -98,3 +98,5 @@ shift click on a item in creative tab it grabs a max stack for you
 ctrl+q to drop a stack
 
 https://github.com/socketio/socket.io-client-java
+
+Networking Example 1.13 - https://github.com/sinkillerj/ProjectE/blob/mc1.13.x/src/main/java/moze_intel/projecte/network/PacketHandler.java

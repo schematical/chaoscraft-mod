@@ -3,12 +3,14 @@ package com.schematical.chaoscraft;
 import com.amazonaws.opensdk.config.ConnectionConfiguration;
 import com.amazonaws.opensdk.config.TimeoutConfiguration;
 import com.schematical.chaoscraft.blocks.SpawnBlock;
+import com.schematical.chaoscraft.client.ChaosCraftClient;
 import com.schematical.chaoscraft.commands.CCAuthCommand;
 import com.schematical.chaoscraft.commands.CCSummonCommand;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.entities.OrgEntityRenderer;
 import com.schematical.chaoscraft.fitness.ChaosCraftFitnessManager;
 import com.schematical.chaoscraft.fitness.EntityFitnessManager;
+import com.schematical.chaoscraft.network.NetworkManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
@@ -35,6 +37,7 @@ import java.util.stream.Collectors;
 import com.schematical.chaosnet.ChaosNet;
 import com.schematical.chaosnet.auth.ChaosnetCognitoUserPool;
 import com.schematical.chaosnet.model.*;
+import sun.nio.ch.Net;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod("chaoscraft")
@@ -48,6 +51,7 @@ public class ChaosCraft
     public static final Logger LOGGER = LogManager.getLogger();
     public static ChaosCraftFitnessManager fitnessManager;
     public static float activationThreshold = .3f;
+    private static ChaosCraftClient client;
 
     public ChaosCraft() {
 
@@ -84,9 +88,12 @@ public class ChaosCraft
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onWorldTickEvent);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onServerTickEvent);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onClientTickEvent);
         FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(EntityType.class, this::onEntityRegistry);
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
+
+        NetworkManager.register();
     }
 
 
@@ -152,6 +159,7 @@ public class ChaosCraft
         CCSummonCommand.register(event.getCommandDispatcher());
         CCAuthCommand.register(event.getCommandDispatcher());
     }
+
     @SubscribeEvent
     public void onWorldTickEvent(TickEvent.WorldTickEvent worldTickEvent) {
         //LOGGER.info("WorldTickEvent...." + worldTickEvent.side);
@@ -164,9 +172,7 @@ public class ChaosCraft
     }
     public void onEntityRegistry(final RegistryEvent.Register<EntityType<?>> event) {
         event.getRegistry().registerAll(
-
                 EntityType.Builder.create(OrgEntity::new, EntityClassification.MISC).build(MODID + ":org_entity").setRegistryName(MODID, "org_entity")
-
         );
     }
     // You can use EventBusSubscriber to automatically subscribe events on the contained class (this is subscribing to the MOD
@@ -184,7 +190,15 @@ public class ChaosCraft
 
 
     }
+    @SubscribeEvent
+    public void onClientTickEvent(TickEvent.ClientTickEvent clientTickEvent){
+        if(ChaosCraft.client != null){
+            //ChaosCraft.client = new ChaosCraftClient(worldTickEvent.get);
+            ChaosCraft.client.tick();
+        }
 
+
+    }
 
 
 
