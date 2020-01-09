@@ -2,6 +2,7 @@ package com.schematical.chaoscraft.network;
 
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.network.packets.ClientAuthPacket;
+import com.schematical.chaoscraft.network.packets.ServerIntroInfoPacket;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;
@@ -24,6 +25,7 @@ public class ChaosNetworkManager {
         int disc = 0;
 
         INSTANCE.registerMessage(disc++, ClientAuthPacket.class, ClientAuthPacket::encode, ClientAuthPacket::decode, ClientAuthPacket.Handler::handle);
+        INSTANCE.registerMessage(disc++, ServerIntroInfoPacket.class, ServerIntroInfoPacket::encode, ServerIntroInfoPacket::decode, ServerIntroInfoPacket.Handler::handle);
     }
     /**
      * Sends a packet to the server.<br>

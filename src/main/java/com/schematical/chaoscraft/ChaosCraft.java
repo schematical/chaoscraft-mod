@@ -125,6 +125,10 @@ public class ChaosCraft
         }
     }
 
+    public static ChaosCraftClient getClient() {
+        return client;
+    }
+
     private void setup(final FMLCommonSetupEvent event)
     {
         // some preinit code
