@@ -10,7 +10,9 @@ import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.entities.OrgEntityRenderer;
 import com.schematical.chaoscraft.fitness.ChaosCraftFitnessManager;
 import com.schematical.chaoscraft.fitness.EntityFitnessManager;
-import com.schematical.chaoscraft.network.NetworkManager;
+import com.schematical.chaoscraft.network.ChaosNetworkManager;
+
+import com.schematical.chaoscraft.server.ChaosCraftServer;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
@@ -19,6 +21,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.FMLWorldPersistenceHook;
 import net.minecraftforge.fml.InterModComms;
@@ -52,7 +55,7 @@ public class ChaosCraft
     public static ChaosCraftFitnessManager fitnessManager;
     public static float activationThreshold = .3f;
     private static ChaosCraftClient client;
-
+    private static ChaosCraftServer server;
     public ChaosCraft() {
 
         config = new ChaosCraftConfig();
@@ -89,14 +92,18 @@ public class ChaosCraft
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onWorldTickEvent);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onServerTickEvent);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onClientTickEvent);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onPlayerLoggedInEvent);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onClientStarting);
         FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(EntityType.class, this::onEntityRegistry);
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
 
-        NetworkManager.register();
+        ChaosNetworkManager.register();
     }
 
-
+    public static ChaosCraftServer getServer(){
+        return server;
+    }
 
     public static void auth(){
         LOGGER.info("REFRESH TOKEN:" + config.refreshToken );
@@ -154,10 +161,18 @@ public class ChaosCraft
     public void onServerStarting(FMLServerStartingEvent event) {
         // do something when the server starts
         LOGGER.info("HELLO from server starting");
-
+        server = new ChaosCraftServer();
 
         CCSummonCommand.register(event.getCommandDispatcher());
         CCAuthCommand.register(event.getCommandDispatcher());
+    }
+
+    @SubscribeEvent
+    public void onClientStarting(FMLClientSetupEvent event) {
+        // do something when the server starts
+        LOGGER.info("HELLO from Client starting");
+        client = new ChaosCraftClient();
+
     }
 
     @SubscribeEvent
@@ -192,14 +207,29 @@ public class ChaosCraft
     }
     @SubscribeEvent
     public void onClientTickEvent(TickEvent.ClientTickEvent clientTickEvent){
+        if(ChaosCraft.client == null){
+            LOGGER.info("HELLO from Client starting");
+            client = new ChaosCraftClient();
+        }
         if(ChaosCraft.client != null){
-            //ChaosCraft.client = new ChaosCraftClient(worldTickEvent.get);
+
             ChaosCraft.client.tick();
         }
 
 
     }
 
+    @SubscribeEvent
+    public void onPlayerLoggedInEvent(PlayerEvent.LivingUpdateEvent playerLoggedInEvent){
+
+        if(
+                ChaosCraft.client != null &&
+                ChaosCraft.client.getState().equals(ChaosCraftClient.State.Uninitiated)
+        ){
+            LOGGER.info("onPlayerLoggedInEvent FIRING  2");
+            ChaosCraft.client.init();
+        }
+    }
 
 
 

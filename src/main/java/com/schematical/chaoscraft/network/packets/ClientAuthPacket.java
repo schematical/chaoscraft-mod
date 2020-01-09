@@ -1,5 +1,7 @@
 package com.schematical.chaoscraft.network.packets;
 
+import com.schematical.chaoscraft.ChaosCraft;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 import java.util.function.Supplier;
@@ -18,15 +20,16 @@ public class ClientAuthPacket {
 
     public static ClientAuthPacket decode(PacketBuffer buf)
     {
-        return new ClientAuthPacket(buf.readString());//(buf.readVarInt()
+        return new ClientAuthPacket(buf.readString(32767));//(buf.readVarInt()
     }
 
     public static class Handler
     {
         public static void handle(final ClientAuthPacket message, Supplier<NetworkEvent.Context> ctx) {
             ctx.get().enqueueWork(() -> {
-
+                ServerPlayerEntity player = ctx.get().getSender();
                 //Pretty sure the sever should get this
+                ChaosCraft.getServer().checkAuth(message.accessToken,player);//TODO: Look at me
 
 
             });
