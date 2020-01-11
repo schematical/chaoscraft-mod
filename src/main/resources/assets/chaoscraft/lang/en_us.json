@@ -1,5 +1,6 @@
 {
   "chaoscraft.commands.auth.success":"Auth successful: {0}",
   "chaoscraft.commands.auth.failed":"Auth Failed: {0}",
-  "chaoscraft.commands.ccsummon.success":"Summon Success: {0}"
+  "chaoscraft.commands.ccsummon.success":"Summon Success: {0}",
+  "chaoscraft.commands.cctest":"Test: {0}"
 }

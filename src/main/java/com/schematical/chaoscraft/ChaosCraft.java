@@ -6,6 +6,7 @@ import com.schematical.chaoscraft.blocks.SpawnBlock;
 import com.schematical.chaoscraft.client.ChaosCraftClient;
 import com.schematical.chaoscraft.commands.CCAuthCommand;
 import com.schematical.chaoscraft.commands.CCSummonCommand;
+import com.schematical.chaoscraft.commands.CCTestCommand;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.entities.OrgEntityRenderer;
 import com.schematical.chaoscraft.fitness.ChaosCraftFitnessManager;
@@ -13,6 +14,7 @@ import com.schematical.chaoscraft.fitness.EntityFitnessManager;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 
 import com.schematical.chaoscraft.server.ChaosCraftServer;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
@@ -36,6 +38,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 import com.schematical.chaosnet.ChaosNet;
 import com.schematical.chaosnet.auth.ChaosnetCognitoUserPool;
@@ -54,6 +57,7 @@ public class ChaosCraft
     public static final Logger LOGGER = LogManager.getLogger();
     public static ChaosCraftFitnessManager fitnessManager;
     public static float activationThreshold = .3f;
+    public static ArrayList<SpawnBlock> spawnBlocks = new ArrayList<SpawnBlock>();
     private static ChaosCraftClient client;
     private static ChaosCraftServer server;
     public ChaosCraft() {
@@ -169,6 +173,7 @@ public class ChaosCraft
 
         CCSummonCommand.register(event.getCommandDispatcher());
         CCAuthCommand.register(event.getCommandDispatcher());
+        CCTestCommand.register(event.getCommandDispatcher());
     }
 
     @SubscribeEvent
@@ -187,6 +192,10 @@ public class ChaosCraft
     @SubscribeEvent
     public void onServerTickEvent(TickEvent.ServerTickEvent serverTickEvent) {
         //LOGGER.info("ServerTickEvent...." + serverTickEvent.side);
+        if(server == null){
+            return;
+        }
+        server.tick();
 
     }
     public void onEntityRegistry(final RegistryEvent.Register<EntityType<?>> event) {
