@@ -3,6 +3,7 @@ package com.schematical.chaoscraft.server;
 import com.amazonaws.opensdk.config.ConnectionConfiguration;
 import com.amazonaws.opensdk.config.TimeoutConfiguration;
 import com.schematical.chaoscraft.ChaosCraft;
+import com.schematical.chaoscraft.blocks.SpawnBlock;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.ServerIntroInfoPacket;
@@ -12,10 +13,14 @@ import com.schematical.chaosnet.model.*;
 import net.minecraft.block.FurnaceBlock;
 import net.minecraft.block.RedstoneDiodeBlock;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponent;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.server.ServerWorld;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,6 +37,12 @@ public class ChaosCraftServer {
         if(orgNamepacesQueuedToSpawn.size() > 0){
             thread = new Thread(new ChaosServerThread(), "ChaosServerThread");
             thread.start();
+        }
+        if(orgsToSpawn.size() > 0){
+            for (Organism organism : orgsToSpawn) {
+                spawnOrg(organism);
+            }
+            orgsToSpawn.clear();
         }
     }
     public void queueOrgToSpawn(String orgNamespace){
@@ -84,22 +95,31 @@ public class ChaosCraftServer {
 
         //Send that user the training Room info from here
         ServerIntroInfoPacket serverIntroInfoPacket = new ServerIntroInfoPacket(
-                ChaosCraft.config.trainingRoomNamespace,
-                ChaosCraft.config.trainingRoomUsernameNamespace,
-                ChaosCraft.config.sessionNamespace
+            ChaosCraft.config.trainingRoomNamespace,
+            ChaosCraft.config.trainingRoomUsernameNamespace,
+            ChaosCraft.config.sessionNamespace
         );
         ChaosCraft.LOGGER.info("Sending `serverIntroInfoPacket`");
         ChaosNetworkManager.sendTo(serverIntroInfoPacket,  player);
         ChaosCraft.LOGGER.info("SENT `serverIntroInfoPacket`: " + serverIntroInfoPacket.getTrainingRoomNamespace() + ", " + serverIntroInfoPacket.getTrainingRoomUsernameNamespace() + ", " + serverIntroInfoPacket.getSessionNamespace());
     }
 
-   /* public OrgEntity spawnOrg(Organism organism){
-        //Minecraft.getInstance().world.getPlayers()[0];
+    public OrgEntity spawnOrg(Organism organism){
 
-        OrgEntity orgEntity = OrgEntity.ORGANISM_TYPE.create(Minecraft.getInstance().world.getWorld());
-       *//* Vec3d pos = context.getSource().getPos();
-        rick.setLocationAndAngles(pos.x, pos.y, pos.z, context.getSource().getEntity().rotationYaw, context.getSource().getEntity().rotationPitch);
-        Minecraft.getInstance().world.getWorld().summonEntity(rick);*//*
+        PlayerEntity playerEntity = Minecraft.getInstance().world.getPlayers().get(0);
+
+        ServerWorld serverWorld = playerEntity.world.getServer().getWorld(DimensionType.OVERWORLD);
+
+
+        OrgEntity orgEntity = OrgEntity.ORGANISM_TYPE.create(serverWorld);
+
+
+        BlockPos pos = serverWorld.getDimension().findSpawn(serverWorld.getSpawnCoordinate().getX(), serverWorld.getSpawnCoordinate().getZ(), true);
+        Minecraft.getInstance().world.getWorld().getServer().getWorld(playerEntity.getSpawnDimension()).getSpawnPoint();
+
+        orgEntity.setLocationAndAngles(pos.getX(), pos.getY(), pos.getZ(), playerEntity.rotationYaw, playerEntity.rotationPitch);
+
+        serverWorld.summonEntity(orgEntity);
        return orgEntity;
-    }*/
+    }
 }
