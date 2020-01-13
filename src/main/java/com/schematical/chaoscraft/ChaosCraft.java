@@ -145,8 +145,8 @@ public class ChaosCraft
         LOGGER.info("Got game settings {}", event.getMinecraftSupplier().get().gameSettings);
 
         RenderingRegistry.registerEntityRenderingHandler(
-                OrgEntity.ORGANISM_TYPE,
-                OrgEntityRenderer::new
+            OrgEntity.ORGANISM_TYPE,
+            OrgEntityRenderer::new
         );
 
     }
@@ -169,7 +169,7 @@ public class ChaosCraft
     public void onServerStarting(FMLServerStartingEvent event) {
         // do something when the server starts
         LOGGER.info("HELLO from server starting");
-        server = new ChaosCraftServer();
+        server = new ChaosCraftServer(event.getServer());
 
         CCSummonCommand.register(event.getCommandDispatcher());
         CCAuthCommand.register(event.getCommandDispatcher());
@@ -236,8 +236,8 @@ public class ChaosCraft
     public void onPlayerLoggedInEvent(PlayerEvent.LivingUpdateEvent playerLoggedInEvent){
 
         if(
-                ChaosCraft.client != null &&
-                ChaosCraft.client.getState().equals(ChaosCraftClient.State.Uninitiated)
+            ChaosCraft.client != null &&
+            ChaosCraft.client.getState().equals(ChaosCraftClient.State.Uninitiated)
         ){
             LOGGER.info("onPlayerLoggedInEvent FIRING  2");
             ChaosCraft.client.init();
