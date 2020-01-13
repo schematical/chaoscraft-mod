@@ -3,6 +3,7 @@ package com.schematical.chaoscraft.server;
 import com.amazonaws.opensdk.config.ConnectionConfiguration;
 import com.amazonaws.opensdk.config.TimeoutConfiguration;
 import com.schematical.chaoscraft.ChaosCraft;
+import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
 import com.schematical.chaoscraft.blocks.SpawnBlock;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
@@ -35,16 +36,19 @@ import java.util.List;
 import java.util.Random;
 
 public class ChaosCraftServer {
-    public HashMap<String, AuthWhoamiResponse> userMap = new HashMap<String, AuthWhoamiResponse>();
+    public HashMap<String, ChaosCraftServerPlayerInfo> userMap = new HashMap<String, ChaosCraftServerPlayerInfo>();
     public ArrayList<String> orgNamepacesQueuedToSpawn = new  ArrayList<String>();
     public List<Organism> orgsToSpawn = new ArrayList<Organism>();
     public int consecutiveErrorCount;
     public Thread thread;
     public MinecraftServer server;
+    public static int spawnHash;
     public static HashMap<String, OrgEntity> organisims = new HashMap<String, OrgEntity>();
 
     public ChaosCraftServer(MinecraftServer server) {
+
         this.server = server;
+        spawnHash = (int)Math.round(Math.random() * 9999);
     }
 
     public void tick(){
@@ -62,9 +66,16 @@ public class ChaosCraftServer {
             orgsToSpawn.clear();
         }
     }
-    public void queueOrgToSpawn(String orgNamespace){
+    public void queueOrgToSpawn(String orgNamespace, ServerPlayerEntity player){
+        if(!userMap.containsKey(player.getUniqueID().toString())){
+            ChaosCraft.LOGGER.error("Could not find ServerPlayerEntity in `userMap` with UUID: " + player.getUniqueID().toString());
+            return;
+        }
+        ChaosCraftServerPlayerInfo serverPlayerInfo = userMap.get(player.getUniqueID().toString());
+        serverPlayerInfo.organisims.add(orgNamespace);
         orgNamepacesQueuedToSpawn.add(orgNamespace);
     }
+
 
     public void checkAuth(String accessToken, ServerPlayerEntity player) {
         ChaosCraft.LOGGER.info("CheckingAuth: " + accessToken.substring(0, 10) + "...");
@@ -108,7 +119,10 @@ public class ChaosCraftServer {
                 return this;
             }
         });*/
-        userMap.put( player.getUniqueID().toString(),    getAuthWhoamiResult.getAuthWhoamiResponse());
+        ChaosCraftServerPlayerInfo playerInfo = new ChaosCraftServerPlayerInfo();
+        playerInfo.authWhoamiResponse = getAuthWhoamiResult.getAuthWhoamiResponse();
+        playerInfo.playerUUID = player.getUniqueID();
+        userMap.put( player.getUniqueID().toString(), playerInfo);
 
         //Send that user the training Room info from here
         ServerIntroInfoPacket serverIntroInfoPacket = new ServerIntroInfoPacket(
@@ -162,7 +176,11 @@ public class ChaosCraftServer {
                 if(!blockState.getBlock().equals(Blocks.AIR)){
                     y += 2;
                     blnFound = true;
-                    pos = blockPos2;
+                    pos = new BlockPos(
+                        blockPos2.getX(),
+                        y,
+                        blockPos2.getY()
+                    );
                 }
 
             }
@@ -176,8 +194,20 @@ public class ChaosCraftServer {
         serverWorld.summonEntity(orgEntity);
         orgEntity.attachOrganism(organism);
         orgEntity.attachNNetRaw(organism.getNNetRaw());
+        orgEntity.observableAttributeManager = new CCObservableAttributeManager(organism);
+        orgEntity.setSpawnHash(spawnHash);
         organisims.put(organism.getNamespace(), orgEntity);
-        ChaosNetworkManager.sendToServer(new CCServerEntitySpawnedPacket(organism.getNamespace(), orgEntity.getEntityId()));
+        ServerPlayerEntity serverPlayerEntity = null;
+        for (ChaosCraftServerPlayerInfo playerInfo : userMap.values()) {
+            if(playerInfo.organisims.contains(organism.getNamespace())){
+                serverPlayerEntity = server.getPlayerList().getPlayerByUUID(playerInfo.playerUUID);
+            }
+        }
+        if(serverPlayerEntity == null){
+            ChaosCraft.LOGGER.error("Cant find player owning: " + organism.getNamespace());
+            return null;
+        }
+        ChaosNetworkManager.sendTo(new CCServerEntitySpawnedPacket(organism.getNamespace(), orgEntity.getEntityId()), serverPlayerEntity);
 
         return orgEntity;
     }

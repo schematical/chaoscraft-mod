@@ -41,7 +41,7 @@ public class CCClientSpawnPacket {
                 //Pretty sure the server should get this
 
                 //Load the NNet into memory
-                ChaosCraft.getServer().queueOrgToSpawn(message.orgNamespace);
+                ChaosCraft.getServer().queueOrgToSpawn(message.orgNamespace, ctx.get().getSender());
 
             });
             ctx.get().setPacketHandled(true);

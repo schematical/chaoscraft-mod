@@ -76,12 +76,12 @@ public class ChaosCraftClient {
         Iterator<Organism> iterator = orgsToSpawn.iterator();
         Organism organism = null;
         while (iterator.hasNext()) {
-            organism = iterator.next();
-            if(organism.getNamespace().equals(orgNamespace)){
+            Organism testOrganism = iterator.next();
+            if(testOrganism.getNamespace().equals(orgNamespace)){
+                organism = testOrganism;
                 orgEntity.attachOrganism(organism);
                 orgEntity.attachNNetRaw(organism.getNNetRaw());
-            }else{
-                organism = null;
+
             }
         }
         if(organism == null){

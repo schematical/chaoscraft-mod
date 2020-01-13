@@ -5,6 +5,7 @@ import com.amazonaws.opensdk.config.TimeoutConfiguration;
 import com.schematical.chaoscraft.blocks.SpawnBlock;
 import com.schematical.chaoscraft.client.ChaosCraftClient;
 import com.schematical.chaoscraft.commands.CCAuthCommand;
+import com.schematical.chaoscraft.commands.CCHardResetCommand;
 import com.schematical.chaoscraft.commands.CCSummonCommand;
 import com.schematical.chaoscraft.commands.CCTestCommand;
 import com.schematical.chaoscraft.entities.OrgEntity;
@@ -175,6 +176,7 @@ public class ChaosCraft
         CCSummonCommand.register(event.getCommandDispatcher());
         CCAuthCommand.register(event.getCommandDispatcher());
         CCTestCommand.register(event.getCommandDispatcher());
+        CCHardResetCommand.register(event.getCommandDispatcher());
     }
 
     @SubscribeEvent

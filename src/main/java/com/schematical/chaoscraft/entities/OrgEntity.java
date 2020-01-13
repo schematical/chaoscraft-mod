@@ -86,9 +86,13 @@ public class OrgEntity extends MobEntity {
     private Vec3d spawnPos;
     private int ticksSinceObservationHack = -1;
     public ArrayList<CCClientOutputNeuronActionPacket> neuronActions = new ArrayList<CCClientOutputNeuronActionPacket>();
+    private int spawnHash;
 
     public OrgEntity(EntityType<? extends MobEntity> type, World world) {
         super((EntityType<? extends MobEntity>) type, world);
+    }
+    public void setSpawnHash(int _spawnHash) {
+        this.spawnHash = _spawnHash;
     }
     public void attachOrganism(Organism _organism){
         organism = _organism;
@@ -104,7 +108,7 @@ public class OrgEntity extends MobEntity {
 
             org.json.simple.parser.JSONParser parser = new org.json.simple.parser.JSONParser();
             obj = (JSONObject) parser.parse(
-                    nNetString
+                nNetString
             );
             nNet = new NeuralNet();
             nNet.attachEntity(this);
@@ -647,10 +651,22 @@ public class OrgEntity extends MobEntity {
 
         }
         super.baseTick();
-        /*if(!world.isRemote) {
+        if(!world.isRemote) {
 
             checkStatus();
-        }*/
+        }
+    }
+    public boolean checkStatus(){
+        if (
+            //this.organism == null ||
+                //getAgeSeconds() > maxLifeSeconds ||
+            this.spawnHash != ChaosCraft.getServer().spawnHash
+        ) {
+            //this.dropInventory();
+            this.setHealth(-1);
+            return true;
+        }
+        return false;
     }
     private void tickServer(){
         if( this.getCollisionBoundingBox() == null){
