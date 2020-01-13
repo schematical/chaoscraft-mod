@@ -4,10 +4,17 @@ import com.mojang.authlib.GameProfile;
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
 import com.schematical.chaoscraft.ai.CCObserviableAttributeCollection;
+import com.schematical.chaoscraft.ai.NeuralNet;
+import com.schematical.chaoscraft.ai.OutputNeuron;
 import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.events.OrgEvent;
 import com.schematical.chaoscraft.fitness.EntityFitnessManager;
+import com.schematical.chaoscraft.network.ChaosNetworkManager;
+import com.schematical.chaoscraft.network.packets.CCClientOutputNeuronActionPacket;
+import com.schematical.chaoscraft.network.packets.CCClientSpawnPacket;
 import com.schematical.chaosnet.model.ChaosNetException;
+import com.schematical.chaosnet.model.NNetRaw;
+import com.schematical.chaosnet.model.Organism;
 import it.unimi.dsi.fastutil.ints.IntList;
 import jdk.nashorn.internal.codegen.Compiler;
 import net.minecraft.block.Block;
@@ -15,6 +22,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.command.arguments.EntityAnchorArgument;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
@@ -32,8 +40,10 @@ import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.registries.ObjectHolder;
+import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -45,7 +55,7 @@ public class OrgEntity extends MobEntity {
 
     public final NonNullList<ItemStack> orgInventory = NonNullList.withSize(36, ItemStack.EMPTY);
     public EntityFitnessManager entityFitnessManager;
-
+    protected Organism organism;
     protected CCPlayerEntityWrapper playerWrapper;
     public CCObservableAttributeManager observableAttributeManager;
     public List<OrgEvent> events = new ArrayList<OrgEvent>();
@@ -69,10 +79,42 @@ public class OrgEntity extends MobEntity {
     private int equippedSlot = -1;
     private int rightClickDelay;
 
+    protected NeuralNet nNet;
+    private int ticksWithoutUpdate = 0;
+    private int selectedItemIndex;
+    private boolean hasTraveled = false;
+    private Vec3d spawnPos;
+    private int ticksSinceObservationHack = -1;
+    public ArrayList<CCClientOutputNeuronActionPacket> neuronActions = new ArrayList<CCClientOutputNeuronActionPacket>();
+
     public OrgEntity(EntityType<? extends MobEntity> type, World world) {
         super((EntityType<? extends MobEntity>) type, world);
     }
+    public void attachOrganism(Organism _organism){
+        organism = _organism;
 
+    }
+
+    public void attachNNetRaw(String nNetRaw){
+        String nNetString = nNetRaw;//nNetRaw.getNNetRaw();
+        JSONObject obj = null;
+
+
+        try {
+
+            org.json.simple.parser.JSONParser parser = new org.json.simple.parser.JSONParser();
+            obj = (JSONObject) parser.parse(
+                    nNetString
+            );
+            nNet = new NeuralNet();
+            nNet.attachEntity(this);
+            nNet.parseData(obj);
+
+        } catch (Exception e) {
+            ChaosCraft.LOGGER.error(nNetString);
+            e.printStackTrace();
+        }
+    }
     @Override
     public Iterable<ItemStack> getArmorInventoryList() {
         return new ArrayList<ItemStack>();
@@ -576,5 +618,202 @@ public class OrgEntity extends MobEntity {
             }
         }
         return null;
+    }
+
+
+    @Override
+    public void baseTick(){
+
+       /* if(this.firstUpdate) {
+            if(!this.world.isRemote) {
+                ForgeChunkManager.forceChunk(chunkTicket, new ChunkPos(this.getPosition()));
+            }
+        }
+
+        if(this.isDead || this.dead) {
+            if(chunkTicket!=null) {
+                ForgeChunkManager.releaseTicket(chunkTicket);
+                chunkTicket = null;
+            }
+        }*/
+        //ticksWithouUpdate = 0;
+
+
+        if(!world.isRemote){
+            tickServer();
+        }else{
+
+            tickClient();
+
+        }
+        super.baseTick();
+        /*if(!world.isRemote) {
+
+            checkStatus();
+        }*/
+    }
+    private void tickServer(){
+        if( this.getCollisionBoundingBox() == null){
+            return;
+        }
+        List<ItemEntity> items = this.world.getEntitiesWithinAABB(ItemEntity.class, this.getCollisionBoundingBox().grow(2.0D, 1.0D, 2.0D));
+
+        for (ItemEntity item : items) {
+            pickupItem(item);
+        }
+        double yOffset = Math.sin(Math.toRadians(desiredPitch));
+        double zOffset = Math.cos(Math.toRadians(this.desiredYaw)) * Math.cos(Math.toRadians(desiredPitch));
+        double xOffset = Math.sin(Math.toRadians(this.desiredYaw)) * Math.cos(Math.toRadians(desiredPitch));
+        Vec3d pos = getPositionVec();
+        this.getLookController().setLookPosition(pos.getX() + xOffset, pos.getY() + this.getEyeHeight() + yOffset, pos.getZ() + zOffset, 360, 360);
+        this.renderYawOffset = 0;
+        this.setRotation(this.rotationYaw, this.rotationPitch);
+        if(this.neuronActions.size() > 0){
+            //Iterate through and find output neurons
+            List<OutputNeuron> outputs = new ArrayList<OutputNeuron>();
+            Iterator<CCClientOutputNeuronActionPacket> keyIterator = this.neuronActions.iterator();
+            while(keyIterator.hasNext()) {
+                CCClientOutputNeuronActionPacket neuronAction = keyIterator.next();
+                if (!this.nNet.neurons.containsKey(neuronAction.getNeuronId())) {
+                    throw new ChaosNetException(this.getCCNamespace() + " is missing an OutputNeuron: " + neuronAction.getNeuronId());
+                }
+                if (!(this.nNet.neurons.get(neuronAction.getNeuronId()) instanceof  OutputNeuron)) {
+                    throw new ChaosNetException(this.getCCNamespace() + " is found but not an instanceof OutputNeuron: " + neuronAction.getNeuronId());
+                }
+                OutputNeuron outputNeuron = (OutputNeuron)this.nNet.neurons.get(neuronAction.getNeuronId());
+                outputNeuron._lastValue = neuronAction.getValue();
+                outputs.add(outputNeuron);
+            }
+            Iterator<OutputNeuron> iterator = outputs.iterator();
+            while(iterator.hasNext()) {
+                OutputNeuron outputNeuron = iterator.next();
+                outputNeuron.execute();
+            }
+            this.neuronActions.clear();
+        }
+    }
+    private void tickClient(){
+        //Tick neural net
+        if(
+                this.nNet != null &&
+                this.nNet.ready
+        ) {
+            if(!this.hasTraveled) {
+                if (this.spawnPos != null) {
+                    if (this.spawnPos.distanceTo(this.getPositionVector()) > 5) {
+                        CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.HAS_TRAVELED);
+                        entityFitnessManager.test(worldEvent);
+                    }
+                } else {
+                    this.spawnPos = this.getPositionVector();
+                }
+            }
+
+            List<OutputNeuron> outputs = this.nNet.evaluate();
+
+
+            Iterator<OutputNeuron> iterator = outputs.iterator();
+
+            while (iterator.hasNext()) {
+                OutputNeuron outputNeuron = iterator.next();
+                CCClientOutputNeuronActionPacket packet = new CCClientOutputNeuronActionPacket(
+                        organism.getNamespace(),
+                        outputNeuron.id,
+                        outputNeuron._lastValue
+
+                );
+
+                ChaosNetworkManager.sendToServer(packet);
+            }
+
+
+
+
+            this.observationHack();
+            Iterator<OrgEvent> eventIterator = events.iterator();
+
+            while(eventIterator.hasNext()){
+                OrgEvent event = eventIterator.next();
+                int eventTTL = event.tick();
+                if(eventTTL <= 0){
+                    eventIterator.remove();
+                }
+                //Check to see if there is a reward prediction
+            }
+        }
+    }
+
+    private void pickupItem(ItemEntity item) {
+        if (item.cannotPickup()) return;
+        ChaosCraft.LOGGER.info(this.getCCNamespace() + " - Picked up: " + item.getItem().getItem().getRegistryName());
+        ItemStack stack = item.getItem();
+
+        Item worldEventItem = stack.getItem();
+        //inventory.addItemStackToInventory(stack);
+        for (int i = 0; i < this.itemHandler.getSlots() && !stack.isEmpty(); i++) {
+            if(getHeldItemMainhand().getItem() == Item.getItemById(0)) {
+                this.setHeldItem(Hand.MAIN_HAND, stack);
+                equippedSlot = i;
+            }
+
+            stack = this.itemHandler.insertItem(i, stack, false);
+
+
+
+            this.selectedItemIndex = i;
+
+            //PacketHandler.INSTANCE.sendToAllTracking(new SyncHandsMessage(this.itemHandler.getStackInSlot(i), getEntityId(), i, selectedItemIndex), this);
+        }
+        if (stack.isEmpty()) {
+            item.detach();
+        }
+
+        if(observableAttributeManager != null) {
+            observableAttributeManager.Observe(worldEventItem);
+        }
+        CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.ITEM_COLLECTED);
+        worldEvent.item = worldEventItem;
+        entityFitnessManager.test(worldEvent);
+        //TODO: Recheck what you can craft
+        nNet.entity.observableAttributeManager.ObserveCraftableRecipes(this);
+
+
+    }
+
+
+    private void observationHack() {
+        this.ticksSinceObservationHack += 1;
+        if(this.ticksSinceObservationHack < 100){
+            return;
+        }
+        this.ticksSinceObservationHack = 0;
+
+        //Find blocks
+        Vec3d vec3d = this.getPositionVector();
+        int RANGE = 3;
+        for(double x = vec3d.x - RANGE; x < vec3d.x + RANGE; x++){
+            for(double y = vec3d.y - RANGE; y < vec3d.y + RANGE; y++){
+                for(double z = vec3d.z - RANGE; z < vec3d.z + RANGE; z++){
+                    BlockState blockState = world.getBlockState(
+                            new BlockPos(x, y, z)
+                    );
+                    Block block = blockState.getBlock();
+                    observableAttributeManager.Observe(block);
+                }
+            }
+        }
+
+        //Find entities
+        List<Entity> entities = world.getEntitiesWithinAABB(
+                Entity.class,
+                this.getCollisionBoundingBox().grow(RANGE)
+        );
+        for(Entity entity: entities){
+            observableAttributeManager.Observe(entity);
+        }
+    }
+
+    public void queueOutputNeuronAction(CCClientOutputNeuronActionPacket message) {
+        neuronActions.add(message);
     }
 }

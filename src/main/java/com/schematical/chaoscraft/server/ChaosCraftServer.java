@@ -6,6 +6,9 @@ import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.blocks.SpawnBlock;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
+import com.schematical.chaoscraft.network.packets.CCClientOutputNeuronActionPacket;
+import com.schematical.chaoscraft.network.packets.CCServerEntitySpawnedPacket;
+import com.schematical.chaoscraft.network.packets.ClientAuthPacket;
 import com.schematical.chaoscraft.network.packets.ServerIntroInfoPacket;
 import com.schematical.chaosnet.ChaosNet;
 import com.schematical.chaosnet.auth.ChaosnetCognitoUserPool;
@@ -38,6 +41,7 @@ public class ChaosCraftServer {
     public int consecutiveErrorCount;
     public Thread thread;
     public MinecraftServer server;
+    public static HashMap<String, OrgEntity> organisims = new HashMap<String, OrgEntity>();
 
     public ChaosCraftServer(MinecraftServer server) {
         this.server = server;
@@ -154,7 +158,7 @@ public class ChaosCraftServer {
                         pos1.getZ()
                 );
                 BlockState blockState = server.getWorld(DimensionType.OVERWORLD).getBlockState(blockPos2);
-                ChaosCraft.LOGGER.info("blockState: " + blockState.toString() + "  --? " + blockState.getBlock().toString());
+                //ChaosCraft.LOGGER.info("blockState: " + blockState.toString() + "  --? " + blockState.getBlock().toString());
                 if(!blockState.getBlock().equals(Blocks.AIR)){
                     y += 2;
                     blnFound = true;
@@ -170,6 +174,20 @@ public class ChaosCraftServer {
         orgEntity.setLocationAndAngles(pos.getX(), pos.getY(), pos.getZ(), playerEntity.rotationYaw, playerEntity.rotationPitch);
 
         serverWorld.summonEntity(orgEntity);
-       return orgEntity;
+        orgEntity.attachOrganism(organism);
+        orgEntity.attachNNetRaw(organism.getNNetRaw());
+        organisims.put(organism.getNamespace(), orgEntity);
+        ChaosNetworkManager.sendToServer(new CCServerEntitySpawnedPacket(organism.getNamespace(), orgEntity.getEntityId()));
+
+        return orgEntity;
+    }
+    public void processClientOutputNeuronActionPacket(CCClientOutputNeuronActionPacket message){
+        if(!organisims.containsKey(message.getOrgNamespace())){
+            ChaosCraft.LOGGER.error("Cannot find : " + message.getOrgNamespace());
+            return;
+        }
+        OrgEntity orgEntity = organisims.get(message.getOrgNamespace());
+        orgEntity.queueOutputNeuronAction(message);
+
     }
 }

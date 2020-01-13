@@ -4,11 +4,13 @@ import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.CCClientSpawnPacket;
+import com.schematical.chaoscraft.network.packets.CCServerEntitySpawnedPacket;
 import com.schematical.chaoscraft.network.packets.ClientAuthPacket;
 import com.schematical.chaoscraft.network.packets.ServerIntroInfoPacket;
 import com.schematical.chaosnet.model.ChaosNetException;
 import com.schematical.chaosnet.model.Organism;
 import com.schematical.chaosnet.model.TrainingRoomSessionNextResponse;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 
 import java.util.ArrayList;
@@ -20,6 +22,8 @@ public class ChaosCraftClient {
 
     public TrainingRoomSessionNextResponse lastResponse;
     private int ticksSinceLastSpawn;
+
+
 
     public enum State{
         Uninitiated,
@@ -67,7 +71,26 @@ public class ChaosCraftClient {
 
 
     }
+    public void attachOrgToEntity(String orgNamespace, int entityId) {
+        OrgEntity orgEntity = (OrgEntity)Minecraft.getInstance().world.getEntityByID(entityId);
+        Iterator<Organism> iterator = orgsToSpawn.iterator();
+        Organism organism = null;
+        while (iterator.hasNext()) {
+            organism = iterator.next();
+            if(organism.getNamespace().equals(orgNamespace)){
+                orgEntity.attachOrganism(organism);
+                orgEntity.attachNNetRaw(organism.getNNetRaw());
+            }else{
+                organism = null;
+            }
+        }
+        if(organism == null){
+            ChaosCraft.LOGGER.error("Could not link to: " + orgNamespace);
+        }else{
+            orgsToSpawn.remove(organism);
+        }
 
+    }
     public void tick(){
         if(state.equals(State.Uninitiated)){
             return;
@@ -175,6 +198,7 @@ ChaosCraft.LOGGER.info("Starting: ChaosClientThread");
                 }
             }
         }*/
+
     }
     public void reportOrgs(List<OrgEntity> _orgsToReport){
         /*_orgsToReport.forEach((OrgEntity organism)->{

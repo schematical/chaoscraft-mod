@@ -1,6 +1,7 @@
 package com.schematical.chaoscraft.network;
 
 import com.schematical.chaoscraft.ChaosCraft;
+import com.schematical.chaoscraft.network.packets.CCClientOutputNeuronActionPacket;
 import com.schematical.chaoscraft.network.packets.CCClientSpawnPacket;
 import com.schematical.chaoscraft.network.packets.ClientAuthPacket;
 import com.schematical.chaoscraft.network.packets.ServerIntroInfoPacket;
@@ -28,6 +29,7 @@ public class ChaosNetworkManager {
         INSTANCE.registerMessage(disc++, ClientAuthPacket.class, ClientAuthPacket::encode, ClientAuthPacket::decode, ClientAuthPacket.Handler::handle);
         INSTANCE.registerMessage(disc++, ServerIntroInfoPacket.class, ServerIntroInfoPacket::encode, ServerIntroInfoPacket::decode, ServerIntroInfoPacket.Handler::handle);
         INSTANCE.registerMessage(disc++, CCClientSpawnPacket.class, CCClientSpawnPacket::encode, CCClientSpawnPacket::decode, CCClientSpawnPacket.Handler::handle);
+        INSTANCE.registerMessage(disc++, CCClientOutputNeuronActionPacket.class, CCClientOutputNeuronActionPacket::encode, CCClientOutputNeuronActionPacket::decode, CCClientOutputNeuronActionPacket.Handler::handle);
     }
     /**
      * Sends a packet to the server.<br>
