@@ -113,7 +113,7 @@ public class AreaOfFocus extends BiologyBase{
 
             if(!target.equals(entity)) {
 
-                if (target.getCollisionBoundingBox().intersects(blockBox)) {
+                if (target.getBoundingBox().intersects(blockBox)) {
 
                     CCObserviableAttributeCollection attributeCollection = entity.observableAttributeManager.Observe(target);
                     if (attributeCollection != null) {

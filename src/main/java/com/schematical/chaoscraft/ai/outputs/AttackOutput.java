@@ -19,7 +19,7 @@ public class AttackOutput extends OutputNeuron {
             return;
         }
         OrgEntity entity = this.nNet.entity;
-        List<LivingEntity> entities = entity.world.getEntitiesWithinAABB(LivingEntity.class, entity.getCollisionBoundingBox().grow(2.0D, 1.0D, 2.0D));
+        List<LivingEntity> entities = entity.world.getEntitiesWithinAABB(LivingEntity.class, entity.getBoundingBox().grow(2.0D, 1.0D, 2.0D));
         //
 
 

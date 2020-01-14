@@ -69,7 +69,7 @@ public class Eye  extends BiologyBase {
         if(_entitiesCached){
             return seenEntities;
         }
-        AxisAlignedBB grownBox = entity.getCollisionBoundingBox().grow(maxDistance, maxDistance, maxDistance);
+        AxisAlignedBB grownBox = entity.getBoundingBox().grow(maxDistance, maxDistance, maxDistance);
         List<Entity> entities =  entity.world.getEntitiesWithinAABB(LivingEntity.class,  grownBox);
         entities.addAll(entity.world.getEntitiesWithinAABB(ItemEntity.class,  grownBox));
 
@@ -89,7 +89,7 @@ public class Eye  extends BiologyBase {
 
             if(!target.equals(entity)) {
 
-                target.getCollisionBoundingBox().rayTrace(vec3d, vec3d2).ifPresent(position -> {
+                target.getBoundingBox().rayTrace(vec3d, vec3d2).ifPresent(position -> {
                     CCObserviableAttributeCollection attributeCollection = entity.observableAttributeManager.Observe(target);
                     if (attributeCollection != null) {
                         //ChaosCraft.logger.info(entity.getCCNamespace() + " can see " + attributeCollection.resourceId);

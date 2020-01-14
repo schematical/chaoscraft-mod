@@ -22,10 +22,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.command.arguments.EntityAnchorArgument;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.*;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -115,7 +112,7 @@ public class OrgEntity extends MobEntity {
             nNet.parseData(obj);
 
         } catch (Exception e) {
-            ChaosCraft.LOGGER.error(nNetString);
+            ChaosCraft.LOGGER.error("Failed To Decode NNet: " + getCCNamespace() + " -- " + nNetString);
             e.printStackTrace();
         }
     }
@@ -139,16 +136,32 @@ public class OrgEntity extends MobEntity {
         return this.itemHandler;
     }
     public void jump(){
-        this.jump();
+        if(
+            !this.isJumping &&
+            !this.isAirBorne
+        ) {
+            super.jump();
+        }
     }
     @Override
     public HandSide getPrimaryHand() {
         return null;
     }
+    @Override
+    protected void registerAttributes() {
+        super.registerAttributes();
+        this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue((double)0.3F);
+        this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(10.0D);
+        this.getAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(32.0D);
+        this.getAttributes().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(2.0D);
 
+    }
 
     public String getCCNamespace() {
-        return "...TODO: Stuff";
+        if(organism == null){
+            return null;
+        }
+        return organism.getNamespace();
     }
 
     public boolean isEntityInLineOfSight(LivingEntity target, double blockReachDistance) {
@@ -162,7 +175,7 @@ public class OrgEntity extends MobEntity {
                 )
         );
 
-        return target.getCollisionBoundingBox().rayTrace(vec3d, vec3d2).isPresent();
+        return target.getBoundingBox().rayTrace(vec3d, vec3d2).isPresent();
     }
     public void setDesiredPitch(double _desiredPitch){
         this.desiredPitch = _desiredPitch;
@@ -401,7 +414,7 @@ public class OrgEntity extends MobEntity {
         }
     }
     public void replaceAlteredBlocks(){
-        ChaosCraft.LOGGER.info(this.getCCNamespace() + " - Trying to replace blocks - Count: " + alteredBlocks.size());
+        //ChaosCraft.LOGGER.info(this.getCCNamespace() + " - Trying to replace blocks - Count: " + alteredBlocks.size());
         for (AlteredBlockInfo alteredBlock : alteredBlocks) {
             boolean bool = world.setBlockState(alteredBlock.blockPos, alteredBlock.state, world.isRemote ? 11 : 3);
             String debugText = this.getCCNamespace() + " - Replacing: " + alteredBlock.state.getBlock().getRegistryName();
@@ -669,10 +682,28 @@ public class OrgEntity extends MobEntity {
         return false;
     }
     private void tickServer(){
-        if( this.getCollisionBoundingBox() == null){
+        if( this.getBoundingBox() == null){
             return;
         }
-        List<ItemEntity> items = this.world.getEntitiesWithinAABB(ItemEntity.class, this.getCollisionBoundingBox().grow(2.0D, 1.0D, 2.0D));
+
+
+
+        if(!this.hasTraveled) {
+            if (this.spawnPos != null) {
+                if (this.spawnPos.distanceTo(this.getPositionVector()) > 5) {
+                    CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.HAS_TRAVELED);
+                    entityFitnessManager.test(worldEvent);
+                }
+            } else {
+                this.spawnPos = this.getPositionVector();
+            }
+        }
+
+
+
+
+
+        List<ItemEntity> items = this.world.getEntitiesWithinAABB(ItemEntity.class, this.getBoundingBox().grow(2.0D, 1.0D, 2.0D));
 
         for (ItemEntity item : items) {
             pickupItem(item);
@@ -714,17 +745,8 @@ public class OrgEntity extends MobEntity {
                 this.nNet != null &&
                 this.nNet.ready
         ) {
-            if(!this.hasTraveled) {
-                if (this.spawnPos != null) {
-                    if (this.spawnPos.distanceTo(this.getPositionVector()) > 5) {
-                        CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.HAS_TRAVELED);
-                        entityFitnessManager.test(worldEvent);
-                    }
-                } else {
-                    this.spawnPos = this.getPositionVector();
-                }
-            }
 
+ChaosCraft.LOGGER.info(getCCNamespace() + " - EVALUATING!!!");
             List<OutputNeuron> outputs = this.nNet.evaluate();
 
 
@@ -802,6 +824,9 @@ public class OrgEntity extends MobEntity {
         if(this.ticksSinceObservationHack < 100){
             return;
         }
+        if(this.getBoundingBox() == null){
+            return;
+        }
         this.ticksSinceObservationHack = 0;
 
         //Find blocks
@@ -822,7 +847,7 @@ public class OrgEntity extends MobEntity {
         //Find entities
         List<Entity> entities = world.getEntitiesWithinAABB(
                 Entity.class,
-                this.getCollisionBoundingBox().grow(RANGE)
+                this.getBoundingBox().grow(RANGE)
         );
         for(Entity entity: entities){
             observableAttributeManager.Observe(entity);

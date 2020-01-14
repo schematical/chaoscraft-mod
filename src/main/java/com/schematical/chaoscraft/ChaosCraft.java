@@ -56,11 +56,12 @@ public class ChaosCraft
     public static ChaosNet sdk;
     // Directly reference a log4j logger.
     public static final Logger LOGGER = LogManager.getLogger();
-    public static ChaosCraftFitnessManager fitnessManager;
+
     public static float activationThreshold = .3f;
     public static ArrayList<SpawnBlock> spawnBlocks = new ArrayList<SpawnBlock>();
     private static ChaosCraftClient client;
     private static ChaosCraftServer server;
+
     public ChaosCraft() {
 
         config = new ChaosCraftConfig();
@@ -172,7 +173,7 @@ public class ChaosCraft
         // do something when the server starts
         LOGGER.info("HELLO from server starting");
         server = new ChaosCraftServer(event.getServer());
-
+        server.loadFitnessFunctions();
         CCSummonCommand.register(event.getCommandDispatcher());
         CCAuthCommand.register(event.getCommandDispatcher());
         CCTestCommand.register(event.getCommandDispatcher());

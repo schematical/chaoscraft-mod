@@ -6,6 +6,8 @@ import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
 import com.schematical.chaoscraft.blocks.SpawnBlock;
 import com.schematical.chaoscraft.entities.OrgEntity;
+import com.schematical.chaoscraft.fitness.ChaosCraftFitnessManager;
+import com.schematical.chaoscraft.fitness.EntityFitnessManager;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.CCClientOutputNeuronActionPacket;
 import com.schematical.chaoscraft.network.packets.CCServerEntitySpawnedPacket;
@@ -29,6 +31,9 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponent;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,6 +49,7 @@ public class ChaosCraftServer {
     public MinecraftServer server;
     public static int spawnHash;
     public static HashMap<String, OrgEntity> organisims = new HashMap<String, OrgEntity>();
+    public ChaosCraftFitnessManager fitnessManager;
 
     public ChaosCraftServer(MinecraftServer server) {
 
@@ -52,6 +58,11 @@ public class ChaosCraftServer {
     }
 
     public void tick(){
+        if(
+                ChaosCraft.getServer().fitnessManager == null
+        ){
+            return;
+        }
         if(
             orgNamepacesQueuedToSpawn.size() > 0 &&
             thread == null
@@ -179,7 +190,7 @@ public class ChaosCraftServer {
                     pos = new BlockPos(
                         blockPos2.getX(),
                         y,
-                        blockPos2.getY()
+                        blockPos2.getZ()
                     );
                 }
 
@@ -194,7 +205,8 @@ public class ChaosCraftServer {
         serverWorld.summonEntity(orgEntity);
         orgEntity.attachOrganism(organism);
         orgEntity.attachNNetRaw(organism.getNNetRaw());
-        orgEntity.observableAttributeManager = new CCObservableAttributeManager(organism);
+        orgEntity.entityFitnessManager = new EntityFitnessManager(orgEntity);
+
         orgEntity.setSpawnHash(spawnHash);
         organisims.put(organism.getNamespace(), orgEntity);
         ServerPlayerEntity serverPlayerEntity = null;
@@ -218,6 +230,35 @@ public class ChaosCraftServer {
         }
         OrgEntity orgEntity = organisims.get(message.getOrgNamespace());
         orgEntity.queueOutputNeuronAction(message);
+
+    }
+    public static void loadFitnessFunctions(){
+        if(
+                ChaosCraft.config.trainingRoomNamespace == null ||
+                ChaosCraft.config.trainingRoomUsernameNamespace == null
+        ){
+            ChaosCraft.LOGGER.error("Not enough TrainingRoom Data set");
+        }
+
+        GetUsernameTrainingroomsTrainingroomFitnessrulesRequest fitnessRulesRequest = new GetUsernameTrainingroomsTrainingroomFitnessrulesRequest();
+        fitnessRulesRequest.setTrainingroom(ChaosCraft.config.trainingRoomNamespace);
+        fitnessRulesRequest.setUsername(ChaosCraft.config.trainingRoomUsernameNamespace);
+        try {
+            GetUsernameTrainingroomsTrainingroomFitnessrulesResult result = ChaosCraft.sdk.getUsernameTrainingroomsTrainingroomFitnessrules(fitnessRulesRequest);
+            String fitnessRulesRaw = result.getTrainingRoomFitnessRules().getFitnessRulesRaw();
+
+            JSONParser parser = new JSONParser();
+
+            JSONArray obj = (JSONArray) parser.parse(
+                    fitnessRulesRaw
+            );
+            ChaosCraft.getServer().fitnessManager = new ChaosCraftFitnessManager();
+            ChaosCraft.getServer().fitnessManager.parseData(obj);
+        } catch (ChaosNetException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
     }
 }

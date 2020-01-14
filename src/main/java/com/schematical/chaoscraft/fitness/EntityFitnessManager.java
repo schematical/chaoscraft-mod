@@ -28,7 +28,7 @@ public class EntityFitnessManager {
     public void test(CCWorldEvent event){
 
 
-        List<EntityFitnessScoreEvent> _scoreEvents = ChaosCraft.fitnessManager.testEntityFitnessEvent(this.entityOrganism, event);
+        List<EntityFitnessScoreEvent> _scoreEvents = ChaosCraft.getServer().fitnessManager.testEntityFitnessEvent(this.entityOrganism, event);
         for(EntityFitnessScoreEvent scoreEvent : _scoreEvents){
 
             Integer numOfOccurences = 0;

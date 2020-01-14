@@ -1,7 +1,9 @@
 package com.schematical.chaoscraft.client;
 
 import com.schematical.chaoscraft.ChaosCraft;
+import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
 import com.schematical.chaoscraft.entities.OrgEntity;
+import com.schematical.chaoscraft.fitness.EntityFitnessManager;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.CCClientSpawnPacket;
 import com.schematical.chaoscraft.network.packets.CCServerEntitySpawnedPacket;
@@ -73,6 +75,9 @@ public class ChaosCraftClient {
     }
     public void attachOrgToEntity(String orgNamespace, int entityId) {
         OrgEntity orgEntity = (OrgEntity)Minecraft.getInstance().world.getEntityByID(entityId);
+        if(orgEntity == null){
+            return;
+        }
         Iterator<Organism> iterator = orgsToSpawn.iterator();
         Organism organism = null;
         while (iterator.hasNext()) {
@@ -81,6 +86,7 @@ public class ChaosCraftClient {
                 organism = testOrganism;
                 orgEntity.attachOrganism(organism);
                 orgEntity.attachNNetRaw(organism.getNNetRaw());
+                orgEntity.observableAttributeManager = new CCObservableAttributeManager(organism);
 
             }
         }
