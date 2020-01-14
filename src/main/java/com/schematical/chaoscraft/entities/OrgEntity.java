@@ -138,7 +138,8 @@ public class OrgEntity extends MobEntity {
     public void jump(){
         if(
             !this.isJumping &&
-            !this.isAirBorne
+            !this.isAirBorne &&
+            this.onGround
         ) {
             super.jump();
         }
@@ -746,7 +747,6 @@ public class OrgEntity extends MobEntity {
                 this.nNet.ready
         ) {
 
-ChaosCraft.LOGGER.info(getCCNamespace() + " - EVALUATING!!!");
             List<OutputNeuron> outputs = this.nNet.evaluate();
 
 
