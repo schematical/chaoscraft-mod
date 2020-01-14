@@ -6,6 +6,7 @@ import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
 import com.schematical.chaoscraft.ai.CCObserviableAttributeCollection;
 import com.schematical.chaoscraft.ai.NeuralNet;
 import com.schematical.chaoscraft.ai.OutputNeuron;
+import com.schematical.chaoscraft.client.gui.ChaosDebugOverlayGui;
 import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.events.OrgEvent;
 import com.schematical.chaoscraft.fitness.EntityFitnessManager;
@@ -21,6 +22,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.Minecraft;
 import net.minecraft.command.arguments.EntityAnchorArgument;
 import net.minecraft.entity.*;
 import net.minecraft.entity.item.ItemEntity;
@@ -34,6 +36,7 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.RecipeItemHelper;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.registries.ObjectHolder;
@@ -856,5 +859,14 @@ public class OrgEntity extends MobEntity {
 
     public void queueOutputNeuronAction(CCClientOutputNeuronActionPacket message) {
         neuronActions.add(message);
+    }
+
+    public boolean processInteract(PlayerEntity player, Hand hand)
+    {
+        ChaosCraft.LOGGER.info("Clicked on :" + organism.getNamespace());
+        if (this.world.isRemote) {
+            ChaosCraft.getClient().displayTest();
+        }
+        return true;
     }
 }

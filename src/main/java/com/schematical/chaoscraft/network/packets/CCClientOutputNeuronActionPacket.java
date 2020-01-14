@@ -43,9 +43,9 @@ public class CCClientOutputNeuronActionPacket {
     public static class Handler
     {
         public static void handle(final CCClientOutputNeuronActionPacket message, Supplier<NetworkEvent.Context> ctx) {
-            ChaosCraft.LOGGER.info("recived `CCClientOutputNeuronActionPacket` 1 ");
+
             ctx.get().enqueueWork(() -> {
-                ChaosCraft.LOGGER.info("recived `CCClientOutputNeuronActionPacket` 2: " + message.orgNamespace);
+
                 //Pretty sure the server should get this
 
                 //Load the NNet into memory

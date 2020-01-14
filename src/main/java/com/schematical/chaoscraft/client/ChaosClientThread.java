@@ -15,7 +15,7 @@ import java.util.Collection;
 public class ChaosClientThread implements Runnable {
 
     public void run(){
-        ChaosCraft.LOGGER.info("ChaosClientThread.run");
+
 
 
         PostUsernameTrainingroomsTrainingroomSessionsSessionNextRequest request = new PostUsernameTrainingroomsTrainingroomSessionsSessionNextRequest();

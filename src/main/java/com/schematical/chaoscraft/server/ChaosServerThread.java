@@ -17,20 +17,20 @@ public class ChaosServerThread implements Runnable {
 
     public void run(){
         try{
-            ChaosCraft.LOGGER.info("ChaosServerThread.run");
+
             GetUsernameTrainingroomsTrainingroomOrganismsRequest request = new GetUsernameTrainingroomsTrainingroomOrganismsRequest();
             request.setUsername(ChaosCraft.config.trainingRoomUsernameNamespace);
             request.setTrainingroom(ChaosCraft.config.trainingRoomNamespace);
 
             String orgNamespaces = String.join(",", ChaosCraft.getServer().orgNamepacesQueuedToSpawn);
             request.setOrgNamespaces(orgNamespaces);
-            ChaosCraft.LOGGER.info("Server Loading orgs: " + orgNamespaces);
+
 
             GetUsernameTrainingroomsTrainingroomOrganismsResult response = ChaosCraft.sdk.getUsernameTrainingroomsTrainingroomOrganisms(request);
             List<Organism> organisms = response.getOrganismCollection();
             ChaosCraft.getServer().orgNamepacesQueuedToSpawn.clear();
             ChaosCraft.getServer().orgsToSpawn.addAll(organisms);
-            ChaosCraft.LOGGER.info("ChaosServerThread.run Done");
+
 
         }catch(ChaosNetException exception){
             //logger.error(exeception.getMessage());

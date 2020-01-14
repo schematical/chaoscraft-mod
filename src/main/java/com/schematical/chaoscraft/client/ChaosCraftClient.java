@@ -2,6 +2,7 @@ package com.schematical.chaoscraft.client;
 
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
+import com.schematical.chaoscraft.client.gui.ChaosDebugOverlayGui;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.fitness.EntityFitnessManager;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
@@ -14,6 +15,7 @@ import com.schematical.chaosnet.model.Organism;
 import com.schematical.chaosnet.model.TrainingRoomSessionNextResponse;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +27,11 @@ public class ChaosCraftClient {
     public TrainingRoomSessionNextResponse lastResponse;
     private int ticksSinceLastSpawn;
 
+    public void displayTest() {
+        ChaosDebugOverlayGui screen = new ChaosDebugOverlayGui(new TranslationTextComponent("You clicked me"));
+        Minecraft.getInstance().displayGuiScreen(screen);
+        ChaosCraft.LOGGER.info("Displaying test");
+    }
 
 
     public enum State{
@@ -125,7 +132,7 @@ public class ChaosCraftClient {
                 return;
             }
             ticksSinceLastSpawn = 0;
-ChaosCraft.LOGGER.info("Starting: ChaosClientThread");
+
             thread = new Thread(new ChaosClientThread(), "ChaosClientThread");
             thread.start();
         }
