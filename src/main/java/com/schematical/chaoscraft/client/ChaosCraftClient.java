@@ -27,8 +27,8 @@ public class ChaosCraftClient {
     public TrainingRoomSessionNextResponse lastResponse;
     private int ticksSinceLastSpawn;
 
-    public void displayTest() {
-        ChaosDebugOverlayGui screen = new ChaosDebugOverlayGui(new TranslationTextComponent("You clicked me"));
+    public void displayTest(OrgEntity orgEntity) {
+        ChaosDebugOverlayGui screen = new ChaosDebugOverlayGui(orgEntity);
         Minecraft.getInstance().displayGuiScreen(screen);
         ChaosCraft.LOGGER.info("Displaying test");
     }
@@ -126,7 +126,7 @@ public class ChaosCraftClient {
         }
         ticksSinceLastSpawn += 1;
         if (
-                ticksSinceLastSpawn < (20 * 20)
+            ticksSinceLastSpawn < (20 * 20)
         ) {
             if(thread != null){
                 return;

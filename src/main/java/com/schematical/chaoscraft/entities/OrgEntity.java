@@ -130,6 +130,9 @@ public class OrgEntity extends MobEntity {
 
         return ItemStack.EMPTY;
     }
+    public NeuralNet getNNet(){
+        return nNet;
+    }
 
     @Override
     public void setItemStackToSlot(EquipmentSlotType slotIn, ItemStack stack) {
@@ -865,7 +868,7 @@ public class OrgEntity extends MobEntity {
     {
         ChaosCraft.LOGGER.info("Clicked on :" + organism.getNamespace());
         if (this.world.isRemote) {
-            ChaosCraft.getClient().displayTest();
+            ChaosCraft.getClient().displayTest(this);
         }
         return true;
     }
