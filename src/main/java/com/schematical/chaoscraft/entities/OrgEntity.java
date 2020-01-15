@@ -859,17 +859,30 @@ public class OrgEntity extends MobEntity {
             observableAttributeManager.Observe(entity);
         }
     }
-
+    public void manualUpdateCheck(){
+        ticksWithoutUpdate += 1;
+        if(ticksWithoutUpdate > 5){
+            checkStatus();
+        }
+    }
     public void queueOutputNeuronAction(CCClientOutputNeuronActionPacket message) {
         neuronActions.add(message);
     }
 
     public boolean processInteract(PlayerEntity player, Hand hand)
     {
-        ChaosCraft.LOGGER.info("Clicked on :" + organism.getNamespace());
+        if(organism == null){
+            ChaosCraft.LOGGER.error("Clicked on an OrgEntity but it has no organism");
+            return false;
+        }
+
         if (this.world.isRemote) {
             ChaosCraft.getClient().displayTest(this);
         }
         return true;
+    }
+
+    public Organism getOrganism() {
+        return organism;
     }
 }

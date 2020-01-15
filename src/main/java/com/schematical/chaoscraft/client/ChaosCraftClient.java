@@ -100,6 +100,7 @@ public class ChaosCraftClient {
         if(organism == null){
             ChaosCraft.LOGGER.error("Could not link to: " + orgNamespace);
         }else{
+            myOrganisims.put(orgEntity.getCCNamespace(), orgEntity);
             orgsToSpawn.remove(organism);
         }
 
@@ -108,22 +109,8 @@ public class ChaosCraftClient {
         if(state.equals(State.Uninitiated)){
             return;
         }
-        if(orgsToSpawn.size() > 0){
-            Iterator<Organism> iterator = orgsToSpawn.iterator();
-
-            while (iterator.hasNext()) {
-                Organism organism = iterator.next();
-                if(!orgsQueuedToSpawn.containsKey(organism.getNamespace())) {
-                    CCClientSpawnPacket packet = new CCClientSpawnPacket(
-                            organism.getNamespace()
-                    );
-
-                    orgsQueuedToSpawn.put(organism.getNamespace(), organism);
-                    ChaosNetworkManager.sendToServer(packet);
-                }
-            }
-
-        }
+        startSpawnOrgs();
+        int liveOrgCount = getLiveOrgCount();
         ticksSinceLastSpawn += 1;
         if (
             ticksSinceLastSpawn < (20 * 20)
@@ -137,51 +124,16 @@ public class ChaosCraftClient {
             thread.start();
         }
 
-/*
-        Iterator<OrgEntity> iterator = myOrganisims.values().iterator();
-        int liveOrgCount = 0;
-        while (iterator.hasNext()) {
-            OrgEntity organism = iterator.next();
-            organism.manualUpdateCheck();
-            if (
-                    organism.getOrganism() == null ||
-                    organism.getSpawnHash() != ChaosCraft.spawnHash
-            ) {
-                organism.setHealth(0);
-                iterator.remove();
 
-            }
-            if (organism.isAlive()) {
-                liveOrgCount += 1;
-            }
-        }
 
 
         if (
-                ChaosCraft.ticksSinceLastSpawn < (20 * 20) ||
+                ticksSinceLastSpawn < (20 * 20) ||
                 liveOrgCount >= ChaosCraft.config.maxBotCount
         ) {
 
-            List<OrgEntity> deadOrgs = new ArrayList<OrgEntity>();
-            iterator = myOrganisims.values().iterator();
 
-            while (iterator.hasNext()) {
-                OrgEntity organism = iterator.next();
-                if (organism.isDead) {
-                    if (
-                            organism.getCCNamespace() != null &&
-                                    organism.getSpawnHash() == ChaosCraft.spawnHash &&
-                                    !organism.getDebug()//Dont report Adam-0
-                    ) {
-                        deadOrgs.add(organism);
-                    }
-                    //ChaosCraft.logger.info("Removing: " + organism.getName() + " - Org Size Before" + ChaosCraft.organisims.size());
-                    iterator.remove();
-
-                    //ChaosCraft.logger.info("Dead Orgs: " + deadOrgs.size() + " / " + ChaosCraft.organisims.size());
-                }
-            }
-
+            List<OrgEntity> deadOrgs = getDeadOrgs();
             reportOrgs(deadOrgs);
         }
 
@@ -189,7 +141,12 @@ public class ChaosCraftClient {
             throw new ChaosNetException("ChaosCraft.consecutiveErrorCount > 5");
         }
 
-        if(myOrganisims.size() > 0) {
+
+
+    }
+
+    public void updateObservers(){
+        /*if(myOrganisims.size() > 0) {
             for (EntityPlayerMP observingPlayer : observingPlayers) {
                 Entity entity = observingPlayer.getSpectatingEntity();
 
@@ -211,19 +168,80 @@ public class ChaosCraftClient {
                 }
             }
         }*/
+    }
+    public List<OrgEntity> getDeadOrgs(){
+        List<OrgEntity> deadOrgs = new ArrayList<OrgEntity>();
+        Iterator<OrgEntity> iterator = myOrganisims.values().iterator();
+
+        while (iterator.hasNext()) {
+            OrgEntity organism = iterator.next();
+            if (!organism.isAlive()) {
+                if (
+                        organism.getCCNamespace() != null// &&
+                        //organism.getSpawnHash() == ChaosCraft.spawnHash &&
+                        //!organism.getDebug()//Dont report Adam-0
+                ) {
+                    deadOrgs.add(organism);
+                }
+                iterator.remove();
+
+            }
+        }
+        return deadOrgs;
+    }
+    private int getLiveOrgCount() {
+
+        Iterator<OrgEntity> iterator = myOrganisims.values().iterator();
+        int liveOrgCount = 0;
+        while (iterator.hasNext()) {
+            OrgEntity organism = iterator.next();
+            organism.manualUpdateCheck();
+            if (
+                organism.getOrganism() == null// ||
+                //organism.getSpawnHash() != ChaosCraft.spawnHash
+            ) {
+                organism.setHealth(-1);
+                iterator.remove();
+                //ChaosCraft.logger.info("Setting Dead: " + organism.getName() + " - Has no `Organism` record");
+            }
+            if (organism.isAlive()) {
+                liveOrgCount += 1;
+            }
+        }
+        return liveOrgCount;
 
     }
-    public void reportOrgs(List<OrgEntity> _orgsToReport){
-        /*_orgsToReport.forEach((OrgEntity organism)->{
 
-            ChaosCraft.client.orgsToReport.add(organism);
+    private void startSpawnOrgs() {
+        if(orgsToSpawn.size() > 0){
+            Iterator<Organism> iterator = orgsToSpawn.iterator();
+
+            while (iterator.hasNext()) {
+                Organism organism = iterator.next();
+                if(!orgsQueuedToSpawn.containsKey(organism.getNamespace())) {
+                    CCClientSpawnPacket packet = new CCClientSpawnPacket(
+                            organism.getNamespace()
+                    );
+
+                    orgsQueuedToSpawn.put(organism.getNamespace(), organism);
+                    ChaosNetworkManager.sendToServer(packet);
+                }
+            }
+
+        }
+    }
+
+    public void reportOrgs(List<OrgEntity> _orgsToReport){
+        _orgsToReport.forEach((OrgEntity organism)->{
+
+            orgsToReport.add(organism);
         });
         if(thread != null){
             return;
         }
-        ChaosCraft.ticksSinceLastSpawn = 0;
+        ticksSinceLastSpawn = 0;
 
         thread = new Thread(new ChaosClientThread(), "ChaosClientThread");
-        thread.start();*/
+        thread.start();
     }
 }

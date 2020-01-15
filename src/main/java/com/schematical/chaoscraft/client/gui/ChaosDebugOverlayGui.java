@@ -1,5 +1,6 @@
 package com.schematical.chaoscraft.client.gui;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.InputNeuron;
 import com.schematical.chaoscraft.ai.NeuronBase;
@@ -14,6 +15,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
+
+import static org.lwjgl.opengl.GL11.GL_LINE_STRIP;
 
 @OnlyIn(Dist.CLIENT)
 public class ChaosDebugOverlayGui extends Screen {
@@ -43,8 +46,8 @@ public class ChaosDebugOverlayGui extends Screen {
            }
         }
         int baseHeight = (this.height - 20);
-        int inputsY = baseHeight/inputs.size() + 1;
-        int outputsY = baseHeight/outputs.size() + 1;
+        int inputsY = baseHeight/(inputs.size() + 1);
+        int outputsY = baseHeight/(outputs.size() + 1);
 
 
         int i = 0;
@@ -85,5 +88,8 @@ public class ChaosDebugOverlayGui extends Screen {
         for (Widget button : buttons) {
             ((ChaosNeuronButton) button).min();
         }
+    }
+    public void drawLine(int startX, int startY, int endX, int endY, int r, int g, int b, int a) {
+
     }
 }
