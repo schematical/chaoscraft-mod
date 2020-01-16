@@ -52,13 +52,13 @@ public class ChaosDebugOverlayGui extends Screen {
 
         int i = 0;
         for (NeuronBase neuronBase : inputs) {
-            this.addButton(new ChaosNeuronButton( neuronBase, this, i, inputsY  * i + 100));
+            this.addButton(new ChaosNeuronButton( neuronBase, this, i, inputsY  * i + 10));
             i += 1;
         }
 
         i = 0;
         for (NeuronBase neuronBase : outputs) {
-            this.addButton(new ChaosNeuronButton( neuronBase, this, i, outputsY  * i + 100));
+            this.addButton(new ChaosNeuronButton( neuronBase, this, i, outputsY  * i + 10));
             i += 1;
         }
         if(middles.size() > 0){

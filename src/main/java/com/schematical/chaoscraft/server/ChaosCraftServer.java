@@ -29,6 +29,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
 import org.json.simple.JSONArray;
@@ -119,17 +120,7 @@ public class ChaosCraftServer {
 
 
         ChaosCraft.LOGGER.info("CheckingAuth Response: " + authWhoamiResponse.getUsername());
-       /* player.setCustomName(new TextComponent() {
-            @Override
-            public String getUnformattedComponentText() {
-                return  authWhoamiResponse.getUsername();
-            }
-
-            @Override
-            public ITextComponent shallowCopy() {
-                return this;
-            }
-        });*/
+        player.setCustomName(new TranslationTextComponent(authWhoamiResponse.getUsername()));
         ChaosCraftServerPlayerInfo playerInfo = new ChaosCraftServerPlayerInfo();
         playerInfo.authWhoamiResponse = getAuthWhoamiResult.getAuthWhoamiResponse();
         playerInfo.playerUUID = player.getUniqueID();
@@ -206,7 +197,7 @@ public class ChaosCraftServer {
         orgEntity.attachOrganism(organism);
         orgEntity.attachNNetRaw(organism.getNNetRaw());
         orgEntity.entityFitnessManager = new EntityFitnessManager(orgEntity);
-
+        orgEntity.setCustomName(new TranslationTextComponent(orgEntity.getCCNamespace()));
         orgEntity.setSpawnHash(spawnHash);
         organisims.put(organism.getNamespace(), orgEntity);
         ServerPlayerEntity serverPlayerEntity = null;
