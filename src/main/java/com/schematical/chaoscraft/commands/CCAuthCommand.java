@@ -39,18 +39,32 @@ public class CCAuthCommand {
 
     public static void register(CommandDispatcher<CommandSource> commandDispatcher) {
         commandDispatcher.register(
-                Commands.literal("ccauth").requires((source) -> source.hasPermissionLevel(2))
+                Commands.literal("ccauth").requires((source) -> source.hasPermissionLevel(2)).executes(CCAuthCommand::auth)
+                /*Commands.literal("ccauth").requires((source) -> source.hasPermissionLevel(2))
                         .then(
                                 Commands.argument("username", new StringArgument())
                                         .then(
                                             Commands.argument("password", new StringArgument()
-                                        ).executes(CCAuthCommand::auth)
-                                )
+                                        )
+                                .executes(CCAuthCommand::auth)
                         )
-                );
+                )*/
+        );
     }
     private static int auth(CommandContext<CommandSource> context) {
         try{
+            ChaosCraft.config.accessToken = null;
+            ChaosCraft.getClient().init();
+            return 1;
+        }catch(Exception exception){
+            context.getSource().sendFeedback(
+                    new TranslationTextComponent("chaoscraft.commands.auth.failed", exception.getMessage()),
+                    true
+            );
+            return 0;
+        }
+
+        /*try{
             PostAuthLoginRequest postAuthLoginRequest = new PostAuthLoginRequest();
 
 
@@ -85,7 +99,7 @@ public class CCAuthCommand {
             );
 
             return 0;
-        }
+        }*/
 
     }
 

@@ -60,7 +60,7 @@ public class ChaosCraftServer {
 
     public void tick(){
         if(
-                ChaosCraft.getServer().fitnessManager == null
+            ChaosCraft.getServer().fitnessManager == null
         ){
             return;
         }
@@ -225,8 +225,8 @@ public class ChaosCraftServer {
     }
     public static void loadFitnessFunctions(){
         if(
-                ChaosCraft.config.trainingRoomNamespace == null ||
-                ChaosCraft.config.trainingRoomUsernameNamespace == null
+            ChaosCraft.config.trainingRoomNamespace == null ||
+            ChaosCraft.config.trainingRoomUsernameNamespace == null
         ){
             ChaosCraft.LOGGER.error("Not enough TrainingRoom Data set");
         }
@@ -241,7 +241,7 @@ public class ChaosCraftServer {
             JSONParser parser = new JSONParser();
 
             JSONArray obj = (JSONArray) parser.parse(
-                    fitnessRulesRaw
+                fitnessRulesRaw
             );
             ChaosCraft.getServer().fitnessManager = new ChaosCraftFitnessManager();
             ChaosCraft.getServer().fitnessManager.parseData(obj);
@@ -251,5 +251,20 @@ public class ChaosCraftServer {
             e.printStackTrace();
         }
 
+    }
+
+    public void logOutPlayer(PlayerEntity player) {
+        //Iterate through all orgs and kill them
+        ChaosCraftServerPlayerInfo craftServerPlayerInfo = userMap.get(player.getUniqueID().toString());
+        for (String orgNamespace : craftServerPlayerInfo.organisims) {
+            if(!organisims.containsKey(orgNamespace)){
+                ChaosCraft.LOGGER.error("Cannot find " + player.getName().getString() + "'s org `" + orgNamespace + "` for logout destruction");
+            }else {
+
+                organisims.get(orgNamespace).killWithNoReport();
+                ChaosCraft.LOGGER.info("Logout killing " + player.getName().getString() + "'s org `" + orgNamespace + "` for logout destruction");
+            }
+        }
+        userMap.remove(player.getUniqueID().toString());
     }
 }

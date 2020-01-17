@@ -1,8 +1,12 @@
 package com.schematical.chaoscraft.client;
 
+import com.google.common.base.Predicate;
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
+import com.schematical.chaoscraft.client.gui.CCKeyBinding;
+import com.schematical.chaoscraft.client.gui.ChaosAuthOverlayGui;
 import com.schematical.chaoscraft.client.gui.ChaosDebugOverlayGui;
+import com.schematical.chaoscraft.client.gui.ChaosInGameMenuOverlayGui;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.fitness.EntityFitnessManager;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
@@ -13,10 +17,16 @@ import com.schematical.chaoscraft.network.packets.ServerIntroInfoPacket;
 import com.schematical.chaosnet.model.ChaosNetException;
 import com.schematical.chaosnet.model.Organism;
 import com.schematical.chaosnet.model.TrainingRoomSessionNextResponse;
+
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -27,17 +37,6 @@ public class ChaosCraftClient {
     public TrainingRoomSessionNextResponse lastResponse;
     private int ticksSinceLastSpawn;
 
-    public void displayTest(OrgEntity orgEntity) {
-        ChaosDebugOverlayGui screen = new ChaosDebugOverlayGui(orgEntity);
-        Minecraft.getInstance().displayGuiScreen(screen);
-        ChaosCraft.LOGGER.info("Displaying test");
-    }
-
-
-    public enum State{
-        Uninitiated,
-        Authed
-    }
     protected State state = State.Uninitiated;
     protected String trainingRoomNamespace;
     protected String trainingRoomUsernameNamespace;
@@ -49,6 +48,21 @@ public class ChaosCraftClient {
     public List<OrgEntity> orgsToReport = new ArrayList<OrgEntity>();
     public HashMap<String, OrgEntity> myOrganisims = new HashMap<String, OrgEntity>();
     public Thread thread;
+    public static List<KeyBinding> keyBindings = new ArrayList<KeyBinding>();
+    public void displayTest(OrgEntity orgEntity) {
+        ChaosDebugOverlayGui screen = new ChaosDebugOverlayGui(orgEntity);
+        Minecraft.getInstance().displayGuiScreen(screen);
+        ChaosCraft.LOGGER.info("Displaying test");
+    }
+
+    public void onWorldUnload() {
+        state = State.Uninitiated;
+        myOrganisims.clear();
+        orgsToReport.clear();
+        orgsToSpawn.clear();
+        orgsQueuedToSpawn.clear();
+    }
+
 
     public void setTrainingRoomInfo(ServerIntroInfoPacket serverInfo) {
         trainingRoomNamespace = serverInfo.getTrainingRoomNamespace();
@@ -70,8 +84,26 @@ public class ChaosCraftClient {
         return sessionNamespace;
     }
 
+    public void preInit(){
+        keyBindings.add(new KeyBinding(CCKeyBinding.SHOW_ORG_LIST,79, "key.chaoscraft"));
+        keyBindings.add(new KeyBinding(CCKeyBinding.OBSERVER_MODE, 0x18, "key.chaoscraft"));
+        keyBindings.add(new KeyBinding(CCKeyBinding.SHOW_SPECIES_LIST, 0x24, "key.chaoscraft"));
+
+// register all the key bindings
+        for (int i = 0; i < keyBindings.size(); ++i)
+        {
+            ClientRegistry.registerKeyBinding(keyBindings.get(i));
+        }
+    }
 
     public void init(){
+        if(ChaosCraft.config.accessToken == null){
+            //MAKE THEM AUTH FIRST
+            ChaosAuthOverlayGui screen = new ChaosAuthOverlayGui();
+            Minecraft.getInstance().displayGuiScreen(screen);
+            return;
+        }
+
 
         ChaosCraft.LOGGER.info("Client Sending Auth!!");
         ChaosNetworkManager.sendToServer(new ClientAuthPacket(ChaosCraft.config.accessToken));
@@ -128,8 +160,8 @@ public class ChaosCraftClient {
 
 
         if (
-                ticksSinceLastSpawn < (20 * 20) ||
-                liveOrgCount >= ChaosCraft.config.maxBotCount
+            ticksSinceLastSpawn < (20 * 20) ||
+            liveOrgCount >= ChaosCraft.config.maxBotCount
         ) {
 
 
@@ -243,5 +275,50 @@ public class ChaosCraftClient {
 
         thread = new Thread(new ChaosClientThread(), "ChaosClientThread");
         thread.start();
+    }
+    @SubscribeEvent
+    public  void onKeyInputEvent(InputEvent.KeyInputEvent event) {
+        for (KeyBinding keyBinding : keyBindings) {
+            // check each enumerated key binding type for pressed and take appropriate action
+            if (keyBinding.isPressed()) {
+                // DEBUG
+                switch(keyBinding.getKeyDescription()){
+                    case(CCKeyBinding.SHOW_ORG_LIST):
+                        //CCOrgListView view = new CCOrgListView();
+
+                        ChaosInGameMenuOverlayGui screen = new ChaosInGameMenuOverlayGui();
+                        Minecraft.getInstance().displayGuiScreen(screen);
+                        break;
+                    case(CCKeyBinding.SHOW_SPECIES_LIST):
+                       /* CCSpeciesListView view2 = new CCSpeciesListView();
+
+                        Minecraft.getInstance().displayGuiScreen(view2);*/
+                        break;
+                    case(CCKeyBinding.OBSERVER_MODE):
+                      /*  List<EntityPlayerMP> players = Minecraft.getMinecraft().world.<EntityPlayerMP>getPlayers(EntityPlayerMP.class, new Predicate<EntityPlayerMP>() {
+                            @Override
+                            public boolean apply(@Nullable EntityPlayerMP input) {
+                                return true;
+                            }
+                        });
+                        for(EntityPlayerMP player: players){
+                            ChaosCraft.client.toggleObservingPlayer(player);
+                        }*/
+                        break;
+                }
+
+                // do stuff for this key binding here
+                // remember you may need to send packet to server
+
+
+            }
+        }
+
+
+    }
+
+    public enum State{
+        Uninitiated,
+        Authed
     }
 }

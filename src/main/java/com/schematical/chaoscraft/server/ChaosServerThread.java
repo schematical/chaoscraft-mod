@@ -30,6 +30,7 @@ public class ChaosServerThread implements Runnable {
             List<Organism> organisms = response.getOrganismCollection();
             ChaosCraft.getServer().orgNamepacesQueuedToSpawn.clear();
             ChaosCraft.getServer().orgsToSpawn.addAll(organisms);
+            ChaosCraft.getServer().thread = null;
 
 
         }catch(ChaosNetException exception){

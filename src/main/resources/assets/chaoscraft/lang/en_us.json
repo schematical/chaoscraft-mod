@@ -2,5 +2,10 @@
   "chaoscraft.commands.auth.success":"Auth successful: {0}",
   "chaoscraft.commands.auth.failed":"Auth Failed: {0}",
   "chaoscraft.commands.ccsummon.success":"Summon Success: {0}",
-  "chaoscraft.commands.cctest":"Test: {0}"
+  "chaoscraft.commands.cctest":"Test: {0}",
+  "chaoscraft.gui.auth.title":"ChaosNet Login",
+  "chaoscraft.gui.mainmenu.title":"ChaosMenu",
+  "chaoscraft.gui.mainmenu.orglist":"Organisims",
+  "chaoscraft.gui.mainmenu.auth":"Auth",
+  "chaoscraft.gui.auth.login": "Login"
 }

@@ -21,10 +21,13 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
+import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.FMLWorldPersistenceHook;
 import net.minecraftforge.fml.InterModComms;
@@ -99,13 +102,19 @@ public class ChaosCraft
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onServerTickEvent);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onClientTickEvent);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onPlayerLoggedInEvent);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onPlayerLoggedOutEvent);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onWorldUnloadEvent);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onLivingUpdateEvent);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onClientStarting);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onKeyInputEvent);
         FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(EntityType.class, this::onEntityRegistry);
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
 
         ChaosNetworkManager.register();
     }
+
+
 
     public static ChaosCraftServer getServer(){
         return server;
@@ -185,8 +194,11 @@ public class ChaosCraft
         // do something when the server starts
         LOGGER.info("HELLO from Client starting");
         client = new ChaosCraftClient();
+        client.preInit();
 
     }
+
+
 
     @SubscribeEvent
     public void onWorldTickEvent(TickEvent.WorldTickEvent worldTickEvent) {
@@ -235,20 +247,67 @@ public class ChaosCraft
 
 
     }
-
     @SubscribeEvent
-    public void onPlayerLoggedInEvent(PlayerEvent.LivingUpdateEvent playerLoggedInEvent){
+    public void onLivingUpdateEvent(PlayerEvent.LivingUpdateEvent livingUpdateEvent){
+
+
+
+        if(
+            ChaosCraft.client != null &&
+            ChaosCraft.client.getState().equals(ChaosCraftClient.State.Uninitiated)
+        ){
+            LOGGER.info("onLivingUpdateEvent FIRING  2");
+            ChaosCraft.client.init();
+        }
+    }
+    @SubscribeEvent
+    public void onPlayerLoggedInEvent(PlayerEvent.PlayerLoggedInEvent playerLoggedInEvent){
+
+
 
         if(
             ChaosCraft.client != null &&
             ChaosCraft.client.getState().equals(ChaosCraftClient.State.Uninitiated)
         ){
             LOGGER.info("onPlayerLoggedInEvent FIRING  2");
-            ChaosCraft.client.init();
+            //.client.init();
         }
     }
 
+    @SubscribeEvent
+    public void onPlayerLoggedOutEvent(PlayerEvent.PlayerLoggedOutEvent playerLoggedOutEvent){
 
+
+        if(
+                ChaosCraft.server != null
+        ){
+
+            LOGGER.info("onPlayerLoggedOutEvent FIRING SERVER: " + playerLoggedOutEvent.getPlayer().getName().getString());
+            ChaosCraft.server.logOutPlayer(playerLoggedOutEvent.getPlayer());
+        }
+
+        if(
+            ChaosCraft.client != null
+        ){
+
+            LOGGER.info("onPlayerLoggedOutEvent FIRING CLIENT: " + playerLoggedOutEvent.getPlayer().getName());
+            //ChaosCraft.client.init();
+        }
+    }
+    @SubscribeEvent
+    public void onWorldUnloadEvent(WorldEvent.Unload worldUnloadEvent) {
+        LOGGER.info("onWorldUnloadEvent FIRING CLIENT: ");
+       if(client != null) {
+           client.onWorldUnload();
+       }
+    }
+    @SubscribeEvent
+    public void onKeyInputEvent(final InputEvent.KeyInputEvent event)  {
+        if(client == null){
+            return;
+        }
+        client.onKeyInputEvent(event);
+    }
 
 
 }

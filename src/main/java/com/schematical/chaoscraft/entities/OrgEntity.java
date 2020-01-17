@@ -885,4 +885,9 @@ public class OrgEntity extends MobEntity {
     public Organism getOrganism() {
         return organism;
     }
+
+    public void killWithNoReport() {
+        setHealth(-1);
+        //TODO: Stop it from reporting...
+    }
 }
