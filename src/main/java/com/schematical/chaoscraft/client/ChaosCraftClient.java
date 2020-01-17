@@ -99,8 +99,11 @@ public class ChaosCraftClient {
     public void init(){
         if(ChaosCraft.config.accessToken == null){
             //MAKE THEM AUTH FIRST
-            ChaosAuthOverlayGui screen = new ChaosAuthOverlayGui();
-            Minecraft.getInstance().displayGuiScreen(screen);
+            //but only open the screen when it isnt already open
+            if(!(Minecraft.getInstance().currentScreen instanceof ChaosAuthOverlayGui)) {
+                ChaosAuthOverlayGui screen = new ChaosAuthOverlayGui();
+                Minecraft.getInstance().displayGuiScreen(screen);
+            }
             return;
         }
 
