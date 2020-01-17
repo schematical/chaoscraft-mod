@@ -19,9 +19,9 @@ public class ChaosClientThread implements Runnable {
 
 
         PostUsernameTrainingroomsTrainingroomSessionsSessionNextRequest request = new PostUsernameTrainingroomsTrainingroomSessionsSessionNextRequest();
-        request.setTrainingroom(ChaosCraft.config.trainingRoomNamespace);
-        request.setUsername(ChaosCraft.config.trainingRoomUsernameNamespace);
-        request.setSession(ChaosCraft.config.sessionNamespace);
+        request.setTrainingroom(ChaosCraft.getClient().getTrainingRoomNamespace());
+        request.setUsername(ChaosCraft.getClient().getTrainingRoomUsernameNamespace());
+        request.setSession(ChaosCraft.getClient().getSessionNamespace());
 
         TrainingRoomSessionNextRequest trainingRoomSessionNextRequest = new TrainingRoomSessionNextRequest();
         Collection<ObservedAttributesElement> newAttributes = new ArrayList<ObservedAttributesElement>();

@@ -69,6 +69,7 @@ public class ChaosCraftClient {
         trainingRoomUsernameNamespace = serverInfo.getTrainingRoomUsernameNamespace();
         sessionNamespace = serverInfo.getSessionNamespace();
         ChaosCraft.LOGGER.info("TrainingRoomInfo Set: " + trainingRoomNamespace + ", " + trainingRoomUsernameNamespace + ", " + sessionNamespace);
+        state = State.Authed;
     }
 
     public State getState() {
@@ -110,7 +111,7 @@ public class ChaosCraftClient {
 
         ChaosCraft.LOGGER.info("Client Sending Auth!!");
         ChaosNetworkManager.sendToServer(new ClientAuthPacket(ChaosCraft.config.accessToken));
-        state = State.Authed;
+        state = State.AuthSent;
         //Get info on what the server is running
 
 
@@ -141,7 +142,7 @@ public class ChaosCraftClient {
 
     }
     public void tick(){
-        if(state.equals(State.Uninitiated)){
+        if(!state.equals(State.Authed)){
             return;
         }
         startSpawnOrgs();
@@ -322,6 +323,7 @@ public class ChaosCraftClient {
 
     public enum State{
         Uninitiated,
+        AuthSent,
         Authed
     }
 }

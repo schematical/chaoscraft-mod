@@ -31,7 +31,7 @@ public class ServerIntroInfoPacket {
     }
     public static void encode(ServerIntroInfoPacket pkt, PacketBuffer buf)
     {
-        String payload = pkt.trainingRoomNamespace + GLUE + pkt.trainingRoomUsernameNamespace +  GLUE + pkt.trainingRoomUsernameNamespace;
+        String payload = pkt.trainingRoomNamespace + GLUE + pkt.trainingRoomUsernameNamespace +  GLUE + pkt.sessionNamespace;
         buf.writeString(payload);
     }
 
