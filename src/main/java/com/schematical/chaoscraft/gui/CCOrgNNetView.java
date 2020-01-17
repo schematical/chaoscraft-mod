@@ -47,6 +47,7 @@ public class CCOrgNNetView extends CCGuiBase {
 
         fontRenderer.drawString(title, (width - this.fontRenderer.getStringWidth(title)) / 2, this.guiTop, 0x000000);
 
+
         for (GuiButton button : buttonList) {
             if (button instanceof CCGUINeuronDisplayButton) {
                 ((CCGUINeuronDisplayButton) button).drawDependencies();
@@ -57,14 +58,16 @@ public class CCOrgNNetView extends CCGuiBase {
             button.drawButton(mc, mouseX, mouseY, partialTicks);
         }
 
+
+
         for (GuiButton button : buttonList) {
             if (button instanceof CCGUINeuronDisplayButton) {
                 List<String> text = new ArrayList<String>();
-                text.add(((CCGUINeuronDisplayButton) button).neuron.toLongString());
+                text.add(((CCGUINeuronDisplayButton) button).neuron._lastValue+" "+((CCGUINeuronDisplayButton) button).neuron.toLongString());
                 drawTooltip(text, mouseX, mouseY, button.x, button.y, button.width, button.height);
             }
         }
-
+        initializeButtons();
     }
 
     public void drawTooltip(List<String> lines, int mouseX, int mouseY, int posX, int posY, int width, int height) {
@@ -78,7 +81,7 @@ public class CCOrgNNetView extends CCGuiBase {
         this.guiLeft = 50;
         this.guiTop = 10;
 
-        initializeButtons();
+
     }
 
     int initializeButtons() {
@@ -154,15 +157,15 @@ public class CCOrgNNetView extends CCGuiBase {
         for (NeuronBase neuron : entityOrganism.getNNet().neurons.values()) {
 
             CCNeuronInformation information = neuronInformation.get(neuron);
-            buttonWidth = fontRenderer.getStringWidth(neuron.toString()) + 10;
-
+            buttonWidth = fontRenderer.getStringWidth("TossEquipedStack") + 12;
+            String s = (neuron.getClass().getSimpleName().replace("Input", "").replace("Output", "")+ " " +(neuron._lastValue+"").substring(0, Math.min(4, (neuron._lastValue+"").length())));
             buttonList.add(new CCGUINeuronDisplayButton(
                             ID++,
                             information.x - buttonWidth / 2,
                             information.y - buttonHeight / 2,
                             buttonWidth,
                             buttonHeight,
-                            neuron.toString(),
+                            s,
                             entityOrganism,
                             neuron,
                             neuronInformation
@@ -212,7 +215,7 @@ public class CCOrgNNetView extends CCGuiBase {
             CCNeuronInformation informationOut = neuronInformation.get(neuron);
             for (NeuronDep dep : neuron.dependencies) {
                 CCNeuronInformation informationIn = neuronInformation.get(dep.depNeuron);
-                drawLine(informationOut.x, informationOut.y, informationIn.x, informationIn.y, dep.weight < 0 ? (int) (255 * dep.weight * -1) : 0, dep.weight > 0 ? (int) (255 * dep.weight) : 0, 0, 255);
+                drawLine(informationOut.x - 50, informationOut.y, informationIn.x + 50, informationIn.y, dep.weight < 0.5 ? 255 : 0, dep.weight >= 0.5 ? 255 : 0, 0, 200);
             }
         }
     }
