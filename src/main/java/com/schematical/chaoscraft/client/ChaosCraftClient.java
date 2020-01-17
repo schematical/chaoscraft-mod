@@ -184,8 +184,8 @@ public class ChaosCraftClient {
 
                 if (
                         entity.equals(observingPlayer) ||
-                                entity == null ||
-                                entity.isDead
+                        entity == null ||
+                        entity.isDead
                 ) {
                     if(
                             entity != null &&

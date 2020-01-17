@@ -256,13 +256,15 @@ public class ChaosCraftServer {
     public void logOutPlayer(PlayerEntity player) {
         //Iterate through all orgs and kill them
         ChaosCraftServerPlayerInfo craftServerPlayerInfo = userMap.get(player.getUniqueID().toString());
-        for (String orgNamespace : craftServerPlayerInfo.organisims) {
-            if(!organisims.containsKey(orgNamespace)){
-                ChaosCraft.LOGGER.error("Cannot find " + player.getName().getString() + "'s org `" + orgNamespace + "` for logout destruction");
-            }else {
+        if(craftServerPlayerInfo != null && craftServerPlayerInfo.organisims != null) {
+            for (String orgNamespace : craftServerPlayerInfo.organisims) {
+                if (!organisims.containsKey(orgNamespace)) {
+                    ChaosCraft.LOGGER.error("Cannot find " + player.getName().getString() + "'s org `" + orgNamespace + "` for logout destruction");
+                } else {
 
-                organisims.get(orgNamespace).killWithNoReport();
-                ChaosCraft.LOGGER.info("Logout killing " + player.getName().getString() + "'s org `" + orgNamespace + "` for logout destruction");
+                    organisims.get(orgNamespace).killWithNoReport();
+                    ChaosCraft.LOGGER.info("Logout killing " + player.getName().getString() + "'s org `" + orgNamespace + "` for logout destruction");
+                }
             }
         }
         userMap.remove(player.getUniqueID().toString());

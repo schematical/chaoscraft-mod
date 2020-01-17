@@ -814,12 +814,13 @@ public class OrgEntity extends MobEntity {
 
         if(observableAttributeManager != null) {
             observableAttributeManager.Observe(worldEventItem);
+
+            CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.ITEM_COLLECTED);
+            worldEvent.item = worldEventItem;
+            entityFitnessManager.test(worldEvent);
+            //TODO: Recheck what you can craft
+            nNet.entity.observableAttributeManager.ObserveCraftableRecipes(this);
         }
-        CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.ITEM_COLLECTED);
-        worldEvent.item = worldEventItem;
-        entityFitnessManager.test(worldEvent);
-        //TODO: Recheck what you can craft
-        nNet.entity.observableAttributeManager.ObserveCraftableRecipes(this);
 
 
     }
