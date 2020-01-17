@@ -1,8 +1,12 @@
 # chaoscraft-mod
 
 ## Getting Started:
+## Install jdk1.8.0_202:
 
 Make sure you have a 64bit java installation and at least 3 gb of free memory.
+
+
+https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
 
 ## Clone repo:
 ```

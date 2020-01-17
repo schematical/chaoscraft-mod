@@ -42,7 +42,8 @@ public class EntityOrganismRenderer extends RenderLiving<EntityOrganism> {
         if(observableTraitsCollection == null){
             return new ResourceLocation("chaoscraft:morty.png");
         }
-        String rgbString = observableTraitsCollection.getValueAsInt("color1R") + "_" +
+        return new ResourceLocation("chaoscraft:meeseeks.png");
+       /* String rgbString = observableTraitsCollection.getValueAsInt("color1R") + "_" +
                 observableTraitsCollection.getValueAsInt("color1G")  + "_" +
                 observableTraitsCollection.getValueAsInt("color1B");
         BufferedImage image = null;
@@ -127,7 +128,7 @@ public class EntityOrganismRenderer extends RenderLiving<EntityOrganism> {
 
         entity.refreshRender = false;
 
-        return resourceLocation;
+        return resourceLocation;*/
     }
 
 

@@ -86,6 +86,7 @@ public class EntityOrganism extends EntityLiving {
     public CCObservableAttributeManager observableAttributeManager;
     public HashMap<String, BiologyBase> inputs = new HashMap<String, BiologyBase>();
     public List<OrgEvent> events = new ArrayList<OrgEvent>();
+    public List<AlteredBlockInfo> alteredBlocks = new ArrayList<AlteredBlockInfo>();
     public EntityPlayerMP observingPlayer;
     public Vec3d spawnPos;
     private boolean hasTraveled = false;
@@ -514,7 +515,7 @@ public class EntityOrganism extends EntityLiving {
             if (world.getMinecraftServer() != null) {
                 world.getMinecraftServer().getPlayerList().sendMessage(cause.getDeathMessage(this));
             }
-
+            replaceAlteredBlocks();
 
         }
 
@@ -532,6 +533,19 @@ public class EntityOrganism extends EntityLiving {
                 }
             }
         }
+    }
+    public void replaceAlteredBlocks(){
+        ChaosCraft.logger.info(this.getCCNamespace() + " - Trying to replace blocks - Count: " + alteredBlocks.size());
+        for (AlteredBlockInfo alteredBlock : alteredBlocks) {
+            boolean bool = world.setBlockState(alteredBlock.blockPos, alteredBlock.state, world.isRemote ? 11 : 3);
+            String debugText = this.getCCNamespace() + " - Replacing: " + alteredBlock.state.getBlock().getLocalizedName();
+            if (bool) {
+                ChaosCraft.logger.info(debugText + " - Success");
+            }else{
+                ChaosCraft.logger.info(debugText + " - Fail");
+            }
+        }
+        alteredBlocks.clear();
     }
     public int getEmptyInventorySlot(){
         int emptySlot = -1;
@@ -728,14 +742,20 @@ public class EntityOrganism extends EntityLiving {
 
 
 
-
+//!!!!
+            alteredBlocks.add(
+                new AlteredBlockInfo(
+                    pos,
+                    state
+                )
+            );
             boolean bool = world.setBlockState(pos, net.minecraft.init.Blocks.AIR.getDefaultState(), world.isRemote ? 11 : 3);
             if (bool) {
                 state.getBlock().onPlayerDestroy(world, pos, state);
             } else {
                 harvest = false;
             }
-            ChaosCraft.logger.info(this.getName() + " Mining: " + state.getBlock().getRegistryName().toString() +  " Held Stack: " + stack.getItem().getRegistryName().toString() + "  Harvest: "  + harvest);
+            //ChaosCraft.logger.info(this.getName() + " Mining: " + state.getBlock().getRegistryName().toString() +  " Held Stack: " + stack.getItem().getRegistryName().toString() + "  Harvest: "  + harvest);
 
             if (harvest) {
                 state.getBlock().harvestBlock(world, this.getPlayerWrapper(), pos, state, world.getTileEntity(pos), stack);
@@ -999,9 +1019,12 @@ public class EntityOrganism extends EntityLiving {
     public void onRemovedFromWorld() {
         super.onRemovedFromWorld();
 
-        if(!world.isRemote&&chunkTicket!=null) {
-            ForgeChunkManager.releaseTicket(chunkTicket);
-            chunkTicket = null;
+        if(!world.isRemote) {
+            replaceAlteredBlocks();
+            if (chunkTicket != null) {
+                ForgeChunkManager.releaseTicket(chunkTicket);
+                chunkTicket = null;
+            }
         }
     }
 }
