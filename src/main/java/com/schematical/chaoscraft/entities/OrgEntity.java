@@ -816,11 +816,11 @@ public class OrgEntity extends MobEntity {
             //PacketHandler.INSTANCE.sendToAllTracking(new SyncHandsMessage(this.itemHandler.getStackInSlot(i), getEntityId(), i, selectedItemIndex), this);
         }
         if (stack.isEmpty()) {
-            item.detach();
+            item.remove();
         }
         CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.ITEM_COLLECTED);
         worldEvent.item = worldEventItem;
-        entityFitnessManager.test(worldEvent);
+         entityFitnessManager.test(worldEvent);
 
         if(observableAttributeManager != null) {
             observableAttributeManager.Observe(worldEventItem);

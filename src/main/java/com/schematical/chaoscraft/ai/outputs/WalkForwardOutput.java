@@ -26,6 +26,6 @@ public class WalkForwardOutput extends OutputNeuron {
         nNet.entity.moveForward = reversedValue * 1;
         //ChaosCraft.logger.info(nNet.entity.getName() + " Walking Forward: " + this._lastValue + " - " + nNet.entity.moveForward);
        //nNet.entity.getMoveHelper().strafe(nNet.entity.moveForward, nNet.entity.moveStrafing);
-        nNet.entity.move(MoverType.SELF, new Vec3d(nNet.entity.moveForward, nNet.entity.moveStrafing, 0));
+        nNet.entity.move(MoverType.SELF, new Vec3d(nNet.entity.moveForward, 0, nNet.entity.moveStrafing));
     }
 }
