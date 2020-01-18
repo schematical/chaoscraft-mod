@@ -20,7 +20,7 @@ public class EventInput extends InputNeuron {
     @Override
     public float evaluate(){
         _lastValue = 0;
-        Iterator<OrgEvent> eventIterator = nNet.entity.events.iterator();
+        Iterator<OrgEvent> eventIterator = nNet.entity.getOrgEvents().iterator();
         while(eventIterator.hasNext()){
             OrgEvent event = eventIterator.next();
             //TODO: Test if event is what we are looking for

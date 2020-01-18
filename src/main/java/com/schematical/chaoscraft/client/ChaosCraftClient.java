@@ -10,10 +10,7 @@ import com.schematical.chaoscraft.client.gui.ChaosInGameMenuOverlayGui;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.fitness.EntityFitnessManager;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
-import com.schematical.chaoscraft.network.packets.CCClientSpawnPacket;
-import com.schematical.chaoscraft.network.packets.CCServerEntitySpawnedPacket;
-import com.schematical.chaoscraft.network.packets.ClientAuthPacket;
-import com.schematical.chaoscraft.network.packets.ServerIntroInfoPacket;
+import com.schematical.chaoscraft.network.packets.*;
 import com.schematical.chaosnet.model.ChaosNetException;
 import com.schematical.chaosnet.model.Organism;
 import com.schematical.chaosnet.model.TrainingRoomSessionNextResponse;
@@ -130,7 +127,7 @@ public class ChaosCraftClient {
                 orgEntity.attachOrganism(organism);
                 orgEntity.attachNNetRaw(organism.getNNetRaw());
                 orgEntity.observableAttributeManager = new CCObservableAttributeManager(organism);
-
+                orgEntity.attachClientOrgEntity(new ClientOrgEntity());
             }
         }
         if(organism == null){
@@ -138,6 +135,7 @@ public class ChaosCraftClient {
         }else{
             myOrganisims.put(orgEntity.getCCNamespace(), orgEntity);
             orgsToSpawn.remove(organism);
+            orgsQueuedToSpawn.remove(orgEntity.getCCNamespace());
         }
 
     }
@@ -148,8 +146,10 @@ public class ChaosCraftClient {
         startSpawnOrgs();
         int liveOrgCount = getLiveOrgCount();
         ticksSinceLastSpawn += 1;
-        if (
-            ticksSinceLastSpawn < (20 * 20)
+       /* if (
+            ticksSinceLastSpawn < (20 * 20) &&
+            orgsToReport != null &&
+            orgsToReport.size() > 0
         ) {
             if(thread != null){
                 return;
@@ -158,18 +158,21 @@ public class ChaosCraftClient {
 
             thread = new Thread(new ChaosClientThread(), "ChaosClientThread");
             thread.start();
-        }
+        }*/
 
 
 
-
+        List<OrgEntity> deadOrgs = getDeadOrgs();
         if (
-            ticksSinceLastSpawn < (20 * 20) ||
-            liveOrgCount >= ChaosCraft.config.maxBotCount
+            (
+                deadOrgs.size() > 0 &&
+                ticksSinceLastSpawn < (20 * 20)
+            ) ||
+            liveOrgCount < ChaosCraft.config.maxBotCount
         ) {
 
 
-            List<OrgEntity> deadOrgs = getDeadOrgs();
+
             reportOrgs(deadOrgs);
         }
 
@@ -319,6 +322,13 @@ public class ChaosCraftClient {
         }
 
 
+    }
+
+    public void attatchScoreEventToEntity(CCServerScoreEventPacket message) {
+        if(!myOrganisims.containsKey(message.orgNamespace)){
+            ChaosCraft.LOGGER.error("attatchScoreEventToEntity - Cannot find orgNamespace: " + message.orgNamespace);
+        }
+        myOrganisims.get(message.orgNamespace).getClientOrgEntity().addServerScoreEvent(message);
     }
 
     public enum State{

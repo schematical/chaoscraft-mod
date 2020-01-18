@@ -32,10 +32,10 @@ public class ChaosClientThread implements Runnable {
                 String namespace = organism.getCCNamespace();
                 if(namespace != null) {
                     TrainingRoomSessionNextReport reportEntry = new TrainingRoomSessionNextReport();
-                    if(organism.entityFitnessManager == null){
-                        ChaosCraft.LOGGER.error("Missing `organism.entityFitnessManager` for: " + namespace);
+                    if(organism.getClientOrgEntity() == null){
+                        ChaosCraft.LOGGER.error("Missing `organism.getClientOrgEntity()` for: " + namespace);
                     }else {
-                        reportEntry.setScore(organism.entityFitnessManager.totalScore());
+                        reportEntry.setScore(organism.getClientOrgEntity().getServerScoreEventTotal());
                         reportEntry.setNamespace(organism.getCCNamespace());
                         report.add(reportEntry);
                         /*if(organism.hasAttemptedReport){

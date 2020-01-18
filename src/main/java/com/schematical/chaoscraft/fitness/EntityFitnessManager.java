@@ -50,8 +50,8 @@ public class EntityFitnessManager {
                     return;
                 }
             }
-            scoreEvents.add(scoreEvent);
-            Iterator<OrgEvent> eventIterator = entityOrganism.events.iterator();
+           addScoreEvent(scoreEvent);
+            Iterator<OrgEvent> eventIterator = entityOrganism.getOrgEvents().iterator();
 
             while(eventIterator.hasNext()){
                 OrgEvent orgEvent = eventIterator.next();
@@ -82,7 +82,7 @@ public class EntityFitnessManager {
 
                 }
             }
-            entityOrganism.events.add(new OrgEvent(scoreEvent));
+            entityOrganism.addOrgEvent(new OrgEvent(scoreEvent));
             occurences.put(scoreEvent.fitnessRule.id, numOfOccurences);
             if(scoreEvent.life != 0) {
                 entityOrganism.adjustMaxLife(scoreEvent.life);
@@ -90,6 +90,11 @@ public class EntityFitnessManager {
 
 
         }
+    }
+
+    private void addScoreEvent(EntityFitnessScoreEvent scoreEvent) {
+        scoreEvents.add(scoreEvent);
+        //Send score event
     }
 
     public Double totalScore() {

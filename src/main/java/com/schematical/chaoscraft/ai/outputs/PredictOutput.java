@@ -15,7 +15,7 @@ public class PredictOutput extends OutputNeuron {
     public int coolOffCurrent = -1;*/
     @Override
     public float evaluate(){
-        Iterator<OrgEvent> eventIterator = nNet.entity.events.iterator();
+        Iterator<OrgEvent> eventIterator = nNet.entity.getOrgEvents().iterator();
         while(eventIterator.hasNext()) {
             OrgEvent event = eventIterator.next();
             if (event instanceof OrgPredictionEvent) {
@@ -32,7 +32,7 @@ public class PredictOutput extends OutputNeuron {
             return;
         }
         OrgEvent orgEvent = new OrgPredictionEvent(reversedValue, OrgEvent.DEFAULT_TTL);
-        nNet.entity.events.add(orgEvent);
+        nNet.entity.getOrgEvents().add(orgEvent);
 
     }
 }

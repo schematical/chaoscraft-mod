@@ -6,23 +6,19 @@ import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
 import com.schematical.chaoscraft.ai.CCObserviableAttributeCollection;
 import com.schematical.chaoscraft.ai.NeuralNet;
 import com.schematical.chaoscraft.ai.OutputNeuron;
-import com.schematical.chaoscraft.client.gui.ChaosDebugOverlayGui;
+import com.schematical.chaoscraft.client.ClientOrgEntity;
 import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.events.OrgEvent;
 import com.schematical.chaoscraft.fitness.EntityFitnessManager;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.CCClientOutputNeuronActionPacket;
-import com.schematical.chaoscraft.network.packets.CCClientSpawnPacket;
 import com.schematical.chaosnet.model.ChaosNetException;
-import com.schematical.chaosnet.model.NNetRaw;
 import com.schematical.chaosnet.model.Organism;
 import it.unimi.dsi.fastutil.ints.IntList;
-import jdk.nashorn.internal.codegen.Compiler;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.Minecraft;
 import net.minecraft.command.arguments.EntityAnchorArgument;
 import net.minecraft.entity.*;
 import net.minecraft.entity.item.ItemEntity;
@@ -30,13 +26,11 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.RecipeItemHelper;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.registries.ObjectHolder;
@@ -52,13 +46,13 @@ public class OrgEntity extends MobEntity {
     @ObjectHolder("chaoscraft:org_entity")
     public static final EntityType<OrgEntity> ORGANISM_TYPE = null;
     public final double REACH_DISTANCE = 5.0D;
-
+    private long spawnTime;
     public final NonNullList<ItemStack> orgInventory = NonNullList.withSize(36, ItemStack.EMPTY);
     public EntityFitnessManager entityFitnessManager;
     protected Organism organism;
     protected CCPlayerEntityWrapper playerWrapper;
     public CCObservableAttributeManager observableAttributeManager;
-    public List<OrgEvent> events = new ArrayList<OrgEvent>();
+    private List<OrgEvent> events = new ArrayList<OrgEvent>();
 
     //The current selected item
     private int currentItem = 0;
@@ -72,7 +66,7 @@ public class OrgEntity extends MobEntity {
     private float hardness = 0;
     private BlockPos lastMinePos = BlockPos.ZERO;
     private int blockSoundTimer;
-    private float maxLifeSeconds;
+    private float maxLifeSeconds = 30;
     private int miningTicks = 0;
 
     public List<AlteredBlockInfo> alteredBlocks = new ArrayList<AlteredBlockInfo>();
@@ -87,6 +81,7 @@ public class OrgEntity extends MobEntity {
     private int ticksSinceObservationHack = -1;
     public ArrayList<CCClientOutputNeuronActionPacket> neuronActions = new ArrayList<CCClientOutputNeuronActionPacket>();
     private int spawnHash;
+    private ClientOrgEntity clientOrgEntity;
 
     public OrgEntity(EntityType<? extends MobEntity> type, World world) {
         super((EntityType<? extends MobEntity>) type, world);
@@ -96,9 +91,12 @@ public class OrgEntity extends MobEntity {
     }
     public void attachOrganism(Organism _organism){
         organism = _organism;
+        spawnTime = world.getGameTime();
 
     }
-
+    public ClientOrgEntity getClientOrgEntity(){
+        return clientOrgEntity;
+    }
     public void attachNNetRaw(String nNetRaw){
         String nNetString = nNetRaw;//nNetRaw.getNNetRaw();
         JSONObject obj = null;
@@ -677,10 +675,14 @@ public class OrgEntity extends MobEntity {
         }
     }
     public boolean checkStatus(){
+        if(this.spawnHash != ChaosCraft.getServer().spawnHash){
+            killWithNoReport();
+            return false;
+        }
         if (
             //this.organism == null ||
-                //getAgeSeconds() > maxLifeSeconds ||
-            this.spawnHash != ChaosCraft.getServer().spawnHash
+            getAgeSeconds() > maxLifeSeconds
+
         ) {
             //this.dropInventory();
             this.setHealth(-1);
@@ -688,6 +690,11 @@ public class OrgEntity extends MobEntity {
         }
         return false;
     }
+    public float getAgeSeconds(){
+        return (this.world.getGameTime() - spawnTime)  / 20;
+    }
+
+
     private void tickServer(){
         if( this.getBoundingBox() == null){
             return;
@@ -811,15 +818,14 @@ public class OrgEntity extends MobEntity {
         if (stack.isEmpty()) {
             item.detach();
         }
+        CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.ITEM_COLLECTED);
+        worldEvent.item = worldEventItem;
+        entityFitnessManager.test(worldEvent);
 
         if(observableAttributeManager != null) {
             observableAttributeManager.Observe(worldEventItem);
-
-            CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.ITEM_COLLECTED);
-            worldEvent.item = worldEventItem;
-            entityFitnessManager.test(worldEvent);
             //TODO: Recheck what you can craft
-            nNet.entity.observableAttributeManager.ObserveCraftableRecipes(this);
+            observableAttributeManager.ObserveCraftableRecipes(this);
         }
 
 
@@ -890,5 +896,20 @@ public class OrgEntity extends MobEntity {
     public void killWithNoReport() {
         setHealth(-1);
         //TODO: Stop it from reporting...
+    }
+    public List<OrgEvent> getOrgEvents(){
+        return events;
+    }
+    public void addOrgEvent(OrgEvent orgEvent){
+        if(ChaosCraft.getServer() == null){
+            ChaosCraft.LOGGER.error("Ths should not get called client side");
+            return;
+        }
+
+        events.add(orgEvent);
+    }
+
+    public void attachClientOrgEntity(ClientOrgEntity clientOrgEntity) {
+        this.clientOrgEntity = clientOrgEntity;
     }
 }
