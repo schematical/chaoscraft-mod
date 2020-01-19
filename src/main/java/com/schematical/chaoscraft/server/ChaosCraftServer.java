@@ -6,6 +6,7 @@ import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
 import com.schematical.chaoscraft.blocks.SpawnBlock;
 import com.schematical.chaoscraft.entities.OrgEntity;
+import com.schematical.chaoscraft.events.OrgEvent;
 import com.schematical.chaoscraft.fitness.ChaosCraftFitnessManager;
 import com.schematical.chaoscraft.fitness.EntityFitnessManager;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
@@ -139,6 +140,11 @@ public class ChaosCraftServer {
 
     public OrgEntity spawnOrg(Organism organism) {
 
+        if(organisims.containsKey(organism.getNamespace())){
+            ChaosCraft.LOGGER.error("Server already have a living org: " + organism.getNamespace());
+             sendChaosCraftServerPlayerInfo(organism, organisims.get(organism.getNamespace()));
+            return null;
+        }
 
 
         ServerWorld serverWorld = this.server.getWorld(DimensionType.OVERWORLD);
@@ -199,7 +205,13 @@ public class ChaosCraftServer {
         orgEntity.entityFitnessManager = new EntityFitnessManager(orgEntity);
         orgEntity.setCustomName(new TranslationTextComponent(orgEntity.getCCNamespace()));
         orgEntity.setSpawnHash(spawnHash);
+
         organisims.put(organism.getNamespace(), orgEntity);
+        sendChaosCraftServerPlayerInfo(organism, orgEntity);
+
+        return orgEntity;
+    }
+    protected  void sendChaosCraftServerPlayerInfo(Organism organism, OrgEntity orgEntity){
         ServerPlayerEntity serverPlayerEntity = null;
         for (ChaosCraftServerPlayerInfo playerInfo : userMap.values()) {
             if(playerInfo.organisims.contains(organism.getNamespace())){
@@ -208,15 +220,13 @@ public class ChaosCraftServer {
         }
         if(serverPlayerEntity == null){
             ChaosCraft.LOGGER.error("Cant find player owning: " + organism.getNamespace());
-            return null;
+            return;
         }
         ChaosNetworkManager.sendTo(new CCServerEntitySpawnedPacket(organism.getNamespace(), orgEntity.getEntityId()), serverPlayerEntity);
-
-        return orgEntity;
     }
     public void processClientOutputNeuronActionPacket(CCClientOutputNeuronActionPacket message){
         if(!organisims.containsKey(message.getOrgNamespace())){
-            ChaosCraft.LOGGER.error("Cannot find : " + message.getOrgNamespace());
+            ChaosCraft.LOGGER.error("Cannot find org: " + message.getOrgNamespace());
             return;
         }
         OrgEntity orgEntity = organisims.get(message.getOrgNamespace());
@@ -268,5 +278,13 @@ public class ChaosCraftServer {
             }
         }
         userMap.remove(player.getUniqueID().toString());
+    }
+
+    public void removeEntityFromWorld(OrgEntity orgEntity) {
+       if(!organisims.containsKey(orgEntity.getCCNamespace())){
+           ChaosCraft.LOGGER.error("Server is trying to remove an org from its `organisims` but it is not there: " + orgEntity.getCCNamespace());
+           return;
+       }
+        organisims.remove(orgEntity.getCCNamespace());
     }
 }

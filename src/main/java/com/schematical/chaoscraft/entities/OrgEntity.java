@@ -422,6 +422,7 @@ public class OrgEntity extends MobEntity {
                 ForgeChunkManager.releaseTicket(chunkTicket);
                 chunkTicket = null;
             }*/
+           ChaosCraft.getServer().removeEntityFromWorld(this);
         }
     }
     public void replaceAlteredBlocks(){

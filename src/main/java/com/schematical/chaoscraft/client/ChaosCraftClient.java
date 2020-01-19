@@ -39,6 +39,8 @@ public class ChaosCraftClient {
     protected String trainingRoomUsernameNamespace;
     protected String sessionNamespace;
 
+    protected ArrayList<String> debugOrgNamespaces = new ArrayList<String>();
+
     public int consecutiveErrorCount = 0;
     public List<Organism> orgsToSpawn = new ArrayList<Organism>();
     public HashMap<String, Organism> orgsQueuedToSpawn = new HashMap<String, Organism>();
@@ -146,19 +148,6 @@ public class ChaosCraftClient {
         startSpawnOrgs();
         int liveOrgCount = getLiveOrgCount();
         ticksSinceLastSpawn += 1;
-       /* if (
-            ticksSinceLastSpawn < (20 * 20) &&
-            orgsToReport != null &&
-            orgsToReport.size() > 0
-        ) {
-            if(thread != null){
-                return;
-            }
-            ticksSinceLastSpawn = 0;
-
-            thread = new Thread(new ChaosClientThread(), "ChaosClientThread");
-            thread.start();
-        }*/
 
 
 
@@ -168,7 +157,7 @@ public class ChaosCraftClient {
                 deadOrgs.size() > 0 &&
                 ticksSinceLastSpawn < (20 * 20)
             ) ||
-            liveOrgCount < ChaosCraft.config.maxBotCount
+                    (liveOrgCount + this.orgsQueuedToSpawn.size()) < ChaosCraft.config.maxBotCount
         ) {
 
 
@@ -257,13 +246,20 @@ public class ChaosCraftClient {
 
             while (iterator.hasNext()) {
                 Organism organism = iterator.next();
-                if(!orgsQueuedToSpawn.containsKey(organism.getNamespace())) {
-                    CCClientSpawnPacket packet = new CCClientSpawnPacket(
-                            organism.getNamespace()
-                    );
+                if(!myOrganisims.containsKey(organism.getNamespace())) {
+                    if (debugOrgNamespaces.contains(organism.getNamespace())) {
+                        ChaosCraft.LOGGER.error("Client already tried to spawn: " + organism.getNamespace());
+                    } else {
+                        debugOrgNamespaces.add(organism.getNamespace());
+                    }
+                    if (!orgsQueuedToSpawn.containsKey(organism.getNamespace())) {
+                        CCClientSpawnPacket packet = new CCClientSpawnPacket(
+                                organism.getNamespace()
+                        );
 
-                    orgsQueuedToSpawn.put(organism.getNamespace(), organism);
-                    ChaosNetworkManager.sendToServer(packet);
+                        orgsQueuedToSpawn.put(organism.getNamespace(), organism);
+                        ChaosNetworkManager.sendToServer(packet);
+                    }
                 }
             }
 
