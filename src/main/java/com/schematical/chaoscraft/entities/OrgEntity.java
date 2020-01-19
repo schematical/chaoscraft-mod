@@ -94,6 +94,9 @@ public class OrgEntity extends MobEntity {
         spawnTime = world.getGameTime();
 
     }
+    public void setDesiredYaw(double _desiredYaw){
+        this.desiredYaw = _desiredYaw;
+    }
     public ClientOrgEntity getClientOrgEntity(){
         return clientOrgEntity;
     }
@@ -189,10 +192,13 @@ public class OrgEntity extends MobEntity {
         double yOffset = Math.sin(Math.toRadians(desiredPitch));
         double zOffset = Math.cos(Math.toRadians(this.desiredYaw)) * Math.cos(Math.toRadians(desiredPitch));
         double xOffset = Math.sin(Math.toRadians(this.desiredYaw)) * Math.cos(Math.toRadians(desiredPitch));
-        this.lookAt(EntityAnchorArgument.Type.EYES, new Vec3d(getPositionVec().x + xOffset, getPositionVec().y + this.getEyeHeight() + yOffset, getPositionVec().z + zOffset));
+        //this.lookAt(EntityAnchorArgument.Type.EYES, new Vec3d(getPositionVec().x + xOffset, getPositionVec().y + this.getEyeHeight() + yOffset, getPositionVec().z + zOffset));
         this.renderYawOffset = 0;
-        this.setRotation(this.rotationYaw, this.rotationPitch);
+        this.setRotation((float)this.desiredYaw/*this.rotationYaw*/, this.rotationPitch);
 
+    }
+    public double getDesiredYaw(){
+        return this.desiredYaw;
     }
     @Override
     public void livingTick() {
