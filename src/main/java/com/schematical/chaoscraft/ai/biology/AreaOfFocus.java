@@ -9,6 +9,7 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.VoxelShape;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
@@ -107,7 +108,12 @@ public class AreaOfFocus extends BiologyBase{
         BlockState blockState = entity.world.getBlockState(
             blockPos
         );
-        AxisAlignedBB blockBox = blockState.getCollisionShape(entity.world, blockPos).getBoundingBox().offset(blockPos);
+        VoxelShape voxelShape = blockState.getCollisionShape(entity.world, blockPos);
+        if(voxelShape == null ||  voxelShape.isEmpty()){
+            return observedEntities;
+        }
+        AxisAlignedBB boundingBox = voxelShape.getBoundingBox();
+        AxisAlignedBB blockBox = boundingBox.offset(blockPos);
 
         for (Entity target : seenEntities) {
 

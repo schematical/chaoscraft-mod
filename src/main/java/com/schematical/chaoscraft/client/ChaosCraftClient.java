@@ -153,16 +153,24 @@ public class ChaosCraftClient {
 
         List<OrgEntity> deadOrgs = getDeadOrgs();
         if (
+            deadOrgs.size() > 0 ||
             (
-                deadOrgs.size() > 0 &&
-                ticksSinceLastSpawn < (20 * 20)
-            ) ||
-                    (liveOrgCount + this.orgsQueuedToSpawn.size()) < ChaosCraft.config.maxBotCount
+                ticksSinceLastSpawn > (50) &&
+                (liveOrgCount + this.orgsQueuedToSpawn.size()) < ChaosCraft.config.maxBotCount
+            )
         ) {
 
 
 
             reportOrgs(deadOrgs);
+
+            if(thread == null) {
+
+                ticksSinceLastSpawn = 0;
+
+                thread = new Thread(new ChaosClientThread(), "ChaosClientThread");
+                thread.start();
+            }
         }
 
         if(consecutiveErrorCount > 5){
@@ -268,16 +276,11 @@ public class ChaosCraftClient {
 
     public void reportOrgs(List<OrgEntity> _orgsToReport){
         _orgsToReport.forEach((OrgEntity organism)->{
-
-            orgsToReport.add(organism);
+            if(!orgsToReport.contains(organism)) {
+                orgsToReport.add(organism);
+            }
         });
-        if(thread != null){
-            return;
-        }
-        ticksSinceLastSpawn = 0;
 
-        thread = new Thread(new ChaosClientThread(), "ChaosClientThread");
-        thread.start();
     }
     @SubscribeEvent
     public  void onKeyInputEvent(InputEvent.KeyInputEvent event) {

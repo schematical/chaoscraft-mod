@@ -203,6 +203,7 @@ public class ChaosCraftServer {
         orgEntity.attachOrganism(organism);
         orgEntity.attachNNetRaw(organism.getNNetRaw());
         orgEntity.entityFitnessManager = new EntityFitnessManager(orgEntity);
+        orgEntity.observableAttributeManager = new CCObservableAttributeManager(organism);
         orgEntity.setCustomName(new TranslationTextComponent(orgEntity.getCCNamespace()));
         orgEntity.setSpawnHash(spawnHash);
 
