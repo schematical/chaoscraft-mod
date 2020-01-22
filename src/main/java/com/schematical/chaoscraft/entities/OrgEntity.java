@@ -12,6 +12,7 @@ import com.schematical.chaoscraft.events.OrgEvent;
 import com.schematical.chaoscraft.fitness.EntityFitnessManager;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.CCClientOutputNeuronActionPacket;
+import com.schematical.chaoscraft.server.ChaosCraftServerPlayerInfo;
 import com.schematical.chaosnet.model.ChaosNetException;
 import com.schematical.chaosnet.model.Organism;
 import it.unimi.dsi.fastutil.ints.IntList;
@@ -23,6 +24,7 @@ import net.minecraft.command.arguments.EntityAnchorArgument;
 import net.minecraft.entity.*;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -918,5 +920,20 @@ public class OrgEntity extends MobEntity {
 
     public void attachClientOrgEntity(ClientOrgEntity clientOrgEntity) {
         this.clientOrgEntity = clientOrgEntity;
+    }
+
+    public ServerPlayerEntity getServerPlayerEntity() {
+        ServerPlayerEntity serverPlayerEntity = null;
+        for (ChaosCraftServerPlayerInfo playerInfo : ChaosCraft.getServer().userMap.values()) {
+            if(playerInfo.organisims.contains(organism.getNamespace())){
+                serverPlayerEntity = ChaosCraft.getServer().server.getPlayerList().getPlayerByUUID(playerInfo.playerUUID);
+            }
+        }
+        if(serverPlayerEntity == null){
+            ChaosCraft.LOGGER.error("Cant find player owning: " + organism.getNamespace());
+            return null;
+        }
+        //TODO: Cache this
+        return serverPlayerEntity;
     }
 }

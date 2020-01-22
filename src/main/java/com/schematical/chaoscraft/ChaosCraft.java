@@ -215,8 +215,9 @@ public class ChaosCraft
 
     }
     public void onEntityRegistry(final RegistryEvent.Register<EntityType<?>> event) {
+        //setTrackingRange
         event.getRegistry().registerAll(
-                EntityType.Builder.create(OrgEntity::new, EntityClassification.MISC).build(MODID + ":org_entity").setRegistryName(MODID, "org_entity")
+            EntityType.Builder.create(OrgEntity::new, EntityClassification.MISC).setTrackingRange(256).build(MODID + ":org_entity").setRegistryName(MODID, "org_entity")
         );
     }
     // You can use EventBusSubscriber to automatically subscribe events on the contained class (this is subscribing to the MOD

@@ -125,6 +125,7 @@ public class ChaosCraftServer {
         ChaosCraftServerPlayerInfo playerInfo = new ChaosCraftServerPlayerInfo();
         playerInfo.authWhoamiResponse = getAuthWhoamiResult.getAuthWhoamiResponse();
         playerInfo.playerUUID = player.getUniqueID();
+
         userMap.put( player.getUniqueID().toString(), playerInfo);
 
         //Send that user the training Room info from here
@@ -207,6 +208,8 @@ public class ChaosCraftServer {
         orgEntity.observableAttributeManager = new CCObservableAttributeManager(organism);
         orgEntity.setCustomName(new TranslationTextComponent(orgEntity.getCCNamespace()));
         orgEntity.setSpawnHash(spawnHash);
+        ServerPlayerEntity serverPlayerEntity = orgEntity.getServerPlayerEntity();
+        //orgEntity.addTrackingPlayer(serverPlayerEntity);
 
         organisims.put(organism.getNamespace(), orgEntity);
         sendChaosCraftServerPlayerInfo(organism, orgEntity);
@@ -214,16 +217,7 @@ public class ChaosCraftServer {
         return orgEntity;
     }
     protected  void sendChaosCraftServerPlayerInfo(Organism organism, OrgEntity orgEntity){
-        ServerPlayerEntity serverPlayerEntity = null;
-        for (ChaosCraftServerPlayerInfo playerInfo : userMap.values()) {
-            if(playerInfo.organisims.contains(organism.getNamespace())){
-                serverPlayerEntity = server.getPlayerList().getPlayerByUUID(playerInfo.playerUUID);
-            }
-        }
-        if(serverPlayerEntity == null){
-            ChaosCraft.LOGGER.error("Cant find player owning: " + organism.getNamespace());
-            return;
-        }
+        ServerPlayerEntity serverPlayerEntity = orgEntity.getServerPlayerEntity();
         ChaosNetworkManager.sendTo(new CCServerEntitySpawnedPacket(organism.getNamespace(), orgEntity.getEntityId()), serverPlayerEntity);
     }
     public void processClientOutputNeuronActionPacket(CCClientOutputNeuronActionPacket message){
