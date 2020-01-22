@@ -34,6 +34,11 @@ public class ChaosInGameMenuOverlayGui extends Screen {
             Minecraft.getInstance().displayGuiScreen(screen);
         }));
         y += 30;
+        this.addButton(new Button(this.width / 2 - 100, y, 200, 20, I18n.format("chaoscraft.gui.mainmenu.networkinfo"), (p_214266_1_) -> {
+            ChaosNetworkInfoOverlayGui screen = new ChaosNetworkInfoOverlayGui();
+            Minecraft.getInstance().displayGuiScreen(screen);
+        }));
+        y += 30;
     }
     public void render(int p_render_1_, int p_render_2_, float p_render_3_) {
         this.renderBackground();

@@ -15,8 +15,8 @@ public class ChaosNeuronButton extends Button {
     private final int i;
 
     public State state = State.Closed;
-    private ChaosDebugOverlayGui chaosDebugOverlayGui;
-    public ChaosNeuronButton(NeuronBase neuronBase, ChaosDebugOverlayGui chaosDebugOverlayGui, int i, int y) {
+    private ChaosNNetViewOverlayGui chaosNNetViewOverlayGui;
+    public ChaosNeuronButton(NeuronBase neuronBase, ChaosNNetViewOverlayGui chaosNNetViewOverlayGui, int i, int y) {
         super(1,
                 y,
                 MIN_WIDTH,
@@ -26,7 +26,7 @@ public class ChaosNeuronButton extends Button {
 
                 });
         String text = null;
-        this.chaosDebugOverlayGui = chaosDebugOverlayGui;
+        this.chaosNNetViewOverlayGui = chaosNNetViewOverlayGui;
         this.neuronBase  = neuronBase;
         this.i = i;
         this.min();
@@ -40,11 +40,11 @@ public class ChaosNeuronButton extends Button {
                 setMessage( "I-" + i);
                 break;
             case(com.schematical.chaoscraft.Enum.OUTPUT):
-                x = chaosDebugOverlayGui.width - 10 - MIN_WIDTH;
+                x = chaosNNetViewOverlayGui.width - 10 - MIN_WIDTH;
                 setMessage("O-" + i);
                 break;
             case(com.schematical.chaoscraft.Enum.MIDDLE):
-                x = chaosDebugOverlayGui.width / 2;
+                x = chaosNNetViewOverlayGui.width / 2;
                 setMessage("M-" + i);
                 break;
 
@@ -57,12 +57,12 @@ public class ChaosNeuronButton extends Button {
         if(state.equals(State.Closed)){
             //Expand it
 
-            this.chaosDebugOverlayGui.minAll();
+            this.chaosNNetViewOverlayGui.minAll();
             this.setWidth(EXPANDED_WIDTH);
             this.setMessage(this.neuronBase.toString());
             switch(neuronBase._base_type()){
                 case(com.schematical.chaoscraft.Enum.OUTPUT):
-                    x = chaosDebugOverlayGui.width - 10 - EXPANDED_WIDTH;
+                    x = chaosNNetViewOverlayGui.width - 10 - EXPANDED_WIDTH;
                     break;
             }
 

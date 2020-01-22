@@ -29,23 +29,29 @@ public class ChaosClientThread implements Runnable {
         Collection<TrainingRoomSessionNextReport> report = new ArrayList<TrainingRoomSessionNextReport>();
         if( ChaosCraft.getClient().orgsToReport != null) {
             for (OrgEntity organism :  ChaosCraft.getClient().orgsToReport) {
-                String namespace = organism.getCCNamespace();
-                if(namespace != null) {
-                    TrainingRoomSessionNextReport reportEntry = new TrainingRoomSessionNextReport();
-                    if(organism.getClientOrgEntity() == null){
-                        ChaosCraft.LOGGER.error("Missing `organism.getClientOrgEntity()` for: " + namespace);
-                    }else {
-                        reportEntry.setScore(organism.getClientOrgEntity().getServerScoreEventTotal());
-                        reportEntry.setNamespace(organism.getCCNamespace());
-                        report.add(reportEntry);
-                        /*if(organism.hasAttemptedReport){
-                            ChaosCraft.LOGGER.info(organism.getCCNamespace() + " has already attempted a report");
-                        }
-                        organism.hasAttemptedReport = true;*/
+                String orgNamespace = organism.getCCNamespace();
 
+                TrainingRoomSessionNextReport reportEntry = new TrainingRoomSessionNextReport();
+                if(orgNamespace == null) {
+                    ChaosCraft.LOGGER.error("!!!Invalid CCNamespace == null ");
+                }else if(organism.getClientOrgEntity() == null){
+                    ChaosCraft.LOGGER.error("Missing `organism.getClientOrgEntity()` for: " + orgNamespace);
+                }else {
+                    if(ChaosCraft.getClient()._debugReportedOrgNamespaces.contains(organism.getCCNamespace())){
+                        ChaosCraft.LOGGER.error("Client has already reported org: " + organism.getCCNamespace());
                     }
-                    newAttributes.addAll(organism.observableAttributeManager.newAttributes);
+                    reportEntry.setScore(organism.getClientOrgEntity().getServerScoreEventTotal());
+                    reportEntry.setNamespace(organism.getCCNamespace());
+                    report.add(reportEntry);
+                    ChaosCraft.getClient()._debugReportedOrgNamespaces.add(organism.getCCNamespace());
+                    /*if(organism.hasAttemptedReport){
+                        ChaosCraft.LOGGER.info(organism.getCCNamespace() + " has already attempted a report");
+                    }
+                    organism.hasAttemptedReport = true;*/
+
                 }
+                newAttributes.addAll(organism.observableAttributeManager.newAttributes);
+
 
             }
 

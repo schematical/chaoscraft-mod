@@ -19,10 +19,10 @@ import java.util.ArrayList;
 import static org.lwjgl.opengl.GL11.GL_LINE_STRIP;
 
 @OnlyIn(Dist.CLIENT)
-public class ChaosDebugOverlayGui extends Screen {
+public class ChaosNNetViewOverlayGui extends Screen {
 
     private OrgEntity orgEntity;
-    public ChaosDebugOverlayGui(OrgEntity orgEntity) {
+    public ChaosNNetViewOverlayGui(OrgEntity orgEntity) {
         super(new TranslationTextComponent(orgEntity.getCCNamespace()));
         this.orgEntity = orgEntity;
     }

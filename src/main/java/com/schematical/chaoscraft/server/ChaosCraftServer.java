@@ -141,8 +141,9 @@ public class ChaosCraftServer {
     public OrgEntity spawnOrg(Organism organism) {
 
         if(organisims.containsKey(organism.getNamespace())){
-            ChaosCraft.LOGGER.error("Server already have a living org: " + organism.getNamespace());
-             sendChaosCraftServerPlayerInfo(organism, organisims.get(organism.getNamespace()));
+            OrgEntity orgEntity = organisims.get(organism.getNamespace());
+            ChaosCraft.LOGGER.error("Server already have a living org: " + organism.getNamespace() + " - EntityId: " + orgEntity.getEntityId() + " orgsToSpawn: " + orgsToSpawn.size() + "organisms: " + organisims.size());
+             sendChaosCraftServerPlayerInfo(organism, orgEntity);
             return null;
         }
 
@@ -227,7 +228,7 @@ public class ChaosCraftServer {
     }
     public void processClientOutputNeuronActionPacket(CCClientOutputNeuronActionPacket message){
         if(!organisims.containsKey(message.getOrgNamespace())){
-            ChaosCraft.LOGGER.error("Cannot find org: " + message.getOrgNamespace());
+            ChaosCraft.LOGGER.error("Server Cannot find org: " + message.getOrgNamespace());
             return;
         }
         OrgEntity orgEntity = organisims.get(message.getOrgNamespace());

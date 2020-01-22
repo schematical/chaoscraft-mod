@@ -1,14 +1,12 @@
 package com.schematical.chaoscraft.client;
 
-import com.google.common.base.Predicate;
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
 import com.schematical.chaoscraft.client.gui.CCKeyBinding;
 import com.schematical.chaoscraft.client.gui.ChaosAuthOverlayGui;
-import com.schematical.chaoscraft.client.gui.ChaosDebugOverlayGui;
+import com.schematical.chaoscraft.client.gui.ChaosNNetViewOverlayGui;
 import com.schematical.chaoscraft.client.gui.ChaosInGameMenuOverlayGui;
 import com.schematical.chaoscraft.entities.OrgEntity;
-import com.schematical.chaoscraft.fitness.EntityFitnessManager;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.*;
 import com.schematical.chaosnet.model.ChaosNetException;
@@ -18,12 +16,10 @@ import com.schematical.chaosnet.model.TrainingRoomSessionNextResponse;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -39,8 +35,8 @@ public class ChaosCraftClient {
     protected String trainingRoomUsernameNamespace;
     protected String sessionNamespace;
 
-    protected ArrayList<String> debugOrgNamespaces = new ArrayList<String>();
-
+    public ArrayList<String> _debugSpawnedOrgNamespaces = new ArrayList<String>();
+    public ArrayList<String> _debugReportedOrgNamespaces = new ArrayList<String>();
     public int consecutiveErrorCount = 0;
     public List<Organism> orgsToSpawn = new ArrayList<Organism>();
     public HashMap<String, Organism> orgsQueuedToSpawn = new HashMap<String, Organism>();
@@ -49,7 +45,7 @@ public class ChaosCraftClient {
     public Thread thread;
     public static List<KeyBinding> keyBindings = new ArrayList<KeyBinding>();
     public void displayTest(OrgEntity orgEntity) {
-        ChaosDebugOverlayGui screen = new ChaosDebugOverlayGui(orgEntity);
+        ChaosNNetViewOverlayGui screen = new ChaosNNetViewOverlayGui(orgEntity);
         Minecraft.getInstance().displayGuiScreen(screen);
         ChaosCraft.LOGGER.info("Displaying test");
     }
@@ -118,7 +114,27 @@ public class ChaosCraftClient {
     public void attachOrgToEntity(String orgNamespace, int entityId) {
         OrgEntity orgEntity = (OrgEntity)Minecraft.getInstance().world.getEntityByID(entityId);
         if(orgEntity == null){
-            return;
+            ChaosCraft.LOGGER.error("Client could not find entityId: " + entityId + " to attach org: " + orgNamespace + " - OrgsQueuedToSpawn.length: " + orgsQueuedToSpawn.size());
+
+            Iterator<Entity> iterator = Minecraft.getInstance().world.getAllEntities().iterator();
+            while(iterator.hasNext() && orgEntity == null){
+                Entity entity = iterator.next();
+                if( entity.getDisplayName().getString().equals(orgNamespace)) {
+                    ChaosCraft.LOGGER.error("Client found a potential match after all entityId: " + entity.getEntityId() + " will attach org: " + orgNamespace + " == " + entity.getDisplayName().getString() + " - OrgsQueuedToSpawn.length: " + orgsQueuedToSpawn.size());
+                    orgEntity = (OrgEntity) entity;
+                }
+                /*if(entity instanceof  OrgEntity){
+                    OrgEntity testOrgEntity = (OrgEntity) entity;
+                    if(testOrgEntity.)
+
+                }*/
+
+
+            }
+            if(orgEntity == null) {//If it is still null lets drop out
+                orgsQueuedToSpawn.remove(orgNamespace); // Try the spawn over again. If it fails again then the server will just let us know again which one it is
+                return;
+            }
         }
         Iterator<Organism> iterator = orgsToSpawn.iterator();
         Organism organism = null;
@@ -126,15 +142,15 @@ public class ChaosCraftClient {
             Organism testOrganism = iterator.next();
             if(testOrganism.getNamespace().equals(orgNamespace)){
                 organism = testOrganism;
-                orgEntity.attachOrganism(organism);
-                orgEntity.attachNNetRaw(organism.getNNetRaw());
-                orgEntity.observableAttributeManager = new CCObservableAttributeManager(organism);
-                orgEntity.attachClientOrgEntity(new ClientOrgEntity());
             }
         }
         if(organism == null){
-            ChaosCraft.LOGGER.error("Could not link to: " + orgNamespace);
+            ChaosCraft.LOGGER.error("Client Could not link to: " + orgNamespace);
         }else{
+            orgEntity.attachOrganism(organism);
+            orgEntity.attachNNetRaw(organism.getNNetRaw());
+            orgEntity.observableAttributeManager = new CCObservableAttributeManager(organism);
+            orgEntity.attachClientOrgEntity(new ClientOrgEntity());
             myOrganisims.put(orgEntity.getCCNamespace(), orgEntity);
             orgsToSpawn.remove(organism);
             orgsQueuedToSpawn.remove(orgEntity.getCCNamespace());
@@ -156,7 +172,7 @@ public class ChaosCraftClient {
             deadOrgs.size() > 0 ||
             (
                 ticksSinceLastSpawn > (50) &&
-                (liveOrgCount + this.orgsQueuedToSpawn.size()) < ChaosCraft.config.maxBotCount
+                (liveOrgCount) < ChaosCraft.config.maxBotCount
             )
         ) {
 
@@ -255,12 +271,13 @@ public class ChaosCraftClient {
             while (iterator.hasNext()) {
                 Organism organism = iterator.next();
                 if(!myOrganisims.containsKey(organism.getNamespace())) {
-                    if (debugOrgNamespaces.contains(organism.getNamespace())) {
-                        ChaosCraft.LOGGER.error("Client already tried to spawn: " + organism.getNamespace());
-                    } else {
-                        debugOrgNamespaces.add(organism.getNamespace());
-                    }
+
                     if (!orgsQueuedToSpawn.containsKey(organism.getNamespace())) {
+                        if (_debugSpawnedOrgNamespaces.contains(organism.getNamespace())) {
+                            ChaosCraft.LOGGER.error("Client already tried to spawn: " + organism.getNamespace());
+                        } else {
+                            _debugSpawnedOrgNamespaces.add(organism.getNamespace());
+                        }
                         CCClientSpawnPacket packet = new CCClientSpawnPacket(
                                 organism.getNamespace()
                         );
@@ -328,6 +345,10 @@ public class ChaosCraftClient {
             ChaosCraft.LOGGER.error("attatchScoreEventToEntity - Cannot find orgNamespace: " + message.orgNamespace);
         }
         myOrganisims.get(message.orgNamespace).getClientOrgEntity().addServerScoreEvent(message);
+    }
+
+    public int getTicksSinceLastSpawn() {
+        return ticksSinceLastSpawn;
     }
 
     public enum State{
