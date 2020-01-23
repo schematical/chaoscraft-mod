@@ -3,6 +3,7 @@ package com.schematical.chaoscraft.server;
 import com.amazonaws.opensdk.config.ConnectionConfiguration;
 import com.amazonaws.opensdk.config.TimeoutConfiguration;
 import com.schematical.chaoscraft.ChaosCraft;
+import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.fitness.ChaosCraftFitnessManager;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
@@ -53,6 +54,7 @@ public class ChaosCraftServer {
         ){
             return;
         }
+        checkForDeadOrgs();
         List<ServerOrgManager> orgNamepacesQueuedToSpawn = getOrgsWithState(ServerOrgManager.State.PlayerAttached);
         if(
             orgNamepacesQueuedToSpawn.size() > 0 &&
@@ -89,6 +91,7 @@ public class ChaosCraftServer {
             if(value.organisims.size() < ChaosCraft.config.maxBotCount){
                 //Request more bots
 
+                //TODO: Clean up the Dead orgs out of the list
             }
         }
     }
@@ -256,6 +259,19 @@ public class ChaosCraftServer {
         ServerOrgManager serverOrgManager = organisms.get(message.getOrgNamespace());
         serverOrgManager.queueOutputNeuronAction(message);
 
+    }
+    public List<ServerOrgManager> checkForDeadOrgs(){
+
+        List<ServerOrgManager> serverOrgManagers = getOrgsWithState(ServerOrgManager.State.Ticking);
+        for (ServerOrgManager serverOrgManager : serverOrgManagers) {
+
+            if (!serverOrgManager.getEntity().isAlive()) {
+
+                serverOrgManager.markDead();
+
+            }
+        }
+        return serverOrgManagers;
     }
     public static void loadFitnessFunctions(){
         if(

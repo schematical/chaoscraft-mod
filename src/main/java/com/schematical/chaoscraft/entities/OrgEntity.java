@@ -755,6 +755,9 @@ public class OrgEntity extends MobEntity {
 
                 ChaosNetworkManager.sendToServer(packet);
             }
+            if(this.clientOrgManager.getState().equals(ClientOrgManager.State.EntityAttached)){
+                this.clientOrgManager.markTicking();
+            }
 
 
 
@@ -893,10 +896,6 @@ public class OrgEntity extends MobEntity {
     }
     public void onDeath(DamageSource cause) {
         super.onDeath(cause);
-        if(!world.isRemote){
-            serverOrgManager.markDead();
-        }else{
-            clientOrgManager.markDead();
-        }
+
     }
 }

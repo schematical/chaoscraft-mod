@@ -79,6 +79,13 @@ public class ClientOrgManager extends BaseOrgManager {
         }
         state = State.ReadyToReport;
     }
+    public void markTicking() {
+        if(!state.equals(State.EntityAttached)){
+            ChaosCraft.LOGGER.error(getCCNamespace() + " - has invalid state: " + state);
+            return;
+        }
+        state = State.Ticking;
+    }
     public void manualUpdateCheck(){
         ticksWithoutUpdate += 1;
         if(

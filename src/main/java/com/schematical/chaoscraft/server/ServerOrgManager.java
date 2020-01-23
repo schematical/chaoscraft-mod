@@ -4,7 +4,6 @@ import com.schematical.chaoscraft.BaseOrgManager;
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
 import com.schematical.chaoscraft.ai.OutputNeuron;
-import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.fitness.EntityFitnessManager;
 import com.schematical.chaoscraft.network.packets.CCClientOutputNeuronActionPacket;
@@ -89,9 +88,8 @@ public class ServerOrgManager extends BaseOrgManager {
             return;
         }
         if (
-                this.getEntity() == null ||
-                this.getEntity().getNNet() == null ||
-                this.getEntity().getNNet().neurons == null
+            this.getEntity().getNNet() == null ||
+            this.getEntity().getNNet().neurons == null
         ){
             ChaosCraft.LOGGER.error("Missing Entity or NNEt or something");
             return;
@@ -126,15 +124,18 @@ public class ServerOrgManager extends BaseOrgManager {
                 outputNeuron.execute();
             }
             this.neuronActions.clear();
+            if(this.state.equals(State.Spawned)){
+                this.markTicking();
+            }
         }
     }
 
-    public void markClientAttached() {
+    public void markTicking() {
         if(!state.equals(ServerOrgManager.State.Spawned)){
             ChaosCraft.LOGGER.error(getCCNamespace() + " - has invalid state: " + state);
             return;
         }
-        state = State.ClientAttached;
+        state = State.Ticking;
     }
     public void markDead() {
         if(!state.equals(ServerOrgManager.State.Ticking)){
@@ -167,7 +168,7 @@ public class ServerOrgManager extends BaseOrgManager {
         Uninitialized,
         OrgAttached,
         Spawned,
-        ClientAttached,
+        //ClientAttached//Dont think we need this any more
         Ticking,
         Dead,
         QueuedForSpawn,

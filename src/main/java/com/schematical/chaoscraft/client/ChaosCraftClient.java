@@ -150,6 +150,7 @@ public class ChaosCraftClient {
         if(!state.equals(State.Authed)){
             return;
         }
+        checkForDeadOrgs();
         startSpawnOrgs();
         int liveOrgCount = getLiveOrgCount();
         ticksSinceLastSpawn += 1;
@@ -207,25 +208,18 @@ public class ChaosCraftClient {
             }
         }*/
     }
-    public List<ClientOrgManager> getDeadOrgs(){
-        List<ClientOrgManager> deadOrgs = new ArrayList<ClientOrgManager>();
-        Iterator<ClientOrgManager> iterator = myOrganisims.values().iterator();
+    public List<ClientOrgManager> checkForDeadOrgs(){
 
-        while (iterator.hasNext()) {
-            ClientOrgManager clientOrgManager = iterator.next();
+        List<ClientOrgManager> clientOrgManagers = getOrgsWithState(ClientOrgManager.State.Ticking);
+        for (ClientOrgManager clientOrgManager : clientOrgManagers) {
+
             if (!clientOrgManager.getEntity().isAlive()) {
-                if (
-                        clientOrgManager.getCCNamespace() != null// &&
-                        //organism.getSpawnHash() == ChaosCraft.spawnHash &&
-                        //!organism.getDebug()//Dont report Adam-0
-                ) {
-                    deadOrgs.add(clientOrgManager);
-                }
-                iterator.remove();
+
+                clientOrgManager.markDead();
 
             }
         }
-        return deadOrgs;
+        return clientOrgManagers;
     }
     private int getLiveOrgCount() {
 
