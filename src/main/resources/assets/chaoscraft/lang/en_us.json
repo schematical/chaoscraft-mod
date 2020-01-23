@@ -8,5 +8,6 @@
   "chaoscraft.gui.mainmenu.orglist":"Organisims",
   "chaoscraft.gui.mainmenu.auth":"Auth",
   "chaoscraft.gui.auth.login": "Login",
-  "chaoscraft.gui.mainmenu.networkinfo": "Network Info"
+  "chaoscraft.gui.mainmenu.networkinfo": "Network Info",
+  "chaoscraft.gui.networkinfo.ping-server":"Ping Server"
 }

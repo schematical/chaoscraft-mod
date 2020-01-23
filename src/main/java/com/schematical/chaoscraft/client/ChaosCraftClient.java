@@ -287,7 +287,6 @@ public class ChaosCraftClient {
                     }
                 }
             }
-
         }
     }
 
@@ -350,6 +349,8 @@ public class ChaosCraftClient {
     public int getTicksSinceLastSpawn() {
         return ticksSinceLastSpawn;
     }
+
+
 
     public enum State{
         Uninitiated,

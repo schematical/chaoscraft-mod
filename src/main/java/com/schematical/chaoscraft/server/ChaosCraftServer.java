@@ -52,6 +52,7 @@ public class ChaosCraftServer {
     public static int spawnHash;
     public static HashMap<String, OrgEntity> organisims = new HashMap<String, OrgEntity>();
     public ChaosCraftFitnessManager fitnessManager;
+    public int longTickCount = 0;
 
     public ChaosCraftServer(MinecraftServer server) {
 
@@ -78,7 +79,21 @@ public class ChaosCraftServer {
             }
             orgsToSpawn.clear();
         }
+        longTickCount += 1;
+        if(longTickCount > 5 * 20){
+            longTick();
+        }
     }
+
+    private void longTick() {
+        for (ChaosCraftServerPlayerInfo value : userMap.values()) {
+            if(value.organisims.size() < ChaosCraft.config.maxBotCount){
+                //Request more bots
+
+            }
+        }
+    }
+
     public void queueOrgToSpawn(String orgNamespace, ServerPlayerEntity player){
         if(!userMap.containsKey(player.getUniqueID().toString())){
             ChaosCraft.LOGGER.error("Could not find ServerPlayerEntity in `userMap` with UUID: " + player.getUniqueID().toString());
@@ -143,8 +158,10 @@ public class ChaosCraftServer {
 
         if(organisims.containsKey(organism.getNamespace())){
             OrgEntity orgEntity = organisims.get(organism.getNamespace());
-            ChaosCraft.LOGGER.error("Server already have a living org: " + organism.getNamespace() + " - EntityId: " + orgEntity.getEntityId() + " orgsToSpawn: " + orgsToSpawn.size() + "organisms: " + organisims.size());
-             sendChaosCraftServerPlayerInfo(organism, orgEntity);
+            ServerPlayerEntity serverPlayerEntity = orgEntity.getServerPlayerEntity();
+            double dist = serverPlayerEntity.getPositionVec().distanceTo(orgEntity.getPositionVec());
+            ChaosCraft.LOGGER.error("Server already have a living org: " + organism.getNamespace() + " - EntityId: " + orgEntity.getEntityId() + " orgsToSpawn: " + orgsToSpawn.size() + "organisms: " + organisims.size() + " dist: " + dist);
+            sendChaosCraftServerPlayerInfo(organism, orgEntity);
             return null;
         }
 
@@ -162,7 +179,7 @@ public class ChaosCraftServer {
                 return orgEntity;
             }
             BlockPos pos1 = serverWorld.getSpawnPoint();
-            int range = 10;
+            int range = 5;
             pos1 = pos1.add(
                 new Vec3i(
                     Math.floor(Math.random() *  range * 2) - range,
@@ -208,7 +225,7 @@ public class ChaosCraftServer {
         orgEntity.observableAttributeManager = new CCObservableAttributeManager(organism);
         orgEntity.setCustomName(new TranslationTextComponent(orgEntity.getCCNamespace()));
         orgEntity.setSpawnHash(spawnHash);
-        ServerPlayerEntity serverPlayerEntity = orgEntity.getServerPlayerEntity();
+        //ServerPlayerEntity serverPlayerEntity = orgEntity.getServerPlayerEntity();
         //orgEntity.addTrackingPlayer(serverPlayerEntity);
 
         organisims.put(organism.getNamespace(), orgEntity);
