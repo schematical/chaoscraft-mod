@@ -1,7 +1,6 @@
 package com.schematical.chaoscraft.network.packets;
 
 import com.schematical.chaoscraft.ChaosCraft;
-import com.schematical.chaoscraft.fitness.EntityFitnessRule;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -55,7 +54,7 @@ public class CCServerScoreEventPacket {
                 //Pretty sure the server should get this
 
                 //Load the NNet into memory
-                ChaosCraft.getClient().attatchScoreEventToEntity(message);
+                ChaosCraft.getClient().attachScoreEventToEntity(message);
 
             });
             ctx.get().setPacketHandled(true);

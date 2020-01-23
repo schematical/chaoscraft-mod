@@ -29,7 +29,13 @@ public class ChaosServerThread implements Runnable {
             GetUsernameTrainingroomsTrainingroomOrganismsResult response = ChaosCraft.sdk.getUsernameTrainingroomsTrainingroomOrganisms(request);
             List<Organism> organisms = response.getOrganismCollection();
             ChaosCraft.getServer().orgNamepacesQueuedToSpawn.clear();
-            ChaosCraft.getServer().orgsToSpawn.addAll(organisms);
+            for (Organism organism : organisms) {
+                ServerOrgManager serverOrgManager = new ServerOrgManager();
+                serverOrgManager.attachOrganism(organism);
+                ChaosCraft.getServer().queueForSpawn(serverOrgManager);
+            }
+
+
             ChaosCraft.getServer().thread = null;
 
 

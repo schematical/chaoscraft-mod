@@ -6,13 +6,14 @@ import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
 import com.schematical.chaoscraft.ai.CCObserviableAttributeCollection;
 import com.schematical.chaoscraft.ai.NeuralNet;
 import com.schematical.chaoscraft.ai.OutputNeuron;
-import com.schematical.chaoscraft.client.ClientOrgEntity;
+import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.events.OrgEvent;
 import com.schematical.chaoscraft.fitness.EntityFitnessManager;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.CCClientOutputNeuronActionPacket;
 import com.schematical.chaoscraft.server.ChaosCraftServerPlayerInfo;
+import com.schematical.chaoscraft.server.ServerOrgManager;
 import com.schematical.chaosnet.model.ChaosNetException;
 import com.schematical.chaosnet.model.Organism;
 import it.unimi.dsi.fastutil.ints.IntList;
@@ -20,7 +21,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
-import net.minecraft.command.arguments.EntityAnchorArgument;
 import net.minecraft.entity.*;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -56,6 +56,9 @@ public class OrgEntity extends MobEntity {
     public CCObservableAttributeManager observableAttributeManager;
     private List<OrgEvent> events = new ArrayList<OrgEvent>();
 
+    protected ServerOrgManager serverOrgManager = null;
+    protected ClientOrgManager clientOrgManager = null;
+
     //The current selected item
     private int currentItem = 0;
     protected ItemStackHandler itemHandler = new ItemStackHandler();
@@ -76,14 +79,14 @@ public class OrgEntity extends MobEntity {
     private int rightClickDelay;
 
     protected NeuralNet nNet;
-    private int ticksWithoutUpdate = 0;
+
     private int selectedItemIndex;
     private boolean hasTraveled = false;
     private Vec3d spawnPos;
     private int ticksSinceObservationHack = -1;
-    public ArrayList<CCClientOutputNeuronActionPacket> neuronActions = new ArrayList<CCClientOutputNeuronActionPacket>();
+
     private int spawnHash;
-    private ClientOrgEntity clientOrgEntity;
+
 
     public OrgEntity(EntityType<? extends MobEntity> type, World world) {
         super((EntityType<? extends MobEntity>) type, world);
@@ -99,8 +102,8 @@ public class OrgEntity extends MobEntity {
     public void setDesiredYaw(double _desiredYaw){
         this.desiredYaw = _desiredYaw;
     }
-    public ClientOrgEntity getClientOrgEntity(){
-        return clientOrgEntity;
+    public ClientOrgManager getClientOrgManager(){
+        return clientOrgManager;
     }
     public void attachNNetRaw(String nNetRaw){
         String nNetString = nNetRaw;//nNetRaw.getNNetRaw();
@@ -414,6 +417,7 @@ public class OrgEntity extends MobEntity {
         this.world.sendBlockBreakProgress(this.getEntityId(), lastMinePos, -1);
         this.lastMinePos.down(255);
     }
+
     @Override
     public void onRemovedFromWorld() {
         super.onRemovedFromWorld();
@@ -671,7 +675,11 @@ public class OrgEntity extends MobEntity {
 
 
         if(!world.isRemote){
-            tickServer();
+            this.checkHasTraveled();
+
+            this.serverOrgManager.tickServer();
+            this.updatePitchAndYaw();
+            this.checkForItemPickup();
         }else{
 
             tickClient();
@@ -681,6 +689,36 @@ public class OrgEntity extends MobEntity {
         if(!world.isRemote) {
 
             checkStatus();
+        }
+    }
+
+    private void checkHasTraveled() {
+        if(!this.hasTraveled) {
+            if (this.spawnPos != null) {
+                if (this.spawnPos.distanceTo(this.getPositionVector()) > 5) {
+                    CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.HAS_TRAVELED);
+                    entityFitnessManager.test(worldEvent);
+                }
+            } else {
+                this.spawnPos = this.getPositionVector();
+            }
+        }
+    }
+
+    private void updatePitchAndYaw(){
+        double yOffset = Math.sin(Math.toRadians(desiredPitch));
+        double zOffset = Math.cos(Math.toRadians(this.desiredYaw)) * Math.cos(Math.toRadians(desiredPitch));
+        double xOffset = Math.sin(Math.toRadians(this.desiredYaw)) * Math.cos(Math.toRadians(desiredPitch));
+        Vec3d pos = getPositionVec();
+        this.getLookController().setLookPosition(pos.getX() + xOffset, pos.getY() + this.getEyeHeight() + yOffset, pos.getZ() + zOffset, 360, 360);
+        this.renderYawOffset = 0;
+        this.setRotation(this.rotationYaw, this.rotationPitch);
+    }
+    private void checkForItemPickup(){
+        List<ItemEntity> items = this.world.getEntitiesWithinAABB(ItemEntity.class, this.getBoundingBox().grow(2.0D, 1.0D, 2.0D));
+
+        for (ItemEntity item : items) {
+            this.pickupItem(item);
         }
     }
     public boolean checkStatus(){
@@ -704,64 +742,7 @@ public class OrgEntity extends MobEntity {
     }
 
 
-    private void tickServer(){
-        if( this.getBoundingBox() == null){
-            return;
-        }
 
-
-
-        if(!this.hasTraveled) {
-            if (this.spawnPos != null) {
-                if (this.spawnPos.distanceTo(this.getPositionVector()) > 5) {
-                    CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.HAS_TRAVELED);
-                    entityFitnessManager.test(worldEvent);
-                }
-            } else {
-                this.spawnPos = this.getPositionVector();
-            }
-        }
-
-
-
-
-
-        List<ItemEntity> items = this.world.getEntitiesWithinAABB(ItemEntity.class, this.getBoundingBox().grow(2.0D, 1.0D, 2.0D));
-
-        for (ItemEntity item : items) {
-            pickupItem(item);
-        }
-        double yOffset = Math.sin(Math.toRadians(desiredPitch));
-        double zOffset = Math.cos(Math.toRadians(this.desiredYaw)) * Math.cos(Math.toRadians(desiredPitch));
-        double xOffset = Math.sin(Math.toRadians(this.desiredYaw)) * Math.cos(Math.toRadians(desiredPitch));
-        Vec3d pos = getPositionVec();
-        this.getLookController().setLookPosition(pos.getX() + xOffset, pos.getY() + this.getEyeHeight() + yOffset, pos.getZ() + zOffset, 360, 360);
-        this.renderYawOffset = 0;
-        this.setRotation(this.rotationYaw, this.rotationPitch);
-        if(this.neuronActions.size() > 0){
-            //Iterate through and find output neurons
-            List<OutputNeuron> outputs = new ArrayList<OutputNeuron>();
-            Iterator<CCClientOutputNeuronActionPacket> keyIterator = this.neuronActions.iterator();
-            while(keyIterator.hasNext()) {
-                CCClientOutputNeuronActionPacket neuronAction = keyIterator.next();
-                if (!this.nNet.neurons.containsKey(neuronAction.getNeuronId())) {
-                    throw new ChaosNetException(this.getCCNamespace() + " is missing an OutputNeuron: " + neuronAction.getNeuronId());
-                }
-                if (!(this.nNet.neurons.get(neuronAction.getNeuronId()) instanceof  OutputNeuron)) {
-                    throw new ChaosNetException(this.getCCNamespace() + " is found but not an instanceof OutputNeuron: " + neuronAction.getNeuronId());
-                }
-                OutputNeuron outputNeuron = (OutputNeuron)this.nNet.neurons.get(neuronAction.getNeuronId());
-                outputNeuron._lastValue = neuronAction.getValue();
-                outputs.add(outputNeuron);
-            }
-            Iterator<OutputNeuron> iterator = outputs.iterator();
-            while(iterator.hasNext()) {
-                OutputNeuron outputNeuron = iterator.next();
-                outputNeuron.execute();
-            }
-            this.neuronActions.clear();
-        }
-    }
     private void tickClient(){
         //Tick neural net
         if(
@@ -803,7 +784,7 @@ public class OrgEntity extends MobEntity {
         }
     }
 
-    private void pickupItem(ItemEntity item) {
+    public void pickupItem(ItemEntity item) {
         if (item.cannotPickup()) return;
         ChaosCraft.LOGGER.info(this.getCCNamespace() + " - Picked up: " + item.getItem().getItem().getRegistryName());
         ItemStack stack = item.getItem();
@@ -875,15 +856,8 @@ public class OrgEntity extends MobEntity {
             observableAttributeManager.Observe(entity);
         }
     }
-    public void manualUpdateCheck(){
-        ticksWithoutUpdate += 1;
-        if(ticksWithoutUpdate > 5){
-            checkStatus();
-        }
-    }
-    public void queueOutputNeuronAction(CCClientOutputNeuronActionPacket message) {
-        neuronActions.add(message);
-    }
+
+
 
     public boolean processInteract(PlayerEntity player, Hand hand)
     {
@@ -918,8 +892,8 @@ public class OrgEntity extends MobEntity {
         events.add(orgEvent);
     }
 
-    public void attachClientOrgEntity(ClientOrgEntity clientOrgEntity) {
-        this.clientOrgEntity = clientOrgEntity;
+    public void attachClientOrgEntity(ClientOrgManager clientOrgManager) {
+        this.clientOrgManager = clientOrgManager;
     }
 
     public ServerPlayerEntity getServerPlayerEntity() {
@@ -935,5 +909,17 @@ public class OrgEntity extends MobEntity {
         }
         //TODO: Cache this
         return serverPlayerEntity;
+    }
+
+    public void attachSeverOrgManager(ServerOrgManager serverOrgManager) {
+        this.serverOrgManager = serverOrgManager;
+    }
+    public void onDeath(DamageSource cause) {
+        super.onDeath(cause);
+        if(!world.isRemote){
+            serverOrgManager.markDead();
+        }else{
+            clientOrgManager.markDead();
+        }
     }
 }

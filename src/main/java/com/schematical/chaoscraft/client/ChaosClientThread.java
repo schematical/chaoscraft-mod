@@ -27,35 +27,27 @@ public class ChaosClientThread implements Runnable {
         Collection<ObservedAttributesElement> newAttributes = new ArrayList<ObservedAttributesElement>();
 
         Collection<TrainingRoomSessionNextReport> report = new ArrayList<TrainingRoomSessionNextReport>();
-        if( ChaosCraft.getClient().orgsToReport != null) {
-            for (OrgEntity organism :  ChaosCraft.getClient().orgsToReport) {
-                String orgNamespace = organism.getCCNamespace();
 
-                TrainingRoomSessionNextReport reportEntry = new TrainingRoomSessionNextReport();
-                if(orgNamespace == null) {
-                    ChaosCraft.LOGGER.error("!!!Invalid CCNamespace == null ");
-                }else if(organism.getClientOrgEntity() == null){
-                    ChaosCraft.LOGGER.error("Missing `organism.getClientOrgEntity()` for: " + orgNamespace);
-                }else {
-                    if(ChaosCraft.getClient()._debugReportedOrgNamespaces.contains(organism.getCCNamespace())){
-                        ChaosCraft.LOGGER.error("Client has already reported org: " + organism.getCCNamespace());
-                    }
-                    reportEntry.setScore(organism.getClientOrgEntity().getServerScoreEventTotal());
-                    reportEntry.setNamespace(organism.getCCNamespace());
-                    report.add(reportEntry);
-                    ChaosCraft.getClient()._debugReportedOrgNamespaces.add(organism.getCCNamespace());
-                    /*if(organism.hasAttemptedReport){
-                        ChaosCraft.LOGGER.info(organism.getCCNamespace() + " has already attempted a report");
-                    }
-                    organism.hasAttemptedReport = true;*/
+        for (ClientOrgManager clientOrgManager :  ChaosCraft.getClient().getOrgsWithState(ClientOrgManager.State.ReadyToReport)) {
+            String orgNamespace = clientOrgManager.getCCNamespace();
 
+            TrainingRoomSessionNextReport reportEntry = new TrainingRoomSessionNextReport();
+            if(orgNamespace == null) {
+                ChaosCraft.LOGGER.error("!!!Invalid CCNamespace == null ");
+            }else {
+                if(ChaosCraft.getClient()._debugReportedOrgNamespaces.contains(clientOrgManager.getCCNamespace())){
+                    ChaosCraft.LOGGER.error("Client has already reported org: " + clientOrgManager.getCCNamespace());
                 }
-                newAttributes.addAll(organism.observableAttributeManager.newAttributes);
-
+                reportEntry.setScore(clientOrgManager.getServerScoreEventTotal());
+                reportEntry.setNamespace(clientOrgManager.getCCNamespace());
+                report.add(reportEntry);
+                ChaosCraft.getClient()._debugReportedOrgNamespaces.add(clientOrgManager.getCCNamespace());
+                clientOrgManager.markAttemptingReport();
 
             }
-
+            newAttributes.addAll(clientOrgManager.getEntity().observableAttributeManager.newAttributes);
         }
+
 
         trainingRoomSessionNextRequest.setReport(report);
         trainingRoomSessionNextRequest.setNNetRaw(true);
@@ -68,13 +60,18 @@ public class ChaosClientThread implements Runnable {
 
 
             ChaosCraft.getClient().lastResponse = result.getTrainingRoomSessionNextResponse();
-            ChaosCraft.getClient().orgsToSpawn = ChaosCraft.getClient().lastResponse.getOrganisms();
+            for (Organism organism : ChaosCraft.getClient().lastResponse.getOrganisms()) {
+                ClientOrgManager clientOrgManager = new ClientOrgManager();
+                clientOrgManager.attachOrganism(organism);
 
-
-            for (OrgEntity organism :  ChaosCraft.getClient().orgsToReport) {
-                //organism.hasFinishedReport = true;
+                ChaosCraft.getClient().myOrganisims.put(clientOrgManager.getCCNamespace(), clientOrgManager);
             }
-            ChaosCraft.getClient().orgsToReport.clear();
+
+
+            for (ClientOrgManager clientOrgManager :  ChaosCraft.getClient().getOrgsWithState(ClientOrgManager.State.AttemptingToReport)) {
+                clientOrgManager.markReported();
+            }
+
             ChaosCraft.getClient().consecutiveErrorCount = 0;
             ChaosCraft.getClient().thread = null;
         }catch(ChaosNetException exception){
@@ -84,7 +81,7 @@ public class ChaosClientThread implements Runnable {
             int statusCode = exception.sdkHttpMetadata().httpStatusCode();
             switch(statusCode){
                 case(400):
-                    ChaosCraft.getClient().orgsToReport.clear();
+
                     //ChaosCraft.getClient().repair();
                     break;
                 case(401):

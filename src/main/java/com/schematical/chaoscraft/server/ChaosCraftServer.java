@@ -33,6 +33,7 @@ import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
+import org.apache.logging.log4j.core.jmx.Server;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -45,12 +46,11 @@ import java.util.Random;
 public class ChaosCraftServer {
     public HashMap<String, ChaosCraftServerPlayerInfo> userMap = new HashMap<String, ChaosCraftServerPlayerInfo>();
     public ArrayList<String> orgNamepacesQueuedToSpawn = new  ArrayList<String>();
-    public List<Organism> orgsToSpawn = new ArrayList<Organism>();
     public int consecutiveErrorCount;
     public Thread thread;
     public MinecraftServer server;
     public static int spawnHash;
-    public static HashMap<String, OrgEntity> organisims = new HashMap<String, OrgEntity>();
+    public static HashMap<String, ServerOrgManager> organisims = new HashMap<String, ServerOrgManager>();
     public ChaosCraftFitnessManager fitnessManager;
     public int longTickCount = 0;
 
@@ -73,16 +73,27 @@ public class ChaosCraftServer {
             thread = new Thread(new ChaosServerThread(), "ChaosServerThread");
             thread.start();
         }
+        List<ServerOrgManager> orgsToSpawn = getOrgsWithState(ServerOrgManager.State.QueuedForSpawn);
         if(orgsToSpawn.size() > 0){
-            for (Organism organism : orgsToSpawn) {
-                spawnOrg(organism);
+            for (ServerOrgManager serverOrgManager : orgsToSpawn) {
+                spawnOrg(serverOrgManager);
             }
-            orgsToSpawn.clear();
         }
+
+
         longTickCount += 1;
         if(longTickCount > 5 * 20){
             longTick();
         }
+    }
+    public List<ServerOrgManager> getOrgsWithState(ServerOrgManager.State state){
+        List<ServerOrgManager> orgManagers = new ArrayList<ServerOrgManager>();
+        for (ServerOrgManager serverOrgManager : organisims.values()) {
+            if(serverOrgManager.getState().equals(state)){
+                orgManagers.add(serverOrgManager);
+            }
+        }
+        return orgManagers;
     }
 
     private void longTick() {
@@ -154,16 +165,23 @@ public class ChaosCraftServer {
         ChaosCraft.LOGGER.info("SENT `serverIntroInfoPacket`: " + serverIntroInfoPacket.getTrainingRoomNamespace() + ", " + serverIntroInfoPacket.getTrainingRoomUsernameNamespace() + ", " + serverIntroInfoPacket.getSessionNamespace());
     }
 
-    public OrgEntity spawnOrg(Organism organism) {
+    public OrgEntity spawnOrg(ServerOrgManager serverOrgManager) {
+        if(!serverOrgManager.getState().equals(ServerOrgManager.State.QueuedForSpawn)) {
 
-        if(organisims.containsKey(organism.getNamespace())){
-            OrgEntity orgEntity = organisims.get(organism.getNamespace());
-            ServerPlayerEntity serverPlayerEntity = orgEntity.getServerPlayerEntity();
-            double dist = serverPlayerEntity.getPositionVec().distanceTo(orgEntity.getPositionVec());
-            ChaosCraft.LOGGER.error("Server already have a living org: " + organism.getNamespace() + " - EntityId: " + orgEntity.getEntityId() + " orgsToSpawn: " + orgsToSpawn.size() + "organisms: " + organisims.size() + " dist: " + dist);
-            sendChaosCraftServerPlayerInfo(organism, orgEntity);
-            return null;
+
+
+            String debugMessage = "Server - " + serverOrgManager.getCCNamespace() + " has invalid spawn state: " + serverOrgManager.getState()  + "organisms: " + organisims.size();
+
+            if(serverOrgManager.getEntity() != null){
+                ServerPlayerEntity serverPlayerEntity = serverOrgManager.getServerPlayerEntity();
+                double dist = serverPlayerEntity.getPositionVec().distanceTo(serverOrgManager.getEntity().getPositionVec());
+                debugMessage += " EntityId: " + serverOrgManager.getEntity().getEntityId() + " dist: " + dist;
+            }
+            ChaosCraft.LOGGER.error(debugMessage);
+
+           return null;
         }
+
 
 
         ServerWorld serverWorld = this.server.getWorld(DimensionType.OVERWORLD);
@@ -218,32 +236,26 @@ public class ChaosCraftServer {
         ChaosCraft.LOGGER.info("Spawning: " + pos.getX() +", " + pos.getY()+", " +  pos.getZ());
         orgEntity.setLocationAndAngles(pos.getX(), pos.getY(), pos.getZ(), playerEntity.rotationYaw, playerEntity.rotationPitch);
 
-        serverWorld.summonEntity(orgEntity);
-        orgEntity.attachOrganism(organism);
-        orgEntity.attachNNetRaw(organism.getNNetRaw());
-        orgEntity.entityFitnessManager = new EntityFitnessManager(orgEntity);
-        orgEntity.observableAttributeManager = new CCObservableAttributeManager(organism);
-        orgEntity.setCustomName(new TranslationTextComponent(orgEntity.getCCNamespace()));
-        orgEntity.setSpawnHash(spawnHash);
-        //ServerPlayerEntity serverPlayerEntity = orgEntity.getServerPlayerEntity();
-        //orgEntity.addTrackingPlayer(serverPlayerEntity);
 
-        organisims.put(organism.getNamespace(), orgEntity);
-        sendChaosCraftServerPlayerInfo(organism, orgEntity);
+        serverWorld.summonEntity(orgEntity);
+        serverOrgManager.attachOrgEntity(orgEntity);
+
+
+        sendChaosCraftServerPlayerInfo(serverOrgManager);
 
         return orgEntity;
     }
-    protected  void sendChaosCraftServerPlayerInfo(Organism organism, OrgEntity orgEntity){
-        ServerPlayerEntity serverPlayerEntity = orgEntity.getServerPlayerEntity();
-        ChaosNetworkManager.sendTo(new CCServerEntitySpawnedPacket(organism.getNamespace(), orgEntity.getEntityId()), serverPlayerEntity);
+    protected  void sendChaosCraftServerPlayerInfo(ServerOrgManager serverOrgManager){
+        ServerPlayerEntity serverPlayerEntity = serverOrgManager.getServerPlayerEntity();
+        ChaosNetworkManager.sendTo(new CCServerEntitySpawnedPacket(serverOrgManager.getCCNamespace(), serverOrgManager.getEntity().getEntityId()), serverPlayerEntity);
     }
     public void processClientOutputNeuronActionPacket(CCClientOutputNeuronActionPacket message){
         if(!organisims.containsKey(message.getOrgNamespace())){
             ChaosCraft.LOGGER.error("Server Cannot find org: " + message.getOrgNamespace());
             return;
         }
-        OrgEntity orgEntity = organisims.get(message.getOrgNamespace());
-        orgEntity.queueOutputNeuronAction(message);
+        ServerOrgManager serverOrgManager = organisims.get(message.getOrgNamespace());
+        serverOrgManager.queueOutputNeuronAction(message);
 
     }
     public static void loadFitnessFunctions(){
@@ -285,7 +297,7 @@ public class ChaosCraftServer {
                     ChaosCraft.LOGGER.error("Cannot find " + player.getName().getString() + "'s org `" + orgNamespace + "` for logout destruction");
                 } else {
 
-                    organisims.get(orgNamespace).killWithNoReport();
+                    organisims.get(orgNamespace).getEntity().killWithNoReport();
                     ChaosCraft.LOGGER.info("Logout killing " + player.getName().getString() + "'s org `" + orgNamespace + "` for logout destruction");
                 }
             }
@@ -300,4 +312,11 @@ public class ChaosCraftServer {
        }
         organisims.remove(orgEntity.getCCNamespace());
     }
+
+    public void queueForSpawn(ServerOrgManager serverOrgManager) {
+        serverOrgManager.queueForSpawn();
+        organisims.put(serverOrgManager.getCCNamespace(), serverOrgManager);
+    }
+
+
 }
