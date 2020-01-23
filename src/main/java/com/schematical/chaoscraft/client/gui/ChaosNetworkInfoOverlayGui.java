@@ -7,6 +7,7 @@ import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.CCClientServerPingRequestPacket;
 import com.schematical.chaoscraft.network.packets.CCServerPingResponsePacket;
 import com.schematical.chaosnet.model.Organism;
+import com.schematical.chaosnet.model.Stats;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
@@ -69,10 +70,13 @@ public class ChaosNetworkInfoOverlayGui extends Screen {
             message += " - " + state + ": " + coll.get(state).size() + "\n";
         }
         message += "\n";
-       /* message += "Orgs To Spawn:\n";
-        for (Organism organism : chaosCraftClient.orgsToSpawn) {
-            message += organism.getNamespace() + "\n";
-        }*/
+        if(chaosCraftClient.lastResponse != null) {
+            Stats stats = chaosCraftClient.lastResponse.getStats();
+            message += "Gen Progress: " + stats.getGenProgress() + "\n";
+            message += "Orgs Reported So Far: " + stats.getOrgsReportedSoFar() + "\n";
+            message += "Orgs Spawned So Far: " + stats.getOrgsSpawnedSoFar() + "\n";
+            message += "Total Orgs Per Gen: " + stats.getTotalOrgsPerGen() + "\n";
+        }
         return message;
     }
 
