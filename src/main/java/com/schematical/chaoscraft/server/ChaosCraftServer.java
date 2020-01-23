@@ -3,37 +3,25 @@ package com.schematical.chaoscraft.server;
 import com.amazonaws.opensdk.config.ConnectionConfiguration;
 import com.amazonaws.opensdk.config.TimeoutConfiguration;
 import com.schematical.chaoscraft.ChaosCraft;
-import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
-import com.schematical.chaoscraft.blocks.SpawnBlock;
 import com.schematical.chaoscraft.entities.OrgEntity;
-import com.schematical.chaoscraft.events.OrgEvent;
 import com.schematical.chaoscraft.fitness.ChaosCraftFitnessManager;
-import com.schematical.chaoscraft.fitness.EntityFitnessManager;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.CCClientOutputNeuronActionPacket;
 import com.schematical.chaoscraft.network.packets.CCServerEntitySpawnedPacket;
-import com.schematical.chaoscraft.network.packets.ClientAuthPacket;
 import com.schematical.chaoscraft.network.packets.ServerIntroInfoPacket;
 import com.schematical.chaosnet.ChaosNet;
 import com.schematical.chaosnet.auth.ChaosnetCognitoUserPool;
 import com.schematical.chaosnet.model.*;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.FurnaceBlock;
-import net.minecraft.block.RedstoneDiodeBlock;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
-import org.apache.logging.log4j.core.jmx.Server;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -41,16 +29,15 @@ import org.json.simple.parser.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 
 public class ChaosCraftServer {
     public HashMap<String, ChaosCraftServerPlayerInfo> userMap = new HashMap<String, ChaosCraftServerPlayerInfo>();
-    public ArrayList<String> orgNamepacesQueuedToSpawn = new  ArrayList<String>();
+
     public int consecutiveErrorCount;
     public Thread thread;
     public MinecraftServer server;
     public static int spawnHash;
-    public static HashMap<String, ServerOrgManager> organisims = new HashMap<String, ServerOrgManager>();
+    public static HashMap<String, ServerOrgManager> organisms = new HashMap<String, ServerOrgManager>();
     public ChaosCraftFitnessManager fitnessManager;
     public int longTickCount = 0;
 
@@ -66,6 +53,7 @@ public class ChaosCraftServer {
         ){
             return;
         }
+        List<ServerOrgManager> orgNamepacesQueuedToSpawn = getOrgsWithState(ServerOrgManager.State.PlayerAttached);
         if(
             orgNamepacesQueuedToSpawn.size() > 0 &&
             thread == null
@@ -88,7 +76,7 @@ public class ChaosCraftServer {
     }
     public List<ServerOrgManager> getOrgsWithState(ServerOrgManager.State state){
         List<ServerOrgManager> orgManagers = new ArrayList<ServerOrgManager>();
-        for (ServerOrgManager serverOrgManager : organisims.values()) {
+        for (ServerOrgManager serverOrgManager : organisms.values()) {
             if(serverOrgManager.getState().equals(state)){
                 orgManagers.add(serverOrgManager);
             }
@@ -112,7 +100,10 @@ public class ChaosCraftServer {
         }
         ChaosCraftServerPlayerInfo serverPlayerInfo = userMap.get(player.getUniqueID().toString());
         serverPlayerInfo.organisims.add(orgNamespace);
-        orgNamepacesQueuedToSpawn.add(orgNamespace);
+        ServerOrgManager serverOrgManager = new ServerOrgManager();
+        serverOrgManager.setPlayerEntity(player);
+        organisms.put(orgNamespace, serverOrgManager);
+
     }
 
 
@@ -170,7 +161,7 @@ public class ChaosCraftServer {
 
 
 
-            String debugMessage = "Server - " + serverOrgManager.getCCNamespace() + " has invalid spawn state: " + serverOrgManager.getState()  + "organisms: " + organisims.size();
+            String debugMessage = "Server - " + serverOrgManager.getCCNamespace() + " has invalid spawn state: " + serverOrgManager.getState()  + "organisms: " + organisms.size();
 
             if(serverOrgManager.getEntity() != null){
                 ServerPlayerEntity serverPlayerEntity = serverOrgManager.getServerPlayerEntity();
@@ -236,9 +227,9 @@ public class ChaosCraftServer {
         ChaosCraft.LOGGER.info("Spawning: " + pos.getX() +", " + pos.getY()+", " +  pos.getZ());
         orgEntity.setLocationAndAngles(pos.getX(), pos.getY(), pos.getZ(), playerEntity.rotationYaw, playerEntity.rotationPitch);
 
-
-        serverWorld.summonEntity(orgEntity);
         serverOrgManager.attachOrgEntity(orgEntity);
+        serverWorld.summonEntity(orgEntity);
+
 
 
         sendChaosCraftServerPlayerInfo(serverOrgManager);
@@ -247,14 +238,20 @@ public class ChaosCraftServer {
     }
     protected  void sendChaosCraftServerPlayerInfo(ServerOrgManager serverOrgManager){
         ServerPlayerEntity serverPlayerEntity = serverOrgManager.getServerPlayerEntity();
-        ChaosNetworkManager.sendTo(new CCServerEntitySpawnedPacket(serverOrgManager.getCCNamespace(), serverOrgManager.getEntity().getEntityId()), serverPlayerEntity);
+        ChaosNetworkManager.sendTo(
+                new CCServerEntitySpawnedPacket(
+                        serverOrgManager.getCCNamespace(),
+                        serverOrgManager.getEntity().getEntityId()
+                ),
+                serverPlayerEntity
+        );
     }
     public void processClientOutputNeuronActionPacket(CCClientOutputNeuronActionPacket message){
-        if(!organisims.containsKey(message.getOrgNamespace())){
+        if(!organisms.containsKey(message.getOrgNamespace())){
             ChaosCraft.LOGGER.error("Server Cannot find org: " + message.getOrgNamespace());
             return;
         }
-        ServerOrgManager serverOrgManager = organisims.get(message.getOrgNamespace());
+        ServerOrgManager serverOrgManager = organisms.get(message.getOrgNamespace());
         serverOrgManager.queueOutputNeuronAction(message);
 
     }
@@ -293,12 +290,13 @@ public class ChaosCraftServer {
         ChaosCraftServerPlayerInfo craftServerPlayerInfo = userMap.get(player.getUniqueID().toString());
         if(craftServerPlayerInfo != null && craftServerPlayerInfo.organisims != null) {
             for (String orgNamespace : craftServerPlayerInfo.organisims) {
-                if (!organisims.containsKey(orgNamespace)) {
+                if (!organisms.containsKey(orgNamespace)) {
                     ChaosCraft.LOGGER.error("Cannot find " + player.getName().getString() + "'s org `" + orgNamespace + "` for logout destruction");
                 } else {
-
-                    organisims.get(orgNamespace).getEntity().killWithNoReport();
-                    ChaosCraft.LOGGER.info("Logout killing " + player.getName().getString() + "'s org `" + orgNamespace + "` for logout destruction");
+                    if(organisms.get(orgNamespace).getEntity() != null) {
+                        organisms.get(orgNamespace).getEntity().killWithNoReport();
+                        ChaosCraft.LOGGER.info("Logout killing " + player.getName().getString() + "'s org `" + orgNamespace + "` for logout destruction");
+                    }
                 }
             }
         }
@@ -306,17 +304,23 @@ public class ChaosCraftServer {
     }
 
     public void removeEntityFromWorld(OrgEntity orgEntity) {
-       if(!organisims.containsKey(orgEntity.getCCNamespace())){
+       if(!organisms.containsKey(orgEntity.getCCNamespace())){
            ChaosCraft.LOGGER.error("Server is trying to remove an org from its `organisims` but it is not there: " + orgEntity.getCCNamespace());
            return;
        }
-        organisims.remove(orgEntity.getCCNamespace());
+        organisms.remove(orgEntity.getCCNamespace());
     }
 
-    public void queueForSpawn(ServerOrgManager serverOrgManager) {
-        serverOrgManager.queueForSpawn();
-        organisims.put(serverOrgManager.getCCNamespace(), serverOrgManager);
-    }
 
+    public HashMap<ServerOrgManager.State, ArrayList<ServerOrgManager>> getOrgsSortedByState(){
+        HashMap<ServerOrgManager.State, ArrayList<ServerOrgManager>> coll = new HashMap<ServerOrgManager.State, ArrayList<ServerOrgManager>>();
+        for (ServerOrgManager serverOrgManager : organisms.values()) {
+            if(!coll.containsKey(serverOrgManager.getState())){
+                coll.put(serverOrgManager.getState(), new ArrayList<ServerOrgManager>());
+            }
+            coll.get(serverOrgManager.getState()).add(serverOrgManager);
+        }
+        return coll;
+    }
 
 }

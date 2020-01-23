@@ -78,7 +78,10 @@ public class ClientOrgManager extends BaseOrgManager {
     }
     public void manualUpdateCheck(){
         ticksWithoutUpdate += 1;
-        if(ticksWithoutUpdate > 5){
+        if(
+            ticksWithoutUpdate > 5 &&
+        this.getEntity() != null
+        ){
             this.getEntity().checkStatus();
         }
     }

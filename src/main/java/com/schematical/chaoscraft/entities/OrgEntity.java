@@ -676,8 +676,9 @@ public class OrgEntity extends MobEntity {
 
         if(!world.isRemote){
             this.checkHasTraveled();
-
-            this.serverOrgManager.tickServer();
+            if(this.serverOrgManager != null) {
+                this.serverOrgManager.tickServer();
+            }
             this.updatePitchAndYaw();
             this.checkForItemPickup();
         }else{

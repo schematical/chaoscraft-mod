@@ -242,7 +242,10 @@ public class ChaosCraftClient {
                 iterator.remove();
                 //ChaosCraft.logger.info("Setting Dead: " + organism.getName() + " - Has no `Organism` record");
             }
-            if (clientOrgManager.getEntity().isAlive()) {
+            if (
+                clientOrgManager.getEntity() != null &&
+                clientOrgManager.getEntity().isAlive()
+            ) {
                 liveOrgCount += 1;
             }
         }
@@ -256,21 +259,19 @@ public class ChaosCraftClient {
 
     while (iterator.hasNext()) {
         ClientOrgManager clientOrgManager = iterator.next();
-        if(!myOrganisims.containsKey(clientOrgManager.getCCNamespace())) {
 
-
-                if (_debugSpawnedOrgNamespaces.contains(clientOrgManager.getCCNamespace())) {
-                    ChaosCraft.LOGGER.error("Client already tried to spawn: " + clientOrgManager.getCCNamespace());
-                } else {
-                    _debugSpawnedOrgNamespaces.add(clientOrgManager.getCCNamespace());
-                }
-                CCClientSpawnPacket packet = new CCClientSpawnPacket(
-                    clientOrgManager.getCCNamespace()
-                );
-                clientOrgManager.markSpawnMessageSent();
-
-                ChaosNetworkManager.sendToServer(packet);
+            if (_debugSpawnedOrgNamespaces.contains(clientOrgManager.getCCNamespace())) {
+                ChaosCraft.LOGGER.error("Client already tried to spawn: " + clientOrgManager.getCCNamespace());
+            } else {
+                _debugSpawnedOrgNamespaces.add(clientOrgManager.getCCNamespace());
             }
+            CCClientSpawnPacket packet = new CCClientSpawnPacket(
+                clientOrgManager.getCCNamespace()
+            );
+            clientOrgManager.markSpawnMessageSent();
+
+            ChaosNetworkManager.sendToServer(packet);
+
         }
     }
 
@@ -327,7 +328,16 @@ public class ChaosCraftClient {
     public int getTicksSinceLastSpawn() {
         return ticksSinceLastSpawn;
     }
-
+    public HashMap<ClientOrgManager.State, ArrayList<ClientOrgManager>> getOrgsSortedByState(){
+        HashMap<ClientOrgManager.State, ArrayList<ClientOrgManager>> coll = new HashMap<ClientOrgManager.State, ArrayList<ClientOrgManager>>();
+        for (ClientOrgManager clientOrgManager : myOrganisims.values()) {
+            if(!coll.containsKey(clientOrgManager.getState())){
+                coll.put(clientOrgManager.getState(), new ArrayList<ClientOrgManager>());
+            }
+            coll.get(clientOrgManager.getState()).add(clientOrgManager);
+        }
+        return coll;
+    }
 
 
     public enum State{

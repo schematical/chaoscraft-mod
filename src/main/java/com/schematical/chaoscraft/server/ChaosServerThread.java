@@ -22,17 +22,27 @@ public class ChaosServerThread implements Runnable {
             request.setUsername(ChaosCraft.config.trainingRoomUsernameNamespace);
             request.setTrainingroom(ChaosCraft.config.trainingRoomNamespace);
 
-            String orgNamespaces = String.join(",", ChaosCraft.getServer().orgNamepacesQueuedToSpawn);
-            request.setOrgNamespaces(orgNamespaces);
+            List<ServerOrgManager> serverOrgManagers = ChaosCraft.getServer().getOrgsWithState(ServerOrgManager.State.PlayerAttached);
+            ArrayList<String> orgNamespaces = new ArrayList<String>();
+            for (ServerOrgManager serverOrgManager : serverOrgManagers) {
+                orgNamespaces.add(serverOrgManager.getTmpNamespace());
+            }
+            String orgNamespacesStr = String.join(",", orgNamespaces);
+            request.setOrgNamespaces(orgNamespacesStr);
 
 
             GetUsernameTrainingroomsTrainingroomOrganismsResult response = ChaosCraft.sdk.getUsernameTrainingroomsTrainingroomOrganisms(request);
             List<Organism> organisms = response.getOrganismCollection();
-            ChaosCraft.getServer().orgNamepacesQueuedToSpawn.clear();
+
             for (Organism organism : organisms) {
-                ServerOrgManager serverOrgManager = new ServerOrgManager();
-                serverOrgManager.attachOrganism(organism);
-                ChaosCraft.getServer().queueForSpawn(serverOrgManager);
+                if(!ChaosCraft.getServer().organisms.containsKey(organism.getNamespace())){
+                    ChaosCraft.LOGGER.error("Server - Cant find `ChaosCraft.getServer().organisms` org: " + organism.getNamespace());
+                }else {
+                    ServerOrgManager serverOrgManager = ChaosCraft.getServer().organisms.get(organism.getNamespace());
+                    serverOrgManager.attachOrganism(organism);
+                    serverOrgManager.queueForSpawn();
+                }
+
             }
 
 

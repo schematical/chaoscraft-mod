@@ -2,6 +2,7 @@ package com.schematical.chaoscraft.client.gui;
 
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.client.ChaosCraftClient;
+import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.CCClientServerPingRequestPacket;
 import com.schematical.chaoscraft.network.packets.CCServerPingResponsePacket;
@@ -13,6 +14,9 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 @OnlyIn(Dist.CLIENT)
 public class ChaosNetworkInfoOverlayGui extends Screen {
@@ -58,15 +62,17 @@ public class ChaosNetworkInfoOverlayGui extends Screen {
         message += "debugReportedOrgNamespaces:  " + chaosCraftClient._debugReportedOrgNamespaces.size() + "\n";
 
         message += "consecutiveErrorCount:  " + chaosCraftClient.consecutiveErrorCount + "\n";
-        message += "orgsToSpawn Count:  " + chaosCraftClient.orgsToSpawn.size() + "\n";
-        message += "orgsQueuedToSpawn Count:  " + chaosCraftClient.orgsQueuedToSpawn.size() + "\n";
-        message += "orgsToReport Count:  " + chaosCraftClient.orgsToReport.size() + "\n";
+
         message += "myOrganisims Count:  " + chaosCraftClient.myOrganisims.size() + "\n";
+        HashMap<ClientOrgManager.State, ArrayList<ClientOrgManager>> coll = chaosCraftClient.getOrgsSortedByState();
+        for ( ClientOrgManager.State state : coll.keySet() ) {
+            message += " - " + state + ": " + coll.get(state).size() + "\n";
+        }
         message += "\n";
-        message += "Orgs To Spawn:\n";
+       /* message += "Orgs To Spawn:\n";
         for (Organism organism : chaosCraftClient.orgsToSpawn) {
             message += organism.getNamespace() + "\n";
-        }
+        }*/
         return message;
     }
 

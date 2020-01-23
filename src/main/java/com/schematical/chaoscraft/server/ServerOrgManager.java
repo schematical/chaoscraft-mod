@@ -9,6 +9,7 @@ import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.fitness.EntityFitnessManager;
 import com.schematical.chaoscraft.network.packets.CCClientOutputNeuronActionPacket;
 import com.schematical.chaosnet.model.ChaosNetException;
+import com.schematical.chaosnet.model.Organism;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.text.TranslationTextComponent;
 
@@ -17,12 +18,26 @@ import java.util.Iterator;
 import java.util.List;
 
 public class ServerOrgManager extends BaseOrgManager {
+    protected String tmpNamespace;
     protected State state = State.Uninitialized;
     protected ServerPlayerEntity serverPlayerEntity;
     public ArrayList<CCClientOutputNeuronActionPacket> neuronActions = new ArrayList<CCClientOutputNeuronActionPacket>();
-
+    public void setTmpNamespace(String _tmpNamespace){
+        tmpNamespace = _tmpNamespace;
+    }
+    public String getTmpNamespace(){
+       return tmpNamespace;
+    }
+    public void attachOrganism(Organism organism){
+        if(!state.equals(State.PlayerAttached)){
+            ChaosCraft.LOGGER.error(getCCNamespace() + " - has invalid state: " + state);
+            return;
+        }
+        super.attachOrganism(organism);
+        state = State.OrgAttached;
+    }
     public void attachOrgEntity(OrgEntity orgEntity){
-        if(!state.equals(State.Uninitialized)){
+        if(!state.equals(State.QueuedForSpawn)){
             ChaosCraft.LOGGER.error(getCCNamespace() + " - has invalid state: " + state);
             return;
         }
@@ -36,7 +51,12 @@ public class ServerOrgManager extends BaseOrgManager {
         state = State.Spawned;
     }
     public void setPlayerEntity(ServerPlayerEntity serverPlayerEntity){
+        if(!state.equals(State.Uninitialized)){
+            ChaosCraft.LOGGER.error(getCCNamespace() + " - has invalid state: " + state);
+            return;
+        }
         this.serverPlayerEntity = serverPlayerEntity;
+        state = State.PlayerAttached;
     }
 
     public ServerPlayerEntity getServerPlayerEntity(){
@@ -49,7 +69,7 @@ public class ServerOrgManager extends BaseOrgManager {
         return state;
     }
     public void queueForSpawn() {
-        if(!state.equals(State.Uninitialized)){
+        if(!state.equals(State.OrgAttached)){
             ChaosCraft.LOGGER.error("ServerOrgManager.state != " + State.Uninitialized);
             return;
         }
@@ -93,6 +113,7 @@ public class ServerOrgManager extends BaseOrgManager {
             this.neuronActions.clear();
         }
     }
+
     public void markClientAttached() {
         if(!state.equals(ServerOrgManager.State.Spawned)){
             ChaosCraft.LOGGER.error(getCCNamespace() + " - has invalid state: " + state);
@@ -111,10 +132,10 @@ public class ServerOrgManager extends BaseOrgManager {
 
     public enum State{
         Uninitialized,
-        QueuedForSpawn,
+        OrgAttached,
         Spawned,
         ClientAttached,
         Ticking,
-        Dead,
+        Dead, QueuedForSpawn, PlayerAttached,
     }
 }

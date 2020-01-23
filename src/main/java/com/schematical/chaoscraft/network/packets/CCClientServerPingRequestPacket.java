@@ -1,20 +1,15 @@
 package com.schematical.chaoscraft.network.packets;
 
 import com.schematical.chaoscraft.ChaosCraft;
-import com.schematical.chaoscraft.client.ChaosCraftClient;
-import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.server.ChaosCraftServer;
 import com.schematical.chaoscraft.server.ChaosCraftServerPlayerInfo;
-import com.schematical.chaosnet.model.Organism;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import com.schematical.chaoscraft.server.ServerOrgManager;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.function.Supplier;
 
 public class CCClientServerPingRequestPacket {
@@ -55,12 +50,15 @@ public class CCClientServerPingRequestPacket {
                 }
                 payload += "\n";
 
-                payload += "orgNamepacesQueuedToSpawn Count: " + chaosCraftServer.orgNamepacesQueuedToSpawn.size() + "\n";
-                payload += "orgsToSpawn Count: " + chaosCraftServer.orgsToSpawn.size() + "\n";
+
                 payload += "consecutiveErrorCount: " + chaosCraftServer.consecutiveErrorCount + "\n";
-                payload += "organisims: " + chaosCraftServer.organisims.size() + "\n";
+                payload += "organisms: " + chaosCraftServer.organisms.size() + "\n";
 
-
+                HashMap<ServerOrgManager.State, ArrayList<ServerOrgManager>> coll = chaosCraftServer.getOrgsSortedByState();
+                for ( ServerOrgManager.State state : coll.keySet() ) {
+                    payload += " - " + state + ": " + coll.get(state).size() + "\n";
+                }
+                payload += "\n";
                 ChaosNetworkManager.sendTo(new CCServerPingResponsePacket(payload), ctx.get().getSender());
 
 
