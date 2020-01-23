@@ -61,10 +61,12 @@ public class ChaosClientThread implements Runnable {
 
             ChaosCraft.getClient().lastResponse = result.getTrainingRoomSessionNextResponse();
             for (Organism organism : ChaosCraft.getClient().lastResponse.getOrganisms()) {
-                ClientOrgManager clientOrgManager = new ClientOrgManager();
-                clientOrgManager.attachOrganism(organism);
+                if(! ChaosCraft.getClient().myOrganisims.containsKey(organism.getNamespace())) {
+                    ClientOrgManager clientOrgManager = new ClientOrgManager();
+                    clientOrgManager.attachOrganism(organism);
 
-                ChaosCraft.getClient().myOrganisims.put(clientOrgManager.getCCNamespace(), clientOrgManager);
+                    ChaosCraft.getClient().myOrganisims.put(clientOrgManager.getCCNamespace(), clientOrgManager);
+                }
             }
 
 

@@ -2,6 +2,7 @@ package com.schematical.chaoscraft.client;
 
 import com.schematical.chaoscraft.BaseOrgManager;
 import com.schematical.chaoscraft.ChaosCraft;
+import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.network.packets.CCServerScoreEventPacket;
 import com.schematical.chaosnet.model.Organism;
@@ -30,7 +31,9 @@ public class ClientOrgManager extends BaseOrgManager {
             return;
         }
         super.attachOrgEntity(orgEntity);
+        this.orgEntity.observableAttributeManager = new CCObservableAttributeManager(organism);
         this.orgEntity.attachNNetRaw(organism.getNNetRaw());
+        orgEntity.attachClientOrgEntity(this);
         state = State.EntityAttached;
     }
     public Double getServerScoreEventTotal(){

@@ -255,13 +255,13 @@ public class ChaosCraftClient {
 
     private void startSpawnOrgs() {
 
-    Iterator<ClientOrgManager> iterator = getOrgsWithState(ClientOrgManager.State.OrgAttached).iterator();
+        Iterator<ClientOrgManager> iterator = getOrgsWithState(ClientOrgManager.State.OrgAttached).iterator();
 
-    while (iterator.hasNext()) {
-        ClientOrgManager clientOrgManager = iterator.next();
+        while (iterator.hasNext()) {
+            ClientOrgManager clientOrgManager = iterator.next();
 
             if (_debugSpawnedOrgNamespaces.contains(clientOrgManager.getCCNamespace())) {
-                ChaosCraft.LOGGER.error("Client already tried to spawn: " + clientOrgManager.getCCNamespace());
+                ChaosCraft.LOGGER.error("Client already tried to spawn: " + clientOrgManager.getCCNamespace()  + " State: " + clientOrgManager.getState());
             } else {
                 _debugSpawnedOrgNamespaces.add(clientOrgManager.getCCNamespace());
             }

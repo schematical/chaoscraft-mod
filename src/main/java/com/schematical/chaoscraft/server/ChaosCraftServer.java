@@ -101,7 +101,9 @@ public class ChaosCraftServer {
         ChaosCraftServerPlayerInfo serverPlayerInfo = userMap.get(player.getUniqueID().toString());
         serverPlayerInfo.organisims.add(orgNamespace);
         ServerOrgManager serverOrgManager = new ServerOrgManager();
+        serverOrgManager.setTmpNamespace(orgNamespace);
         serverOrgManager.setPlayerEntity(player);
+
         organisms.put(orgNamespace, serverOrgManager);
 
     }
@@ -248,7 +250,7 @@ public class ChaosCraftServer {
     }
     public void processClientOutputNeuronActionPacket(CCClientOutputNeuronActionPacket message){
         if(!organisms.containsKey(message.getOrgNamespace())){
-            ChaosCraft.LOGGER.error("Server Cannot find org: " + message.getOrgNamespace());
+            ChaosCraft.LOGGER.error("Server Cannot find org to process neuron action packet: " + message.getOrgNamespace());
             return;
         }
         ServerOrgManager serverOrgManager = organisms.get(message.getOrgNamespace());

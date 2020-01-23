@@ -21,7 +21,9 @@ public class ServerOrgManager extends BaseOrgManager {
     protected String tmpNamespace;
     protected State state = State.Uninitialized;
     protected ServerPlayerEntity serverPlayerEntity;
+    protected long spawnTime = 0;
     public ArrayList<CCClientOutputNeuronActionPacket> neuronActions = new ArrayList<CCClientOutputNeuronActionPacket>();
+    private float maxLifeSeconds = 30;
     public void setTmpNamespace(String _tmpNamespace){
         tmpNamespace = _tmpNamespace;
     }
@@ -43,11 +45,12 @@ public class ServerOrgManager extends BaseOrgManager {
         }
         super.attachOrgEntity(orgEntity);
         this.orgEntity.attachSeverOrgManager(this);
-
+        this.orgEntity.attachNNetRaw(this.organism.getNNetRaw());
         orgEntity.entityFitnessManager = new EntityFitnessManager(orgEntity);
         orgEntity.observableAttributeManager = new CCObservableAttributeManager(organism);
-        orgEntity.setCustomName(new TranslationTextComponent(orgEntity.getCCNamespace()));
+        orgEntity.setCustomName(new TranslationTextComponent(getCCNamespace()));
         orgEntity.setSpawnHash(ChaosCraft.getServer().spawnHash);
+        spawnTime = orgEntity.world.getGameTime();
         state = State.Spawned;
     }
     public void setPlayerEntity(ServerPlayerEntity serverPlayerEntity){
@@ -75,10 +78,22 @@ public class ServerOrgManager extends BaseOrgManager {
         }
         state = State.QueuedForSpawn;
     }
+    public float getAgeSeconds(){
+        return (this.orgEntity.world.getGameTime() - spawnTime)  / 20;
+    }
+
 
 
     public void tickServer(){
         if( this.orgEntity.getBoundingBox() == null){
+            return;
+        }
+        if (
+                this.getEntity() == null ||
+                this.getEntity().getNNet() == null ||
+                this.getEntity().getNNet().neurons == null
+        ){
+            ChaosCraft.LOGGER.error("Missing Entity or NNEt or something");
             return;
         }
 
@@ -128,6 +143,24 @@ public class ServerOrgManager extends BaseOrgManager {
         }
         state = State.Dead;
     }
+    public float getMaxLife(){
+        return maxLifeSeconds;
+    }
+    public void adjustMaxLife(int life) {
+        maxLifeSeconds += life;
+    }
+    public boolean checkStatus() {
+        if (
+            //this.organism == null ||
+                getAgeSeconds() > maxLifeSeconds
+
+        ) {
+            //this.dropInventory();
+            this.orgEntity.setHealth(-1);
+            return true;
+        }
+        return false;
+    }
 
 
     public enum State{
@@ -136,6 +169,8 @@ public class ServerOrgManager extends BaseOrgManager {
         Spawned,
         ClientAttached,
         Ticking,
-        Dead, QueuedForSpawn, PlayerAttached,
+        Dead,
+        QueuedForSpawn,
+        PlayerAttached,
     }
 }

@@ -48,10 +48,10 @@ public class OrgEntity extends MobEntity {
     @ObjectHolder("chaoscraft:org_entity")
     public static final EntityType<OrgEntity> ORGANISM_TYPE = null;
     public final double REACH_DISTANCE = 5.0D;
-    private long spawnTime;
+
     public final NonNullList<ItemStack> orgInventory = NonNullList.withSize(36, ItemStack.EMPTY);
     public EntityFitnessManager entityFitnessManager;
-    protected Organism organism;
+
     protected CCPlayerEntityWrapper playerWrapper;
     public CCObservableAttributeManager observableAttributeManager;
     private List<OrgEvent> events = new ArrayList<OrgEvent>();
@@ -71,7 +71,7 @@ public class OrgEntity extends MobEntity {
     private float hardness = 0;
     private BlockPos lastMinePos = BlockPos.ZERO;
     private int blockSoundTimer;
-    private float maxLifeSeconds = 30;
+
     private int miningTicks = 0;
 
     public List<AlteredBlockInfo> alteredBlocks = new ArrayList<AlteredBlockInfo>();
@@ -94,11 +94,7 @@ public class OrgEntity extends MobEntity {
     public void setSpawnHash(int _spawnHash) {
         this.spawnHash = _spawnHash;
     }
-    public void attachOrganism(Organism _organism){
-        organism = _organism;
-        spawnTime = world.getGameTime();
 
-    }
     public void setDesiredYaw(double _desiredYaw){
         this.desiredYaw = _desiredYaw;
     }
@@ -171,10 +167,14 @@ public class OrgEntity extends MobEntity {
     }
 
     public String getCCNamespace() {
-        if(organism == null){
-            return null;
+       if(serverOrgManager != null){
+           return serverOrgManager.getCCNamespace();
+       }
+        if(clientOrgManager != null){
+            return clientOrgManager.getCCNamespace();
         }
-        return organism.getNamespace();
+        ChaosCraft.LOGGER.error("No valid CCNamespace found. No `serverOrgManager` or `clientOrgManager`");
+        return null;
     }
 
     public boolean isEntityInLineOfSight(LivingEntity target, double blockReachDistance) {
@@ -321,12 +321,7 @@ public class OrgEntity extends MobEntity {
         }
         throw new Exception("TODO: Build inventory for :" + slotIn.getName());
     }
-    public float getMaxLife(){
-        return maxLifeSeconds;
-    }
-    public void adjustMaxLife(int life) {
-        maxLifeSeconds += life;
-    }
+
     public BlockRayTraceResult rayTraceBlocks(double blockReachDistance) {
         Vec3d vec3d = this.getEyePosition(1);
         Vec3d vec3d1 = this.getLook(1);
@@ -687,9 +682,12 @@ public class OrgEntity extends MobEntity {
 
         }
         super.baseTick();
-        if(!world.isRemote) {
+        if(
+            !world.isRemote &&
+            this.serverOrgManager != null
+        ) {
 
-            checkStatus();
+            this.serverOrgManager.checkStatus();
         }
     }
 
@@ -727,20 +725,10 @@ public class OrgEntity extends MobEntity {
             killWithNoReport();
             return false;
         }
-        if (
-            //this.organism == null ||
-            getAgeSeconds() > maxLifeSeconds
 
-        ) {
-            //this.dropInventory();
-            this.setHealth(-1);
-            return true;
-        }
         return false;
     }
-    public float getAgeSeconds(){
-        return (this.world.getGameTime() - spawnTime)  / 20;
-    }
+
 
 
 
@@ -759,7 +747,7 @@ public class OrgEntity extends MobEntity {
             while (iterator.hasNext()) {
                 OutputNeuron outputNeuron = iterator.next();
                 CCClientOutputNeuronActionPacket packet = new CCClientOutputNeuronActionPacket(
-                        organism.getNamespace(),
+                        clientOrgManager.getCCNamespace(),
                         outputNeuron.id,
                         outputNeuron._lastValue
 
@@ -862,7 +850,10 @@ public class OrgEntity extends MobEntity {
 
     public boolean processInteract(PlayerEntity player, Hand hand)
     {
-        if(organism == null){
+        if(
+            clientOrgManager == null ||
+            clientOrgManager.getOrganism() == null
+        ){
             ChaosCraft.LOGGER.error("Clicked on an OrgEntity but it has no organism");
             return false;
         }
@@ -873,9 +864,7 @@ public class OrgEntity extends MobEntity {
         return true;
     }
 
-    public Organism getOrganism() {
-        return organism;
-    }
+
 
     public void killWithNoReport() {
         setHealth(-1);
@@ -897,20 +886,7 @@ public class OrgEntity extends MobEntity {
         this.clientOrgManager = clientOrgManager;
     }
 
-    public ServerPlayerEntity getServerPlayerEntity() {
-        ServerPlayerEntity serverPlayerEntity = null;
-        for (ChaosCraftServerPlayerInfo playerInfo : ChaosCraft.getServer().userMap.values()) {
-            if(playerInfo.organisims.contains(organism.getNamespace())){
-                serverPlayerEntity = ChaosCraft.getServer().server.getPlayerList().getPlayerByUUID(playerInfo.playerUUID);
-            }
-        }
-        if(serverPlayerEntity == null){
-            ChaosCraft.LOGGER.error("Cant find player owning: " + organism.getNamespace());
-            return null;
-        }
-        //TODO: Cache this
-        return serverPlayerEntity;
-    }
+
 
     public void attachSeverOrgManager(ServerOrgManager serverOrgManager) {
         this.serverOrgManager = serverOrgManager;
