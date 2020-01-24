@@ -7,6 +7,8 @@ import com.schematical.chaoscraft.ai.CCObserviableAttributeCollection;
 import com.schematical.chaoscraft.ai.NeuralNet;
 import com.schematical.chaoscraft.ai.OutputNeuron;
 import com.schematical.chaoscraft.client.ClientOrgManager;
+import com.schematical.chaoscraft.client.gui.ChaosNNetViewOverlayGui;
+import com.schematical.chaoscraft.client.gui.ChaosOrgDetailOverlayGui;
 import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.events.OrgEvent;
 import com.schematical.chaoscraft.fitness.EntityFitnessManager;
@@ -21,6 +23,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.*;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -670,12 +673,14 @@ public class OrgEntity extends MobEntity {
 
 
         if(!world.isRemote){
-            this.checkHasTraveled();
+
             if(this.serverOrgManager != null) {
+                this.checkHasTraveled();
                 this.serverOrgManager.tickServer();
+                this.updatePitchAndYaw();
+                this.checkForItemPickup();
             }
-            this.updatePitchAndYaw();
-            this.checkForItemPickup();
+
         }else{
 
             tickClient();
@@ -862,7 +867,7 @@ public class OrgEntity extends MobEntity {
         }
 
         if (this.world.isRemote) {
-            ChaosCraft.getClient().displayTest(this);
+            ChaosCraft.getClient().showOrdDetailOverlay(clientOrgManager);
         }
         return true;
     }

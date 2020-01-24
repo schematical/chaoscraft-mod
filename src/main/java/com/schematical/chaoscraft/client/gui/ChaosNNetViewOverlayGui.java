@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.InputNeuron;
 import com.schematical.chaoscraft.ai.NeuronBase;
+import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
@@ -21,17 +22,17 @@ import static org.lwjgl.opengl.GL11.GL_LINE_STRIP;
 @OnlyIn(Dist.CLIENT)
 public class ChaosNNetViewOverlayGui extends Screen {
 
-    private OrgEntity orgEntity;
-    public ChaosNNetViewOverlayGui(OrgEntity orgEntity) {
-        super(new TranslationTextComponent(orgEntity.getCCNamespace()));
-        this.orgEntity = orgEntity;
+    private ClientOrgManager clientOrgManager;
+    public ChaosNNetViewOverlayGui(ClientOrgManager clientOrgManager) {
+        super(new TranslationTextComponent(clientOrgManager.getCCNamespace()));
+        this.clientOrgManager = clientOrgManager;
     }
     protected void init() {
         super.init();
         ArrayList<NeuronBase> inputs = new ArrayList<NeuronBase>();
         ArrayList<NeuronBase> outputs = new ArrayList<NeuronBase>();
         ArrayList<NeuronBase> middles = new ArrayList<NeuronBase>();
-        for (NeuronBase neuronBase : orgEntity.getNNet().neurons.values()) {
+        for (NeuronBase neuronBase : clientOrgManager.getEntity().getNNet().neurons.values()) {
            switch(neuronBase._base_type()){
                case(com.schematical.chaoscraft.Enum.INPUT):
                    inputs.add(neuronBase);

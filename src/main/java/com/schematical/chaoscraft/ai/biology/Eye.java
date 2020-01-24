@@ -42,7 +42,7 @@ public class Eye  extends BiologyBase {
         );
 
 
-        RayTraceResult rayTraceResult = entity.world.rayTraceBlocks(new RayTraceContext(vec3d, vec3d2, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.ANY, entity));
+        RayTraceResult rayTraceResult = entity.world.rayTraceBlocks(new RayTraceContext(vec3d, vec3d2, RayTraceContext.BlockMode.OUTLINE, RayTraceContext.FluidMode.NONE/* RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.ANY*/, entity));
 
         if(rayTraceResult != null) {
             BlockPos blockPos = new BlockPos(
@@ -144,6 +144,17 @@ public class Eye  extends BiologyBase {
         seenBlocks.clear();
         _blocksCached = false;
         _entitiesCached = false;
+    }
+    public String toString(){
+
+        String message = "Eye P:"+ Math.round(Math.toDegrees(pitch)) + " Y:" + Math.round(Math.toDegrees(yaw)) + " D:" + maxDistance + " -";
+        for (CCObserviableAttributeCollection seenBlock : seenBlocks) {
+            message += " " + seenBlock.resourceId;
+        }
+        for (CCObserviableAttributeCollection seenEntity : seenEntities) {
+            message += " " + seenEntity.resourceId;
+        }
+        return message;
     }
 
 }

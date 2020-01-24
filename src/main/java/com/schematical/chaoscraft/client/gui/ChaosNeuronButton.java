@@ -2,7 +2,10 @@ package com.schematical.chaoscraft.client.gui;
 
 import com.schematical.chaoscraft.ai.NeuronBase;
 import net.minecraft.client.gui.widget.button.Button;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class ChaosNeuronButton extends Button {
 
     final int EXPANDED_WIDTH = 200;

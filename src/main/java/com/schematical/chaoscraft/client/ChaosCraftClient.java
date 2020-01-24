@@ -2,10 +2,7 @@ package com.schematical.chaoscraft.client;
 
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
-import com.schematical.chaoscraft.client.gui.CCKeyBinding;
-import com.schematical.chaoscraft.client.gui.ChaosAuthOverlayGui;
-import com.schematical.chaoscraft.client.gui.ChaosInGameMenuOverlayGui;
-import com.schematical.chaoscraft.client.gui.ChaosNNetViewOverlayGui;
+import com.schematical.chaoscraft.client.gui.*;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.*;
@@ -42,11 +39,7 @@ public class ChaosCraftClient {
     public HashMap<String, ClientOrgManager> myOrganisims = new HashMap<String, ClientOrgManager>();
     public Thread thread;
     public static List<KeyBinding> keyBindings = new ArrayList<KeyBinding>();
-    public void displayTest(OrgEntity orgEntity) {
-        ChaosNNetViewOverlayGui screen = new ChaosNNetViewOverlayGui(orgEntity);
-        Minecraft.getInstance().displayGuiScreen(screen);
-        ChaosCraft.LOGGER.info("Displaying test");
-    }
+
 
     public void onWorldUnload() {
         state = State.Uninitiated;
@@ -331,6 +324,11 @@ public class ChaosCraftClient {
             coll.get(clientOrgManager.getState()).add(clientOrgManager);
         }
         return coll;
+    }
+
+    public void showOrdDetailOverlay(ClientOrgManager clientOrgManager) {
+        ChaosOrgDetailOverlayGui screen = new ChaosOrgDetailOverlayGui(clientOrgManager);
+        Minecraft.getInstance().displayGuiScreen(screen);
     }
 
 
