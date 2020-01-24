@@ -196,21 +196,13 @@ public class OrgEntity extends MobEntity {
     public void setDesiredPitch(double _desiredPitch){
         this.desiredPitch = _desiredPitch;
     }
-    public void updatePitchYaw(){
-        double yOffset = Math.sin(Math.toRadians(desiredPitch));
-        double zOffset = Math.cos(Math.toRadians(this.desiredYaw)) * Math.cos(Math.toRadians(desiredPitch));
-        double xOffset = Math.sin(Math.toRadians(this.desiredYaw)) * Math.cos(Math.toRadians(desiredPitch));
-        //this.lookAt(EntityAnchorArgument.Type.EYES, new Vec3d(getPositionVec().x + xOffset, getPositionVec().y + this.getEyeHeight() + yOffset, getPositionVec().z + zOffset));
-        this.renderYawOffset = 0;
-        this.setRotation((float)this.desiredYaw/*this.rotationYaw*/, this.rotationPitch);
 
-    }
     public double getDesiredYaw(){
         return this.desiredYaw;
     }
     @Override
     public void livingTick() {
-        updatePitchYaw();
+
         super.livingTick();
 
     }
@@ -718,6 +710,7 @@ public class OrgEntity extends MobEntity {
         this.renderYawOffset = 0;
         this.setRotation(this.rotationYaw, this.rotationPitch);
     }
+
     private void checkForItemPickup(){
         List<ItemEntity> items = this.world.getEntitiesWithinAABB(ItemEntity.class, this.getBoundingBox().grow(2.0D, 1.0D, 2.0D));
 

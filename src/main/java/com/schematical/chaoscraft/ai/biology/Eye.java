@@ -44,7 +44,7 @@ public class Eye  extends BiologyBase {
 
         RayTraceResult rayTraceResult = entity.world.rayTraceBlocks(new RayTraceContext(vec3d, vec3d2, RayTraceContext.BlockMode.OUTLINE, RayTraceContext.FluidMode.NONE/* RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.ANY*/, entity));
 
-        if(rayTraceResult != null) {
+        if(rayTraceResult != null && !rayTraceResult.getType().equals(RayTraceResult.Type.MISS)) {
             BlockPos blockPos = new BlockPos(
                     rayTraceResult.getHitVec()
             );

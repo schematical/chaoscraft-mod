@@ -193,7 +193,7 @@ public class ChaosCraftServer {
                 return orgEntity;
             }
             BlockPos pos1 = serverWorld.getSpawnPoint();
-            int range = 5;
+            int range = 32;
             pos1 = pos1.add(
                 new Vec3i(
                     Math.floor(Math.random() *  range * 2) - range,

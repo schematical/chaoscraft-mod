@@ -17,12 +17,12 @@ public class ChangeYawOutput extends OutputNeuron {
         //ChaosCraft.logger.info(nNet.entity.getName() + " ChangeYawOutput: " + this._lastValue + " - " + delta);
         //;
 
-        this.nNet.entity.setDesiredYaw(this.nNet.entity.getDesiredYaw() + (delta  * 1));
-  /*
+        this.nNet.entity.setDesiredYaw(this.nNet.entity.getDesiredYaw() + (delta  * 15));
+  /*.
         this.nNet.entity.rotationYaw += delta * 1;
         this.nNet.entity.setDesiredYaw(this.nNet.entity.rotationYaw);
      this.nNet.entity.renderYawOffset =  this.nNet.entity.rotationYaw;
-        this.nNet.entity.setRotationYawHead(this.nNet.entity.rotationYaw);*/
+        this.nNet.entity.setRotationYawHead(this.nNetentity.rotationYaw);*/
 
 
     }
