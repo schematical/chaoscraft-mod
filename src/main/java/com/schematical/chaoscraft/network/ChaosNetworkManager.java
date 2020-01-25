@@ -30,6 +30,7 @@ public class ChaosNetworkManager {
         INSTANCE.registerMessage(disc++, CCServerEntitySpawnedPacket.class, CCServerEntitySpawnedPacket::encode, CCServerEntitySpawnedPacket::decode, CCServerEntitySpawnedPacket.Handler::handle);
         INSTANCE.registerMessage(disc++, CCClientServerPingRequestPacket.class, CCClientServerPingRequestPacket::encode, CCClientServerPingRequestPacket::decode, CCClientServerPingRequestPacket.Handler::handle);
         INSTANCE.registerMessage(disc++, CCServerPingResponsePacket.class, CCServerPingResponsePacket::encode, CCServerPingResponsePacket::decode, CCServerPingResponsePacket.Handler::handle);
+        INSTANCE.registerMessage(disc++, CCClientOrgDebugStateChangeRequestPacket.class, CCClientOrgDebugStateChangeRequestPacket::encode, CCClientOrgDebugStateChangeRequestPacket::decode, CCClientOrgDebugStateChangeRequestPacket.Handler::handle);
 
     }
     /**

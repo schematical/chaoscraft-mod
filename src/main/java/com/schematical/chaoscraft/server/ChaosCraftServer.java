@@ -341,4 +341,10 @@ public class ChaosCraftServer {
         return coll;
     }
 
+    public ServerOrgManager getOrgByNamespace(String orgNamespace) {
+        if(!organisms.containsKey(orgNamespace)){
+            return null;
+        }
+        return organisms.get(orgNamespace);
+    }
 }

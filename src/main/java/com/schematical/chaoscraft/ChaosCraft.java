@@ -2,6 +2,7 @@ package com.schematical.chaoscraft;
 
 import com.amazonaws.opensdk.config.ConnectionConfiguration;
 import com.amazonaws.opensdk.config.TimeoutConfiguration;
+import com.schematical.chaoscraft.blocks.ChaosEggBlock;
 import com.schematical.chaoscraft.blocks.SpawnBlock;
 import com.schematical.chaoscraft.client.ChaosCraftClient;
 import com.schematical.chaoscraft.commands.CCAuthCommand;
@@ -18,7 +19,10 @@ import com.schematical.chaoscraft.server.ChaosCraftServer;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.TurtleEggBlock;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.material.MaterialColor;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraftforge.client.event.InputEvent;
@@ -229,8 +233,13 @@ public class ChaosCraft
             // register a new block here
             LOGGER.info("HELLO from Register Block");
             blockRegistryEvent.getRegistry().registerAll(
-                    new SpawnBlock(Block.Properties.create(Material.BARRIER).hardnessAndResistance(-1.0F, 3600000.0F)).setRegistryName(ChaosCraft.MODID, "spawn_block.json")
+                new SpawnBlock(Block.Properties.create(Material.BARRIER).tickRandomly().hardnessAndResistance(-1.0F, 3600000.0F)).setRegistryName(ChaosCraft.MODID, "spawn_block.json")
             );
+
+            blockRegistryEvent.getRegistry().registerAll(
+                new ChaosEggBlock(Block.Properties.create(Material.BARRIER).tickRandomly().hardnessAndResistance(-1.0F, 3600000.0F)).setRegistryName(ChaosCraft.MODID, "chaos_egg_block.json")
+            );
+
         }
 
 
@@ -245,7 +254,6 @@ public class ChaosCraft
 
             ChaosCraft.client.tick();
         }
-
 
     }
     @SubscribeEvent

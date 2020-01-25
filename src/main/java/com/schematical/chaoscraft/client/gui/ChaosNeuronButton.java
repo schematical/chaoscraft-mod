@@ -1,6 +1,9 @@
 package com.schematical.chaoscraft.client.gui;
 
 import com.schematical.chaoscraft.ai.NeuronBase;
+import com.schematical.chaoscraft.ai.biology.Eye;
+import com.schematical.chaoscraft.client.ClientOrgManager;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -35,8 +38,17 @@ public class ChaosNeuronButton extends Button {
         this.min();
 
     }
+
+    public void renderRefresh(){
+        if(state.equals(ChaosOrgBiologyButton.State.Closed)){
+            return;
+        }
+
+        this.setMessage(this.neuronBase.toString());
+    }
     public void min() {
         setWidth(MIN_WIDTH);
+        state = State.Closed;
         switch(neuronBase._base_type()){
             case(com.schematical.chaoscraft.Enum.INPUT):
                 x = 10;
@@ -68,9 +80,13 @@ public class ChaosNeuronButton extends Button {
                     x = chaosNNetViewOverlayGui.width - 10 - EXPANDED_WIDTH;
                     break;
             }
+            state = State.Open;
 
         }else{
             //Open detail view
+
+            ChaosOrgNeuronDetailOverlayGui screen = new ChaosOrgNeuronDetailOverlayGui(chaosNNetViewOverlayGui.getClientOrgManager(), neuronBase);
+            Minecraft.getInstance().displayGuiScreen(screen);
         }
     }
 }

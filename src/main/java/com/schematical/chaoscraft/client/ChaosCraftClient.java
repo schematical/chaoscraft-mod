@@ -1,13 +1,11 @@
 package com.schematical.chaoscraft.client;
 
 import com.schematical.chaoscraft.ChaosCraft;
-import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
 import com.schematical.chaoscraft.client.gui.*;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.*;
 import com.schematical.chaosnet.model.ChaosNetException;
-import com.schematical.chaosnet.model.Organism;
 import com.schematical.chaosnet.model.TrainingRoomSessionNextResponse;
 
 import net.minecraft.client.Minecraft;
@@ -35,15 +33,15 @@ public class ChaosCraftClient {
     public ArrayList<String> _debugSpawnedOrgNamespaces = new ArrayList<String>();
     public ArrayList<String> _debugReportedOrgNamespaces = new ArrayList<String>();
     public int consecutiveErrorCount = 0;
-
-    public HashMap<String, ClientOrgManager> myOrganisims = new HashMap<String, ClientOrgManager>();
+    public HashMap<String, ClientOrgManager> newOrganisms = new HashMap<String, ClientOrgManager>();
+    public HashMap<String, ClientOrgManager> myOrganisms = new HashMap<String, ClientOrgManager>();
     public Thread thread;
     public static List<KeyBinding> keyBindings = new ArrayList<KeyBinding>();
 
 
     public void onWorldUnload() {
         state = State.Uninitiated;
-        myOrganisims.clear();
+        myOrganisms.clear();
 
     }
 
@@ -126,13 +124,13 @@ public class ChaosCraftClient {
                 return;
             }
         }
-        ClientOrgManager clientOrgManager = myOrganisims.get(orgNamespace);
+        ClientOrgManager clientOrgManager = myOrganisms.get(orgNamespace);
         clientOrgManager.attachOrgEntity(orgEntity);
 
     }
     public List<ClientOrgManager> getOrgsWithState(ClientOrgManager.State state){
         List<ClientOrgManager> orgManagers = new ArrayList<ClientOrgManager>();
-        for (ClientOrgManager clientOrgManager : myOrganisims.values()) {
+        for (ClientOrgManager clientOrgManager : myOrganisms.values()) {
             if(clientOrgManager.getState().equals(state)){
                 orgManagers.add(clientOrgManager);
             }
@@ -161,7 +159,14 @@ public class ChaosCraftClient {
         ) {
 
             if(thread == null) {
-
+                if(newOrganisms.size() > 0){
+                    Iterator<String> iterator = newOrganisms.keySet().iterator();
+                   while(iterator.hasNext()){
+                        String namespace = iterator.next();
+                        myOrganisms.put(namespace, newOrganisms.get(namespace));
+                        iterator.remove();
+                    }
+                }
                 ticksSinceLastSpawn = 0;
 
                 thread = new Thread(new ChaosClientThread(), "ChaosClientThread");
@@ -216,7 +221,7 @@ public class ChaosCraftClient {
     }
     private int getLiveOrgCount() {
 
-        Iterator<ClientOrgManager> iterator = myOrganisims.values().iterator();
+        Iterator<ClientOrgManager> iterator = myOrganisms.values().iterator();
         int liveOrgCount = 0;
         while (iterator.hasNext()) {
             ClientOrgManager clientOrgManager = iterator.next();
@@ -306,10 +311,10 @@ public class ChaosCraftClient {
     }
 
     public void attachScoreEventToEntity(CCServerScoreEventPacket message) {
-        if(!myOrganisims.containsKey(message.orgNamespace)){
+        if(!myOrganisms.containsKey(message.orgNamespace)){
             ChaosCraft.LOGGER.error("attatchScoreEventToEntity - Cannot find orgNamespace: " + message.orgNamespace);
         }
-        myOrganisims.get(message.orgNamespace).addServerScoreEvent(message);
+        myOrganisms.get(message.orgNamespace).addServerScoreEvent(message);
     }
 
     public int getTicksSinceLastSpawn() {
@@ -317,7 +322,7 @@ public class ChaosCraftClient {
     }
     public HashMap<ClientOrgManager.State, ArrayList<ClientOrgManager>> getOrgsSortedByState(){
         HashMap<ClientOrgManager.State, ArrayList<ClientOrgManager>> coll = new HashMap<ClientOrgManager.State, ArrayList<ClientOrgManager>>();
-        for (ClientOrgManager clientOrgManager : myOrganisims.values()) {
+        for (ClientOrgManager clientOrgManager : myOrganisms.values()) {
             if(!coll.containsKey(clientOrgManager.getState())){
                 coll.put(clientOrgManager.getState(), new ArrayList<ClientOrgManager>());
             }

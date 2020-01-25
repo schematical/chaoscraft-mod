@@ -27,6 +27,9 @@ public class ChaosNNetViewOverlayGui extends Screen {
         super(new TranslationTextComponent(clientOrgManager.getCCNamespace()));
         this.clientOrgManager = clientOrgManager;
     }
+    public ClientOrgManager getClientOrgManager(){
+        return clientOrgManager;
+    }
     protected void init() {
         super.init();
         ArrayList<NeuronBase> inputs = new ArrayList<NeuronBase>();
@@ -75,13 +78,14 @@ public class ChaosNNetViewOverlayGui extends Screen {
     public void render(int p_render_1_, int p_render_2_, float p_render_3_) {
         this.renderBackground();
         this.drawCenteredString(this.font, this.title.getFormattedText(), this.width / 2, 70, 16777215);
-        int i = 90;
 
-       /* for(String s : this.field_201553_i) {
-            this.drawCenteredString(this.font, s, this.width / 2, i, 16777215);
-            i += 9;
-        }*/
-        this.drawCenteredString(this.font, "Something else goes here", this.width / 2, i, 16777215);
+        for (Widget button : this.buttons) {
+            if(button instanceof ChaosOrgBiologyButton) {
+                ((ChaosOrgBiologyButton)button).renderRefresh();
+            }
+        }
+
+
         super.render(p_render_1_, p_render_2_, p_render_3_);
     }
 

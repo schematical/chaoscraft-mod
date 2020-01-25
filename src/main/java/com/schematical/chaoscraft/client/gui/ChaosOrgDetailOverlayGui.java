@@ -1,6 +1,11 @@
 package com.schematical.chaoscraft.client.gui;
 
+import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.client.ClientOrgManager;
+import com.schematical.chaoscraft.network.ChaosNetworkManager;
+import com.schematical.chaoscraft.network.packets.CCClientOrgDebugStateChangeRequestPacket;
+import com.schematical.chaoscraft.network.packets.CCServerPingResponsePacket;
+import com.schematical.chaoscraft.server.ServerOrgManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.Widget;
@@ -29,6 +34,13 @@ public class ChaosOrgDetailOverlayGui extends Screen {
         this.addButton(new Button(this.width / 2 - 100, y, 200, 20, I18n.format("chaoscraft.gui.orgdetail.biology"), (p_214266_1_) -> {
             ChaosOrgBiologyOverlayGui screen = new ChaosOrgBiologyOverlayGui(clientOrgManager);
             Minecraft.getInstance().displayGuiScreen(screen);
+        }));
+        y += 20;
+        this.addButton(new Button(this.width / 2 - 100, y, 100, 20, I18n.format("chaoscraft.gui.orgdetail.debug-on"), (p_214266_1_) -> {
+            ChaosNetworkManager.sendToServer(new CCClientOrgDebugStateChangeRequestPacket(ServerOrgManager.DebugState.On, this.clientOrgManager.getCCNamespace()));
+        }));
+        this.addButton(new Button(this.width / 2 , y, 100, 20, I18n.format("chaoscraft.gui.orgdetail.debug-off"), (p_214266_1_) -> {
+            ChaosNetworkManager.sendToServer(new CCClientOrgDebugStateChangeRequestPacket(ServerOrgManager.DebugState.Off, this.clientOrgManager.getCCNamespace()));
         }));
         y += 20;
        /* this.addButton(new Button(this.width / 2 - 100, y, 200, 20, I18n.format("chaoscraft.gui.orgdetail.x"), (p_214266_1_) -> {

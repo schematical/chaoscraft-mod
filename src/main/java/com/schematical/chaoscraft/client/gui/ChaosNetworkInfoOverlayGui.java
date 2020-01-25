@@ -5,10 +5,7 @@ import com.schematical.chaoscraft.client.ChaosCraftClient;
 import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.CCClientServerPingRequestPacket;
-import com.schematical.chaoscraft.network.packets.CCServerPingResponsePacket;
-import com.schematical.chaosnet.model.Organism;
 import com.schematical.chaosnet.model.Stats;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
@@ -64,7 +61,7 @@ public class ChaosNetworkInfoOverlayGui extends Screen {
 
         message += "consecutiveErrorCount:  " + chaosCraftClient.consecutiveErrorCount + "\n";
 
-        message += "myOrganisims Count:  " + chaosCraftClient.myOrganisims.size() + "\n";
+        message += "myOrganisims Count:  " + chaosCraftClient.myOrganisms.size() + "\n";
         HashMap<ClientOrgManager.State, ArrayList<ClientOrgManager>> coll = chaosCraftClient.getOrgsSortedByState();
         for ( ClientOrgManager.State state : coll.keySet() ) {
             message += " - " + state + ": " + coll.get(state).size() + "\n";

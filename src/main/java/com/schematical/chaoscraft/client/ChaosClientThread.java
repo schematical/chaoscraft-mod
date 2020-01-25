@@ -1,7 +1,6 @@
 package com.schematical.chaoscraft.client;
 
 import com.schematical.chaoscraft.ChaosCraft;
-import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaosnet.model.*;
 
 import java.nio.ByteBuffer;
@@ -61,11 +60,11 @@ public class ChaosClientThread implements Runnable {
 
             ChaosCraft.getClient().lastResponse = result.getTrainingRoomSessionNextResponse();
             for (Organism organism : ChaosCraft.getClient().lastResponse.getOrganisms()) {
-                if(! ChaosCraft.getClient().myOrganisims.containsKey(organism.getNamespace())) {
+                if(! ChaosCraft.getClient().myOrganisms.containsKey(organism.getNamespace())) {
                     ClientOrgManager clientOrgManager = new ClientOrgManager();
                     clientOrgManager.attachOrganism(organism);
 
-                    ChaosCraft.getClient().myOrganisims.put(clientOrgManager.getCCNamespace(), clientOrgManager);
+                    ChaosCraft.getClient().newOrganisms.put(clientOrgManager.getCCNamespace(), clientOrgManager);
                 }
             }
 

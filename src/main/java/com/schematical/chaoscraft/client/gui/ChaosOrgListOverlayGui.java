@@ -1,21 +1,13 @@
 package com.schematical.chaoscraft.client.gui;
 
 import com.schematical.chaoscraft.ChaosCraft;
-import com.schematical.chaoscraft.client.ChaosCraftClient;
 import com.schematical.chaoscraft.client.ClientOrgManager;
-import com.schematical.chaoscraft.network.ChaosNetworkManager;
-import com.schematical.chaoscraft.network.packets.CCClientServerPingRequestPacket;
-import com.schematical.chaosnet.model.Stats;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 
 @OnlyIn(Dist.CLIENT)
 public class ChaosOrgListOverlayGui extends Screen {
@@ -28,7 +20,7 @@ public class ChaosOrgListOverlayGui extends Screen {
         super.init();
         int y = 0;
         int x = 0;
-        for (ClientOrgManager clientOrgManager : ChaosCraft.getClient().myOrganisims.values()) {
+        for (ClientOrgManager clientOrgManager : ChaosCraft.getClient().myOrganisms.values()) {
             this.addButton(new Button(x, y, 200, 10, clientOrgManager.getCCNamespace() + "- " + clientOrgManager.getState(), (p_214266_1_) -> {
                 ChaosOrgDetailOverlayGui screen = new ChaosOrgDetailOverlayGui(clientOrgManager);
                 Minecraft.getInstance().displayGuiScreen(screen);

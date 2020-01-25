@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class ServerOrgManager extends BaseOrgManager {
+    protected DebugState debugState = DebugState.Off;
     protected String tmpNamespace;
     protected State state = State.Uninitialized;
     protected ServerPlayerEntity serverPlayerEntity;
@@ -153,6 +154,7 @@ public class ServerOrgManager extends BaseOrgManager {
     public boolean checkStatus() {
         if (
             //this.organism == null ||
+                !debugState.equals(DebugState.On) &&
                 getAgeSeconds() > maxLifeSeconds
 
         ) {
@@ -161,6 +163,10 @@ public class ServerOrgManager extends BaseOrgManager {
             return true;
         }
         return false;
+    }
+
+    public void setDebugState(DebugState debugState) {
+        this.debugState = debugState;
     }
 
 
@@ -173,5 +179,9 @@ public class ServerOrgManager extends BaseOrgManager {
         Dead,
         QueuedForSpawn,
         PlayerAttached,
+    }
+    public enum DebugState{
+        Off,
+        On
     }
 }
