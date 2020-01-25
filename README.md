@@ -1,5 +1,10 @@
 # chaoscraft-mod
 
+Note this is v0.3.* that is currently based off of 1.15.1 and is very much unstable as we build it.
+
+For the old version v0.2.* that is based off of 1.12.1 check out https://github.com/schematical/chaoscraft-mod/tree/release/v0.2.1
+
+
 ## Getting Started:
 ## Install jdk1.8.0_202:
 
