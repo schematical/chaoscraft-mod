@@ -2,15 +2,14 @@ package com.schematical.chaoscraft.ai.outputs;
 
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.CCAttributeId;
+import com.schematical.chaoscraft.ai.CCObserviableAttributeCollection;
 import com.schematical.chaoscraft.ai.OutputNeuron;
 import com.schematical.chaoscraft.events.CCWorldEvent;
-import com.schematical.chaoscraft.events.CCWorldEventType;
 import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.ResourceLocation;
+
+import net.minecraft.util.Hand;
+import net.minecraftforge.items.ItemStackHandler;
 import org.json.simple.JSONObject;
 
 /**
@@ -25,7 +24,7 @@ public class EquipOutput extends OutputNeuron {
         if(hasBeenEvaluated){
             return _lastValue;
         }
-        ItemStack currHeldItem = nNet.entity.getHeldItem(EnumHand.MAIN_HAND);
+        ItemStack currHeldItem = nNet.entity.getHeldItem(Hand.MAIN_HAND);
         ItemStack itemStack = null;
         switch(attributeId){
             case(CCAttributeId.ITEM_ID):
@@ -47,10 +46,8 @@ public class EquipOutput extends OutputNeuron {
         if(this._lastValue <= .5){
             return;
         }
-        if(nNet.entity.getDebug()) {
-            //ChaosCraft.logger.info(nNet.entity.getCCNamespace() + " Attempting to Craft: " + recipe.getRegistryName() + " - " + recipe.getRecipeOutput().getDisplayName());
-        }
-        ItemStack currHeldItem = nNet.entity.getHeldItem(EnumHand.MAIN_HAND);
+
+        ItemStack currHeldItem = nNet.entity.getHeldItem(Hand.MAIN_HAND);
         ItemStack itemStack = null;
         switch(attributeId){
             case(CCAttributeId.ITEM_ID):
@@ -74,7 +71,7 @@ public class EquipOutput extends OutputNeuron {
 
         if(itemStack.getItem().getRegistryName().toString().equals("minecraft:crafting_table")){
             //String message = nNet.entity.getCCNamespace() + " Equipped " + itemStack.getItem().getRegistryName();
-            ChaosCraft.chat(message);
+            ChaosCraft.LOGGER.debug(message);
         }
 
     }
@@ -91,4 +88,5 @@ public class EquipOutput extends OutputNeuron {
         return response;
 
     }
+
 }

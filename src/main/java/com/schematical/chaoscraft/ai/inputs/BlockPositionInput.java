@@ -1,5 +1,6 @@
 package com.schematical.chaoscraft.ai.inputs;
 
+import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.InputNeuron;
 import com.schematical.chaoscraft.ai.biology.BlockPositionSensor;
 import com.schematical.chaoscraft.util.PositionRange;
@@ -7,7 +8,7 @@ import net.minecraft.block.Block;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import org.json.simple.JSONObject;
-import scala.actors.Debug;
+
 
 /**
  * Created by user1a on 12/8/18.
@@ -53,7 +54,7 @@ public class BlockPositionInput                                                 
         String blockPositionSensorId = jsonObject.get("blockPositionSensor").toString();
 
         if(!nNet.biology.containsKey(blockPositionSensorId)){
-            Debug.error("Invalid BlockPositionSensor Id: " +blockPositionSensorId);
+            ChaosCraft.LOGGER.error("Invalid BlockPositionSensor Id: " +blockPositionSensorId);
         }
 
         blockPositionSensor = (BlockPositionSensor)nNet.biology.get(blockPositionSensorId);

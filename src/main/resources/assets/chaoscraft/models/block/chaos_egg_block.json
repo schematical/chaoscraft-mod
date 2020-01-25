@@ -1,0 +1,13 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+      "all": "chaoscraft:block/brick"
+    },
+    "model": "cube_all",
+    "uvlock": true
+  },
+  "variants": {
+    "normal": [{}]
+  }
+}

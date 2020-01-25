@@ -1,21 +1,12 @@
 package com.schematical.chaoscraft.ai.biology;
 
-import com.schematical.chaoscraft.ChaosCraft;
-import com.schematical.chaoscraft.ai.CCAttributeId;
-import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
 import com.schematical.chaoscraft.ai.CCObserviableAttributeCollection;
-import com.schematical.chaoscraft.entities.EntityOrganism;
-import com.schematical.chaoscraft.util.PositionRange;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.util.math.*;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
@@ -24,7 +15,7 @@ import java.util.List;
 /**
  * Created by user1a on 2/26/19.
  */
-public class Eye  extends BiologyBase{
+public class Eye  extends BiologyBase {
     public int index;
     public float pitch;
     public float yaw;
@@ -38,7 +29,7 @@ public class Eye  extends BiologyBase{
         if(_blocksCached){
             return seenBlocks;
         }
-        Vec3d vec3d = entity.getPositionEyes(1);
+        Vec3d vec3d = entity.getEyePosition(1);
         Vec3d vec3d1 = entity.getLook(1);
         vec3d1 = vec3d1.rotatePitch(this.pitch);
         vec3d1 = vec3d1.rotateYaw(this.yaw);
@@ -51,19 +42,22 @@ public class Eye  extends BiologyBase{
         );
 
 
-        RayTraceResult rayTraceResult = entity.world.rayTraceBlocks(vec3d, vec3d2, false, false, false);
+        RayTraceResult rayTraceResult = entity.world.rayTraceBlocks(new RayTraceContext(vec3d, vec3d2, RayTraceContext.BlockMode.OUTLINE, RayTraceContext.FluidMode.NONE/* RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.ANY*/, entity));
 
-        if(rayTraceResult != null) {
-            IBlockState blockState = entity.world.getBlockState(
-                rayTraceResult.getBlockPos()
+        if(rayTraceResult != null && !rayTraceResult.getType().equals(RayTraceResult.Type.MISS)) {
+            BlockPos blockPos = new BlockPos(
+                    rayTraceResult.getHitVec()
+            );
+            BlockState blockState = entity.world.getBlockState(
+                    blockPos
             );
             Block block = blockState.getBlock();
 
             CCObserviableAttributeCollection attributeCollection = entity.observableAttributeManager.Observe(block);
             attributeCollection.position = new Vec3d(
-                rayTraceResult.getBlockPos().getX(),
-                rayTraceResult.getBlockPos().getY(),
-                rayTraceResult.getBlockPos().getZ()
+                blockPos.getX(),
+                blockPos.getY(),
+                blockPos.getZ()
             );
             seenBlocks.add(attributeCollection);
         }
@@ -75,11 +69,11 @@ public class Eye  extends BiologyBase{
         if(_entitiesCached){
             return seenEntities;
         }
-        AxisAlignedBB grownBox = entity.getEntityBoundingBox().grow(maxDistance, maxDistance, maxDistance);
-        List<Entity> entities =  entity.world.getEntitiesWithinAABB(EntityLivingBase.class,  grownBox);
-        entities.addAll(entity.world.getEntitiesWithinAABB(EntityItem.class,  grownBox));
+        AxisAlignedBB grownBox = entity.getBoundingBox().grow(maxDistance, maxDistance, maxDistance);
+        List<Entity> entities =  entity.world.getEntitiesWithinAABB(LivingEntity.class,  grownBox);
+        entities.addAll(entity.world.getEntitiesWithinAABB(ItemEntity.class,  grownBox));
 
-        Vec3d vec3d = entity.getPositionEyes(1);
+        Vec3d vec3d = entity.getEyePosition(1);
         Vec3d vec3d1 = entity.getLook(1);
         vec3d1 = vec3d1.rotatePitch(this.pitch);
         vec3d1 = vec3d1.rotateYaw(this.yaw);
@@ -95,16 +89,14 @@ public class Eye  extends BiologyBase{
 
             if(!target.equals(entity)) {
 
-
-                RayTraceResult rayTraceResult = target.getEntityBoundingBox().calculateIntercept(vec3d, vec3d2);
-                if (rayTraceResult != null) {
-
+                target.getBoundingBox().rayTrace(vec3d, vec3d2).ifPresent(position -> {
                     CCObserviableAttributeCollection attributeCollection = entity.observableAttributeManager.Observe(target);
                     if (attributeCollection != null) {
                         //ChaosCraft.logger.info(entity.getCCNamespace() + " can see " + attributeCollection.resourceId);
                         seenEntities.add(attributeCollection);
                     }
-                }
+                });
+
             }
         }
         _entitiesCached = true;
@@ -152,6 +144,17 @@ public class Eye  extends BiologyBase{
         seenBlocks.clear();
         _blocksCached = false;
         _entitiesCached = false;
+    }
+    public String toString(){
+
+        String message = "Eye P:"+ Math.round(Math.toDegrees(pitch)) + " Y:" + Math.round(Math.toDegrees(yaw)) + " D:" + maxDistance + " -";
+        for (CCObserviableAttributeCollection seenBlock : seenBlocks) {
+            message += " " + seenBlock.resourceId;
+        }
+        for (CCObserviableAttributeCollection seenEntity : seenEntities) {
+            message += " " + seenEntity.resourceId;
+        }
+        return message;
     }
 
 }

@@ -2,16 +2,11 @@ package com.schematical.chaoscraft.ai.inputs;
 
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.CCAttributeId;
-import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
 import com.schematical.chaoscraft.ai.CCObserviableAttributeCollection;
 import com.schematical.chaoscraft.ai.InputNeuron;
-import com.schematical.chaoscraft.ai.biology.BlockPositionSensor;
 import com.schematical.chaoscraft.ai.biology.Eye;
-import net.minecraft.block.Block;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.util.math.RayTraceResult;
 import org.json.simple.JSONObject;
-import scala.actors.Debug;
+
 
 import java.util.List;
 
@@ -31,9 +26,9 @@ public class IsLookingAtInput extends InputNeuron {
     @Override
     public float evaluate(){
         //Iterate through all blocks entities etc with in the range
-        if(this.nNet.entity.getDebug()){
+        /*if(this.nNet.entity.getDebug()){
             //ChaosCraft.logger.info("Debugging...");
-        }
+        }*/
 
         List<CCObserviableAttributeCollection> attributeCollections = null;
         switch(attributeId){
@@ -68,7 +63,7 @@ public class IsLookingAtInput extends InputNeuron {
         eyeId = jsonObject.get("eye").toString();
 
         if(!nNet.biology.containsKey(eyeId)){
-            Debug.error("Invalid Eye Id: " +eyeId);
+            ChaosCraft.LOGGER.error("Invalid Eye Id: " +eyeId);
         }
         eye = (Eye)nNet.biology.get(eyeId);
 

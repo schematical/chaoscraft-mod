@@ -2,20 +2,18 @@ package com.schematical.chaoscraft.ai.biology;
 
 import com.schematical.chaoscraft.ai.CCObserviableAttributeCollection;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.util.math.shapes.VoxelShape;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by user1a on 2/26/19.
@@ -34,7 +32,7 @@ public class AreaOfFocus extends BiologyBase{
         if(this.currFocusVec != null){
             return this.currFocusVec;
         }
-        Vec3d vec3d = entity.getPositionEyes(1);
+        Vec3d vec3d = entity.getEyePosition(1);
         Vec3d vec3d1 = entity.getLook(1);
 
         this.currFocusVec = vec3d.add(
@@ -58,7 +56,7 @@ public class AreaOfFocus extends BiologyBase{
                 vec3d.z + z
             )
         );
-        IBlockState blockState = entity.world.getBlockState(
+        BlockState blockState = entity.world.getBlockState(
            blockPos
         );
 
@@ -82,8 +80,8 @@ public class AreaOfFocus extends BiologyBase{
             vec3d.y - dist,
             vec3d.z - dist
             );
-            seenEntities.addAll(entity.world.getEntitiesWithinAABB(EntityLiving.class, grownBox));
-            seenEntities.addAll(entity.world.getEntitiesWithinAABB(EntityItem.class, grownBox));
+            seenEntities.addAll(entity.world.getEntitiesWithinAABB(LivingEntity.class, grownBox));
+            seenEntities.addAll(entity.world.getEntitiesWithinAABB(ItemEntity.class, grownBox));
             _entitiesCached = true;
         }
 
@@ -107,16 +105,21 @@ public class AreaOfFocus extends BiologyBase{
         vec3d.z + z
         );
         BlockPos blockPos = new BlockPos(searchVecStart);
-        IBlockState blockState = entity.world.getBlockState(
+        BlockState blockState = entity.world.getBlockState(
             blockPos
         );
-        AxisAlignedBB blockBox = blockState.getBoundingBox(entity.world, blockPos).offset(blockPos);
+        VoxelShape voxelShape = blockState.getCollisionShape(entity.world, blockPos);
+        if(voxelShape == null ||  voxelShape.isEmpty()){
+            return observedEntities;
+        }
+        AxisAlignedBB boundingBox = voxelShape.getBoundingBox();
+        AxisAlignedBB blockBox = boundingBox.offset(blockPos);
 
         for (Entity target : seenEntities) {
 
             if(!target.equals(entity)) {
 
-                if (target.getEntityBoundingBox().intersects(blockBox)) {
+                if (target.getBoundingBox().intersects(blockBox)) {
 
                     CCObserviableAttributeCollection attributeCollection = entity.observableAttributeManager.Observe(target);
                     if (attributeCollection != null) {

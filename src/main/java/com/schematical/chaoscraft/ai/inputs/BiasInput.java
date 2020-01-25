@@ -1,10 +1,6 @@
 package com.schematical.chaoscraft.ai.inputs;
 
-import com.schematical.chaoscraft.ai.CCAttributeId;
-import com.schematical.chaoscraft.ai.CCObserviableAttributeCollection;
 import com.schematical.chaoscraft.ai.InputNeuron;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import org.json.simple.JSONObject;
 
 /**

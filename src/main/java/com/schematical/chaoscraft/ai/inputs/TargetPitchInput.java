@@ -25,9 +25,9 @@ public class TargetPitchInput extends InputNeuron {
         double degrees = Math.toDegrees(pitch);
         degrees -= nNet.entity.rotationPitch;
         _lastValue = (float) degrees / YAW_DEGREES;
-        if(nNet.entity.getDebug()){
+        /*if(nNet.entity.getDebug()){
             ChaosCraft.logger.info("TargetPitchInput    " + degrees + "  " + _lastValue);
-        }
+        }*/
         return _lastValue;
     }
     @Override

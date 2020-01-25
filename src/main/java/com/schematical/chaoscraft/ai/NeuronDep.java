@@ -6,7 +6,7 @@ import org.json.simple.JSONObject;
 /**
  * Created by user1a on 12/8/18.
  */
-public class NeuronDep extends InnovationBase{
+public class NeuronDep extends InnovationBase {
     public NeuronBase depNeuron;
     public String depNeuronId;
     public float weight;

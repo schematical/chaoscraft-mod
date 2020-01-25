@@ -1,8 +1,6 @@
 package com.schematical.chaoscraft.ai.outputs;
 
-import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.OutputNeuron;
-import net.minecraft.util.math.MathHelper;
 
 /**
  * Created by user1a on 12/10/18.

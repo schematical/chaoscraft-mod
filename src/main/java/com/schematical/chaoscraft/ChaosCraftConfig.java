@@ -2,7 +2,6 @@ package com.schematical.chaoscraft;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import scala.Int;
 
 import java.io.File;
 import java.io.FileReader;
@@ -50,11 +49,11 @@ public class ChaosCraftConfig {
             System.out.println("\nJSON Object: " + obj);
             fileWriter.close();
         }catch (Exception e){
-            ChaosCraft.logger.error("Error saving Config: " + e.getMessage());
+            ChaosCraft.LOGGER.error("Error saving Config: " + e.getMessage());
         }
     }
     public static String getConfigPath(){
-        return System.getProperty("user.home") +"/chaoscraft/config.json";
+        return System.getProperty("user.home") + "/chaoscraft/config.json";
     }
     public void load(){
         File f = new File(getConfigPath());

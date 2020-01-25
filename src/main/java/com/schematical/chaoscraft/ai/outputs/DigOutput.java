@@ -1,8 +1,8 @@
 package com.schematical.chaoscraft.ai.outputs;
 
 import com.schematical.chaoscraft.ai.OutputNeuron;
-import net.minecraft.block.Block;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 
 /**
@@ -14,12 +14,12 @@ public class DigOutput extends OutputNeuron {
         if(this._lastValue <= .5){
             return;
         }
-        nNet.entity.swingArm(EnumHand.MAIN_HAND);
+        nNet.entity.swingArm(Hand.MAIN_HAND);
         RayTraceResult rayTraceResult = nNet.entity.rayTraceBlocks(nNet.entity.REACH_DISTANCE);
         if(rayTraceResult == null){
             return;
         }
-        nNet.entity.dig(rayTraceResult.getBlockPos());
+        nNet.entity.dig(new BlockPos(rayTraceResult.getHitVec()));
     }
 
 }

@@ -5,7 +5,7 @@ import org.json.simple.JSONObject;
 /**
  * Created by user1a on 2/26/19.
  */
-public class ObservableTraitsCollection extends BiologyBase{
+public class ObservableTraitsCollection extends BiologyBase {
 
     protected  JSONObject data;
 

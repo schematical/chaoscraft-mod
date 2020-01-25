@@ -4,13 +4,7 @@ import com.schematical.chaoscraft.ai.CCAttributeId;
 import com.schematical.chaoscraft.ai.CCObserviableAttributeCollection;
 import com.schematical.chaoscraft.ai.InputNeuron;
 import com.schematical.chaoscraft.ai.biology.AreaOfFocus;
-import com.schematical.chaoscraft.ai.biology.Eye;
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
 import org.json.simple.JSONObject;
-import scala.actors.Debug;
 
 import java.util.List;
 
@@ -32,9 +26,9 @@ public class FocusAreaInput extends InputNeuron {
     @Override
     public float evaluate(){
         //Iterate through all blocks entities etc with in the range
-        if(this.nNet.entity.getDebug()){
+       /* if(this.nNet.entity.getDebug()){
             //ChaosCraft.logger.info("Debugging...");
-        }
+        }*/
         if(areaOfFocus == null){
             areaOfFocus = (AreaOfFocus)nNet.getBiology("AreaOfFocus_0");
         }

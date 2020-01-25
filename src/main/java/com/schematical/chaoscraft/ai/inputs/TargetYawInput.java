@@ -25,9 +25,9 @@ public class TargetYawInput extends InputNeuron {
         double degrees = Math.toDegrees(yaw);
         degrees -= nNet.entity.rotationYaw;
         _lastValue = (float) degrees / YAW_DEGREES;
-        if(nNet.entity.getDebug()){
+        /*if(nNet.entity.getDebug()){
             ChaosCraft.logger.info("TargetYawInput    " + degrees + "  " + _lastValue);
-        }
+        }*/
         return _lastValue;
     }
     @Override

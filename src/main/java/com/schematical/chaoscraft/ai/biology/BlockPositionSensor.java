@@ -6,7 +6,7 @@ import org.json.simple.JSONObject;
 /**
  * Created by user1a on 12/25/18.
  */
-public class BlockPositionSensor extends BiologyBase{
+public class BlockPositionSensor extends BiologyBase {
     public int index;
     public PositionRange positionRange;
     public boolean _cached = false;

@@ -1,13 +1,12 @@
 package com.schematical.chaoscraft.fitness;
 
 import com.schematical.chaoscraft.ChaosCraft;
-import com.schematical.chaoscraft.entities.EntityFitnessScoreEvent;
-import com.schematical.chaoscraft.entities.EntityOrganism;
+import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.events.CCWorldEvent;
+import com.schematical.chaoscraft.events.EntityFitnessScoreEvent;
 import com.schematical.chaoscraft.events.OrgEvent;
 import com.schematical.chaoscraft.events.OrgPredictionEvent;
 import com.schematical.chaosnet.model.ChaosNetException;
-import net.minecraft.util.text.TextComponentString;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,17 +18,17 @@ import java.util.List;
  */
 public class EntityFitnessManager {
     protected HashMap<String, Integer> occurences = new HashMap<String, Integer>();
-    public EntityOrganism entityOrganism;
+    public OrgEntity entityOrganism;
     public List<EntityFitnessScoreEvent> scoreEvents = new ArrayList<EntityFitnessScoreEvent>();
 
-    public EntityFitnessManager(EntityOrganism entityOrganism) {
+    public EntityFitnessManager(OrgEntity entityOrganism) {
         this.entityOrganism = entityOrganism;
     }
 
     public void test(CCWorldEvent event){
 
 
-        List<EntityFitnessScoreEvent> _scoreEvents = ChaosCraft.fitnessManager.testEntityFitnessEvent(this.entityOrganism, event);
+        List<EntityFitnessScoreEvent> _scoreEvents = ChaosCraft.getServer().fitnessManager.testEntityFitnessEvent(this.entityOrganism, event);
         for(EntityFitnessScoreEvent scoreEvent : _scoreEvents){
 
             Integer numOfOccurences = 0;
@@ -51,8 +50,8 @@ public class EntityFitnessManager {
                     return;
                 }
             }
-            scoreEvents.add(scoreEvent);
-            Iterator<OrgEvent> eventIterator = entityOrganism.events.iterator();
+           addScoreEvent(scoreEvent);
+            Iterator<OrgEvent> eventIterator = entityOrganism.getOrgEvents().iterator();
 
             while(eventIterator.hasNext()){
                 OrgEvent orgEvent = eventIterator.next();
@@ -83,14 +82,19 @@ public class EntityFitnessManager {
 
                 }
             }
-            entityOrganism.events.add(new OrgEvent(scoreEvent));
+            entityOrganism.addOrgEvent(new OrgEvent(scoreEvent));
             occurences.put(scoreEvent.fitnessRule.id, numOfOccurences);
             if(scoreEvent.life != 0) {
-                entityOrganism.adjustMaxLife(scoreEvent.life);
+                //entityOrganism.adjustMaxLife(scoreEvent.life);
             }
 
 
         }
+    }
+
+    private void addScoreEvent(EntityFitnessScoreEvent scoreEvent) {
+        scoreEvents.add(scoreEvent);
+        //Send score event
     }
 
     public Double totalScore() {

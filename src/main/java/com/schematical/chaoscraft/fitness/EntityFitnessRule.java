@@ -2,11 +2,11 @@ package com.schematical.chaoscraft.fitness;
 
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.Enum;
-import com.schematical.chaoscraft.entities.EntityFitnessScoreEvent;
 import com.schematical.chaoscraft.events.CCWorldEvent;
+import com.schematical.chaoscraft.events.EntityFitnessScoreEvent;
 import com.schematical.chaosnet.model.ChaosNetException;
+import net.minecraft.entity.EntityType;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.EntityRegistry;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -79,10 +79,10 @@ public class EntityFitnessRule {
                break;
                case(Enum.ENTITY_ID):
                    if(event.entity == null){
-                       ChaosCraft.logger.error("No `entity` to check against!");
+                       ChaosCraft.LOGGER.error("No `entity` to check against!");
                    }
 
-                   resourceLocation = EntityRegistry.getEntry(event.entity.getClass()).getRegistryName();
+                   resourceLocation = EntityType.getKey(event.entity.getType());
                    String entityId = resourceLocation.getNamespace() + ":" + resourceLocation.getPath();
                    if(!attributeValue.contains(entityId)){
                        return null;
@@ -90,7 +90,7 @@ public class EntityFitnessRule {
                    break;
                case(Enum.ITEM_ID):
                    if(event.item == null){
-                       ChaosCraft.logger.error("No `item` to check against!");
+                       ChaosCraft.LOGGER.error("No `item` to check against!");
                    }
                    resourceLocation = event.item.getRegistryName();
                    String itemId = resourceLocation.getNamespace() + ":" + resourceLocation.getPath();
@@ -101,7 +101,7 @@ public class EntityFitnessRule {
                    }
                    break;
                default:
-                   ChaosCraft.logger.error("Invalid `attributeId`: " + attributeId);
+                   ChaosCraft.LOGGER.error("Invalid `attributeId`: " + attributeId);
                    return null;
            }
         }

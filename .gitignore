@@ -1,4 +1,5 @@
 # eclipse
+
 bin
 *.launch
 .settings
@@ -20,3 +21,12 @@ build
 # other
 eclipse
 run
+
+# Files from Forge MDK
+forge*changelog.txt
+/run/
+/run/*
+/run/world/
+/run/world/*
+/run/saves/
+/run/saves/*

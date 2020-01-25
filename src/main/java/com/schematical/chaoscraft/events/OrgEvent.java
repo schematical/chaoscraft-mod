@@ -1,7 +1,5 @@
 package com.schematical.chaoscraft.events;
 
-import com.schematical.chaoscraft.entities.EntityFitnessScoreEvent;
-import net.minecraftforge.event.world.WorldEvent;
 
 /**
  * Created by user1a on 3/7/19.

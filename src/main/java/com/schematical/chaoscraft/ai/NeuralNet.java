@@ -1,24 +1,20 @@
 package com.schematical.chaoscraft.ai;
 
-import com.google.common.collect.Sets;
-import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.biology.BiologyBase;
-import com.schematical.chaoscraft.entities.EntityOrganism;
+
+import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaosnet.model.ChaosNetException;
-import net.minecraft.entity.Entity;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.util.*;
 
-import com.schematical.chaoscraft.ai.inputs.*;
-import com.schematical.chaoscraft.ai.outputs.*;
 /**
  * Created by user1a on 12/8/18.
  */
 public class NeuralNet {
     public int neuronEvalDepth = -1;
-    public EntityOrganism entity;
+    public OrgEntity entity;
     public HashMap<String, NeuronBase> neurons = new HashMap<String, NeuronBase>();
     public HashMap<String, BiologyBase> biology = new HashMap<String, BiologyBase>();
     public boolean ready = false;
@@ -26,7 +22,7 @@ public class NeuralNet {
     public NeuralNet() {
 
     }
-    public void attachEntity(EntityOrganism entity){
+    public void attachEntity(OrgEntity entity){
         this.entity = entity;
     }
     public List<OutputNeuron> evaluate(){

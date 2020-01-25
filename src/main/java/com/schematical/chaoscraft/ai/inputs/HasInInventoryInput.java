@@ -2,7 +2,6 @@ package com.schematical.chaoscraft.ai.inputs;
 
 import com.schematical.chaoscraft.ai.CCAttributeId;
 import com.schematical.chaoscraft.ai.InputNeuron;
-import com.schematical.chaoscraft.util.PositionRange;
 import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.item.Item;
 import net.minecraftforge.items.ItemStackHandler;
@@ -39,7 +38,7 @@ public class HasInInventoryInput extends InputNeuron {
         //positionRange.parseData((JSONObject) jsonObject.get("positionRange"));
         switch(attributeId){
             case(CCAttributeId.ITEM_ID):
-                item = Item.getByNameOrId(attributeValue);
+                item = Item.getItemById(Integer.parseInt(attributeValue));
                 if(item == null){
                     throw new ChaosNetException("Could not find Item: " + attributeValue);
                 }

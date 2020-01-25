@@ -2,8 +2,8 @@ package com.schematical.chaoscraft.util;
 
 import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import org.json.simple.JSONObject;
 
 /**

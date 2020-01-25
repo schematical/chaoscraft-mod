@@ -3,8 +3,6 @@ package com.schematical.chaoscraft.ai.outputs;
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.OutputNeuron;
 import com.schematical.chaoscraft.ai.biology.FloatMemory;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.RayTraceResult;
 import org.json.simple.JSONObject;
 
 /**

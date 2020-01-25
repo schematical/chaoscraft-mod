@@ -1,7 +1,6 @@
 package com.schematical.chaoscraft.ai.inputs;
 
 import com.schematical.chaoscraft.ai.InputNeuron;
-import com.schematical.chaoscraft.util.PositionRange;
 import org.json.simple.JSONObject;
 
 /**
