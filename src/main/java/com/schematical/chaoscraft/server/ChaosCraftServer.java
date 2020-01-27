@@ -54,6 +54,11 @@ public class ChaosCraftServer {
         ){
             return;
         }
+
+
+
+
+
         checkForDeadOrgs();
         List<ServerOrgManager> orgNamepacesQueuedToSpawn = getOrgsWithState(ServerOrgManager.State.PlayerAttached);
         if(

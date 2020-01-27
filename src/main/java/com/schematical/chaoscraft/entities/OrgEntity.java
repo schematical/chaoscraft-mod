@@ -29,14 +29,18 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.RecipeItemHelper;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldType;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.registries.ObjectHolder;
 import org.json.simple.JSONObject;
@@ -104,6 +108,7 @@ public class OrgEntity extends MobEntity {
     public ClientOrgManager getClientOrgManager(){
         return clientOrgManager;
     }
+    public ServerOrgManager getServerOrgManager(){ return serverOrgManager; }
     public void attachNNetRaw(String nNetRaw){
         String nNetString = nNetRaw;//nNetRaw.getNNetRaw();
         JSONObject obj = null;
@@ -128,21 +133,21 @@ public class OrgEntity extends MobEntity {
     public Iterable<ItemStack> getArmorInventoryList() {
         return new ArrayList<ItemStack>();
     }
+   /* @Override
+    public void setItemStackToSlot(EquipmentSlotType slotIn, ItemStack stack) {
 
+    }
     @Override
     public ItemStack getItemStackFromSlot(EquipmentSlotType slotIn) {
 
 
         return ItemStack.EMPTY;
-    }
+    }*/
     public NeuralNet getNNet(){
         return nNet;
     }
 
-    @Override
-    public void setItemStackToSlot(EquipmentSlotType slotIn, ItemStack stack) {
 
-    }
     public ItemStackHandler getItemStack(){
         return this.itemHandler;
     }
@@ -221,7 +226,7 @@ public class OrgEntity extends MobEntity {
         playerWrapper.prevPosZ  = this.prevPosZ;
         playerWrapper.setPosition(getPositionVec().x, getPositionVec().y, getPositionVec().z);
         playerWrapper.onGround = this.onGround;
-        //playerWrapper.setHeldItem(EnumHand.MAIN_HAND, getHeldItemMainhand());
+        playerWrapper.setHeldItem(Hand.MAIN_HAND, getHeldItemMainhand());
         return playerWrapper;
     }
 
@@ -379,10 +384,10 @@ public class OrgEntity extends MobEntity {
 
 
             alteredBlocks.add(
-                    new AlteredBlockInfo(
-                            pos,
-                            state
-                    )
+                new AlteredBlockInfo(
+                        pos,
+                        state
+                )
             );
             boolean bool = world.setBlockState(pos, Blocks.AIR.getDefaultState(), world.isRemote ? 11 : 3);
             if (bool) {
@@ -496,77 +501,76 @@ public class OrgEntity extends MobEntity {
                 }
             }
 
-            List<UUID> uuids = new ArrayList<>();
+
 
             ItemStack itemstack = getHeldItem(hand);
 
-            if (!itemstack.isEmpty() && itemRightClick(hand) == ActionResultType.SUCCESS) {
-                //                this.entityRenderer.itemRenderer.resetEquippedProgress(enumhand);
+            if (!itemstack.isEmpty() && itemRightClick(hand).equals(ActionResultType.SUCCESS)) {
+                //this.entityRenderer.itemRenderer.resetEquippedProgress(enumhand);
+                //TODO: Make a fitness event for this
                 return;
             }
         }
     }
 
     private ActionResultType rightClickBlock(BlockPos pos,  Hand hand, BlockRayTraceResult blockRayTraceResult) {
-       /* ItemStack itemstack = getHeldItem(hand);
+        ItemStack itemstack = getHeldItem(hand);
 
         if (itemstack.isEmpty()) return ActionResultType.PASS;
 
-        float f = (float) (blockRayTraceResult.getHitVec().x - (double) pos.getX());
+        /*float f = (float) (blockRayTraceResult.getHitVec().x - (double) pos.getX());
         float f1 = (float) (blockRayTraceResult.getHitVec().y - (double) pos.getY());
-        float f2 = (float) (blockRayTraceResult.getHitVec().z - (double) pos.getZ());
+        float f2 = (float) (blockRayTraceResult.getHitVec().z - (double) pos.getZ());*/
         boolean flag = false;
 
         if (!world.getWorldBorder().contains(pos)) {
             return ActionResultType.FAIL;
-        } else {
-
-            ItemUseContext itemUseContext = new ItemUseContext(
-                    this.getPlayerWrapper(),
-                    hand,
-                    blockRayTraceResult
-            );
-            ActionResultType ret = itemstack.onItemUseFirst(itemUseContext);
-            if (ret != ActionResultType.PASS) {
-                return ret;
-            }
-
-            BlockState iblockstate = world.getBlockState(pos);
-            boolean bypass = getHeldItemMainhand().doesSneakBypassUse(world, pos, this.getPlayerWrapper()) && getHeldItemOffhand().doesSneakBypassUse(world, pos, this.getPlayerWrapper());
-
-            if ((!this.isSneaking() || bypass)) {//BlockState state, World worldIn, BlockPos pos, PlayerEntity player
-                flag = iblockstate.getBlock().onBlockClicked(iblockstate, world, pos, this.getPlayerWrapper());
-            }
-
-            if (!flag && itemstack.getItem() instanceof ItemBlock) {
-                ItemBlock itemblock = (ItemBlock) itemstack.getItem();
-
-                if (!itemblock.canPlaceBlockOnSide(world, pos, direction, this.getPlayerWrapper(), itemstack)) {
-                    return ActionResultType.FAIL;
-                } else {
-
-
-
-                }
-            }
-
-            if (!flag) {
-                if (itemstack.isEmpty()) {
-                    return ActionResultType.PASS;
-                } else if (this.getPlayerWrapper().getCooldownTracker().hasCooldown(itemstack.getItem())) {
-                    return ActionResultType.PASS;
-                } else {
-                    ActionResultType result = itemstack.onItemUse(this.getPlayerWrapper(), world, pos, hand, direction, f, f1, f2);
-                    if (result == ActionResultType.SUCCESS) {
-                    }
-                    return result;
-                }
-            } else {
-                return ActionResultType.SUCCESS;
-            }
         }
-*/
-        return ActionResultType.SUCCESS;
+
+        ItemUseContext itemUseContext = new ItemUseContext(
+                this.getPlayerWrapper(),
+                hand,
+                blockRayTraceResult
+        );
+        ActionResultType ret = itemstack.onItemUseFirst(itemUseContext);
+        if (ret != ActionResultType.PASS) {
+            return ret;
+        }
+
+        BlockState iblockstate = world.getBlockState(pos);
+        boolean bypass = getHeldItemMainhand().doesSneakBypassUse(world, pos, this.getPlayerWrapper()) && getHeldItemOffhand().doesSneakBypassUse(world, pos, this.getPlayerWrapper());
+
+       /* if ((*//*!this.isSneaking() ||*//* bypass)) {//BlockState state, World worldIn, BlockPos pos, PlayerEntity player
+            flag = iblockstate.getBlock().onBlockClicked(iblockstate, world, pos, this.getPlayerWrapper());
+        }
+
+        if (!flag && itemstack.getItem() instanceof BlockItem) {
+            BlockItem blockItem = (BlockItem) itemstack.getItem();
+
+            *//*if (!blockItem.canPlaceBlockOnSide(world, pos, direction, this.getPlayerWrapper(), itemstack)) {
+                return ActionResultType.FAIL;
+            } *//*
+        }
+
+        if (!flag) {*/
+            if (this.getPlayerWrapper().getCooldownTracker().hasCooldown(itemstack.getItem())) {
+                return ActionResultType.PASS;
+            } else {
+                ItemUseContext itemUseContext1 = new ItemUseContext(
+                        this.getPlayerWrapper(),
+                        hand,
+                        blockRayTraceResult
+                );
+                ActionResultType result = itemstack.onItemUse(itemUseContext1);
+                if (result == ActionResultType.SUCCESS) {
+
+                }
+                return result;
+            }
+      /*  } else {
+            return ActionResultType.SUCCESS;
+        }*/
+
     }
 
     private ActionResultType itemRightClick(Hand hand) {
@@ -596,15 +600,15 @@ public class OrgEntity extends MobEntity {
 
 
     public ItemStack tossEquippedStack() {
+
         ItemStack itemStack = getHeldItem(Hand.MAIN_HAND);
         if(
-                itemStack == null ||
-                        itemStack.isEmpty()
+            itemStack == null ||
+            itemStack.isEmpty()
         ){
             return null;
         }
         Vec3d itemVec3d = null;
-        //ChaosCraft.logger.info(this.getCCNamespace() + " - Tossing: " + itemStack.getItem().getRegistryName());
 
 
 
@@ -617,14 +621,13 @@ public class OrgEntity extends MobEntity {
                 vec3d1.z * 5d
             )
         );
-
+        equippedSlot = 0;//TODO: fix this
         itemHandler.extractItem(equippedSlot, itemStack.getCount(), false);
-        equippedSlot = -1;
+
         this.setHeldItem(Hand.MAIN_HAND, ItemStack.EMPTY);
         ItemEntity entityItem = new ItemEntity(world, itemVec3d.x, itemVec3d.y, itemVec3d.z);
         entityItem.setItem(itemStack);
-        //world.spawnEntity(entityItem);
-
+        world.getServer().getWorld(DimensionType.OVERWORLD).summonEntity(entityItem);
 
         return itemStack;
     }
@@ -800,7 +803,7 @@ public class OrgEntity extends MobEntity {
         }
         CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.ITEM_COLLECTED);
         worldEvent.item = worldEventItem;
-         entityFitnessManager.test(worldEvent);
+        entityFitnessManager.test(worldEvent);
 
         if(observableAttributeManager != null) {
             observableAttributeManager.Observe(worldEventItem);

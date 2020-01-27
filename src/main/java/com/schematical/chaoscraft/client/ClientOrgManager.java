@@ -6,6 +6,11 @@ import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.network.packets.CCServerScoreEventPacket;
 import com.schematical.chaosnet.model.Organism;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.particles.ParticleTypes;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.BlockPos;
 
 import java.util.ArrayList;
 
@@ -14,7 +19,21 @@ public class ClientOrgManager extends BaseOrgManager {
     private int ticksWithoutUpdate = 0;
     protected ArrayList<CCServerScoreEventPacket> serverScoreEvents = new ArrayList<CCServerScoreEventPacket>();
     public void addServerScoreEvent(CCServerScoreEventPacket pkt){
+
         serverScoreEvents.add(pkt);
+        orgEntity.world.playSound((PlayerEntity)null, orgEntity.getPosition(), SoundEvents.BLOCK_BELL_USE, SoundCategory.RECORDS, 3.0F, 1f);
+        for(int i = 0; i < 20; i ++) {
+            BlockPos pos = orgEntity.getPosition();
+            orgEntity.world.addParticle(
+                ParticleTypes.BUBBLE,
+                (double) pos.getX() + 0.5D,
+                (double) pos.getY() + 1.2D,
+                (double) pos.getZ() + 0.5D,
+                (double) i / 24.0D,
+                0.0D,
+                0.0D
+            );
+        }
     }
 
     public void attachOrganism(Organism organism){
@@ -35,6 +54,9 @@ public class ClientOrgManager extends BaseOrgManager {
         this.orgEntity.attachNNetRaw(organism.getNNetRaw());
         orgEntity.attachClientOrgEntity(this);
         state = State.EntityAttached;
+    }
+    public ArrayList<CCServerScoreEventPacket> getServerScoreEvents(){
+        return serverScoreEvents;
     }
     public Double getServerScoreEventTotal(){
         Double total = 0d;

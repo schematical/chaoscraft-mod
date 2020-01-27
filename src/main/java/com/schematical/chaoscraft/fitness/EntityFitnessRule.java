@@ -4,6 +4,7 @@ import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.Enum;
 import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.events.EntityFitnessScoreEvent;
+import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.ResourceLocation;
@@ -49,7 +50,8 @@ public class EntityFitnessRule {
             lifeEffect = Integer.parseInt(jsonObject.get("lifeEffect").toString());
         }
         if(jsonObject.get("maxOccurrences") != null) {
-            maxOccurrences = Integer.parseInt(jsonObject.get("maxOccurrences").toString());
+            String strMaxOccurrences = jsonObject.get("maxOccurrences").toString();
+            maxOccurrences = Integer.parseInt(strMaxOccurrences);
         }
     }
 
@@ -98,6 +100,8 @@ public class EntityFitnessRule {
 
                    if(!attributeValue.contains(itemId)){
                        return null;
+                   }else{
+                       ChaosCraft.LOGGER.info("Item Pickup Check Success: " + itemId);
                    }
                    break;
                default:

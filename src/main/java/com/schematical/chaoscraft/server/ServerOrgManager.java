@@ -10,6 +10,10 @@ import com.schematical.chaoscraft.network.packets.CCClientOutputNeuronActionPack
 import com.schematical.chaosnet.model.ChaosNetException;
 import com.schematical.chaosnet.model.Organism;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.util.Hand;
 import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.ArrayList;
@@ -97,9 +101,16 @@ public class ServerOrgManager extends BaseOrgManager {
         }
 
 
-
-
-
+//TODO: DELETE THIS
+        /*ItemStack healdItemStack = this.orgEntity.getHeldItem(Hand.MAIN_HAND);
+        if(!healdItemStack.getItem().equals(Items.FLINT_AND_STEEL)){
+            healdItemStack = new ItemStack(Items.FLINT_AND_STEEL);
+            healdItemStack.setCount(32);
+            this.orgEntity.setHeldItem(Hand.MAIN_HAND, healdItemStack);
+            healdItemStack = this.orgEntity.getHeldItem(Hand.MAIN_HAND);
+        }else{
+            //ChaosCraft.LOGGER.info("ALready have the TNT");
+        }*/
 
 
 

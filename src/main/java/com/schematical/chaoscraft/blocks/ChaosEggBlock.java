@@ -1,5 +1,6 @@
 package com.schematical.chaoscraft.blocks;
 
+import com.schematical.chaoscraft.ChaosCraft;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -81,22 +82,23 @@ public class ChaosEggBlock extends Block {
 
         }
 
-        public void func_225534_a_(BlockState p_225534_1_, ServerWorld p_225534_2_, BlockPos p_225534_3_, Random p_225534_4_) {
-            if (this.canGrow(p_225534_2_) && this.hasProperHabitat(p_225534_2_, p_225534_3_)) {
+        public void func_225534_a_(BlockState p_225534_1_, ServerWorld p_225534_2_, BlockPos blockPos, Random p_225534_4_) {
+            ChaosCraft.LOGGER.info("CHAOS EGG TICKING: " + blockPos.getX() + ", " + blockPos.getY() + ", " + blockPos.getZ());
+            if (this.canGrow(p_225534_2_) && this.hasProperHabitat(p_225534_2_, blockPos)) {
                 int i = p_225534_1_.get(HATCH);
                 if (i < 2) {
-                    p_225534_2_.playSound((PlayerEntity)null, p_225534_3_, SoundEvents.ENTITY_TURTLE_EGG_CRACK, SoundCategory.BLOCKS, 0.7F, 0.9F + p_225534_4_.nextFloat() * 0.2F);
-                    p_225534_2_.setBlockState(p_225534_3_, p_225534_1_.with(HATCH, Integer.valueOf(i + 1)), 2);
+                    p_225534_2_.playSound((PlayerEntity)null, blockPos, SoundEvents.ENTITY_TURTLE_EGG_CRACK, SoundCategory.BLOCKS, 0.7F, 0.9F + p_225534_4_.nextFloat() * 0.2F);
+                    p_225534_2_.setBlockState(blockPos, p_225534_1_.with(HATCH, Integer.valueOf(i + 1)), 2);
                 } else {
-                    p_225534_2_.playSound((PlayerEntity)null, p_225534_3_, SoundEvents.ENTITY_TURTLE_EGG_HATCH, SoundCategory.BLOCKS, 0.7F, 0.9F + p_225534_4_.nextFloat() * 0.2F);
-                    p_225534_2_.removeBlock(p_225534_3_, false);
+                    p_225534_2_.playSound((PlayerEntity)null, blockPos, SoundEvents.ENTITY_TURTLE_EGG_HATCH, SoundCategory.BLOCKS, 0.7F, 0.9F + p_225534_4_.nextFloat() * 0.2F);
+                    p_225534_2_.removeBlock(blockPos, false);
 
                     for(int j = 0; j < p_225534_1_.get(EGGS); ++j) {
-                        p_225534_2_.playEvent(2001, p_225534_3_, Block.getStateId(p_225534_1_));
+                        p_225534_2_.playEvent(2001, blockPos, Block.getStateId(p_225534_1_));
                         TurtleEntity turtleentity = EntityType.TURTLE.create(p_225534_2_);
                         turtleentity.setGrowingAge(-24000);
-                        turtleentity.setHome(p_225534_3_);
-                        turtleentity.setLocationAndAngles((double)p_225534_3_.getX() + 0.3D + (double)j * 0.2D, (double)p_225534_3_.getY(), (double)p_225534_3_.getZ() + 0.3D, 0.0F, 0.0F);
+                        turtleentity.setHome(blockPos);
+                        turtleentity.setLocationAndAngles((double)blockPos.getX() + 0.3D + (double)j * 0.2D, (double)blockPos.getY(), (double)blockPos.getZ() + 0.3D, 0.0F, 0.0F);
                         p_225534_2_.addEntity(turtleentity);
                     }
                 }

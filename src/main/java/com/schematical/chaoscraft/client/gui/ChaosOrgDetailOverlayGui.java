@@ -36,9 +36,18 @@ public class ChaosOrgDetailOverlayGui extends Screen {
             Minecraft.getInstance().displayGuiScreen(screen);
         }));
         y += 20;
+        this.addButton(new Button(this.width / 2 - 100, y, 200, 20, I18n.format("chaoscraft.gui.orgdetail.scoreevents"), (p_214266_1_) -> {
+            ChaosOrgScoreEventListOverlayGui screen = new ChaosOrgScoreEventListOverlayGui(clientOrgManager);
+            Minecraft.getInstance().displayGuiScreen(screen);
+        }));
+
+
+
+        y += 20;
         this.addButton(new Button(this.width / 2 - 100, y, 100, 20, I18n.format("chaoscraft.gui.orgdetail.debug-on"), (p_214266_1_) -> {
             ChaosNetworkManager.sendToServer(new CCClientOrgDebugStateChangeRequestPacket(ServerOrgManager.DebugState.On, this.clientOrgManager.getCCNamespace()));
         }));
+
         this.addButton(new Button(this.width / 2 , y, 100, 20, I18n.format("chaoscraft.gui.orgdetail.debug-off"), (p_214266_1_) -> {
             ChaosNetworkManager.sendToServer(new CCClientOrgDebugStateChangeRequestPacket(ServerOrgManager.DebugState.Off, this.clientOrgManager.getCCNamespace()));
         }));

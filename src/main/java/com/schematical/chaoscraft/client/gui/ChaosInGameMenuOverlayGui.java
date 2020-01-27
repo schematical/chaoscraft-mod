@@ -39,6 +39,11 @@ public class ChaosInGameMenuOverlayGui extends Screen {
             Minecraft.getInstance().displayGuiScreen(screen);
         }));
         y += 20;
+        this.addButton(new Button(this.width / 2 - 100, y, 200, 20, I18n.format("chaoscraft.gui.mainmenu.species"), (p_214266_1_) -> {
+            ChaosSpeciesListOverlayGui screen = new ChaosSpeciesListOverlayGui();
+            Minecraft.getInstance().displayGuiScreen(screen);
+        }));
+        y += 20;
     }
     public void render(int p_render_1_, int p_render_2_, float p_render_3_) {
         this.renderBackground();

@@ -14,7 +14,7 @@ public class CCServerScoreEventPacket {
     public String fitnessRuleId;
     public float multiplier = 1;
 
-    public CCServerScoreEventPacket(String orgNamespace, int score, int life, String fitnessRuleId,  int multiplier)
+    public CCServerScoreEventPacket(String orgNamespace, int score, int life, String fitnessRuleId, float multiplier)
     {
         this.orgNamespace = orgNamespace;
         this.score = score;
@@ -41,7 +41,7 @@ public class CCServerScoreEventPacket {
             Integer.parseInt(parts[1]),
             Integer.parseInt(parts[2]),
             parts[3],
-            Integer.parseInt(parts[4])
+            Float.parseFloat(parts[4])
         );
     }
 

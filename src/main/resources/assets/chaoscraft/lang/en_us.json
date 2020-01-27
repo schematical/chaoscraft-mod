@@ -14,5 +14,7 @@
   "chaoscraft.gui.orgdetail.biology": "Biology",
   "chaoscraft.gui.orgdetail.debug-on": "Debug On",
   "chaoscraft.gui.orgdetail.debug-off": "Debug Off",
-  "chaoscraft.gui.orgneurondetail.overridevalue": "Override Value"
+  "chaoscraft.gui.orgneurondetail.overridevalue": "Override Value",
+  "chaoscraft.gui.orgdetail.scoreevents": "Score Events",
+  "chaoscraft.gui.mainmenu.species": "Species"
 }
