@@ -83,7 +83,7 @@ public class ChaosClientThread implements Runnable {
             switch(statusCode){
                 case(400):
 
-                    //ChaosCraft.getClient().repair();
+                    ChaosCraft.getClient().repair();
                     break;
                 case(401):
                     ChaosCraft.auth();
@@ -96,14 +96,17 @@ public class ChaosClientThread implements Runnable {
             String message = StandardCharsets.UTF_8.decode(byteBuffer).toString();//new String(byteBuffer.as().array(), StandardCharsets.UTF_8 );
             ChaosCraft.LOGGER.error("ChaosClientThread `/next` Error: " + message + " - statusCode: " + statusCode);
             ChaosCraft.getClient().thread = null;
+            ChaosCraft.getClient().setTicksRequiredToCallChaosNet(1000);
 
         }catch(Exception exception){
             ChaosCraft.getClient().consecutiveErrorCount += 1;
 
             ChaosCraft.LOGGER.error("ChaosClientThread `/next` Error: " + exception.getMessage() + " - exception type: " + exception.getClass().getName());
             ChaosCraft.getClient().thread = null;
+            ChaosCraft.getClient().setTicksRequiredToCallChaosNet(1000);
 
         }
+
 
 
     }

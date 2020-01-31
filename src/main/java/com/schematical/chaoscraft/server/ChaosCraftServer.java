@@ -27,8 +27,11 @@ import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 public class ChaosCraftServer {
@@ -99,6 +102,7 @@ public class ChaosCraftServer {
                 //TODO: Clean up the Dead orgs out of the list
             }
         }
+        cleanUp();
     }
 
     public void queueOrgToSpawn(String orgNamespace, ServerPlayerEntity player){
@@ -351,5 +355,36 @@ public class ChaosCraftServer {
             return null;
         }
         return organisms.get(orgNamespace);
+    }
+    public void cleanUp(){
+        Iterator<ServerOrgManager> iterator = organisms.values().iterator();
+        while(iterator.hasNext()){
+
+            ServerOrgManager serverOrgManager = iterator.next();
+            if(serverOrgManager.getState().equals(ServerOrgManager.State.Dead)){
+                if(!userMap.containsKey(serverOrgManager.serverPlayerEntity.getUniqueID().toString())){
+                    ChaosCraft.LOGGER.error("No valid player found for: " + serverOrgManager.getCCNamespace() + " player: " + serverOrgManager.serverPlayerEntity.getUniqueID() + " - " + serverOrgManager.serverPlayerEntity.getDisplayName().getString());
+                }else{
+                    userMap.get(serverOrgManager.serverPlayerEntity.getUniqueID().toString()).organisims.remove(serverOrgManager.getCCNamespace());
+                }
+                iterator.remove();
+            }
+        }
+    }
+    public void repair(){
+        try{
+
+            PostUsernameTrainingroomsTrainingroomSessionsSessionRepairRequest request = new PostUsernameTrainingroomsTrainingroomSessionsSessionRepairRequest();
+            request.setUsername(ChaosCraft.config.trainingRoomUsernameNamespace);
+            request.setTrainingroom(ChaosCraft.config.trainingRoomNamespace);
+            request.setSession(ChaosCraft.config.sessionNamespace);
+            PostUsernameTrainingroomsTrainingroomSessionsSessionRepairResult response = ChaosCraft.sdk.postUsernameTrainingroomsTrainingroomSessionsSessionRepair(request);
+
+        }catch(ChaosNetException exception){
+            ByteBuffer byteBuffer = exception.sdkHttpMetadata().responseContent();
+            String message = StandardCharsets.UTF_8.decode(byteBuffer).toString();
+            exception.setMessage(message);
+            throw exception;
+        }
     }
 }

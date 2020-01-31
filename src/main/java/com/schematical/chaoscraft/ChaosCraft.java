@@ -23,12 +23,18 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.TurtleEggBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
+import net.minecraft.entity.monster.MonsterEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.Event;
@@ -46,6 +52,8 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 import com.schematical.chaosnet.ChaosNet;
@@ -111,6 +119,7 @@ public class ChaosCraft
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onLivingUpdateEvent);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onClientStarting);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onKeyInputEvent);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onEntitySpawn);
         FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(EntityType.class, this::onEntityRegistry);
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
@@ -223,6 +232,7 @@ public class ChaosCraft
         event.getRegistry().registerAll(
             EntityType.Builder.create(OrgEntity::new, EntityClassification.CREATURE).setTrackingRange(128).build(MODID + ":org_entity").setRegistryName(MODID, "org_entity")
         );
+
     }
     // You can use EventBusSubscriber to automatically subscribe events on the contained class (this is subscribing to the MOD
     // Event bus for receiving Registry Events)
@@ -317,6 +327,14 @@ public class ChaosCraft
         }
         client.onKeyInputEvent(event);
     }
+    @SubscribeEvent
+    public void onEntitySpawn(EntityJoinWorldEvent entityJoinWorldEvent){
+        Entity entity = entityJoinWorldEvent.getEntity();
+        if(entity instanceof MonsterEntity){
+            MonsterEntity monsterEntity = (MonsterEntity) entity;
+            monsterEntity.targetSelector.addGoal(2, new NearestAttackableTargetGoal(monsterEntity, OrgEntity.class, true));
+        }
 
+    }
 
 }

@@ -6,6 +6,8 @@ import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.*;
 import com.schematical.chaosnet.model.ChaosNetException;
+import com.schematical.chaosnet.model.PostUsernameTrainingroomsTrainingroomSessionsSessionRepairRequest;
+import com.schematical.chaosnet.model.PostUsernameTrainingroomsTrainingroomSessionsSessionRepairResult;
 import com.schematical.chaosnet.model.TrainingRoomSessionNextResponse;
 
 import net.minecraft.client.Minecraft;
@@ -15,6 +17,8 @@ import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -37,6 +41,7 @@ public class ChaosCraftClient {
     public HashMap<String, ClientOrgManager> myOrganisms = new HashMap<String, ClientOrgManager>();
     public Thread thread;
     public static List<KeyBinding> keyBindings = new ArrayList<KeyBinding>();
+    private int ticksRequiredToCallChaosNet = 100;
 
 
     public void onWorldUnload() {
@@ -78,7 +83,9 @@ public class ChaosCraftClient {
             ClientRegistry.registerKeyBinding(keyBindings.get(i));
         }
     }
-
+    public void setTicksRequiredToCallChaosNet(int i){
+        ticksRequiredToCallChaosNet = i;
+    }
     public void init(){
         if(ChaosCraft.config.accessToken == null){
             //MAKE THEM AUTH FIRST
@@ -153,13 +160,14 @@ public class ChaosCraftClient {
         if (
             orgsReadyToReport.size() > 0 ||
             (
-                ticksSinceLastSpawn > (50) &&
+                ticksSinceLastSpawn > (ticksRequiredToCallChaosNet) &&
                 (liveOrgCount) < ChaosCraft.config.maxBotCount
             )
         ) {
 
             if(thread == null) {
                 if(newOrganisms.size() > 0){
+                    cleanUp();
                     Iterator<String> iterator = newOrganisms.keySet().iterator();
                    while(iterator.hasNext()){
                         String namespace = iterator.next();
@@ -168,7 +176,7 @@ public class ChaosCraftClient {
                     }
                 }
                 ticksSinceLastSpawn = 0;
-
+                ticksRequiredToCallChaosNet = 100;
                 thread = new Thread(new ChaosClientThread(), "ChaosClientThread");
                 thread.start();
             }
@@ -335,8 +343,32 @@ public class ChaosCraftClient {
         ChaosOrgDetailOverlayGui screen = new ChaosOrgDetailOverlayGui(clientOrgManager);
         Minecraft.getInstance().displayGuiScreen(screen);
     }
+    public void cleanUp(){
+        Iterator<ClientOrgManager> iterator = myOrganisms.values().iterator();
+        while(iterator.hasNext()){
 
+            ClientOrgManager clientOrgManager = iterator.next();
+            if(clientOrgManager.getState().equals(ClientOrgManager.State.FinishedReport)){
+                iterator.remove();
+            }
+        }
+    }
+    public void repair(){
+        try{
 
+            PostUsernameTrainingroomsTrainingroomSessionsSessionRepairRequest request = new PostUsernameTrainingroomsTrainingroomSessionsSessionRepairRequest();
+            request.setUsername(trainingRoomUsernameNamespace);
+            request.setTrainingroom(trainingRoomNamespace);
+            request.setSession(sessionNamespace);
+            PostUsernameTrainingroomsTrainingroomSessionsSessionRepairResult response = ChaosCraft.sdk.postUsernameTrainingroomsTrainingroomSessionsSessionRepair(request);
+
+        }catch(ChaosNetException exception){
+            ByteBuffer byteBuffer = exception.sdkHttpMetadata().responseContent();
+            String message = StandardCharsets.UTF_8.decode(byteBuffer).toString();
+            exception.setMessage(message);
+            throw exception;
+        }
+    }
     public enum State{
         Uninitiated,
         AuthSent,

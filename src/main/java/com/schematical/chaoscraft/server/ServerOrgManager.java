@@ -27,7 +27,7 @@ public class ServerOrgManager extends BaseOrgManager {
     protected ServerPlayerEntity serverPlayerEntity;
     protected long spawnTime = 0;
     public ArrayList<CCClientOutputNeuronActionPacket> neuronActions = new ArrayList<CCClientOutputNeuronActionPacket>();
-    private float maxLifeSeconds = 30;
+    private float maxLifeSeconds = 60;
     public void setTmpNamespace(String _tmpNamespace){
         tmpNamespace = _tmpNamespace;
     }
@@ -165,8 +165,11 @@ public class ServerOrgManager extends BaseOrgManager {
     public boolean checkStatus() {
         if (
             //this.organism == null ||
+
+            (
                 !debugState.equals(DebugState.On) &&
                 getAgeSeconds() > maxLifeSeconds
+            )
 
         ) {
             //this.dropInventory();

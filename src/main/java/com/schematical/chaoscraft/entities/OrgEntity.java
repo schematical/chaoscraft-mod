@@ -674,6 +674,11 @@ public class OrgEntity extends MobEntity {
                 this.serverOrgManager.tickServer();
                 this.updatePitchAndYaw();
                 this.checkForItemPickup();
+            }else{
+                if( ChaosCraft.getServer().spawnHash != this.spawnHash){
+                    this.setHealth(-1);
+                    ChaosCraft.LOGGER.error("Killing Org that did not match spawn hash: " + this.getDisplayName().getString()  + " - " + ChaosCraft.getServer().spawnHash + " != " + this.spawnHash);
+                }
             }
 
         }else{
@@ -898,5 +903,9 @@ public class OrgEntity extends MobEntity {
     public void onDeath(DamageSource cause) {
         super.onDeath(cause);
 
+    }
+
+    public int getSpawnHash() {
+        return spawnHash;
     }
 }
