@@ -727,11 +727,11 @@ public class OrgEntity extends MobEntity {
         }
     }
     public boolean checkStatus(){
-        if(this.spawnHash != ChaosCraft.getServer().spawnHash){
+       /* if(this.spawnHash != ChaosCraft.getServer().spawnHash){
             killWithNoReport();
             return false;
         }
-
+*/
         return false;
     }
 

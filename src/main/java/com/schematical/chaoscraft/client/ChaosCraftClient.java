@@ -325,6 +325,7 @@ public class ChaosCraftClient {
     public void attachScoreEventToEntity(CCServerScoreEventPacket message) {
         if(!myOrganisms.containsKey(message.orgNamespace)){
             ChaosCraft.LOGGER.error("attatchScoreEventToEntity - Cannot find orgNamespace: " + message.orgNamespace);
+            return;
         }
         myOrganisms.get(message.orgNamespace).addServerScoreEvent(message);
     }

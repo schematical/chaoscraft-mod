@@ -193,6 +193,7 @@ public class ChaosCraftServer {
         PlayerEntity playerEntity = serverWorld.getPlayers().get(0);
 
         OrgEntity orgEntity = OrgEntity.ORGANISM_TYPE.create(serverWorld);
+        orgEntity.setSpawnHash(ChaosCraft.getServer().spawnHash);
         BlockPos pos = null;
         int saftyCatch = 0;
         while(pos == null){
