@@ -195,11 +195,13 @@ public class ChaosCraft
         // do something when the server starts
         LOGGER.info("HELLO from server starting");
         server = new ChaosCraftServer(event.getServer());
-        server.loadFitnessFunctions();
+
         CCSummonCommand.register(event.getCommandDispatcher());
         CCAuthCommand.register(event.getCommandDispatcher());
         CCTestCommand.register(event.getCommandDispatcher());
         CCHardResetCommand.register(event.getCommandDispatcher());
+
+        server.loadFitnessFunctions();
     }
 
     @SubscribeEvent
@@ -208,6 +210,10 @@ public class ChaosCraft
         LOGGER.info("HELLO from Client starting");
         client = new ChaosCraftClient();
         client.preInit();
+
+        //If they are not logged in we need to do that
+
+
 
     }
 
@@ -289,6 +295,7 @@ public class ChaosCraft
             ChaosCraft.client.getState().equals(ChaosCraftClient.State.Uninitiated)
         ){
             LOGGER.info("onPlayerLoggedInEvent FIRING  2");
+           
 
         }
     }

@@ -6,6 +6,7 @@ import org.json.simple.parser.JSONParser;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.util.Map;
 
 /**
  * Created by user1a on 12/6/18.
@@ -53,6 +54,11 @@ public class ChaosCraftConfig {
         }
     }
     public static String getConfigPath(){
+        Map<String, String> env = System.getenv();
+        String chaosdir = env.get("chaosdir");
+        if(chaosdir != null){
+            return chaosdir;
+        }
         return System.getProperty("user.home") + "/chaoscraft/config.json";
     }
     public void load(){

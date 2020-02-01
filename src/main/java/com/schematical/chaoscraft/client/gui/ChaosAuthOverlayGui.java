@@ -64,7 +64,6 @@ public class ChaosAuthOverlayGui extends Screen {
                 ChaosCraft.config.username = authLogin.getUsername();
                 ChaosCraft.config.idToken =  authLoginResponse.getIdToken();
                 ChaosCraft.config.refreshToken =  authLoginResponse.getRefreshToken();
-                ChaosCraft.config.refreshToken =  authLoginResponse.getRefreshToken();
                 ChaosCraft.config.accessToken =  authLoginResponse.getAccessToken();
                 ChaosCraft.config.save();
                 ChaosCraft.getClient().init();
@@ -94,13 +93,13 @@ public class ChaosAuthOverlayGui extends Screen {
                 }
                 ByteBuffer byteBuffer = exception.sdkHttpMetadata().responseContent();
                 String message = StandardCharsets.UTF_8.decode(byteBuffer).toString();//new String(byteBuffer.as().array(), StandardCharsets.UTF_8 );
-                ChaosCraft.LOGGER.error("ChaosClientThread `/next` Error: " + message + " - statusCode: " + statusCode);
+                ChaosCraft.LOGGER.error("ChaosAuthOverlayGui `/login` Error: " + message + " - statusCode: " + statusCode);
                 ChaosCraft.getClient().thread = null;
 
             }catch(Exception exception){
                 ChaosCraft.getClient().consecutiveErrorCount += 1;
 
-                ChaosCraft.LOGGER.error("ChaosClientThread `/next` Error: " + exception.getMessage() + " - exception type: " + exception.getClass().getName());
+                ChaosCraft.LOGGER.error("ChaosAuthOverlayGui `/login` Error: " + exception.getMessage() + " - exception type: " + exception.getClass().getName());
                 ChaosCraft.getClient().thread = null;
 
             }

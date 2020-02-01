@@ -17,7 +17,13 @@ public class ChaosServerThread implements Runnable {
 
     public void run(){
         try{
-
+            if(
+                ChaosCraft.config.trainingRoomNamespace == null ||
+                ChaosCraft.config.trainingRoomUsernameNamespace == null
+            ){
+               //No training room set :(
+                return;
+            }
             GetUsernameTrainingroomsTrainingroomOrganismsRequest request = new GetUsernameTrainingroomsTrainingroomOrganismsRequest();
             request.setUsername(ChaosCraft.config.trainingRoomUsernameNamespace);
             request.setTrainingroom(ChaosCraft.config.trainingRoomNamespace);

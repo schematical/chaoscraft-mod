@@ -11,6 +11,7 @@ import com.schematical.chaosnet.model.PostUsernameTrainingroomsTrainingroomSessi
 import com.schematical.chaosnet.model.TrainingRoomSessionNextResponse;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.client.event.InputEvent;
@@ -57,6 +58,10 @@ public class ChaosCraftClient {
         sessionNamespace = serverInfo.getSessionNamespace();
         ChaosCraft.LOGGER.info("TrainingRoomInfo Set: " + trainingRoomNamespace + ", " + trainingRoomUsernameNamespace + ", " + sessionNamespace);
         state = State.Authed;
+        if((Minecraft.getInstance().currentScreen instanceof ChaosTrainingRoomSelectionOverlayGui)) {
+
+            Minecraft.getInstance().displayGuiScreen((Screen)null);
+        }
     }
 
     public State getState() {
@@ -81,6 +86,13 @@ public class ChaosCraftClient {
         for (int i = 0; i < keyBindings.size(); ++i)
         {
             ClientRegistry.registerKeyBinding(keyBindings.get(i));
+        }
+        if(ChaosCraft.config.username == null){
+            if(!(Minecraft.getInstance().currentScreen instanceof ChaosAuthOverlayGui)) {
+                ChaosAuthOverlayGui screen = new ChaosAuthOverlayGui();
+                Minecraft.getInstance().displayGuiScreen(screen);
+            }
+            return;
         }
     }
     public void setTicksRequiredToCallChaosNet(int i){
@@ -374,6 +386,13 @@ public class ChaosCraftClient {
             throw exception;
         }
     }
+
+    public void displayTrainingRoomSelectionOverlayGui() {
+
+        ChaosTrainingRoomSelectionOverlayGui screen = new ChaosTrainingRoomSelectionOverlayGui();
+        Minecraft.getInstance().displayGuiScreen(screen);
+    }
+
     public enum State{
         Uninitiated,
         AuthSent,

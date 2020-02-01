@@ -62,7 +62,7 @@ public class CCHardResetCommand {
         }
 
         context.getSource().sendFeedback(
-                new TranslationTextComponent("Finished..." + response.getTrainingRoomSession().getGenomeNamespace() ),
+                new TranslationTextComponent("Finished..." + response.getTraningRoomSessionStartResponse().getSession().getNamespace() ),
                 true
         );
         return 1;

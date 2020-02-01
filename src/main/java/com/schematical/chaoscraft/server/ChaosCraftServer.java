@@ -9,6 +9,7 @@ import com.schematical.chaoscraft.fitness.ChaosCraftFitnessManager;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.CCClientOutputNeuronActionPacket;
 import com.schematical.chaoscraft.network.packets.CCServerEntitySpawnedPacket;
+import com.schematical.chaoscraft.network.packets.CCServerRequestTrainingRoomGUIPacket;
 import com.schematical.chaoscraft.network.packets.ServerIntroInfoPacket;
 import com.schematical.chaosnet.ChaosNet;
 import com.schematical.chaosnet.auth.ChaosnetCognitoUserPool;
@@ -55,6 +56,7 @@ public class ChaosCraftServer {
         if(
             ChaosCraft.getServer().fitnessManager == null
         ){
+            loadFitnessFunctions();
             return;
         }
 
@@ -159,15 +161,32 @@ public class ChaosCraftServer {
 
         userMap.put( player.getUniqueID().toString(), playerInfo);
 
+
+        if(
+            ChaosCraft.config.trainingRoomNamespace == null ||
+            ChaosCraft.config.trainingRoomUsernameNamespace == null
+        ){
+            CCServerRequestTrainingRoomGUIPacket serverIntroInfoPacket = new CCServerRequestTrainingRoomGUIPacket( );
+
+            ChaosNetworkManager.sendTo(serverIntroInfoPacket, player);
+            ChaosCraft.LOGGER.info("SENT `CCServerRequestTrainingRoomGUIPacket` ");
+
+        }else {
+            sendServerInfoPacket(player);
+        }
+    }
+
+    private void sendServerInfoPacket(ServerPlayerEntity player) {
         //Send that user the training Room info from here
         ServerIntroInfoPacket serverIntroInfoPacket = new ServerIntroInfoPacket(
-            ChaosCraft.config.trainingRoomNamespace,
-            ChaosCraft.config.trainingRoomUsernameNamespace,
-            ChaosCraft.config.sessionNamespace
+                ChaosCraft.config.trainingRoomNamespace,
+                ChaosCraft.config.trainingRoomUsernameNamespace,
+                ChaosCraft.config.sessionNamespace
         );
-        ChaosCraft.LOGGER.info("Sending `serverIntroInfoPacket`");
-        ChaosNetworkManager.sendTo(serverIntroInfoPacket,  player);
+
+        ChaosNetworkManager.sendTo(serverIntroInfoPacket, player);
         ChaosCraft.LOGGER.info("SENT `serverIntroInfoPacket`: " + serverIntroInfoPacket.getTrainingRoomNamespace() + ", " + serverIntroInfoPacket.getTrainingRoomUsernameNamespace() + ", " + serverIntroInfoPacket.getSessionNamespace());
+
     }
 
     public OrgEntity spawnOrg(ServerOrgManager serverOrgManager) {
@@ -283,12 +302,15 @@ public class ChaosCraftServer {
         }
         return serverOrgManagers;
     }
-    public static void loadFitnessFunctions(){
+    public void loadFitnessFunctions(){
         if(
+            fitnessManager != null ||
             ChaosCraft.config.trainingRoomNamespace == null ||
             ChaosCraft.config.trainingRoomUsernameNamespace == null
         ){
             ChaosCraft.LOGGER.error("Not enough TrainingRoom Data set");
+            return;
+
         }
 
         GetUsernameTrainingroomsTrainingroomFitnessrulesRequest fitnessRulesRequest = new GetUsernameTrainingroomsTrainingroomFitnessrulesRequest();
@@ -387,5 +409,36 @@ public class ChaosCraftServer {
             exception.setMessage(message);
             throw exception;
         }
+    }
+    public void startTrainingSession(String trainingRoomUsernameNamespace, String trainingRoomNamespace){
+
+        ChaosCraft.config.trainingRoomUsernameNamespace = trainingRoomUsernameNamespace;
+        ChaosCraft.config.trainingRoomNamespace = trainingRoomNamespace;
+        ChaosCraft.config.save();
+
+        try {
+            PostUsernameTrainingroomsTrainingroomSessionsStartRequest startSessionRequest = new PostUsernameTrainingroomsTrainingroomSessionsStartRequest();
+            startSessionRequest.setTrainingroom(ChaosCraft.config.trainingRoomNamespace);
+            startSessionRequest.setUsername(ChaosCraft.config.trainingRoomUsernameNamespace);
+
+            PostUsernameTrainingroomsTrainingroomSessionsStartResult result = ChaosCraft.sdk.postUsernameTrainingroomsTrainingroomSessionsStart(startSessionRequest);
+            ChaosCraft.config.sessionNamespace = result.getTraningRoomSessionStartResponse().getSession().getNamespace();
+            ChaosCraft.config.save();
+
+            for (ChaosCraftServerPlayerInfo serverPlayerInfo : userMap.values()) {
+                sendServerInfoPacket(server.getPlayerList().getPlayerByUUID(serverPlayerInfo.playerUUID));
+            }
+        }catch(ChaosNetException exception){
+            if(exception.sdkHttpMetadata().httpStatusCode() == 401){
+                ChaosCraft.LOGGER.error(exception.getMessage());
+                String message = "Your login has expired. Please re-run `/chaoscraft-auth {username} {password}`";
+                //ChaosCraft.chat(message);
+                ChaosCraft.LOGGER.error(message);
+            }else{
+                throw exception;
+            }
+
+        }
+
     }
 }
