@@ -4,14 +4,23 @@ import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.network.packets.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.network.NetworkDirection;
+import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fml.network.simple.IndexedMessageCodec;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
+import java.util.HashMap;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
 public class ChaosNetworkManager {
+    private static HashMap<Integer, Class> map = new HashMap<Integer, Class>();
     private static final String PROTOCOL_VERSION = "1";
     public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(
             new ResourceLocation(ChaosCraft.MODID, "main"),
@@ -34,12 +43,27 @@ public class ChaosNetworkManager {
         INSTANCE.registerMessage(disc++, CCServerScoreEventPacket.class, CCServerScoreEventPacket::encode, CCServerScoreEventPacket::decode, CCServerScoreEventPacket.Handler::handle);
 
     }
+    protected  <MSG> void registerMessage(int index, Class<MSG> messageType, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder, BiConsumer<MSG, Supplier<NetworkEvent.Context>> messageConsumer){
+        map.put(index, messageType);
+        INSTANCE.registerMessage(index, messageType, encoder, decoder, messageConsumer);
+    }
     /**
      * Sends a packet to the server.<br>
      * Must be called Client side.
      */
     public static void sendToServer(Object msg)
     {
+       /* if(
+            ChaosCraft.getServer() != null &&
+            ChaosCraft.getClient() != null
+        ){
+            if(!map.values().contains(msg)){
+                ChaosCraft.LOGGER.error("Shit");
+                return;
+            }
+            Class T = null;
+            ((T) msg);
+        }*/
         INSTANCE.sendToServer(msg);
     }
 

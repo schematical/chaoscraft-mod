@@ -87,6 +87,9 @@ public class ChaosCraftClient {
         ticksRequiredToCallChaosNet = i;
     }
     public void init(){
+        if(Minecraft.getInstance().getConnection() == null){
+            return;
+        }
         if(ChaosCraft.config.accessToken == null){
             //MAKE THEM AUTH FIRST
             //but only open the screen when it isnt already open
@@ -99,6 +102,7 @@ public class ChaosCraftClient {
 
 
         ChaosCraft.LOGGER.info("Client Sending Auth!!");
+        //!!!!!!!
         ChaosNetworkManager.sendToServer(new ClientAuthPacket(ChaosCraft.config.accessToken));
         state = State.AuthSent;
         //Get info on what the server is running

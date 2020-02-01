@@ -289,7 +289,7 @@ public class ChaosCraft
             ChaosCraft.client.getState().equals(ChaosCraftClient.State.Uninitiated)
         ){
             LOGGER.info("onPlayerLoggedInEvent FIRING  2");
-            //.client.init();
+
         }
     }
 
