@@ -9,6 +9,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.schematical.chaoscraft.ChaosCraft;
+import com.schematical.chaoscraft.blocks.ChaosBlocks;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
@@ -29,7 +30,7 @@ public class CCTestCommand {
 
 
         context.getSource().sendFeedback(
-                new TranslationTextComponent("chaoscraft.commands.cctest", ChaosCraft.spawnBlocks.size()),
+                new TranslationTextComponent("chaoscraft.commands.cctest", ChaosBlocks.spawnBlocks.size()),
                 true
         );
         return 1;

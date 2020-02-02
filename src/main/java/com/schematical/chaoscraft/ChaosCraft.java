@@ -5,6 +5,7 @@ import com.amazonaws.opensdk.config.TimeoutConfiguration;
 import com.schematical.chaoscraft.blocks.ChaosBlocks;
 import com.schematical.chaoscraft.blocks.ChaosEggBlock;
 import com.schematical.chaoscraft.blocks.SpawnBlock;
+import com.schematical.chaoscraft.blocks.WaypointBlock;
 import com.schematical.chaoscraft.client.ChaosCraftClient;
 import com.schematical.chaoscraft.commands.CCAuthCommand;
 import com.schematical.chaoscraft.commands.CCHardResetCommand;
@@ -20,6 +21,7 @@ import com.schematical.chaoscraft.server.ChaosCraftServer;
 
 import com.schematical.chaoscraft.tileentity.ChaosTileEntity;
 import com.schematical.chaoscraft.tileentity.SpawnBlockTileEntity;
+import com.schematical.chaoscraft.tileentity.WaypointBlockTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SoundType;
@@ -35,6 +37,7 @@ import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
@@ -78,12 +81,14 @@ public class ChaosCraft
     public static final Logger LOGGER = LogManager.getLogger();
 
     public static float activationThreshold = .3f;
-    public static ArrayList<SpawnBlock> spawnBlocks = new ArrayList<SpawnBlock>();
+
     private static ChaosCraftClient client;
     private static ChaosCraftServer server;
 
     public ChaosCraft() {
-
+   /*     if(true){
+            return;
+        }*/
         config = new ChaosCraftConfig();
         config.load();
         LOGGER.info("Config Loaded...");
@@ -256,12 +261,18 @@ public class ChaosCraft
             ChaosBlocks.SpawnBlock = new SpawnBlock(Block.Properties.create(Material.BARRIER).tickRandomly().hardnessAndResistance(-1.0F, 3600000.0F)).setRegistryName(ChaosCraft.MODID, "spawn_block.json");
 
             blockRegistryEvent.getRegistry().registerAll(
-                    ChaosBlocks.SpawnBlock
-               );
+                ChaosBlocks.SpawnBlock
+           );
 
+            ChaosBlocks.WaypointBlock = new WaypointBlock(Block.Properties.create(Material.BARRIER).tickRandomly().hardnessAndResistance(-1.0F, 3600000.0F)).setRegistryName(ChaosCraft.MODID, "waypoint_block.json");
             blockRegistryEvent.getRegistry().registerAll(
-                    new ChaosEggBlock(Block.Properties.create(Material.BARRIER).tickRandomly().hardnessAndResistance(-1.0F, 3600000.0F)).setRegistryName(ChaosCraft.MODID, "chaos_egg_block.json")
+                    ChaosBlocks.WaypointBlock
             );
+
+            ChaosBlocks.ChaosEgg = new ChaosEggBlock(Block.Properties.create(Material.BARRIER).tickRandomly().hardnessAndResistance(-1.0F, 3600000.0F)).setRegistryName(ChaosCraft.MODID, "chaos_egg_block.json");
+            blockRegistryEvent.getRegistry().registerAll(
+                    ChaosBlocks.ChaosEgg
+             );
 
         }
         @SubscribeEvent
@@ -269,6 +280,10 @@ public class ChaosCraft
             ChaosTileEntity.SpawnTile = TileEntityType.Builder.create(SpawnBlockTileEntity::new, ChaosBlocks.SpawnBlock).build(null);
             ChaosTileEntity.SpawnTile .setRegistryName(MODID, "spawn_block_tile_entity");
             evt.getRegistry().register(ChaosTileEntity.SpawnTile );
+
+            ChaosTileEntity.WaypointTile = TileEntityType.Builder.create(WaypointBlockTileEntity::new, ChaosBlocks.WaypointBlock).build(null);
+            ChaosTileEntity.WaypointTile .setRegistryName(MODID, "waypoint_block_tile_entity");
+            evt.getRegistry().register(ChaosTileEntity.WaypointTile );
         }
 
 

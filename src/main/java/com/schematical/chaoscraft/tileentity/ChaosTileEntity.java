@@ -6,4 +6,5 @@ import net.minecraft.tileentity.TileEntityType;
 
 public class ChaosTileEntity {
     public static TileEntityType<SpawnBlockTileEntity> SpawnTile;
+    public static TileEntityType<WaypointBlockTileEntity> WaypointTile;
 }
