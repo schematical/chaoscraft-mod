@@ -12,6 +12,7 @@ import com.schematical.chaoscraft.network.packets.CCServerEntitySpawnedPacket;
 import com.schematical.chaoscraft.network.packets.CCServerRequestTrainingRoomGUIPacket;
 import com.schematical.chaoscraft.network.packets.ServerIntroInfoPacket;
 import com.schematical.chaoscraft.server.spawnproviders.PlayerSpawnPosProvider;
+import com.schematical.chaoscraft.server.spawnproviders.SpawnBlockPosProvider;
 import com.schematical.chaoscraft.server.spawnproviders.iServerSpawnProvider;
 import com.schematical.chaosnet.ChaosNet;
 import com.schematical.chaosnet.auth.ChaosnetCognitoUserPool;
@@ -47,7 +48,7 @@ public class ChaosCraftServer {
     public static HashMap<String, ServerOrgManager> organisms = new HashMap<String, ServerOrgManager>();
     public ChaosCraftFitnessManager fitnessManager;
     public int longTickCount = 0;
-    public iServerSpawnProvider spawnProvider = new PlayerSpawnPosProvider();
+    public iServerSpawnProvider spawnProvider = new SpawnBlockPosProvider();//PlayerSpawnPosProvider();
 
     public ChaosCraftServer(MinecraftServer server) {
 
@@ -161,7 +162,7 @@ public class ChaosCraftServer {
         ChaosCraftServerPlayerInfo playerInfo = new ChaosCraftServerPlayerInfo();
         playerInfo.authWhoamiResponse = getAuthWhoamiResult.getAuthWhoamiResponse();
         playerInfo.playerUUID = player.getUniqueID();
-
+        player.setCustomNameVisible(true);//new TranslationTextComponent(authWhoamiResponse.getUsername()));
         userMap.put( player.getUniqueID().toString(), playerInfo);
 
 

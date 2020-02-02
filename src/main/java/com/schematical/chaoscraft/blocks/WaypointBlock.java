@@ -26,7 +26,7 @@ public class WaypointBlock extends Block implements ITileEntityProvider {
     }
     @Override
     public void onEntityWalk(World worldIn, BlockPos pos, Entity entityIn) {
-        ChaosCraft.LOGGER.debug("Walked! " + entityIn.getName());
+       // ChaosCraft.LOGGER.debug("Walked! " + entityIn.getName());
         //If it is a OrgEntity give it points
     }
 

@@ -23,23 +23,23 @@ public class ServerOrgPositionManager implements iChaosOrgTickable {
             Vec3d diffVec = this.lastCheckPos.subtract(this.startPos);
             if(Math.round(Math.abs(diffVec.x))> this.maxDist.x){
                 this.maxDist = new Vec3d(
-                        Math.round(Math.abs(diffVec.x)),
+                        Math.ceil(Math.abs(diffVec.x)),
                         this.maxDist.y,
                         this.maxDist.z
                 );
                 CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.TRAVEL_ALONG_AXIS);
-                worldEvent.amount = (int)this.maxDist.x;
+                worldEvent.amount = 1;
                 worldEvent.axis = CCWorldEvent.Axis.X;
                 serverOrgManager.getEntity().entityFitnessManager.test(worldEvent);
             }
             if(Math.round(Math.abs(diffVec.y)) > this.maxDist.y){
                 this.maxDist = new Vec3d(
                         this.maxDist.x,
-                        Math.round(Math.abs(diffVec.y)),
+                        Math.ceil(Math.abs(diffVec.y)),
                         this.maxDist.z
                 );
                 CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.TRAVEL_ALONG_AXIS);
-                worldEvent.amount = (int)this.maxDist.y;
+                worldEvent.amount = 1;
                 worldEvent.axis = CCWorldEvent.Axis.Y;
                 serverOrgManager.getEntity().entityFitnessManager.test(worldEvent);
             }
@@ -47,10 +47,10 @@ public class ServerOrgPositionManager implements iChaosOrgTickable {
                 this.maxDist = new Vec3d(
                         this.maxDist.x,
                         this.maxDist.y,
-                        Math.round(Math.abs(diffVec.z))
+                        Math.ceil(Math.abs(diffVec.z))
                 );
                 CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.TRAVEL_ALONG_AXIS);
-                worldEvent.amount = (int)this.maxDist.z;
+                worldEvent.amount = 1;
                 worldEvent.axis = CCWorldEvent.Axis.Z;
                 serverOrgManager.getEntity().entityFitnessManager.test(worldEvent);
             }

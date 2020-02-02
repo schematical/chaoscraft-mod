@@ -28,7 +28,7 @@ public class ServerOrgManager extends BaseOrgManager {
     protected ServerPlayerEntity serverPlayerEntity;
     protected long spawnTime = 0;
     public ArrayList<CCClientOutputNeuronActionPacket> neuronActions = new ArrayList<CCClientOutputNeuronActionPacket>();
-    private float maxLifeSeconds = 60;
+    private float maxLifeSeconds = 15;
     protected ArrayList<iChaosOrgTickable> tickables = new ArrayList<iChaosOrgTickable>();
     public ServerOrgManager(){
         this.attatchTickable(new ServerOrgPositionManager());

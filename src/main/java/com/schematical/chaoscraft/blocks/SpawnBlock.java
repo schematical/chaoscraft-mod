@@ -33,11 +33,11 @@ public class SpawnBlock extends Block implements ITileEntityProvider {
     }
     @Override
     public void func_225534_a_(BlockState p_225534_1_, ServerWorld p_225534_2_, BlockPos p_225534_3_, Random p_225534_4_) {
-        ChaosCraft.LOGGER.debug("SpawnBlock Ticked!  1" );
+        //ChaosCraft.LOGGER.debug("SpawnBlock Ticked!  1" );
     }
     @Override
     public void func_225542_b_(BlockState p_225542_1_, ServerWorld p_225542_2_, BlockPos p_225542_3_, Random p_225542_4_){
-        ChaosCraft.LOGGER.debug("SpawnBlock Ticked! 2" );
+       // ChaosCraft.LOGGER.debug("SpawnBlock Ticked! 2" );
     }
     @Override
     public void onBlockClicked(BlockState state, World worldIn, BlockPos pos, PlayerEntity player) {
@@ -52,7 +52,7 @@ public class SpawnBlock extends Block implements ITileEntityProvider {
         if(!tickHasBeenSet){
             worldIn.getPendingBlockTicks().scheduleTick(pos, this, 1);
         }
-        ChaosCraft.LOGGER.debug("Walked! " + entityIn.getName());
+        //ChaosCraft.LOGGER.debug("Walked! " + entityIn.getName());
     }
 
     @Nullable

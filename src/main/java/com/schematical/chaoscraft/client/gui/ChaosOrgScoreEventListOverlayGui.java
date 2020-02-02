@@ -26,9 +26,10 @@ public class ChaosOrgScoreEventListOverlayGui extends Screen {
     public void render(int p_render_1_, int p_render_2_, float p_render_3_) {
         this.renderBackground();
         int y = 0;
+        float secondsToLive = (clientOrgManager.getExpectedLifeEndTime() - clientOrgManager.getEntity().world.getGameTime()) /20;
         this.drawCenteredString(
                 this.font,
-                "Total: " + clientOrgManager.getServerScoreEventTotal(),
+                "Total: " + clientOrgManager.getServerScoreEventTotal() + " Life: " + secondsToLive,
                 this.width / 2,
                 y,
                 16777215

@@ -165,7 +165,7 @@ public class ChaosCraftClient {
         if(!state.equals(State.Authed)){
             return;
         }
-       /* if(true){
+      /*  if(true){
             return;
         }*/
         checkForDeadOrgs();

@@ -112,7 +112,7 @@ public class EntityFitnessRule {
 
 
 
-                   if(!attributeValue.contains(event.axis)){
+                   if(!attributeValue.contains(event.axis.name())){
                        return null;
                    }else{
                        ChaosCraft.LOGGER.info("Axis Movement Success: " + attributeValue);

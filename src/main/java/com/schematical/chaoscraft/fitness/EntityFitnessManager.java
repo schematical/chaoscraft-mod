@@ -57,7 +57,7 @@ public class EntityFitnessManager {
             }
             if(isValid) {
                 addScoreEvent(scoreEvent);
-                Iterator<OrgEvent> eventIterator = orgEntity.getOrgEvents().iterator();
+                /*Iterator<OrgEvent> eventIterator = orgEntity.getOrgEvents().iterator();
 
                 while (eventIterator.hasNext()) {
                     OrgEvent orgEvent = eventIterator.next();
@@ -87,11 +87,11 @@ public class EntityFitnessManager {
                         scoreEvent.multiplier = multiplier;
 
                     }
-                }
+                }*/
                 orgEntity.addOrgEvent(new OrgEvent(scoreEvent));
                 occurences.put(scoreEvent.fitnessRule.id, numOfOccurences);
                 if (scoreEvent.life != 0) {
-                    //entityOrganism.adjustMaxLife(scoreEvent.life);
+                    //orgEntity.adjustMaxLife(scoreEvent.life);
                 }
             }
 
@@ -107,7 +107,8 @@ public class EntityFitnessManager {
                 scoreEvent.score,
                 scoreEvent.life,
                 scoreEvent.fitnessRule.id,
-                scoreEvent.multiplier
+                scoreEvent.multiplier,
+                (int) (orgEntity.world.getGameTime() + ((orgEntity.getServerOrgManager().getMaxLife() - orgEntity.getServerOrgManager().getAgeSeconds()) * 20))
         );
         ChaosNetworkManager.sendTo(serverScoreEventPacket, serverOrgManager.getServerPlayerEntity());
 
