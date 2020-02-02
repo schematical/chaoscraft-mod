@@ -2,6 +2,7 @@ package com.schematical.chaoscraft;
 
 import com.amazonaws.opensdk.config.ConnectionConfiguration;
 import com.amazonaws.opensdk.config.TimeoutConfiguration;
+import com.schematical.chaoscraft.blocks.ChaosBlocks;
 import com.schematical.chaoscraft.blocks.ChaosEggBlock;
 import com.schematical.chaoscraft.blocks.SpawnBlock;
 import com.schematical.chaoscraft.client.ChaosCraftClient;
@@ -17,6 +18,8 @@ import com.schematical.chaoscraft.network.ChaosNetworkManager;
 
 import com.schematical.chaoscraft.server.ChaosCraftServer;
 
+import com.schematical.chaoscraft.tileentity.ChaosTileEntity;
+import com.schematical.chaoscraft.tileentity.SpawnBlockTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SoundType;
@@ -30,6 +33,8 @@ import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
@@ -248,14 +253,22 @@ public class ChaosCraft
         public static void onBlocksRegistry(final RegistryEvent.Register<Block> blockRegistryEvent) {
             // register a new block here
             LOGGER.info("HELLO from Register Block");
-            blockRegistryEvent.getRegistry().registerAll(
-                new SpawnBlock(Block.Properties.create(Material.BARRIER).tickRandomly().hardnessAndResistance(-1.0F, 3600000.0F)).setRegistryName(ChaosCraft.MODID, "spawn_block.json")
-            );
+            ChaosBlocks.SpawnBlock = new SpawnBlock(Block.Properties.create(Material.BARRIER).tickRandomly().hardnessAndResistance(-1.0F, 3600000.0F)).setRegistryName(ChaosCraft.MODID, "spawn_block.json");
 
             blockRegistryEvent.getRegistry().registerAll(
-                new ChaosEggBlock(Block.Properties.create(Material.BARRIER).tickRandomly().hardnessAndResistance(-1.0F, 3600000.0F)).setRegistryName(ChaosCraft.MODID, "chaos_egg_block.json")
+                    ChaosBlocks.SpawnBlock
+               );
+
+            blockRegistryEvent.getRegistry().registerAll(
+                    new ChaosEggBlock(Block.Properties.create(Material.BARRIER).tickRandomly().hardnessAndResistance(-1.0F, 3600000.0F)).setRegistryName(ChaosCraft.MODID, "chaos_egg_block.json")
             );
 
+        }
+        @SubscribeEvent
+        public static void registerTE(RegistryEvent.Register<TileEntityType<?>> evt) {
+            ChaosTileEntity.SpawnTile = TileEntityType.Builder.create(SpawnBlockTileEntity::new, ChaosBlocks.SpawnBlock).build(null);
+            ChaosTileEntity.SpawnTile .setRegistryName(MODID, "spawn_block_tile_entity");
+            evt.getRegistry().register(ChaosTileEntity.SpawnTile );
         }
 
 
