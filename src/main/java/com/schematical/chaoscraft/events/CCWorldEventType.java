@@ -12,4 +12,5 @@ public class CCWorldEventType {
     public static final String ITEM_COLLECTED = "ITEM_COLLECTED";
     public static final String ENTITY_ATTACKED = "ENTITY_ATTACKED";
     public static final String TOSSED_EQUIPPED_STACK = "TOSSED_EQUIPPED_STACK";
+    public static final String TRAVEL_ALONG_AXIS  = "TRAVEL_ALONG_AXIS";
 }

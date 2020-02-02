@@ -161,9 +161,13 @@ public class ChaosCraftClient {
         return orgManagers;
     }
     public void tick(){
+
         if(!state.equals(State.Authed)){
             return;
         }
+       /* if(true){
+            return;
+        }*/
         checkForDeadOrgs();
         startSpawnOrgs();
         int liveOrgCount = getLiveOrgCount();

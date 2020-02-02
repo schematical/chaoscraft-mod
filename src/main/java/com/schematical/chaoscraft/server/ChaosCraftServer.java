@@ -11,6 +11,8 @@ import com.schematical.chaoscraft.network.packets.CCClientOutputNeuronActionPack
 import com.schematical.chaoscraft.network.packets.CCServerEntitySpawnedPacket;
 import com.schematical.chaoscraft.network.packets.CCServerRequestTrainingRoomGUIPacket;
 import com.schematical.chaoscraft.network.packets.ServerIntroInfoPacket;
+import com.schematical.chaoscraft.server.spawnproviders.PlayerSpawnPosProvider;
+import com.schematical.chaoscraft.server.spawnproviders.iServerSpawnProvider;
 import com.schematical.chaosnet.ChaosNet;
 import com.schematical.chaosnet.auth.ChaosnetCognitoUserPool;
 import com.schematical.chaosnet.model.*;
@@ -45,6 +47,7 @@ public class ChaosCraftServer {
     public static HashMap<String, ServerOrgManager> organisms = new HashMap<String, ServerOrgManager>();
     public ChaosCraftFitnessManager fitnessManager;
     public int longTickCount = 0;
+    public iServerSpawnProvider spawnProvider = new PlayerSpawnPosProvider();
 
     public ChaosCraftServer(MinecraftServer server) {
 
@@ -207,60 +210,13 @@ public class ChaosCraftServer {
         }
 
 
+        ServerWorld serverWorld = server.getWorld(DimensionType.OVERWORLD);
 
-        ServerWorld serverWorld = this.server.getWorld(DimensionType.OVERWORLD);
-        PlayerEntity playerEntity = serverWorld.getPlayers().get(0);
 
         OrgEntity orgEntity = OrgEntity.ORGANISM_TYPE.create(serverWorld);
         orgEntity.setSpawnHash(ChaosCraft.getServer().spawnHash);
-        BlockPos pos = null;
-        int saftyCatch = 0;
-        while(pos == null){
-            saftyCatch ++;
-            if (saftyCatch > 20) {
-                ChaosCraft.LOGGER.error("Safty Catch Hit: " + saftyCatch);
-                return orgEntity;
-            }
-            BlockPos pos1 = serverWorld.getSpawnPoint();
-            int range = 32;
-            pos1 = pos1.add(
-                new Vec3i(
-                    Math.floor(Math.random() *  range * 2) - range,
-                    5,
-                    Math.floor(Math.random() *  range * 2) - range
-                )
-            );
-            int y = pos1.getY();
-            boolean blnFound = false;
-            int saftyCatch2 = 0;
-            while(!blnFound && saftyCatch2 < 80) {
-                saftyCatch2 ++;
-                y--;
-                BlockPos blockPos2 = new BlockPos(
-                        pos1.getX(),
-                        y,
-                        pos1.getZ()
-                );
-                BlockState blockState = server.getWorld(DimensionType.OVERWORLD).getBlockState(blockPos2);
-                //ChaosCraft.LOGGER.info("blockState: " + blockState.toString() + "  --? " + blockState.getBlock().toString());
-                if(!blockState.getBlock().equals(Blocks.AIR)){
-                    y += 2;
-                    blnFound = true;
-                    pos = new BlockPos(
-                        blockPos2.getX(),
-                        y,
-                        blockPos2.getZ()
-                    );
-                }
-
-            }
-            //pos = serverWorld.getDimension().findSpawn(pos1.getX(), pos1.getZ(), false);
-
-        }
-
-        ChaosCraft.LOGGER.info("Spawning: " + pos.getX() +", " + pos.getY()+", " +  pos.getZ());
-        orgEntity.setLocationAndAngles(pos.getX(), pos.getY(), pos.getZ(), playerEntity.rotationYaw, playerEntity.rotationPitch);
-
+        BlockPos pos = spawnProvider.getSpawnPos(serverOrgManager);
+        orgEntity.setLocationAndAngles(pos.getX(), pos.getY(), pos.getZ(),(float)Math.random() * 360, (float)Math.random() * 360);
         serverOrgManager.attachOrgEntity(orgEntity);
         serverWorld.summonEntity(orgEntity);
 

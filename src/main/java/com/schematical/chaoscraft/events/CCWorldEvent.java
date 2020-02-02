@@ -19,13 +19,20 @@ public class CCWorldEvent {
         ITEM_COLLECTED,
         ENTITY_ATTACKED,
         TOSSED_EQUIPPED_STACK,
-        HAS_TRAVELED
+        HAS_TRAVELED,
+        TRAVEL_ALONG_AXIS
+    }
+    public enum Axis{
+        X,
+        Y,
+        Z
     }
     public Type eventType;
     public Block block;
     public Item item;
     public Entity entity;
     public float amount = 1;
+    public Axis axis;
 
 
     public CCWorldEvent(Type _eventType){

@@ -14,6 +14,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.ArrayList;
@@ -28,11 +29,18 @@ public class ServerOrgManager extends BaseOrgManager {
     protected long spawnTime = 0;
     public ArrayList<CCClientOutputNeuronActionPacket> neuronActions = new ArrayList<CCClientOutputNeuronActionPacket>();
     private float maxLifeSeconds = 60;
+    protected ArrayList<iChaosOrgTickable> tickables = new ArrayList<iChaosOrgTickable>();
+    public ServerOrgManager(){
+        this.attatchTickable(new ServerOrgPositionManager());
+    }
     public void setTmpNamespace(String _tmpNamespace){
         tmpNamespace = _tmpNamespace;
     }
     public String getTmpNamespace(){
        return tmpNamespace;
+    }
+    public void attatchTickable(iChaosOrgTickable tickable){
+        tickables.add(tickable);
     }
     public void attachOrganism(Organism organism){
         if(!state.equals(State.PlayerAttached)){
@@ -138,7 +146,16 @@ public class ServerOrgManager extends BaseOrgManager {
             this.neuronActions.clear();
             if(this.state.equals(State.Spawned)){
                 this.markTicking();
+
             }
+            fireTickables();
+        }
+
+    }
+
+    private void fireTickables() {
+        for (iChaosOrgTickable tickable : tickables) {
+            tickable.Tick(this);
         }
     }
 

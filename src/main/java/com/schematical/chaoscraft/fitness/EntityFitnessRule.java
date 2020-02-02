@@ -104,6 +104,21 @@ public class EntityFitnessRule {
                        ChaosCraft.LOGGER.info("Item Pickup Check Success: " + itemId);
                    }
                    break;
+
+               case(Enum.AXIS):
+                   if(event.axis == null){
+                       ChaosCraft.LOGGER.error("No `axis` to check against!");
+                   }
+
+
+
+                   if(!attributeValue.contains(event.axis)){
+                       return null;
+                   }else{
+                       ChaosCraft.LOGGER.info("Axis Movement Success: " + attributeValue);
+                   }
+                   break;
+
                default:
                    ChaosCraft.LOGGER.error("Invalid `attributeId`: " + attributeId);
                    return null;
