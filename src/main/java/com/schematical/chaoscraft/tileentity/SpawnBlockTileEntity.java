@@ -32,7 +32,7 @@ public class SpawnBlockTileEntity  extends TileEntity implements ITickableTileEn
         private final int[] cookingTotalTimes = new int[4];
 
         public SpawnBlockTileEntity() {
-            super(ChaosTileEntity.SpawnTile);
+            super(ChaosTileEntity.SPAWN_TILE.get());
         }
 
     @Override

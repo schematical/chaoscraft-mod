@@ -16,7 +16,7 @@ import javax.annotation.Nullable;
 public class WaypointBlockTileEntity extends TileEntity implements ITickableTileEntity {
 
         public WaypointBlockTileEntity() {
-            super(ChaosTileEntity.WaypointTile);
+            super(ChaosTileEntity.WAYPOINT_TILE.get());
         }
 
     @Override
