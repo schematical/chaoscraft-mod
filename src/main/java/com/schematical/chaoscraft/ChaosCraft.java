@@ -131,6 +131,10 @@ public class ChaosCraft
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onKeyInputEvent);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onEntitySpawn);
         FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(EntityType.class, this::onEntityRegistry);
+
+        ChaosBlocks.BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
+        ChaosTileEntity.TILES.register(FMLJavaModLoadingContext.get().getModEventBus());
+
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
 
@@ -254,40 +258,8 @@ public class ChaosCraft
     // Event bus for receiving Registry Events)
     @Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
     public static class RegistryEvents {
-        @SubscribeEvent
-        public static void onBlocksRegistry(final RegistryEvent.Register<Block> blockRegistryEvent) {
-            // register a new block here
-            LOGGER.info("HELLO from Register Block");
-            ChaosBlocks.SpawnBlock = new SpawnBlock(Block.Properties.create(Material.BARRIER).tickRandomly().hardnessAndResistance(-1.0F, 3600000.0F)).setRegistryName(ChaosCraft.MODID, "spawn_block.json");
-
-            blockRegistryEvent.getRegistry().registerAll(
-                ChaosBlocks.SpawnBlock
-           );
-
-            ChaosBlocks.WaypointBlock = new WaypointBlock(Block.Properties.create(Material.BARRIER).tickRandomly().hardnessAndResistance(-1.0F, 3600000.0F)).setRegistryName(ChaosCraft.MODID, "waypoint_block.json");
-            blockRegistryEvent.getRegistry().registerAll(
-                    ChaosBlocks.WaypointBlock
-            );
-
-            ChaosBlocks.ChaosEgg = new ChaosEggBlock(Block.Properties.create(Material.BARRIER).tickRandomly().hardnessAndResistance(-1.0F, 3600000.0F)).setRegistryName(ChaosCraft.MODID, "chaos_egg_block.json");
-            blockRegistryEvent.getRegistry().registerAll(
-                    ChaosBlocks.ChaosEgg
-             );
-
-        }
-        @SubscribeEvent
-        public static void registerTE(RegistryEvent.Register<TileEntityType<?>> evt) {
-            ChaosTileEntity.SpawnTile = TileEntityType.Builder.create(SpawnBlockTileEntity::new, ChaosBlocks.SpawnBlock).build(null);
-            ChaosTileEntity.SpawnTile .setRegistryName(MODID, "spawn_block_tile_entity");
-            evt.getRegistry().register(ChaosTileEntity.SpawnTile );
-
-            ChaosTileEntity.WaypointTile = TileEntityType.Builder.create(WaypointBlockTileEntity::new, ChaosBlocks.WaypointBlock).build(null);
-            ChaosTileEntity.WaypointTile .setRegistryName(MODID, "waypoint_block_tile_entity");
-            evt.getRegistry().register(ChaosTileEntity.WaypointTile );
-        }
-
-
     }
+
     @SubscribeEvent
     public void onClientTickEvent(TickEvent.ClientTickEvent clientTickEvent){
         if(ChaosCraft.client == null){
@@ -323,7 +295,7 @@ public class ChaosCraft
             ChaosCraft.client.getState().equals(ChaosCraftClient.State.Uninitiated)
         ){
             LOGGER.info("onPlayerLoggedInEvent FIRING  2");
-           
+
 
         }
     }

@@ -1,6 +1,6 @@
 {
   "parent": "block/cube_all",
   "textures": {
-    "all": "chaoscraft:blocks/brick"
+    "all": "chaoscraft:block/waypoint_block"
   }
 }
