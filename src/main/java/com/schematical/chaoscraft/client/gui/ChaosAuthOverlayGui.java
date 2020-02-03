@@ -36,6 +36,8 @@ public class ChaosAuthOverlayGui extends Screen {
         super(new TranslationTextComponent("chaoscraft.gui.auth.title"));
 
     }
+
+    @Override
     protected void init() {
         super.init();
         authLogin = new AuthLogin();
@@ -112,7 +114,7 @@ public class ChaosAuthOverlayGui extends Screen {
                 return"IDK what this is";
             }
         };
-        this.usernameInput.func_212954_a((username) -> {
+        this.usernameInput.setResponder((username) -> {
             authLogin.setUsername(username);
             //authLogin.setPassword(this.password);
         });
@@ -123,13 +125,16 @@ public class ChaosAuthOverlayGui extends Screen {
                 return"IDK what this is";
             }
         };
-        this.passwordInput.func_212954_a((password) -> {
+        this.passwordInput.setResponder((password) -> {
             authLogin.setPassword(password);
         });
         this.children.add(this.passwordInput);
 
 
     }
+
+
+    @Override
     public void render(int p_render_1_, int p_render_2_, float p_render_3_) {
         this.renderBackground();
         this.drawCenteredString(this.font, this.title.getFormattedText(), this.width / 2, 70, 16777215);
@@ -142,8 +147,8 @@ public class ChaosAuthOverlayGui extends Screen {
         this.drawCenteredString(this.font, this.infoMessage, this.width / 2, 150, 16777215);
         super.render(p_render_1_, p_render_2_, p_render_3_);
     }
-    private void close() {
 
+    private void close() {
         this.minecraft.displayGuiScreen((Screen)null);
     }
 

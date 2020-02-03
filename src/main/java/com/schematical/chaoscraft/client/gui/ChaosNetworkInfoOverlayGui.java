@@ -23,10 +23,12 @@ public class ChaosNetworkInfoOverlayGui extends Screen {
         super(new TranslationTextComponent("chaoscraft.gui.mainmenu.title"));
 
     }
+    @Override
     protected void init() {
         super.init();
         serverPingMessage = null;
     }
+    @Override
     public void render(int p_render_1_, int p_render_2_, float p_render_3_) {
         this.renderBackground();
         //this.drawCenteredString(this.font, this.title.getFormattedText(), this.width / 2, , 16777215);

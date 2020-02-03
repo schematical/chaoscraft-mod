@@ -26,12 +26,14 @@ public class ChaosSpeciesDetailOverlayGui extends Screen {
         this.taxonomicRank = taxonomicRank;
 
     }
+    @Override
     protected void init() {
         super.init();
 
 
 
     }
+    @Override
     public void render(int p_render_1_, int p_render_2_, float p_render_3_) {
         this.renderBackground();
         int y = 0;

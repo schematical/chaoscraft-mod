@@ -25,6 +25,7 @@ public class ChaosSpeciesListOverlayGui extends Screen {
 
 
     }
+    @Override
     protected void init() {
         super.init();
         try{
@@ -73,6 +74,7 @@ public class ChaosSpeciesListOverlayGui extends Screen {
 
 
     }
+    @Override
     public void render(int p_render_1_, int p_render_2_, float p_render_3_) {
         this.renderBackground();
         this.drawCenteredString(this.font, this.title.getFormattedText(), this.width / 2, 70, 16777215);

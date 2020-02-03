@@ -19,7 +19,8 @@ public class WaypointBlockTileEntity extends TileEntity implements ITickableTile
             super(ChaosTileEntity.WaypointTile);
         }
 
-        public void tick() {
+    @Override
+    public void tick() {
             if(!ChaosBlocks.waypointsBlocks.contains(this.getPos())) {
                 ChaosBlocks.waypointsBlocks.add(this.getPos());
                 ChaosCraft.LOGGER.info("Waypoint at " + this.getPos().getX() + ", " + this.getPos().getY() + ", " + this.getPos().getZ());
@@ -28,12 +29,14 @@ public class WaypointBlockTileEntity extends TileEntity implements ITickableTile
         }
 
 
-        public void read(CompoundNBT compound) {
+    @Override
+    public void read(CompoundNBT compound) {
             super.read(compound);
 
         }
 
-        public CompoundNBT write(CompoundNBT compound) {
+    @Override
+    public CompoundNBT write(CompoundNBT compound) {
             this.writeItems(compound);
 
             return compound;
@@ -50,6 +53,7 @@ public class WaypointBlockTileEntity extends TileEntity implements ITickableTile
          * modded TE's, this packet comes back to you clientside in {@link #onDataPacket}
          */
         @Nullable
+        @Override
         public SUpdateTileEntityPacket getUpdatePacket() {
             return new SUpdateTileEntityPacket(this.pos, 13, this.getUpdateTag());
         }
@@ -58,6 +62,7 @@ public class WaypointBlockTileEntity extends TileEntity implements ITickableTile
          * Get an NBT compound to sync to the client with SPacketChunkData, used for initial loading of the chunk or when
          * many blocks change at once. This compound comes back to you clientside in
          */
+        @Override
         public CompoundNBT getUpdateTag() {
             return this.writeItems(new CompoundNBT());
         }
