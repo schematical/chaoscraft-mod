@@ -30,6 +30,7 @@ public class ChaosNNetViewOverlayGui extends Screen {
     public ClientOrgManager getClientOrgManager(){
         return clientOrgManager;
     }
+    @Override
     protected void init() {
         super.init();
         ArrayList<NeuronBase> inputs = new ArrayList<NeuronBase>();
@@ -75,6 +76,7 @@ public class ChaosNNetViewOverlayGui extends Screen {
        /* this.field_201553_i.clear();
         this.field_201553_i.addAll(this.font.listFormattedStringToWidth(this.field_201550_f.getFormattedText(), this.width - 50));*/
     }
+    @Override
     public void render(int p_render_1_, int p_render_2_, float p_render_3_) {
         this.renderBackground();
         this.drawCenteredString(this.font, this.title.getFormattedText(), this.width / 2, 70, 16777215);

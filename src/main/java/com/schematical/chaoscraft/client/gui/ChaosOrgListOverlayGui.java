@@ -16,6 +16,7 @@ public class ChaosOrgListOverlayGui extends Screen {
         super(new TranslationTextComponent("chaoscraft.gui.mainmenu.title"));
 
     }
+    @Override
     protected void init() {
         super.init();
         int y = 0;
@@ -33,6 +34,7 @@ public class ChaosOrgListOverlayGui extends Screen {
         }
 
     }
+    @Override
     public void render(int p_render_1_, int p_render_2_, float p_render_3_) {
         this.renderBackground();
 

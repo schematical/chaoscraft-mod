@@ -151,6 +151,7 @@ public class OrgEntity extends MobEntity {
     public ItemStackHandler getItemStack(){
         return this.itemHandler;
     }
+    @Override
     public void jump(){
         if(
             !this.isJumping &&
@@ -857,6 +858,7 @@ public class OrgEntity extends MobEntity {
 
 
 
+    @Override
     public boolean processInteract(PlayerEntity player, Hand hand)
     {
         if(
@@ -900,6 +902,7 @@ public class OrgEntity extends MobEntity {
     public void attachSeverOrgManager(ServerOrgManager serverOrgManager) {
         this.serverOrgManager = serverOrgManager;
     }
+    @Override
     public void onDeath(DamageSource cause) {
         super.onDeath(cause);
 

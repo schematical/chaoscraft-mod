@@ -12,6 +12,7 @@ import net.minecraft.world.server.ServerWorld;
 
 public class PlayerSpawnPosProvider implements iServerSpawnProvider {
 
+    @Override
     public BlockPos getSpawnPos(ServerOrgManager serverOrgManager){
         ServerWorld serverWorld = ChaosCraft.getServer().server.getWorld(DimensionType.OVERWORLD);
         PlayerEntity playerEntity = serverWorld.getPlayers().get(0);

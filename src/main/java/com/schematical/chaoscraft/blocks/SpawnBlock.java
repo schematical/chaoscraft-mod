@@ -23,6 +23,7 @@ public class SpawnBlock extends Block implements ITileEntityProvider {
     public SpawnBlock(Properties properties) {
         super(properties);
     }
+
     @Override
     public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
         //if (!stateIn.isValidPosition(worldIn, currentPos)) {
@@ -32,11 +33,11 @@ public class SpawnBlock extends Block implements ITileEntityProvider {
         return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
     }
     @Override
-    public void func_225534_a_(BlockState p_225534_1_, ServerWorld p_225534_2_, BlockPos p_225534_3_, Random p_225534_4_) {
+    public void tick(BlockState p_225534_1_, ServerWorld p_225534_2_, BlockPos p_225534_3_, Random p_225534_4_) {
         //ChaosCraft.LOGGER.debug("SpawnBlock Ticked!  1" );
     }
     @Override
-    public void func_225542_b_(BlockState p_225542_1_, ServerWorld p_225542_2_, BlockPos p_225542_3_, Random p_225542_4_){
+    public void randomTick(BlockState p_225542_1_, ServerWorld p_225542_2_, BlockPos p_225542_3_, Random p_225542_4_){
        // ChaosCraft.LOGGER.debug("SpawnBlock Ticked! 2" );
     }
     @Override

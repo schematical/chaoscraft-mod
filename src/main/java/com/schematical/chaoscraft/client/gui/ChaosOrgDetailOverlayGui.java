@@ -23,6 +23,7 @@ public class ChaosOrgDetailOverlayGui extends Screen {
         this.clientOrgManager = clientOrgManager;
 
     }
+    @Override
     protected void init() {
         super.init();
         int y = 0;
@@ -58,6 +59,7 @@ public class ChaosOrgDetailOverlayGui extends Screen {
         }));*/
         y += 20;
     }
+    @Override
     public void render(int p_render_1_, int p_render_2_, float p_render_3_) {
         this.renderBackground();
         this.drawCenteredString(this.font, this.title.getFormattedText(), this.width / 2, 70, 16777215);

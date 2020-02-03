@@ -17,12 +17,14 @@ public class ChaosOrgScoreEventListOverlayGui extends Screen {
         super(new TranslationTextComponent(clientOrgManager.getCCNamespace()));
         this.clientOrgManager = clientOrgManager;
     }
+    @Override
     protected void init() {
         super.init();
 
 
 
     }
+    @Override
     public void render(int p_render_1_, int p_render_2_, float p_render_3_) {
         this.renderBackground();
         int y = 0;

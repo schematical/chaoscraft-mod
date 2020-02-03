@@ -42,6 +42,7 @@ public class ServerOrgManager extends BaseOrgManager {
     public void attatchTickable(iChaosOrgTickable tickable){
         tickables.add(tickable);
     }
+    @Override
     public void attachOrganism(Organism organism){
         if(!state.equals(State.PlayerAttached)){
             ChaosCraft.LOGGER.error(getCCNamespace() + " - has invalid state: " + state);
@@ -50,6 +51,7 @@ public class ServerOrgManager extends BaseOrgManager {
         super.attachOrganism(organism);
         state = State.OrgAttached;
     }
+    @Override
     public void attachOrgEntity(OrgEntity orgEntity){
         if(!state.equals(State.QueuedForSpawn)){
             ChaosCraft.LOGGER.error(getCCNamespace() + " - has invalid state: " + state);

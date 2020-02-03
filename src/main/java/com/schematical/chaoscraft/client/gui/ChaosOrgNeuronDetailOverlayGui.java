@@ -25,6 +25,7 @@ public class ChaosOrgNeuronDetailOverlayGui extends Screen {
         this.clientOrgManager = clientOrgManager;
         this.neuronBase = neuronBase;
     }
+    @Override
     protected void init() {
         super.init();
         this.minecraft.keyboardListener.enableRepeatEvents(true);
@@ -34,7 +35,7 @@ public class ChaosOrgNeuronDetailOverlayGui extends Screen {
                 return"IDK what this is";
             }
         };
-        this.valueInput.func_212954_a((strVal) -> {
+        this.valueInput.setResponder((strVal) -> {
             try {
                 this.overrideVal = Float.parseFloat(strVal);
             }catch(Exception e){
@@ -48,6 +49,7 @@ public class ChaosOrgNeuronDetailOverlayGui extends Screen {
             ChaosCraft.LOGGER.debug("Setting : " + this.overrideVal + " on " + this.neuronBase.id);
         }));
     }
+    @Override
     public void render(int p_render_1_, int p_render_2_, float p_render_3_) {
         this.renderBackground();
         this.drawCenteredString(this.font, this.title.getFormattedText(), this.width / 2, 0, 16777215);

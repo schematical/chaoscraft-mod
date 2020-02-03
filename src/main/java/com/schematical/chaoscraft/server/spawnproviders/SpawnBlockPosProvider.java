@@ -13,6 +13,7 @@ import net.minecraft.world.server.ServerWorld;
 
 public class SpawnBlockPosProvider implements iServerSpawnProvider {
 
+    @Override
     public BlockPos getSpawnPos(ServerOrgManager serverOrgManager){
         int i = (int)Math.floor(Math.random() * ChaosBlocks.spawnBlocks.size());
         return ChaosBlocks.spawnBlocks.get(i).add(new Vec3i(0,2,0));

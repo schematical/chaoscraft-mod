@@ -35,7 +35,8 @@ public class SpawnBlockTileEntity  extends TileEntity implements ITickableTileEn
             super(ChaosTileEntity.SpawnTile);
         }
 
-        public void tick() {
+    @Override
+    public void tick() {
             if(!ChaosBlocks.spawnBlocks.contains(this.getPos())) {
                 ChaosBlocks.spawnBlocks.add(this.getPos());
                 ChaosCraft.LOGGER.info("SpawnBlock at " + this.getPos().getX() + ", " + this.getPos().getY() + ", " + this.getPos().getZ());
@@ -44,7 +45,8 @@ public class SpawnBlockTileEntity  extends TileEntity implements ITickableTileEn
         }
 
 
-        public void read(CompoundNBT compound) {
+    @Override
+    public void read(CompoundNBT compound) {
             super.read(compound);
             this.inventory.clear();
             ItemStackHelper.loadAllItems(compound, this.inventory);
@@ -60,7 +62,8 @@ public class SpawnBlockTileEntity  extends TileEntity implements ITickableTileEn
 
         }
 
-        public CompoundNBT write(CompoundNBT compound) {
+    @Override
+    public CompoundNBT write(CompoundNBT compound) {
             this.writeItems(compound);
             compound.putIntArray("CookingTimes", this.cookingTimes);
             compound.putIntArray("CookingTotalTimes", this.cookingTotalTimes);
@@ -78,6 +81,7 @@ public class SpawnBlockTileEntity  extends TileEntity implements ITickableTileEn
          * modded TE's, this packet comes back to you clientside in {@link #onDataPacket}
          */
         @Nullable
+        @Override
         public SUpdateTileEntityPacket getUpdatePacket() {
             return new SUpdateTileEntityPacket(this.pos, 13, this.getUpdateTag());
         }
@@ -86,6 +90,7 @@ public class SpawnBlockTileEntity  extends TileEntity implements ITickableTileEn
          * Get an NBT compound to sync to the client with SPacketChunkData, used for initial loading of the chunk or when
          * many blocks change at once. This compound comes back to you clientside in
          */
+        @Override
         public CompoundNBT getUpdateTag() {
             return this.writeItems(new CompoundNBT());
         }

@@ -34,6 +34,7 @@ private String trainingRoomNamespace;
         super(new TranslationTextComponent("chaoscraft.gui.auth.title"));
 
     }
+    @Override
     protected void init() {
         super.init();
 
@@ -56,7 +57,7 @@ private String trainingRoomNamespace;
                 return"IDK what this is";
             }
         };
-        this.usernameInput.func_212954_a((username) -> {
+        this.usernameInput.setResponder((username) -> {
             trainingRoomUsername = username;
             //authLogin.setPassword(this.password);
         });
@@ -67,13 +68,14 @@ private String trainingRoomNamespace;
                 return"IDK what this is";
             }
         };
-        this.trainingRoomNamespaceInput.func_212954_a((namespace) -> {
+        this.trainingRoomNamespaceInput.setResponder((namespace) -> {
            trainingRoomNamespace = namespace;
         });
         this.children.add(this.trainingRoomNamespaceInput);
 
 
     }
+    @Override
     public void render(int p_render_1_, int p_render_2_, float p_render_3_) {
         this.renderBackground();
         this.drawCenteredString(this.font, this.title.getFormattedText(), this.width / 2, 70, 16777215);

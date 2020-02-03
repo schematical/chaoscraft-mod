@@ -43,6 +43,7 @@ public class ChaosEggBlock extends Block {
         /**
          * Called when the given entity walks on this Block
          */
+        @Override
         public void onEntityWalk(World worldIn, BlockPos pos, Entity entityIn) {
             this.tryTrample(worldIn, pos, entityIn, 100);
             super.onEntityWalk(worldIn, pos, entityIn);
@@ -51,6 +52,7 @@ public class ChaosEggBlock extends Block {
         /**
          * Block's chance to react to a living entity falling on it.
          */
+        @Override
         public void onFallenUpon(World worldIn, BlockPos pos, Entity entityIn, float fallDistance) {
             if (!(entityIn instanceof ZombieEntity)) {
                 this.tryTrample(worldIn, pos, entityIn, 3);
@@ -82,7 +84,8 @@ public class ChaosEggBlock extends Block {
 
         }
 
-        public void func_225534_a_(BlockState p_225534_1_, ServerWorld p_225534_2_, BlockPos blockPos, Random p_225534_4_) {
+        @Override
+        public void tick(BlockState p_225534_1_, ServerWorld p_225534_2_, BlockPos blockPos, Random p_225534_4_) {
             ChaosCraft.LOGGER.info("CHAOS EGG TICKING: " + blockPos.getX() + ", " + blockPos.getY() + ", " + blockPos.getZ());
             if (this.canGrow(p_225534_2_) && this.hasProperHabitat(p_225534_2_, blockPos)) {
                 int i = p_225534_1_.get(HATCH);
@@ -110,6 +113,7 @@ public class ChaosEggBlock extends Block {
             return p_203168_1_.getBlockState(p_203168_2_.down()).getBlock() == Blocks.SAND;
         }
 
+        @Override
         public void onBlockAdded(BlockState state, World worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
             if (this.hasProperHabitat(worldIn, pos) && !worldIn.isRemote) {
                 worldIn.playEvent(2005, pos, 0);
@@ -130,25 +134,30 @@ public class ChaosEggBlock extends Block {
          * Spawns the block's drops in the world. By the time this is called the Block has possibly been set to air via
          * Block.removedByPlayer
          */
+        @Override
         public void harvestBlock(World worldIn, PlayerEntity player, BlockPos pos, BlockState state, @Nullable TileEntity te, ItemStack stack) {
             super.harvestBlock(worldIn, player, pos, state, te, stack);
             this.removeOneEgg(worldIn, pos, state);
         }
 
+        @Override
         public boolean isReplaceable(BlockState state, BlockItemUseContext useContext) {
             return useContext.getItem().getItem() == this.asItem() && state.get(EGGS) < 4 ? true : super.isReplaceable(state, useContext);
         }
 
         @Nullable
+        @Override
         public BlockState getStateForPlacement(BlockItemUseContext context) {
             BlockState blockstate = context.getWorld().getBlockState(context.getPos());
             return blockstate.getBlock() == this ? blockstate.with(EGGS, Integer.valueOf(Math.min(4, blockstate.get(EGGS) + 1))) : super.getStateForPlacement(context);
         }
 
+        @Override
         public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
             return state.get(EGGS) > 1 ? MULTI_EGG_SHAPE : ONE_EGG_SHAPE;
         }
 
+        @Override
         protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
             builder.add(HATCH, EGGS);
         }
