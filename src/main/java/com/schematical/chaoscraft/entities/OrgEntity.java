@@ -97,6 +97,7 @@ public class OrgEntity extends MobEntity {
 
     public OrgEntity(EntityType<? extends MobEntity> type, World world) {
         super((EntityType<? extends MobEntity>) type, world);
+        setHealth(1);
     }
     public void setSpawnHash(int _spawnHash) {
         this.spawnHash = _spawnHash;
@@ -715,9 +716,10 @@ public class OrgEntity extends MobEntity {
         double zOffset = Math.cos(Math.toRadians(this.desiredYaw)) * Math.cos(Math.toRadians(desiredPitch));
         double xOffset = Math.sin(Math.toRadians(this.desiredYaw)) * Math.cos(Math.toRadians(desiredPitch));
         Vec3d pos = getPositionVec();
+
         this.getLookController().setLookPosition(pos.getX() + xOffset, pos.getY() + this.getEyeHeight() + yOffset, pos.getZ() + zOffset, 360, 360);
         this.renderYawOffset = 0;
-        this.setRotation(this.rotationYaw, this.rotationPitch);
+        this.setRotation((float) this.desiredYaw, this.rotationPitch);
     }
 
     private void checkForItemPickup(){

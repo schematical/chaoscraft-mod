@@ -14,7 +14,9 @@ import java.util.List;
  * Created by user1a on 1/30/19.
  */
 public class ChaosServerThread implements Runnable {
-
+    public void end(){
+        ChaosCraft.getServer().thread = null;
+    }
     @Override
     public void run(){
         try{
@@ -23,6 +25,7 @@ public class ChaosServerThread implements Runnable {
                 ChaosCraft.config.trainingRoomUsernameNamespace == null
             ){
                //No training room set :(
+                end();
                 return;
             }
             GetUsernameTrainingroomsTrainingroomOrganismsRequest request = new GetUsernameTrainingroomsTrainingroomOrganismsRequest();
@@ -53,7 +56,7 @@ public class ChaosServerThread implements Runnable {
             }
 
 
-            ChaosCraft.getServer().thread = null;
+
 
 
         }catch(ChaosNetException exception){
@@ -76,9 +79,10 @@ public class ChaosServerThread implements Runnable {
             ByteBuffer byteBuffer = exception.sdkHttpMetadata().responseContent();
             String message = StandardCharsets.UTF_8.decode(byteBuffer).toString();//new String(byteBuffer.as().array(), StandardCharsets.UTF_8 );
             ChaosCraft.LOGGER.error("ChaosClientThread  Error: " + message + " - statusCode: " + statusCode);
-            ChaosCraft.getServer().thread = null;
+
 
         }
+        end();
     }
 
 }

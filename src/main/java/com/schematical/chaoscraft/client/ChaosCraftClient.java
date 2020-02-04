@@ -102,6 +102,7 @@ public class ChaosCraftClient {
         if(Minecraft.getInstance().getConnection() == null){
             return;
         }
+
         if(ChaosCraft.config.accessToken == null){
             //MAKE THEM AUTH FIRST
             //but only open the screen when it isnt already open
@@ -165,7 +166,7 @@ public class ChaosCraftClient {
         if(!state.equals(State.Authed)){
             return;
         }
-      /*  if(true){
+        /*if(true){
             return;
         }*/
         checkForDeadOrgs();

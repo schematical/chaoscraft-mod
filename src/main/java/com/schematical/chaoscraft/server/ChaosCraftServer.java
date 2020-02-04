@@ -48,6 +48,7 @@ public class ChaosCraftServer {
     public static HashMap<String, ServerOrgManager> organisms = new HashMap<String, ServerOrgManager>();
     public ChaosCraftFitnessManager fitnessManager;
     public int longTickCount = 0;
+    public int ticksSinceLastThread = -1;
     public iServerSpawnProvider spawnProvider = new SpawnBlockPosProvider();//PlayerSpawnPosProvider();
 
     public ChaosCraftServer(MinecraftServer server) {
@@ -70,12 +71,20 @@ public class ChaosCraftServer {
 
         checkForDeadOrgs();
         List<ServerOrgManager> orgNamepacesQueuedToSpawn = getOrgsWithState(ServerOrgManager.State.PlayerAttached);
+        ticksSinceLastThread += 1;
         if(
             orgNamepacesQueuedToSpawn.size() > 0 &&
-            thread == null
+                    (
+                            thread == null||
+                            ticksSinceLastThread > (120 * 20)//TWO MINutes?
+                    )
         ){
+            if(thread != null){
+                thread.interrupt();
+            }
             thread = new Thread(new ChaosServerThread(), "ChaosServerThread");
             thread.start();
+            ticksSinceLastThread = 0;
         }
         List<ServerOrgManager> orgsToSpawn = getOrgsWithState(ServerOrgManager.State.QueuedForSpawn);
         if(orgsToSpawn.size() > 0){
@@ -150,7 +159,7 @@ public class ChaosCraftServer {
                 .build();
         GetAuthWhoamiRequest getAuthWhoamiRequest = new GetAuthWhoamiRequest();
         AuthWhoamiRequest authWhoamiRequest = new AuthWhoamiRequest();
-       // authWhoamiRequest.accessToken(accessToken);
+        authWhoamiRequest.accessToken(accessToken);
         getAuthWhoamiRequest.setAuthWhoamiRequest(authWhoamiRequest);
         GetAuthWhoamiResult getAuthWhoamiResult = sdk.getAuthWhoami(getAuthWhoamiRequest);
         AuthWhoamiResponse authWhoamiResponse = getAuthWhoamiResult.getAuthWhoamiResponse();
@@ -217,7 +226,9 @@ public class ChaosCraftServer {
         OrgEntity orgEntity = OrgEntity.ORGANISM_TYPE.create(serverWorld);
         orgEntity.setSpawnHash(ChaosCraft.getServer().spawnHash);
         BlockPos pos = spawnProvider.getSpawnPos(serverOrgManager);
-        orgEntity.setLocationAndAngles(pos.getX(), pos.getY(), pos.getZ(),(float)Math.random() * 360, (float)Math.random() * 360);
+        if(pos != null) {
+            orgEntity.setLocationAndAngles(pos.getX(), pos.getY(), pos.getZ(), (float)( Math.random() * 360), (float) (Math.random() * 360));
+        }
         serverOrgManager.attachOrgEntity(orgEntity);
         serverWorld.summonEntity(orgEntity);
 

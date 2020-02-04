@@ -26,15 +26,15 @@ public class ClientOrgManager extends BaseOrgManager {
         expectedLifeEndTime = pkt.expectedLifeEndTime;
         serverScoreEvents.add(pkt);
         orgEntity.world.playSound((PlayerEntity)null, orgEntity.getPosition(), SoundEvents.BLOCK_BELL_USE, SoundCategory.AMBIENT, 3.0F, 1f);
-        for(int i = 0; i < 20; i ++) {
+        for(int i = 0; i < 4; i ++) {
             BlockPos pos = orgEntity.getPosition();
             orgEntity.world.addParticle(
                 ParticleTypes.CLOUD,
                 (double) pos.getX() + 0.5D,
                 (double) pos.getY() + 1.2D,
                 (double) pos.getZ() + 0.5D,
-                (double) i / 24.0D,
                 0.0D,
+                    (double) i / 24.0D,
                 0.0D
             );
         }

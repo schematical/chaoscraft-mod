@@ -15,6 +15,10 @@ public class SpawnBlockPosProvider implements iServerSpawnProvider {
 
     @Override
     public BlockPos getSpawnPos(ServerOrgManager serverOrgManager){
+        if(ChaosBlocks.spawnBlocks.size() == 0){
+            ChaosCraft.LOGGER.error("Cannot find any spawnBlocks");
+            return null;
+        }
         int i = (int)Math.floor(Math.random() * ChaosBlocks.spawnBlocks.size());
         return ChaosBlocks.spawnBlocks.get(i).add(new Vec3i(0,2,0));
     }

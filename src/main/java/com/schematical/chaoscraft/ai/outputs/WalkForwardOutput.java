@@ -23,9 +23,10 @@ public class WalkForwardOutput extends OutputNeuron {
         //Pulled from net.minecraft.pathfinding.PathNavigate.onUpdateNavigation#263
         //this.entity.getMoveHelper().setMoveTo(vec3d2.x, vec3d2.y, vec3d2.z, this.speed);
 
-        nNet.entity.moveForward = reversedValue * 0.25f;
+        nNet.entity.moveForward = reversedValue * 1;
         //ChaosCraft.logger.info(nNet.entity.getName() + " Walking Forward: " + this._lastValue + " - " + nNet.entity.moveForward);
-       //nNet.entity.getMoveHelper().strafe(nNet.entity.moveForward, nNet.entity.moveStrafing);
-        nNet.entity.move(MoverType.SELF, new Vec3d(nNet.entity.moveForward, 0, nNet.entity.moveStrafing));
+        nNet.entity.getMoveHelper().strafe(nNet.entity.moveForward, nNet.entity.moveStrafing);
+        //nNet.entity.move(MoverType.SELF, new Vec3d(nNet.entity.moveForward, 0, nNet.entity.moveStrafing));
+        //nNet.entity.setMotion(new Vec3d(nNet.entity.moveForward, 0, nNet.entity.moveStrafing));
     }
 }
