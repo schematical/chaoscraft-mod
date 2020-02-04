@@ -37,7 +37,7 @@ public class CCClientSpawnPacket {
         public static void handle(final CCClientSpawnPacket message, Supplier<NetworkEvent.Context> ctx) {
            // ChaosCraft.LOGGER.info("recived `CCClientSpawnPacket` 1 ");
             ctx.get().enqueueWork(() -> {
-                ChaosCraft.LOGGER.info("recived `CCClientSpawnPacket` 2: " + message.orgNamespace);
+                //ChaosCraft.LOGGER.info("recived `CCClientSpawnPacket` 2: " + message.orgNamespace);
                 //Pretty sure the server should get this
 
                 //Load the NNet into memory

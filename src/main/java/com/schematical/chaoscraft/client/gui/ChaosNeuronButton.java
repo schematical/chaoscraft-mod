@@ -8,10 +8,12 @@ import net.minecraft.client.gui.widget.button.Button;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.HashMap;
+
 @OnlyIn(Dist.CLIENT)
 public class ChaosNeuronButton extends Button {
 
-    final int EXPANDED_WIDTH = 200;
+    public static final int EXPANDED_WIDTH = 200;
     public static final int MIN_WIDTH = 20;
     public enum State{
         Open,
@@ -22,6 +24,7 @@ public class ChaosNeuronButton extends Button {
 
     public State state = State.Closed;
     private ChaosNNetViewOverlayGui chaosNNetViewOverlayGui;
+    public HashMap<String, ChaosNeuronButton> dependancies = new HashMap<String, ChaosNeuronButton>();
     public ChaosNeuronButton(NeuronBase neuronBase, ChaosNNetViewOverlayGui chaosNNetViewOverlayGui, int i, int y) {
         super(1,
                 y,
@@ -38,13 +41,31 @@ public class ChaosNeuronButton extends Button {
         this.min();
 
     }
+    public NeuronBase getNeuronBase(){
+        return neuronBase;
+    }
 
     public void renderRefresh(){
-        if(state.equals(ChaosOrgBiologyButton.State.Closed)){
+        if(state.equals(State.Closed)){
             return;
         }
+        //this.setWidth((int)neuronBase._lastValue * 200);
+        this.setMessage(this.neuronBase.toLongString());
+        switch(neuronBase._base_type()){
+            case(com.schematical.chaoscraft.Enum.INPUT):
+                x = 10;
 
-        this.setMessage(this.neuronBase.toString());
+                break;
+            case(com.schematical.chaoscraft.Enum.OUTPUT):
+                x = chaosNNetViewOverlayGui.width - 10 - this.width;
+
+                break;
+            case(com.schematical.chaoscraft.Enum.MIDDLE):
+                x = chaosNNetViewOverlayGui.width / 2;
+
+                break;
+
+        }
     }
     public void min() {
         setWidth(MIN_WIDTH);

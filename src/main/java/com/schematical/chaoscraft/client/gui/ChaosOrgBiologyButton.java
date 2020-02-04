@@ -19,14 +19,14 @@ public class ChaosOrgBiologyButton extends Button {
     private final BiologyBase biologyBase;
 
 
-    public State state = State.Closed;
+    public State state = State.Open;
     private ChaosOrgBiologyOverlayGui chaosOrgBiologyOverlayGui;
     public ChaosOrgBiologyButton(BiologyBase biologyBase, ChaosOrgBiologyOverlayGui chaosOrgBiologyOverlayGui, int x, int y) {
         super(
                 x,
                 y,
-                MIN_WIDTH,
-                20,
+                EXPANDED_WIDTH,
+                10,
                 "X",
                 (button)->{
 
@@ -34,19 +34,19 @@ public class ChaosOrgBiologyButton extends Button {
         this.chaosOrgBiologyOverlayGui = chaosOrgBiologyOverlayGui;
         this.biologyBase  = biologyBase;
 
-        this.min();
+        //this.min();
 
     }
     public void renderRefresh(){
         if(state.equals(State.Closed)){
             return;
         }
-        if(this.biologyBase instanceof Eye){
+       /* if(this.biologyBase instanceof Eye){
             Eye eye = ((Eye)biologyBase);
             eye.reset();
             eye.canSeenBlocks();
             eye.canSeenEntities();
-        }
+        }*/
         this.setMessage(this.biologyBase.toString());
     }
     public void min() {

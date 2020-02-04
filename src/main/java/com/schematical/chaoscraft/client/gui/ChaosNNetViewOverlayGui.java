@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.InputNeuron;
 import com.schematical.chaoscraft.ai.NeuronBase;
+import com.schematical.chaoscraft.ai.NeuronDep;
 import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import net.minecraft.client.gui.AbstractGui;
@@ -15,6 +16,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 import static org.lwjgl.opengl.GL11.GL_LINE_STRIP;
@@ -61,13 +63,24 @@ public class ChaosNNetViewOverlayGui extends Screen {
             i += 1;
         }
 
+
+        if(middles.size() > 0){
+            int middlesY = baseHeight/middles.size();
+            i = 0;
+            for (NeuronBase neuronBase : middles) {
+                ChaosNeuronButton neuronButton = new ChaosNeuronButton( neuronBase, this, i, middlesY  * i + 10);
+                this.addButton(neuronButton);
+
+
+
+                i += 1;
+            }
+        }
+
         i = 0;
         for (NeuronBase neuronBase : outputs) {
             this.addButton(new ChaosNeuronButton( neuronBase, this, i, outputsY  * i + 10));
             i += 1;
-        }
-        if(middles.size() > 0){
-            int middlesX = baseHeight/middles.size();
         }
         /*this.addButton(new Button(this.width / 2 - 100, this.height / 6 + 168, 200, 20, "I am a button", (p_212983_1_) -> {
             ChaosCraft.LOGGER.info("TEST CLICK");
@@ -75,6 +88,29 @@ public class ChaosNNetViewOverlayGui extends Screen {
 
        /* this.field_201553_i.clear();
         this.field_201553_i.addAll(this.font.listFormattedStringToWidth(this.field_201550_f.getFormattedText(), this.width - 50));*/
+
+        for (Widget button : this.buttons) {
+            if(button instanceof ChaosNeuronButton){
+                attachDependants((ChaosNeuronButton) button);
+            }
+        }
+    }
+    public void attachDependants(ChaosNeuronButton neuronButton){
+        for (NeuronDep dependency : neuronButton.getNeuronBase().dependencies) {
+            boolean btnFound = false;
+            for (Widget button : this.buttons) {
+                if(button instanceof ChaosNeuronButton){
+                    ChaosNeuronButton chaosNeuronButton = (ChaosNeuronButton) button;
+                    if(chaosNeuronButton.getNeuronBase().id.equals(dependency.depNeuronId)){
+                        neuronButton.dependancies.put(dependency.depNeuronId, chaosNeuronButton);
+                        btnFound = true;
+                    }
+                }
+            }
+            if(!btnFound){
+                ChaosCraft.LOGGER.error("Error Client: Could not find dependant for: " + dependency.depNeuronId);
+            }
+        }
     }
     @Override
     public void render(int p_render_1_, int p_render_2_, float p_render_3_) {
@@ -82,8 +118,39 @@ public class ChaosNNetViewOverlayGui extends Screen {
         this.drawCenteredString(this.font, this.title.getFormattedText(), this.width / 2, 70, 16777215);
 
         for (Widget button : this.buttons) {
-            if(button instanceof ChaosOrgBiologyButton) {
-                ((ChaosOrgBiologyButton)button).renderRefresh();
+            if(button instanceof ChaosNeuronButton) {
+                ChaosNeuronButton chaosNeuronButton = ((ChaosNeuronButton)button);
+                chaosNeuronButton.renderRefresh();
+                for (NeuronDep dependency : chaosNeuronButton.getNeuronBase().dependencies) {
+                    ChaosNeuronButton depBtn = chaosNeuronButton.dependancies.get(dependency.depNeuronId);
+                    Color c = Color.GREEN;
+                    if(dependency.weight < 0){
+                        c = Color.RED;
+                    }
+                    //NeuronBase neuron = clientOrgManager.getEntity().getNNet().neurons.get(dependency.depNeuronId);
+
+                    float a = Math.abs(dependency.depNeuron._lastValue);//dependency._lastValue);
+
+                    if(a < .2f){
+                        a = .2f;
+                    }else if (a > 1){
+                        a = 1;
+                    }
+                    c = new Color(
+                        c.getRed()/255f,
+                        c.getGreen()/255f,
+                        c.getBlue()/255f,
+                            a
+                    );
+                    CCGUIHelper.drawLine(
+                            chaosNeuronButton.x + chaosNeuronButton.getWidth() / 2,
+                            chaosNeuronButton.y  + chaosNeuronButton.getHeight() / 2,
+                            depBtn.x + depBtn.getWidth() /2,
+                            depBtn.y  + depBtn.getHeight() /2,
+                            c,
+                            dependency.weight
+                    );
+                }
             }
         }
 
@@ -96,7 +163,5 @@ public class ChaosNNetViewOverlayGui extends Screen {
             ((ChaosNeuronButton) button).min();
         }
     }
-    public void drawLine(int startX, int startY, int endX, int endY, int r, int g, int b, int a) {
 
-    }
 }
