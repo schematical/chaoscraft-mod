@@ -45,8 +45,10 @@ public class ChaosOrgDetailOverlayGui extends Screen {
 
 
         y += 20;
-        this.addButton(new Button(this.width / 2 - 100, y, 100, 20, I18n.format("chaoscraft.gui.orgdetail.debug-on"), (p_214266_1_) -> {
-            ChaosNetworkManager.sendToServer(new CCClientOrgDebugStateChangeRequestPacket(ServerOrgManager.DebugState.On, this.clientOrgManager.getCCNamespace()));
+
+        this.addButton(new Button(this.width / 2 - 100, y, 100, 20, I18n.format(getDebugButtonText()), (button) -> {
+            this.clientOrgManager.toggleDebugState();
+            button.setMessage(getDebugButtonText());
         }));
 
         this.addButton(new Button(this.width / 2 , y, 100, 20, I18n.format("chaoscraft.gui.orgdetail.debug-off"), (p_214266_1_) -> {
@@ -58,6 +60,14 @@ public class ChaosOrgDetailOverlayGui extends Screen {
             Minecraft.getInstance().displayGuiScreen(screen);
         }));*/
         y += 20;
+    }
+    public String getDebugButtonText(){
+
+         if(this.clientOrgManager.getDebugState().equals(ServerOrgManager.DebugState.On)) {
+             return "chaoscraft.gui.orgdetail.debug-off";
+         }else{
+            return  "chaoscraft.gui.orgdetail.debug-on";
+        }
     }
     @Override
     public void render(int p_render_1_, int p_render_2_, float p_render_3_) {

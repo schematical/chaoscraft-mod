@@ -4,7 +4,10 @@ import com.schematical.chaoscraft.BaseOrgManager;
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
 import com.schematical.chaoscraft.entities.OrgEntity;
+import com.schematical.chaoscraft.network.ChaosNetworkManager;
+import com.schematical.chaoscraft.network.packets.CCClientOrgDebugStateChangeRequestPacket;
 import com.schematical.chaoscraft.network.packets.CCServerScoreEventPacket;
+import com.schematical.chaoscraft.server.ServerOrgManager;
 import com.schematical.chaosnet.model.Organism;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particles.ParticleTypes;
@@ -19,6 +22,7 @@ public class ClientOrgManager extends BaseOrgManager {
     private int ticksWithoutUpdate = 0;
     protected ArrayList<CCServerScoreEventPacket> serverScoreEvents = new ArrayList<CCServerScoreEventPacket>();
     protected int expectedLifeEndTime = -1;
+    protected ServerOrgManager.DebugState debugState = ServerOrgManager.DebugState.On;
     public int getExpectedLifeEndTime(){
         return expectedLifeEndTime;
     }
@@ -120,6 +124,20 @@ public class ClientOrgManager extends BaseOrgManager {
         ){
             this.getEntity().checkStatus();
         }
+    }
+    public ServerOrgManager.DebugState getDebugState(){
+        return debugState;
+    }
+    public ServerOrgManager.DebugState toggleDebugState(){
+        ServerOrgManager.DebugState newState = null;
+        if(debugState.equals(ServerOrgManager.DebugState.On)){
+            newState = ServerOrgManager.DebugState.Off;
+        }else{
+            newState = ServerOrgManager.DebugState.On;
+        }
+        ChaosNetworkManager.sendToServer(new CCClientOrgDebugStateChangeRequestPacket(newState, getCCNamespace()));
+        debugState = newState;
+        return debugState;
     }
 
 

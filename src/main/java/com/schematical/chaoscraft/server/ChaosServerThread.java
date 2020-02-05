@@ -78,7 +78,14 @@ public class ChaosServerThread implements Runnable {
             }
             ByteBuffer byteBuffer = exception.sdkHttpMetadata().responseContent();
             String message = StandardCharsets.UTF_8.decode(byteBuffer).toString();//new String(byteBuffer.as().array(), StandardCharsets.UTF_8 );
-            ChaosCraft.LOGGER.error("ChaosClientThread  Error: " + message + " - statusCode: " + statusCode);
+            ChaosCraft.LOGGER.error("ChaosServerThread  Error: " + message + " - statusCode: " + statusCode);
+
+
+        }catch(Exception exception){
+            ChaosCraft.getServer().consecutiveErrorCount += 1;
+
+            ChaosCraft.LOGGER.error("ChaosServerThread Error: " + exception.getMessage() + " - exception type: " + exception.getClass().getName());
+           // ChaosCraft.getClient().thread = null;//End should cover this
 
 
         }

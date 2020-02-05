@@ -81,6 +81,10 @@ public class ChaosCraftClient {
         keyBindings.add(new KeyBinding(CCKeyBinding.SHOW_ORG_LIST,79, "key.chaoscraft"));
         keyBindings.add(new KeyBinding(CCKeyBinding.OBSERVER_MODE, 0x18, "key.chaoscraft"));
         keyBindings.add(new KeyBinding(CCKeyBinding.SHOW_SPECIES_LIST, 0x24, "key.chaoscraft"));
+        keyBindings.add(new KeyBinding(CCKeyBinding.UP, 87, "key.chaoscraft"));
+        keyBindings.add(new KeyBinding(CCKeyBinding.LEFT, 65, "key.chaoscraft"));
+        keyBindings.add(new KeyBinding(CCKeyBinding.DOWN, 83, "key.chaoscraft"));
+        keyBindings.add(new KeyBinding(CCKeyBinding.RIGHT, 70, "key.chaoscraft"));
 
 // register all the key bindings
         for (int i = 0; i < keyBindings.size(); ++i)
@@ -300,6 +304,7 @@ public class ChaosCraftClient {
 
     @SubscribeEvent
     public  void onKeyInputEvent(InputEvent.KeyInputEvent event) {
+        //ChaosCraft.LOGGER.info("KeyDonw: " + event.getKey());
         for (KeyBinding keyBinding : keyBindings) {
             // check each enumerated key binding type for pressed and take appropriate action
             if (keyBinding.isPressed()) {
@@ -326,6 +331,12 @@ public class ChaosCraftClient {
                         for(EntityPlayerMP player: players){
                             ChaosCraft.client.toggleObservingPlayer(player);
                         }*/
+                        break;
+                    case(CCKeyBinding.UP):
+                    case(CCKeyBinding.DOWN):
+                    case(CCKeyBinding.LEFT):
+                    case(CCKeyBinding.RIGHT):
+
                         break;
                 }
 
