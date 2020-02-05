@@ -137,7 +137,7 @@ public class ServerOrgManager extends BaseOrgManager {
                     throw new ChaosNetException(this.getCCNamespace() + " is found but not an instanceof OutputNeuron: " + neuronAction.getNeuronId());
                 }
                 OutputNeuron outputNeuron = (OutputNeuron)this.getEntity().getNNet().neurons.get(neuronAction.getNeuronId());
-                outputNeuron._lastValue = neuronAction.getValue();
+                outputNeuron.setCurrentValue(neuronAction.getValue());
                 outputs.add(outputNeuron);
             }
             Iterator<OutputNeuron> iterator = outputs.iterator();

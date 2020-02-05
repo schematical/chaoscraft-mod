@@ -37,21 +37,21 @@ public class FocusAreaInput extends InputNeuron {
             case(CCAttributeId.BLOCK_ID):
                 CCObserviableAttributeCollection observiableAttributeCollection = areaOfFocus.canSeenBlock(x, y, z);
                 if(observiableAttributeCollection.resourceId.equals(attributeValue)){
-                    _lastValue = 1;
+                    setCurrentValue(1);
                 }
             break;
             case(CCAttributeId.ENTITY_ID):
                 List<CCObserviableAttributeCollection> attributeCollections =  areaOfFocus.canSeenEntities(x, y, z);
                 for(CCObserviableAttributeCollection attributeCollection: attributeCollections) {
                     if (attributeCollection.resourceId.equals(attributeValue)) {
-                        _lastValue = 1;
+                        setCurrentValue(1);
                     }
                 }
 
             break;
 
         }
-        return _lastValue;
+        return getCurrentValue();
     }
     @Override
     public void parseData(JSONObject jsonObject){

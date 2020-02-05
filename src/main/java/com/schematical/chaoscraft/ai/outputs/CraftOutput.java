@@ -39,20 +39,21 @@ public class CraftOutput extends OutputNeuron {
 
     @Override
     public float evaluate(){
-        if(hasBeenEvaluated){
-            return _lastValue;
+        if(getHasBeenEvaluated()){
+            return getCurrentValue();
         }
        /* if(nNet.entity.getDebug()) {
             ChaosCraft.logger.info(nNet.entity.getCCNamespace() + " Checking to see if they can Craft: " + recipe.getRegistryName() + " - " + recipe.getRecipeOutput().getDisplayName());
         }*/
         if(!nNet.entity.canCraft(recipe)){
-            return _lastValue;
+            return getCurrentValue();
         }
         return super.evaluate();
     }
+
     @Override
     public void execute() {
-        if(this._lastValue <= .5){
+        if(this.getCurrentValue() <= .5f){
             return;
         }
        /* if(nNet.entity.getDebug()) {

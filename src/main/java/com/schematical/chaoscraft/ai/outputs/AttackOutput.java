@@ -15,7 +15,7 @@ import java.util.List;
 public class AttackOutput extends OutputNeuron {
     @Override
     public void execute() {
-        if(this._lastValue <= .5){
+        if(this.getCurrentValue() <= .5f){
             return;
         }
         OrgEntity entity = this.nNet.entity;

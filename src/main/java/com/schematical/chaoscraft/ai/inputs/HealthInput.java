@@ -11,8 +11,8 @@ public class HealthInput extends InputNeuron {
     @Override
     public float evaluate(){
 
-        _lastValue = (nNet.entity.getHealth() / nNet.entity.getMaxHealth()) * 2 - 1;
-        return _lastValue;
+        setCurrentValue((nNet.entity.getHealth() / nNet.entity.getMaxHealth()) * 2 - 1);
+        return getCurrentValue();
     }
     @Override
     public void parseData(JSONObject jsonObject){

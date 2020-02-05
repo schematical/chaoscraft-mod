@@ -10,11 +10,28 @@ public class NeuronDep extends InnovationBase {
     public NeuronBase depNeuron;
     public String depNeuronId;
     public float weight;
-    public float _lastValue;
+    private float _lastValue;
+    private float _currentValue;
+    private boolean hasBeenEvaluated = false;
     public NeuronDep(){
-        /*(NeuronBase depNeuron, float weight){
-        this.depNeuron = depNeuron;
-        this.weight = weight; */
+
+    }
+    public float evaluate(){
+        if(hasBeenEvaluated){
+            return getCurrentValue();
+        }
+        setCurrentValue( weight * depNeuron.evaluate());
+        return getCurrentValue();
+    }
+    public float getCurrentValue(){
+        return _currentValue;
+    }
+    public void setCurrentValue(float currentValue){
+        _currentValue = currentValue;
+    }
+    public void reset(){
+        hasBeenEvaluated = false;
+        _lastValue = -1;
     }
     public void parseData(JSONObject jsonObject){
         Object neuronIdObj = jsonObject.get("neuronId");
@@ -22,7 +39,7 @@ public class NeuronDep extends InnovationBase {
             throw new Error("Could not find a valid `neuronId` " + jsonObject.toJSONString());
         }
         String neuronId = neuronIdObj.toString();
-        //this.depNeuron = //TODO: Load neuron
+
         this.depNeuronId = neuronId;
         this.weight = Float.parseFloat(jsonObject.get("weight").toString());
     }

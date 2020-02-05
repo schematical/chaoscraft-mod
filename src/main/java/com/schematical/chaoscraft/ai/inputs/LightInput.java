@@ -11,8 +11,8 @@ public class LightInput extends InputNeuron {
     @Override
     public float evaluate(){
         int light = nNet.entity.world.getLight(nNet.entity.getPosition());
-        _lastValue = ((float) light)/ 15f;
-        return _lastValue;
+        setCurrentValue(((float) light)/ 15f);
+        return getCurrentValue();
     }
     @Override
     public void parseData(JSONObject jsonObject){

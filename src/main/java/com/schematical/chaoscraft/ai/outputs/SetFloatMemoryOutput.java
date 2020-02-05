@@ -16,7 +16,7 @@ public class SetFloatMemoryOutput extends OutputNeuron {
 
     @Override
     public void execute() {
-        float reversedValue = Math.abs((this._lastValue * 2)-1);
+        float reversedValue = Math.abs((this.getCurrentValue() * 2)-1);
         if(reversedValue < ChaosCraft.activationThreshold){
             return;
         }

@@ -115,6 +115,11 @@ public class ChaosCraftServer {
                 //Request more bots
 
                 //TODO: Clean up the Dead orgs out of the list
+                List<ServerOrgManager> deadServerOrgManagers = getOrgsWithState(ServerOrgManager.State.Dead);
+                for (ServerOrgManager deadServerOrgManager : deadServerOrgManagers) {
+                    ChaosCraft.getServer().removeEntityFromWorld(deadServerOrgManager);
+                }
+
             }
         }
         cleanUp();
@@ -227,7 +232,11 @@ public class ChaosCraftServer {
         orgEntity.setSpawnHash(ChaosCraft.getServer().spawnHash);
         BlockPos pos = spawnProvider.getSpawnPos(serverOrgManager);
         if(pos != null) {
-            orgEntity.setLocationAndAngles(pos.getX(), pos.getY(), pos.getZ(), (float)( Math.random() * 360), (float) (Math.random() * 360));
+            float yaw = (float)( Math.random() * 360f);
+            float pitch = (float) (Math.random() * 360f);
+            orgEntity.setDesiredYaw(yaw);
+            orgEntity.setLocationAndAngles(pos.getX(), pos.getY(), pos.getZ(), yaw, pitch);
+
         }
         serverOrgManager.attachOrgEntity(orgEntity);
         serverWorld.summonEntity(orgEntity);
@@ -321,12 +330,12 @@ public class ChaosCraftServer {
         userMap.remove(player.getUniqueID().toString());
     }
 
-    public void removeEntityFromWorld(OrgEntity orgEntity) {
-       if(!organisms.containsKey(orgEntity.getCCNamespace())){
-           ChaosCraft.LOGGER.error("Server is trying to remove an org from its `organisims` but it is not there: " + orgEntity.getCCNamespace());
+    public void removeEntityFromWorld(ServerOrgManager serverOrgManager) {
+       if(!organisms.containsKey(serverOrgManager.getCCNamespace())){
+           ChaosCraft.LOGGER.error("Server is trying to remove an org from its `organisims` but it is not there: " + serverOrgManager.getCCNamespace());
            return;
        }
-        organisms.remove(orgEntity.getCCNamespace());
+        organisms.remove(serverOrgManager.getCCNamespace());
     }
 
 

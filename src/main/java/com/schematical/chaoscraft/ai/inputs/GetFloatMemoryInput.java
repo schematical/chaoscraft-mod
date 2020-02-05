@@ -15,7 +15,8 @@ public class GetFloatMemoryInput extends InputNeuron {
     public float evaluate(){
 
         FloatMemory floatMemory = (FloatMemory) nNet.getBiology(memoryId);
-        return floatMemory.getValue();
+        setCurrentValue(floatMemory.getValue());
+        return getCurrentValue();
     }
     @Override
     public void parseData(JSONObject jsonObject){

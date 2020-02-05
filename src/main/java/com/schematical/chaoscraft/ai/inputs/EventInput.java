@@ -19,7 +19,7 @@ public class EventInput extends InputNeuron {
     protected String eventType;
     @Override
     public float evaluate(){
-        _lastValue = 0;
+        float newValue = 0;
         Iterator<OrgEvent> eventIterator = nNet.entity.getOrgEvents().iterator();
         while(eventIterator.hasNext()){
             OrgEvent event = eventIterator.next();
@@ -31,14 +31,14 @@ public class EventInput extends InputNeuron {
                 case(PREDICTION):
                     if(event instanceof OrgPredictionEvent){
                         OrgPredictionEvent orgPredictionEvent = (OrgPredictionEvent) event;
-                        _lastValue += orgPredictionEvent.weight;
+                        newValue += orgPredictionEvent.weight;
                     }
                 break;
                 case(SCORE_EVENT):
                     if(
                         event.getScoreEvent() != null
                     ) {
-                        _lastValue += event.getScoreEvent().score * event.getTTLWeight();
+                        newValue += event.getScoreEvent().score * event.getTTLWeight();
                     }
                     break;
                 case(HEALTH_CHANGE):
@@ -50,7 +50,7 @@ public class EventInput extends InputNeuron {
                         float eventTTLWeight = event.getTTLWeight();
 
                         float value = eventTTLWeight * worldEvent.amount;
-                        _lastValue += value;
+                        newValue += value;
                     }
                 break;
                 default:
@@ -61,7 +61,8 @@ public class EventInput extends InputNeuron {
 
 
         }
-        return _lastValue;
+        setCurrentValue(newValue);
+        return getCurrentValue();
     }
     @Override
     public void parseData(JSONObject jsonObject){

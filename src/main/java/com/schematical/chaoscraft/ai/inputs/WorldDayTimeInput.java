@@ -12,8 +12,8 @@ public class WorldDayTimeInput extends InputNeuron {
     public float evaluate(){
         long worldTime = nNet.entity.world.getDayTime();
         float remainder = (worldTime % (24000l));
-        _lastValue =  remainder/24000l;
-        return _lastValue;
+       setCurrentValue(remainder/24000l);
+        return getCurrentValue();
     }
     @Override
     public void parseData(JSONObject jsonObject){

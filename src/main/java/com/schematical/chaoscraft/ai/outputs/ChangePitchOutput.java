@@ -8,7 +8,7 @@ import com.schematical.chaoscraft.ai.OutputNeuron;
 public class ChangePitchOutput extends OutputNeuron {
     @Override
     public void execute() {
-        float delta = reverseSigmoid(this._lastValue);
+        float delta = reverseSigmoid(this.getCurrentValue());
 
         this.nNet.entity.setDesiredPitch(delta * 90);
 

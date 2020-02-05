@@ -1,5 +1,6 @@
 package com.schematical.chaoscraft.ai.outputs;
 
+import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.OutputNeuron;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -11,7 +12,7 @@ import net.minecraft.util.math.RayTraceResult;
 public class DigOutput extends OutputNeuron {
     @Override
     public void execute() {
-        if(this._lastValue <= .5){
+        if(this.getCurrentValue() <= .5f){
             return;
         }
         nNet.entity.swingArm(Hand.MAIN_HAND);

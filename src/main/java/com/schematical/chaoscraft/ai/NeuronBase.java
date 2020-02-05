@@ -18,12 +18,18 @@ public abstract class NeuronBase extends InnovationBase {
     public String id;
 
     public NeuralNet nNet;
-    public float _lastValue;
-    protected boolean hasBeenEvaluated = false;
+    private float _lastValue;
+    private float _currentValue;
+    private boolean hasBeenEvaluated = false;
 
     public List<NeuronDep> dependencies = new ArrayList<NeuronDep>();
     public abstract String _base_type();
-
+    public void setCurrentValue(float currentValue){
+        _currentValue = currentValue;
+    }
+    public float getCurrentValue(){
+        return _currentValue;
+    }
     public void parseData(JSONObject jsonObject){
         if(this.id != null){
             throw new Error("Neuron has already parsedData");
@@ -47,8 +53,9 @@ public abstract class NeuronBase extends InnovationBase {
         _lastValue = -1;
     }
     public float evaluate(){
+        float newValue = -1;
         if(hasBeenEvaluated){
-            return _lastValue;
+            return getCurrentValue();
         }
         nNet.neuronEvalDepth += 1;
         if (nNet.neuronEvalDepth > 45) {
@@ -60,14 +67,15 @@ public abstract class NeuronBase extends InnovationBase {
                 String orgNamespace = nNet.entity.getCCNamespace();
                 throw new ChaosNetException("Missing `neuronDep.depNeuron` : " + orgNamespace + " " + neuronDep.depNeuronId);
             }
-            neuronDep._lastValue = neuronDep.weight *
-                    neuronDep.depNeuron.evaluate();
-            totalScore += neuronDep._lastValue;
+
+            neuronDep.evaluate();
+            totalScore += neuronDep.getCurrentValue();
         }
-        _lastValue = sigmoid(totalScore);
+        newValue = sigmoid(totalScore);
         hasBeenEvaluated = true;
         nNet.neuronEvalDepth -= 1;
-        return _lastValue;
+        setCurrentValue(newValue);
+        return getCurrentValue();
 
     }
     public void populate(){
@@ -104,29 +112,9 @@ public abstract class NeuronBase extends InnovationBase {
         return response;
     }
 
-   /* public void setDistanceFromIO(int distanceFromOutput, int width, int height, int neuronSize, HashMap<NeuronBase, CCOrgNNetView.CCNeuronInformation> neuronInformation) {
-        CCOrgNNetView.CCNeuronInformation information = neuronInformation.get(this);
-        information.distanceFromOutput = distanceFromOutput;
+    public boolean getHasBeenEvaluated() {
+        return hasBeenEvaluated;
+    }
 
-        information.distanceFromInput = 0;
 
-        for (NeuronDep dependency : this.dependencies) {
-            dependency.depNeuron.setDistanceFromIO(distanceFromOutput + 1, width, height, neuronSize, neuronInformation);
-            information.distanceFromInput = Math.max(information.distanceFromInput, neuronInformation.get(dependency.depNeuron).distanceFromInput + 1);
-        }
-
-        if (information.distanceFromInput == 0 && information.distanceFromOutput == 0) {
-            information.x = neuronSize;
-        } else {
-            information.x = (width - neuronSize * 2) / (information.distanceFromInput + information.distanceFromOutput) * information.distanceFromInput + neuronSize;
-        }
-
-        System.out.println(this.getClass() + " is " + (!(this instanceof InputNeuron || this instanceof OutputNeuron)));
-
-        if (!(this instanceof InputNeuron || this instanceof OutputNeuron)) {
-            // this.y = averageY;
-            information.y = (int) (Math.random() * height);
-            information.layer = information.distanceFromInput / (float) (information.distanceFromInput + information.distanceFromOutput);
-        }
-    }*/
 }

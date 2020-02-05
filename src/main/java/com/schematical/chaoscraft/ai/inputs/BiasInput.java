@@ -13,8 +13,8 @@ public class BiasInput extends InputNeuron {
 
     @Override
     public float evaluate(){
-        this._lastValue = weight;
-        return this._lastValue;
+        this.setCurrentValue(weight);
+        return this.getCurrentValue();
     }
     @Override
     public void parseData(JSONObject jsonObject) {

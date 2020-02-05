@@ -13,13 +13,13 @@ public class SwimOutput extends OutputNeuron {
     @Override
     public float evaluate(){
         if(!(this.nNet.entity.isInWater() || this.nNet.entity.isInLava())){
-            return _lastValue;
+            return getCurrentValue();
         }
         return super.evaluate();
     }
     @Override
     public void execute() {
-        if(this._lastValue <= .5){
+        if(this.getCurrentValue() <= .5){
             return;
         }
         if(!(this.nNet.entity.isInWater() || this.nNet.entity.isInLava())){

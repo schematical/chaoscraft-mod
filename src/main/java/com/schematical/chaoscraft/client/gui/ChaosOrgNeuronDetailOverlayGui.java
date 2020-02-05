@@ -30,7 +30,7 @@ public class ChaosOrgNeuronDetailOverlayGui extends Screen {
         super.init();
         this.minecraft.keyboardListener.enableRepeatEvents(true);
         int y = 10;
-        this.valueInput = new TextFieldWidget(this.font, this.width / 2 - 100, y, 200, 20, new Float(this.neuronBase._lastValue).toString()) {
+        this.valueInput = new TextFieldWidget(this.font, this.width / 2 - 100, y, 200, 20, new Float(this.neuronBase.getCurrentValue()).toString()) {
             protected String getNarrationMessage() {
                 return"IDK what this is";
             }

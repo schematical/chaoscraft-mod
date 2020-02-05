@@ -45,7 +45,7 @@ public class NeuralNet {
                 OutputNeuron outputNeuron = (OutputNeuron)neuronBase;
                 neuronEvalDepth = 0;
                 float _last_value = outputNeuron.evaluate();
-                outputNeuron._lastValue = _last_value;
+                outputNeuron.setCurrentValue(_last_value);
                 switch (outputNeuron._outputGroup){
                     case(OutputNeuron.OUTPUT_GROUP_NONE):
                         outputs.add(outputNeuron);
@@ -54,13 +54,13 @@ public class NeuralNet {
                         if(!outputGroupResults.containsKey(outputNeuron._outputGroup)){
                             OutputGroupResult outputGroupResult = new OutputGroupResult();
                             outputGroupResult.highNeuron = outputNeuron;
-                            outputGroupResult.highScore = outputNeuron._lastValue;
+                            outputGroupResult.highScore = outputNeuron.getCurrentValue();
                             outputGroupResults.put(outputNeuron._outputGroup, outputGroupResult);
                         }else{
                             OutputGroupResult outputGroupResult = outputGroupResults.get(outputNeuron._outputGroup);
-                            if(outputGroupResult.highScore < outputNeuron._lastValue){
+                            if(outputGroupResult.highScore < outputNeuron.getCurrentValue()){
                                 outputGroupResult.highNeuron = outputNeuron;
-                                outputGroupResult.highScore = outputNeuron._lastValue;
+                                outputGroupResult.highScore = outputNeuron.getCurrentValue();
                             }
                         }
                     break;

@@ -15,8 +15,8 @@ public class YawInput extends InputNeuron {
         //Iterate through all blocks entities etc with in the range
         float yawAdjusted = yawOffset + this.nNet.entity.rotationYaw;
         float yawDiff = Math.abs(yawAdjusted - yawOffset);
-        _lastValue = yawDiff /YAW_DEGREES;
-        return _lastValue;
+        setCurrentValue(yawDiff /YAW_DEGREES);
+        return getCurrentValue();
     }
     @Override
     public void parseData(JSONObject jsonObject){

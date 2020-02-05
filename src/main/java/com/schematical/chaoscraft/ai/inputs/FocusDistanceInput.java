@@ -14,8 +14,8 @@ public class FocusDistanceInput extends InputNeuron {
         if (areaOfFocus == null) {
             areaOfFocus = (AreaOfFocus) nNet.getBiology("AreaOfFocus_0");
         }
-        _lastValue = areaOfFocus.currDistance / areaOfFocus.maxFocusDistance;
-        return _lastValue;
+        setCurrentValue(areaOfFocus.currDistance / areaOfFocus.maxFocusDistance);
+        return getCurrentValue();
     }
 
 

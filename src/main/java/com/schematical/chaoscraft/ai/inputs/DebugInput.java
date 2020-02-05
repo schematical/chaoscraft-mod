@@ -13,8 +13,8 @@ public class DebugInput extends InputNeuron {
 
     @Override
     public float evaluate(){
-        _lastValue = value;
-        return _lastValue;
+        setCurrentValue(value);
+        return getCurrentValue();
     }
     @Override
     public void parseData(JSONObject jsonObject){

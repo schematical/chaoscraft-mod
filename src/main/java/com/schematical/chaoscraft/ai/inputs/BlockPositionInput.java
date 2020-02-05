@@ -26,9 +26,9 @@ public class BlockPositionInput                                                 
         //Iterate through all blocks entities etc with in the range
         PositionRange adustedPositionRange = this.blockPositionSensor.positionRange.orientToEntity(this.nNet.entity);
 
-        for(float x = adustedPositionRange.minX; x < adustedPositionRange.maxX && _lastValue != 1; x++){
-            for(float y = adustedPositionRange.minY; y < adustedPositionRange.maxY && _lastValue != 1; y++){
-                for(float z = adustedPositionRange.minZ; z < adustedPositionRange.maxZ && _lastValue != 1; z++){
+        for(float x = adustedPositionRange.minX; x < adustedPositionRange.maxX && getCurrentValue() != 1; x++){
+            for(float y = adustedPositionRange.minY; y < adustedPositionRange.maxY && getCurrentValue() != 1; y++){
+                for(float z = adustedPositionRange.minZ; z < adustedPositionRange.maxZ && getCurrentValue() != 1; z++){
                     BlockPos pos = new BlockPos(x,y,z);
                     Block block = this.nNet.entity.world.getBlockState(pos).getBlock();
                     switch(attributeId){
@@ -36,7 +36,7 @@ public class BlockPositionInput                                                 
                             ResourceLocation regeistryName = block.getRegistryName();
                             String key = regeistryName.getNamespace() + ":" + regeistryName.getPath();
                             if(attributeValue.equals(key)){
-                                _lastValue = 1;
+                                setCurrentValue(1);
                             }
 
                         break;
@@ -44,7 +44,7 @@ public class BlockPositionInput                                                 
                 }
             }
         }
-        return _lastValue;
+        return getCurrentValue();
     }
     @Override
     public void parseData(JSONObject jsonObject){

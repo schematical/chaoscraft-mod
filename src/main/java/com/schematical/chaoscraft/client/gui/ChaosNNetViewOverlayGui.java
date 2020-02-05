@@ -129,7 +129,7 @@ public class ChaosNNetViewOverlayGui extends Screen {
                     }
                     //NeuronBase neuron = clientOrgManager.getEntity().getNNet().neurons.get(dependency.depNeuronId);
 
-                    float a = Math.abs(dependency.depNeuron._lastValue)/3f;//dependency._lastValue);
+                    float a = Math.abs(dependency.depNeuron.getCurrentValue())/3f;//dependency._lastValue);
 
                     if(a < .2f){
                         a = .2f;

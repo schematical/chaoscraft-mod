@@ -11,7 +11,7 @@ import net.minecraft.util.math.Vec3d;
 public class WalkSidewaysOutput extends OutputNeuron {
     @Override
     public void execute() {
-        float reversedValue = this.reverseSigmoid(this._lastValue);
+        float reversedValue = this.reverseSigmoid(this.getCurrentValue());
 
         if(Math.abs(reversedValue) < ChaosCraft.activationThreshold){
             nNet.entity.moveStrafing = 0;

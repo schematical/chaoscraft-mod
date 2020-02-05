@@ -23,7 +23,7 @@ public class UseItemOutput extends OutputNeuron {
     public float evaluate() {
         ItemStack itemStack = nNet.entity.getHeldItemMainhand();
         if(itemStack == null || itemStack.isEmpty()){
-            return _lastValue;
+            return getCurrentValue();
         }
        /* Item heldItem = itemStack.getItem();
         if(!(heldItem instanceof ItemBlock)){
@@ -36,7 +36,7 @@ public class UseItemOutput extends OutputNeuron {
        /* if(nNet.entity.getDebug()) {
             ChaosCraft.logger.info(nNet.entity.getCCNamespace() + " Attempting to Place Block: " + attributeValue);
         }*/
-        if(this._lastValue <= .5){
+        if(this.getCurrentValue() <= .5){
             return;
         }
         nNet.entity.setActiveHand(Hand.MAIN_HAND);

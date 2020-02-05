@@ -17,7 +17,7 @@ public class PlaceBlockOutput extends OutputNeuron {
        /* if(nNet.entity.getDebug()) {
             ChaosCraft.logger.info(nNet.entity.getCCNamespace() + " Attempting to Place Block: " + attributeValue);
         }*/
-        if(this._lastValue <= .5){
+        if(this.getCurrentValue() <= .5f){
             return;
         }
 

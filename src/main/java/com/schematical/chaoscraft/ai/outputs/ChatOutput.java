@@ -9,7 +9,7 @@ import com.schematical.chaoscraft.ai.OutputNeuron;
 public class ChatOutput extends OutputNeuron {
     @Override
     public void execute() {
-        if(this._lastValue <= .5){
+        if(this.getCurrentValue() <= .5){
             return;
         }
         ChaosCraft.LOGGER.debug("TODO: Make a chat thingy");

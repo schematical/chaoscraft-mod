@@ -36,7 +36,7 @@ public class IsLookingAtInput extends InputNeuron {
                 attributeCollections = eye.canSeenBlocks();
                 for(CCObserviableAttributeCollection attributeCollection: attributeCollections) {
                     if (attributeValue.equals(attributeCollection.resourceId)) {
-                        _lastValue = 1;//TODO: Add distance?
+                        setCurrentValue(1);//TODO: Add distance?
                     }
                 }
 
@@ -45,14 +45,16 @@ public class IsLookingAtInput extends InputNeuron {
                 attributeCollections = eye.canSeenEntities();
                 for(CCObserviableAttributeCollection attributeCollection: attributeCollections) {
                     if (attributeValue.equals(attributeCollection.resourceId)) {
-                        _lastValue = 1;//TODO: Add distance?
+                        setCurrentValue(1);//TODO: Add distance?
                     }
                 }
 
             break;
+            default:
+                ChaosCraft.LOGGER.error("Invalid `attributeId`: " + attributeId);
 
         }
-        return _lastValue;
+        return getCurrentValue();
     }
     @Override
     public void parseData(JSONObject jsonObject){

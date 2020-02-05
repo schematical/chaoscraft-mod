@@ -425,7 +425,7 @@ public class OrgEntity extends MobEntity {
                 ForgeChunkManager.releaseTicket(chunkTicket);
                 chunkTicket = null;
             }*/
-           ChaosCraft.getServer().removeEntityFromWorld(this);
+
         }
     }
     public void replaceAlteredBlocks(){
@@ -756,10 +756,9 @@ public class OrgEntity extends MobEntity {
             while (iterator.hasNext()) {
                 OutputNeuron outputNeuron = iterator.next();
                 CCClientOutputNeuronActionPacket packet = new CCClientOutputNeuronActionPacket(
-                        clientOrgManager.getCCNamespace(),
-                        outputNeuron.id,
-                        outputNeuron._lastValue
-
+                    clientOrgManager.getCCNamespace(),
+                    outputNeuron.id,
+                    outputNeuron.getCurrentValue()
                 );
 
                 ChaosNetworkManager.sendToServer(packet);

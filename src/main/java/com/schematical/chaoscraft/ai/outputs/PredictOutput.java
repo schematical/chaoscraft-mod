@@ -27,7 +27,7 @@ public class PredictOutput extends OutputNeuron {
     }
     @Override
     public void execute() {
-        float reversedValue = this.reverseSigmoid(this._lastValue);
+        float reversedValue = this.reverseSigmoid(this.getCurrentValue());
         if(Math.abs(reversedValue) < ChaosCraft.activationThreshold){
             return;
         }

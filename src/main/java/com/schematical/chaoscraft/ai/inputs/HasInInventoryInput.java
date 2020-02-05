@@ -22,11 +22,13 @@ public class HasInInventoryInput extends InputNeuron {
         //Iterate through all blocks entities etc with in the range
         int slot = nNet.entity.hasInInventory(item);
         if(slot == -1){
-            return -1;
+            setCurrentValue(-1);
+            return getCurrentValue();
         }
         ItemStackHandler itemStackHandler = nNet.entity.getItemStack();
-        _lastValue = itemStackHandler.getStackInSlot(slot).getCount() / item.getItemStackLimit(itemStackHandler.getStackInSlot(slot));
-        return _lastValue;
+
+        setCurrentValue(itemStackHandler.getStackInSlot(slot).getCount() / item.getItemStackLimit(itemStackHandler.getStackInSlot(slot)));
+        return getCurrentValue();
 
     }
     @Override

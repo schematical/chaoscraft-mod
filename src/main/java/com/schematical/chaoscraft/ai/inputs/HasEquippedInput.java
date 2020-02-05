@@ -25,11 +25,13 @@ public class HasEquippedInput extends InputNeuron {
             case(CCAttributeId.ITEM_ID):
 
                 if (attributeCollection.resourceId != attributeValue) {
-                    return -1;
+                    setCurrentValue(-1);
+                    return getCurrentValue();
                 }
             break;
         }
-        return 1;
+        setCurrentValue(1);
+        return getCurrentValue();
     }
     @Override
     public void parseData(JSONObject jsonObject) {
