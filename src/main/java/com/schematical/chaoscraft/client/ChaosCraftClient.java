@@ -81,10 +81,10 @@ public class ChaosCraftClient {
         keyBindings.add(new KeyBinding(CCKeyBinding.SHOW_ORG_LIST,79, "key.chaoscraft"));
         keyBindings.add(new KeyBinding(CCKeyBinding.OBSERVER_MODE, 0x18, "key.chaoscraft"));
         keyBindings.add(new KeyBinding(CCKeyBinding.SHOW_SPECIES_LIST, 0x24, "key.chaoscraft"));
-        keyBindings.add(new KeyBinding(CCKeyBinding.UP, 87, "key.chaoscraft"));
+ /*       keyBindings.add(new KeyBinding(CCKeyBinding.UP, 87, "key.chaoscraft"));
         keyBindings.add(new KeyBinding(CCKeyBinding.LEFT, 65, "key.chaoscraft"));
         keyBindings.add(new KeyBinding(CCKeyBinding.DOWN, 83, "key.chaoscraft"));
-        keyBindings.add(new KeyBinding(CCKeyBinding.RIGHT, 70, "key.chaoscraft"));
+        keyBindings.add(new KeyBinding(CCKeyBinding.RIGHT, 70, "key.chaoscraft"));*/
 
 // register all the key bindings
         for (int i = 0; i < keyBindings.size(); ++i)

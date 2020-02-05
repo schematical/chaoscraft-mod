@@ -11,13 +11,14 @@ public class ChangeYawOutput extends OutputNeuron {
     public void execute() {
 
         float delta = reverseSigmoid(this._lastValue);
+
         if(Math.abs(delta) < ChaosCraft.activationThreshold){
             return;
         }
         //ChaosCraft.logger.info(nNet.entity.getName() + " ChangeYawOutput: " + this._lastValue + " - " + delta);
         //;
 
-        this.nNet.entity.setDesiredYaw(this.nNet.entity.getDesiredYaw() + (delta  * 15));
+        this.nNet.entity.setDesiredYaw(this.nNet.entity.getDesiredYaw() + (delta  * 5));
 
 
 

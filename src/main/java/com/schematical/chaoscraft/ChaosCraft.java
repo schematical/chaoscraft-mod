@@ -80,7 +80,7 @@ public class ChaosCraft
     // Directly reference a log4j logger.
     public static final Logger LOGGER = LogManager.getLogger();
 
-    public static float activationThreshold = .3f;
+    public static float activationThreshold = .1f;
 
     private static ChaosCraftClient client;
     private static ChaosCraftServer server;

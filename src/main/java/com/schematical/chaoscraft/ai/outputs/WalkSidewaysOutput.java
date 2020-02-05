@@ -12,6 +12,7 @@ public class WalkSidewaysOutput extends OutputNeuron {
     @Override
     public void execute() {
         float reversedValue = this.reverseSigmoid(this._lastValue);
+
         if(Math.abs(reversedValue) < ChaosCraft.activationThreshold){
             nNet.entity.moveStrafing = 0;
             return;
