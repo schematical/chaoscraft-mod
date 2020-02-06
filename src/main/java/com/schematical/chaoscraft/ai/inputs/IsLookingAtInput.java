@@ -5,6 +5,7 @@ import com.schematical.chaoscraft.ai.CCAttributeId;
 import com.schematical.chaoscraft.ai.CCObserviableAttributeCollection;
 import com.schematical.chaoscraft.ai.InputNeuron;
 import com.schematical.chaoscraft.ai.biology.Eye;
+import com.schematical.chaoscraft.tickables.OrgPositionManager;
 import org.json.simple.JSONObject;
 
 
@@ -68,6 +69,28 @@ public class IsLookingAtInput extends InputNeuron {
                 }
 
             break;
+            case(CCAttributeId.HAS_ENTERED_BLOCK):
+                attributeCollections = eye.canSeenBlocks();
+                for(CCObserviableAttributeCollection attributeCollection: attributeCollections) {
+                    //This should be client side
+
+                    OrgPositionManager orgPositionManager = (OrgPositionManager)nNet.entity.getClientOrgManager().getTickable(OrgPositionManager.class);
+                    if(orgPositionManager.hasTouchedBlock(attributeCollection.position)) {
+                        if (useDistanceAsValue) {
+                            double dist = attributeCollection.getDist(nNet.entity);
+                            float distVal = 1 - (float) dist / eye.maxDistance;
+                            if (distVal > newVal) {
+                                newVal = distVal;
+                            }
+                        } else {
+                            setCurrentValue(1);
+                        }
+                    }
+
+                }
+
+
+                break;
             default:
                 ChaosCraft.LOGGER.error("Invalid `attributeId`: " + attributeId);
 

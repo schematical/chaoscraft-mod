@@ -8,5 +8,6 @@ public abstract class CCAttributeId {
     public static final String ENTITY_ID = "ENTITY_ID";
     public static final String ITEM_ID = "ITEM_ID";
     public static final String RECIPE_ID = "RECIPE_ID";
+    public static final String HAS_ENTERED_BLOCK = "HAS_ENTERED_BLOCK";
 
 }

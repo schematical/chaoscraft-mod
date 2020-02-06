@@ -767,7 +767,7 @@ public class OrgEntity extends MobEntity {
                 this.clientOrgManager.markTicking();
             }
 
-
+this.clientOrgManager.fireTickables();
 
 
             this.observationHack();

@@ -8,6 +8,7 @@ import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.CCClientOrgDebugStateChangeRequestPacket;
 import com.schematical.chaoscraft.network.packets.CCServerScoreEventPacket;
 import com.schematical.chaoscraft.server.ServerOrgManager;
+import com.schematical.chaoscraft.tickables.OrgPositionManager;
 import com.schematical.chaosnet.model.Organism;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particles.ParticleTypes;
@@ -23,9 +24,15 @@ public class ClientOrgManager extends BaseOrgManager {
     protected ArrayList<CCServerScoreEventPacket> serverScoreEvents = new ArrayList<CCServerScoreEventPacket>();
     protected int expectedLifeEndTime = -1;
     protected ServerOrgManager.DebugState debugState = ServerOrgManager.DebugState.On;
+    public ClientOrgManager(){
+        this.attatchTickable(new OrgPositionManager());
+    }
+
     public int getExpectedLifeEndTime(){
         return expectedLifeEndTime;
     }
+
+
     public void addServerScoreEvent(CCServerScoreEventPacket pkt){
         expectedLifeEndTime = pkt.expectedLifeEndTime;
         serverScoreEvents.add(pkt);

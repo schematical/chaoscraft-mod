@@ -126,6 +126,7 @@ public class ChaosCraftClient {
 
 
     }
+
     public void attachOrgToEntity(String orgNamespace, int entityId) {
         OrgEntity orgEntity = (OrgEntity)Minecraft.getInstance().world.getEntityByID(entityId);
         if(orgEntity == null){

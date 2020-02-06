@@ -8,6 +8,7 @@ import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.event.world.WorldEvent;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -116,6 +117,18 @@ public class EntityFitnessRule {
                        return null;
                    }else{
                        //ChaosCraft.LOGGER.info("Axis Movement Success: " + attributeValue);
+                   }
+                   break;
+               case(Enum.BLOCK_TOUCH_STATE):
+                   if(event.position == null){
+                       ChaosCraft.LOGGER.error("No `position` to check against!");
+                   }
+
+
+                   if(!attributeValue.contains(event.blockTouchedState)){
+                       return null;
+                   }else{
+                       ChaosCraft.LOGGER.info("BLOCK_TOUCH_STATE Success: " + attributeValue);
                    }
                    break;
 

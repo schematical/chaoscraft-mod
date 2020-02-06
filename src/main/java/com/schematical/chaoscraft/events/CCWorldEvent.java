@@ -5,6 +5,7 @@ import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
+import net.minecraft.util.math.Vec3i;
 
 /**
  * Created by user1a on 1/4/19.
@@ -20,18 +21,25 @@ public class CCWorldEvent {
         ENTITY_ATTACKED,
         TOSSED_EQUIPPED_STACK,
         HAS_TRAVELED,
-        TRAVEL_ALONG_AXIS
+        TRAVEL_ALONG_AXIS,
+        TOUCHED_BLOCK
     }
     public enum Axis{
         X,
         Y,
         Z
     }
+    public enum BlockTouchedState{
+       HAS_TOUCHED,
+       HAS_NOT_TOUCHED
+    }
     public Type eventType;
     public Block block;
     public Item item;
     public Entity entity;
     public float amount = 1;
+    public Vec3i position;
+    public BlockTouchedState blockTouchedState;
     public Axis axis;
 
 
