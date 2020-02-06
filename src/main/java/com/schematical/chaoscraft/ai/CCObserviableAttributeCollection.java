@@ -1,5 +1,6 @@
 package com.schematical.chaoscraft.ai;
 
+import com.schematical.chaoscraft.entities.OrgEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 
@@ -12,4 +13,8 @@ public class CCObserviableAttributeCollection{
     public String resourceId;
     public String resourceType;
     public Vec3d position;
+    public double getDist(OrgEntity orgEntity){
+        Vec3d eyePos = orgEntity.getEyePosition(1);
+        return eyePos.distanceTo(position);
+    }
 }

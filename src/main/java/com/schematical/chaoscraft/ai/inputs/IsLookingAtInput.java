@@ -18,6 +18,7 @@ public class IsLookingAtInput extends InputNeuron {
     public static final double MAX_DISTANCE = 3d;
     public String attributeId;
     public String attributeValue;
+    private boolean useDistanceAsValue = true;
     public Eye eye;
     private String eyeId;
 
@@ -31,12 +32,21 @@ public class IsLookingAtInput extends InputNeuron {
         }*/
 
         List<CCObserviableAttributeCollection> attributeCollections = null;
+        float newVal = getCurrentValue();
         switch(attributeId){
             case(CCAttributeId.BLOCK_ID):
                 attributeCollections = eye.canSeenBlocks();
                 for(CCObserviableAttributeCollection attributeCollection: attributeCollections) {
                     if (attributeValue.equals(attributeCollection.resourceId)) {
-                        setCurrentValue(1);//TODO: Add distance?
+                        if(useDistanceAsValue) {
+                            double dist = attributeCollection.getDist(nNet.entity);
+                            float distVal = 1 - (float)dist / eye.maxDistance;
+                            if(distVal > newVal){
+                                newVal = distVal;
+                            }
+                        }else{
+                            setCurrentValue(1);
+                        }
                     }
                 }
 
@@ -45,7 +55,15 @@ public class IsLookingAtInput extends InputNeuron {
                 attributeCollections = eye.canSeenEntities();
                 for(CCObserviableAttributeCollection attributeCollection: attributeCollections) {
                     if (attributeValue.equals(attributeCollection.resourceId)) {
-                        setCurrentValue(1);//TODO: Add distance?
+                        if(useDistanceAsValue) {
+                            double dist = attributeCollection.getDist(nNet.entity);
+                            float distVal = 1 - (float)dist / eye.maxDistance;
+                            if(distVal > newVal){
+                                newVal = distVal;
+                            }
+                        }else{
+                            setCurrentValue(1);
+                        }
                     }
                 }
 
@@ -54,6 +72,7 @@ public class IsLookingAtInput extends InputNeuron {
                 ChaosCraft.LOGGER.error("Invalid `attributeId`: " + attributeId);
 
         }
+        setCurrentValue(newVal);
         return getCurrentValue();
     }
     @Override
