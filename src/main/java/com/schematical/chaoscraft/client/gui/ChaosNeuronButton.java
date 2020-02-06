@@ -14,7 +14,7 @@ import java.util.HashMap;
 public class ChaosNeuronButton extends Button {
 
     public static final int EXPANDED_WIDTH = 200;
-    public static final int MIN_WIDTH = 20;
+    public static final int MIN_WIDTH = 40;
     public enum State{
         Open,
         Closed
@@ -29,7 +29,7 @@ public class ChaosNeuronButton extends Button {
         super(1,
                 y,
                 MIN_WIDTH,
-                20,
+                15,
                 "X",
                 (button)->{
 
@@ -47,6 +47,21 @@ public class ChaosNeuronButton extends Button {
 
     public void renderRefresh(){
         if(state.equals(State.Closed)){
+            switch(neuronBase._base_type()){
+                case(com.schematical.chaoscraft.Enum.INPUT):
+                    x = 10;
+                    setMessage( "I-" + i + " " + neuronBase.getCurrentValue());
+                    break;
+                case(com.schematical.chaoscraft.Enum.OUTPUT):
+                    x = chaosNNetViewOverlayGui.width - 10 - MIN_WIDTH;
+                    setMessage("O-" + i + " " + neuronBase.getCurrentValue());
+                    break;
+                case(com.schematical.chaoscraft.Enum.MIDDLE):
+                    x = chaosNNetViewOverlayGui.width / 2;
+                    setMessage("M-" + i + " " + neuronBase.getCurrentValue());
+                    break;
+
+            }
             return;
         }
         //this.setWidth((int)neuronBase._lastValue * 200);

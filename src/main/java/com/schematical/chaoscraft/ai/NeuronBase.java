@@ -50,7 +50,8 @@ public abstract class NeuronBase extends InnovationBase {
     }
     public void reset(){
         hasBeenEvaluated = false;
-        _lastValue = -1;
+        _lastValue = _currentValue;
+        _currentValue = -1;
     }
     public float evaluate(){
         float newValue = -1;

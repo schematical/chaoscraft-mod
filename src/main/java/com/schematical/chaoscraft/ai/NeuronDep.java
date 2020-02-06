@@ -31,7 +31,8 @@ public class NeuronDep extends InnovationBase {
     }
     public void reset(){
         hasBeenEvaluated = false;
-        _lastValue = -1;
+        _lastValue = _currentValue;
+        _currentValue = -1;
     }
     public void parseData(JSONObject jsonObject){
         Object neuronIdObj = jsonObject.get("neuronId");

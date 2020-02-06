@@ -110,19 +110,21 @@ public class ChaosCraftServer {
     }
 
     private void longTick() {
+
         for (ChaosCraftServerPlayerInfo value : userMap.values()) {
             if(value.organisims.size() < ChaosCraft.config.maxBotCount){
                 //Request more bots
 
-                //TODO: Clean up the Dead orgs out of the list
+                /*//TODO: Clean up the Dead orgs out of the list
                 List<ServerOrgManager> deadServerOrgManagers = getOrgsWithState(ServerOrgManager.State.Dead);
                 for (ServerOrgManager deadServerOrgManager : deadServerOrgManagers) {
                     ChaosCraft.getServer().removeEntityFromWorld(deadServerOrgManager);
                 }
-
+*/
             }
         }
         cleanUp();
+        longTickCount = 0;
     }
 
     public void queueOrgToSpawn(String orgNamespace, ServerPlayerEntity player){

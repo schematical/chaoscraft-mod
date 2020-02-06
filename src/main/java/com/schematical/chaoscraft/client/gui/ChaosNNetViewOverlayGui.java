@@ -52,7 +52,7 @@ public class ChaosNNetViewOverlayGui extends Screen {
 
            }
         }
-        int baseHeight = (this.height - 20);
+        int baseHeight = (this.height - 10);
         int inputsY = baseHeight/(inputs.size() + 1);
         int outputsY = baseHeight/(outputs.size() + 1);
 
@@ -129,7 +129,7 @@ public class ChaosNNetViewOverlayGui extends Screen {
                     }
                     //NeuronBase neuron = clientOrgManager.getEntity().getNNet().neurons.get(dependency.depNeuronId);
 
-                    float a = Math.abs(dependency.depNeuron.getCurrentValue())/3f;//dependency._lastValue);
+                    float a = Math.abs(dependency.getCurrentValue());//dependency.depNeuron.getCurrentValue());//dependency._lastValue);
 
                     if(a < .2f){
                         a = .2f;
