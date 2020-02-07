@@ -69,7 +69,7 @@ public class IsLookingAtInput extends InputNeuron {
                 }
 
             break;
-            case(CCAttributeId.HAS_ENTERED_BLOCK):
+            case(CCAttributeId.BLOCK_TOUCH_STATE):
                 attributeCollections = eye.canSeenBlocks();
                 for(CCObserviableAttributeCollection attributeCollection: attributeCollections) {
                     //This should be client side
@@ -86,7 +86,6 @@ public class IsLookingAtInput extends InputNeuron {
                             setCurrentValue(1);
                         }
                     }
-
                 }
 
 

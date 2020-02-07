@@ -25,7 +25,7 @@ public class ServerOrgManager extends BaseOrgManager {
     protected ServerPlayerEntity serverPlayerEntity;
     protected long spawnTime = 0;
     public ArrayList<CCClientOutputNeuronActionPacket> neuronActions = new ArrayList<CCClientOutputNeuronActionPacket>();
-    private float maxLifeSeconds = 10;
+    private float maxLifeSeconds = 5;
 
     public ServerOrgManager(){
 

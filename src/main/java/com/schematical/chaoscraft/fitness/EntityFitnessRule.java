@@ -125,10 +125,10 @@ public class EntityFitnessRule {
                    }
 
 
-                   if(!attributeValue.contains(event.blockTouchedState)){
+                   if(!attributeValue.contains(event.blockTouchedState.name())){
                        return null;
                    }else{
-                       ChaosCraft.LOGGER.info("BLOCK_TOUCH_STATE Success: " + attributeValue);
+                       //ChaosCraft.LOGGER.info("BLOCK_TOUCH_STATE Success: " + attributeValue);
                    }
                    break;
 

@@ -39,7 +39,7 @@ public abstract class BaseOrgManager {
     public void attatchTickable(iChaosOrgTickable tickable){
         tickables.add(tickable);
     }
-    protected void fireTickables() {
+    public void fireTickables() {
         for (iChaosOrgTickable tickable : tickables) {
             tickable.Tick(this);
         }
