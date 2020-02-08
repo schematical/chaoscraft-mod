@@ -22,7 +22,8 @@ public class CCWorldEvent {
         TOSSED_EQUIPPED_STACK,
         HAS_TRAVELED,
         TRAVEL_ALONG_AXIS,
-        TOUCHED_BLOCK
+        TOUCHED_BLOCK,
+        HAS_NOT_TRAVELED
     }
     public enum Axis{
         X,

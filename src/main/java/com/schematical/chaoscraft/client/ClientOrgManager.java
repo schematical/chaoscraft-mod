@@ -9,6 +9,7 @@ import com.schematical.chaoscraft.network.packets.CCClientOrgDebugStateChangeReq
 import com.schematical.chaoscraft.network.packets.CCServerScoreEventPacket;
 import com.schematical.chaoscraft.server.ServerOrgManager;
 import com.schematical.chaoscraft.tickables.OrgPositionManager;
+import com.schematical.chaosnet.model.ChaosNetException;
 import com.schematical.chaosnet.model.Organism;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particles.ParticleTypes;
@@ -24,6 +25,8 @@ public class ClientOrgManager extends BaseOrgManager {
     protected ArrayList<CCServerScoreEventPacket> serverScoreEvents = new ArrayList<CCServerScoreEventPacket>();
     protected int expectedLifeEndTime = -1;
     protected ServerOrgManager.DebugState debugState = ServerOrgManager.DebugState.On;
+    private int reportReattempts = 0;
+
     public ClientOrgManager(){
         this.attatchTickable(new OrgPositionManager());
     }
@@ -53,8 +56,7 @@ public class ClientOrgManager extends BaseOrgManager {
 
     public void attachOrganism(Organism organism){
         if(!state.equals(State.Uninitialized)){
-            ChaosCraft.LOGGER.error(getCCNamespace() + " - has invalid state: " + state);
-            return;
+            throw new ChaosNetException(getCCNamespace() + " - has invalid state: " + state);
         }
         super.attachOrganism(organism);
         state = State.OrgAttached;
@@ -88,22 +90,19 @@ public class ClientOrgManager extends BaseOrgManager {
 
     public void markSpawnMessageSent() {
         if(!state.equals(State.OrgAttached)){
-            ChaosCraft.LOGGER.error(getCCNamespace() + " - has invalid state: " + state);
-            return;
+            throw new ChaosNetException(getCCNamespace() + " - has invalid state: " + state);
         }
         state = State.SpawnMessageSent;
     }
     public void markAttemptingReport() {
         if(!state.equals(State.ReadyToReport)){
-            ChaosCraft.LOGGER.error(getCCNamespace() + " - Invalid State: " + state);
-            return;
+            throw new ChaosNetException(getCCNamespace() + " - Invalid State: " + state);
         }
         state = State.AttemptingToReport;
     }
     public void markReported() {
         if(!state.equals(State.AttemptingToReport)){
-            ChaosCraft.LOGGER.error(getCCNamespace() + " - Invalid State: " + state);
-            return;
+            throw new ChaosNetException(getCCNamespace() + " - Invalid State: " + state);
         }
         state = State.FinishedReport;
     }
@@ -111,15 +110,14 @@ public class ClientOrgManager extends BaseOrgManager {
 
     public void markDead() {
         if(!state.equals(State.Ticking)){
-            ChaosCraft.LOGGER.error(getCCNamespace() + " - has invalid state: " + state);
-            return;
+            throw new ChaosNetException(getCCNamespace() + " - has invalid state: " + state);
         }
         state = State.ReadyToReport;
     }
     public void markTicking() {
         if(!state.equals(State.EntityAttached)){
-            ChaosCraft.LOGGER.error(getCCNamespace() + " - has invalid state: " + state);
-            return;
+            throw new ChaosNetException(getCCNamespace() + " - has invalid state: " + state);
+
         }
         state = State.Ticking;
     }
@@ -147,6 +145,17 @@ public class ClientOrgManager extends BaseOrgManager {
         return debugState;
     }
 
+    public void markForRetryReport() {
+        if(!state.equals(State.FinishedReport)){
+            throw new ChaosNetException(getCCNamespace() + " - has invalid state: " + state);
+
+        }
+        state = State.AttemptingToReport;
+        reportReattempts += 1;
+        if(reportReattempts > 5){
+            throw new ChaosNetException("ClientOrgManager - " + getCCNamespace() + " Attempted to reReport " + reportReattempts + " times");
+        }
+    }
 
 
     public enum State{

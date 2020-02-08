@@ -14,6 +14,7 @@ public class OrgPositionManager implements iChaosOrgTickable {
     public Vec3i lastCheckPos;
     public Vec3d maxDist = new Vec3d(0,0,0);
     public ArrayList<Vec3i> touchedBlocks = new ArrayList<Vec3i>();
+    public int ticksSinceLastMove = 0;
     @Override
     public void Tick(BaseOrgManager orgManager) {
         boolean isServer = orgManager instanceof ServerOrgManager;
@@ -28,6 +29,7 @@ public class OrgPositionManager implements iChaosOrgTickable {
 
 
         }
+        ticksSinceLastMove += 1;
 
         Vec3d currPosD = orgManager.getEntity().getPositionVec();
         Vec3i currPos = new Vec3i(
@@ -38,6 +40,7 @@ public class OrgPositionManager implements iChaosOrgTickable {
         if(
             !this.lastCheckPos.equals(currPos)
         ){
+            ticksSinceLastMove = 0;
             this.lastCheckPos = currPos;
             Vec3i diffVec = new Vec3i(
                     this.lastCheckPos.getX() - this.startPos.getX(),
@@ -96,6 +99,13 @@ public class OrgPositionManager implements iChaosOrgTickable {
             if(!hasTouchedBlock){
                 touchedBlocks.add(this.lastCheckPos);
             }
+        }
+        if(
+            isServer &&
+            ticksSinceLastMove % (20 * 5) == 0
+        ){
+            CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.HAS_NOT_TRAVELED);
+            orgManager.getEntity().entityFitnessManager.test(worldEvent);
         }
     }
     public boolean hasTouchedBlock(Vec3d vec3d){
