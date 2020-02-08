@@ -23,7 +23,7 @@ public class WaypointBlockTileEntity extends TileEntity implements ITickableTile
     public void tick() {
             if(!ChaosBlocks.waypointsBlocks.contains(this.getPos())) {
                 ChaosBlocks.waypointsBlocks.add(this.getPos());
-                ChaosCraft.LOGGER.info("Waypoint at " + this.getPos().getX() + ", " + this.getPos().getY() + ", " + this.getPos().getZ());
+                //ChaosCraft.LOGGER.info("Waypoint at " + this.getPos().getX() + ", " + this.getPos().getY() + ", " + this.getPos().getZ());
 
             }
         }

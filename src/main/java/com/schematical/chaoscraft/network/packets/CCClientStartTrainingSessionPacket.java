@@ -46,7 +46,7 @@ public class CCClientStartTrainingSessionPacket {
                 //Pretty sure the server should get this
 
                 //Load the NNet into memory
-                ChaosCraft.getServer().startTrainingSession(message.trainingRoomUsername, message.trainingRoomNamespace);
+                ChaosCraft.getServer().setTrainingRoom(message.trainingRoomUsername, message.trainingRoomNamespace);
 
             });
             ctx.get().setPacketHandled(true);

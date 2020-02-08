@@ -389,34 +389,14 @@ public class ChaosCraftServer {
             throw exception;
         }
     }
-    public void startTrainingSession(String trainingRoomUsernameNamespace, String trainingRoomNamespace){
+    public void setTrainingRoom(String trainingRoomUsernameNamespace, String trainingRoomNamespace){
 
         ChaosCraft.config.trainingRoomUsernameNamespace = trainingRoomUsernameNamespace;
         ChaosCraft.config.trainingRoomNamespace = trainingRoomNamespace;
         ChaosCraft.config.save();
 
-        try {
-            PostUsernameTrainingroomsTrainingroomSessionsStartRequest startSessionRequest = new PostUsernameTrainingroomsTrainingroomSessionsStartRequest();
-            startSessionRequest.setTrainingroom(ChaosCraft.config.trainingRoomNamespace);
-            startSessionRequest.setUsername(ChaosCraft.config.trainingRoomUsernameNamespace);
-
-            PostUsernameTrainingroomsTrainingroomSessionsStartResult result = ChaosCraft.sdk.postUsernameTrainingroomsTrainingroomSessionsStart(startSessionRequest);
-            ChaosCraft.config.sessionNamespace = result.getTraningRoomSessionStartResponse().getSession().getNamespace();
-            ChaosCraft.config.save();
-
-            for (ChaosCraftServerPlayerInfo serverPlayerInfo : userMap.values()) {
-                sendServerInfoPacket(server.getPlayerList().getPlayerByUUID(serverPlayerInfo.playerUUID));
-            }
-        }catch(ChaosNetException exception){
-            if(exception.sdkHttpMetadata().httpStatusCode() == 401){
-                ChaosCraft.LOGGER.error(exception.getMessage());
-                String message = "Your login has expired. Please re-run `/chaoscraft-auth {username} {password}`";
-                //ChaosCraft.chat(message);
-                ChaosCraft.LOGGER.error(message);
-            }else{
-                throw exception;
-            }
-
+        for (ChaosCraftServerPlayerInfo serverPlayerInfo : userMap.values()) {
+            sendServerInfoPacket(server.getPlayerList().getPlayerByUUID(serverPlayerInfo.playerUUID));
         }
 
     }

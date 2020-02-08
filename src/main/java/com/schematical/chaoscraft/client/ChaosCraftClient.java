@@ -5,10 +5,8 @@ import com.schematical.chaoscraft.client.gui.*;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.*;
-import com.schematical.chaosnet.model.ChaosNetException;
-import com.schematical.chaosnet.model.PostUsernameTrainingroomsTrainingroomSessionsSessionRepairRequest;
-import com.schematical.chaosnet.model.PostUsernameTrainingroomsTrainingroomSessionsSessionRepairResult;
-import com.schematical.chaosnet.model.TrainingRoomSessionNextResponse;
+import com.schematical.chaoscraft.server.ChaosCraftServerPlayerInfo;
+import com.schematical.chaosnet.model.*;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
@@ -55,13 +53,50 @@ public class ChaosCraftClient {
     public void setTrainingRoomInfo(ServerIntroInfoPacket serverInfo) {
         trainingRoomNamespace = serverInfo.getTrainingRoomNamespace();
         trainingRoomUsernameNamespace = serverInfo.getTrainingRoomUsernameNamespace();
-        sessionNamespace = serverInfo.getSessionNamespace();
+       //sessionNamespace = serverInfo.getSessionNamespace();
         ChaosCraft.LOGGER.info("TrainingRoomInfo Set: " + trainingRoomNamespace + ", " + trainingRoomUsernameNamespace + ", " + sessionNamespace);
         state = State.Authed;
         if((Minecraft.getInstance().currentScreen instanceof ChaosTrainingRoomSelectionOverlayGui)) {
 
             Minecraft.getInstance().displayGuiScreen((Screen)null);
         }
+        startTrainingSession();
+    }
+    public void startTrainingSession(){
+
+    /*    ChaosCraft.config.trainingRoomUsernameNamespace = trainingRoomUsernameNamespace;
+        ChaosCraft.config.trainingRoomNamespace = trainingRoomNamespace;
+        ChaosCraft.config.save();*/
+
+        try {
+            PostUsernameTrainingroomsTrainingroomSessionsStartRequest startSessionRequest = new PostUsernameTrainingroomsTrainingroomSessionsStartRequest();
+            startSessionRequest.setTrainingroom(trainingRoomNamespace);
+            startSessionRequest.setUsername(trainingRoomUsernameNamespace);
+
+            PostUsernameTrainingroomsTrainingroomSessionsStartResult result = ChaosCraft.sdk.postUsernameTrainingroomsTrainingroomSessionsStart(startSessionRequest);
+            sessionNamespace = result.getTraningRoomSessionStartResponse().getSession().getNamespace();
+            //ChaosCraft.config.save();
+
+
+        }catch(ChaosNetException exception){
+            if(exception.sdkHttpMetadata().httpStatusCode() == 401){
+                ChaosCraft.LOGGER.error(exception.getMessage());
+                String message = "Your login has expired. Please re-run `/chaoscraft-auth {username} {password}`";
+                //ChaosCraft.chat(message);
+                ChaosCraft.LOGGER.error(message);
+            }else{
+                throw exception;
+            }
+
+        }catch(Exception exception){
+            ChaosCraft.getClient().consecutiveErrorCount += 1;
+
+            ChaosCraft.LOGGER.error("ChaosClientThread `/next` Error: " + exception.getMessage() + " - exception type: " + exception.getClass().getName());
+            ChaosCraft.getClient().thread = null;
+            ChaosCraft.getClient().setTicksRequiredToCallChaosNet(1000);
+
+        }
+
     }
 
     public State getState() {

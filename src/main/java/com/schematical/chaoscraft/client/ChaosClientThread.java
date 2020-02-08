@@ -89,10 +89,13 @@ public class ChaosClientThread implements Runnable {
 
             int statusCode = exception.sdkHttpMetadata().httpStatusCode();
             switch(statusCode){
+                case(502):
+                case(504):
                 case(400):
 
                     ChaosCraft.getClient().repair();
                     break;
+
                 case(401):
                     ChaosCraft.auth();
                 break;

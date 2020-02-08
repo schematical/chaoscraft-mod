@@ -39,7 +39,7 @@ public class SpawnBlockTileEntity  extends TileEntity implements ITickableTileEn
     public void tick() {
             if(!ChaosBlocks.spawnBlocks.contains(this.getPos())) {
                 ChaosBlocks.spawnBlocks.add(this.getPos());
-                ChaosCraft.LOGGER.info("SpawnBlock at " + this.getPos().getX() + ", " + this.getPos().getY() + ", " + this.getPos().getZ());
+                //ChaosCraft.LOGGER.info("SpawnBlock at " + this.getPos().getX() + ", " + this.getPos().getY() + ", " + this.getPos().getZ());
 
             }
         }
