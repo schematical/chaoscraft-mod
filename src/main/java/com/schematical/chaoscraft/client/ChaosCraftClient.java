@@ -41,8 +41,13 @@ public class ChaosCraftClient {
     public Thread thread;
     public static List<KeyBinding> keyBindings = new ArrayList<KeyBinding>();
     private int ticksRequiredToCallChaosNet = 100;
-
-
+    private ChaosCraftServerPlayerInfo.State observationState = ChaosCraftServerPlayerInfo.State.None;
+    public ChaosCraftServerPlayerInfo.State getObservationState(){
+        return observationState;
+    }
+    public void setObservationState(ChaosCraftServerPlayerInfo.State observationState){
+        this.observationState = observationState;
+    }
     public void onWorldUnload() {
         state = State.Uninitiated;
         myOrganisms.clear();
@@ -251,30 +256,7 @@ public class ChaosCraftClient {
 
     }
 
-    public void updateObservers(){
-        /*if(myOrganisims.size() > 0) {
-            for (EntityPlayerMP observingPlayer : observingPlayers) {
-                Entity entity = observingPlayer.getSpectatingEntity();
 
-                if (
-                        entity.equals(observingPlayer) ||
-                        entity == null ||
-                        entity.isDead
-                ) {
-                    if(
-                            entity != null &&
-                                    entity instanceof OrgEntity
-                    ){
-                        ((OrgEntity) entity).setObserving(null);
-                    }
-                    int index = (int) Math.floor(myOrganisims.size() * Math.random());
-                    OrgEntity orgToObserve = myOrganisims.get(index);
-                    orgToObserve.setObserving(observingPlayer);
-                    observingPlayer.setSpectatingEntity(orgToObserve);
-                }
-            }
-        }*/
-    }
     public List<ClientOrgManager> checkForDeadOrgs(){
 
         List<ClientOrgManager> clientOrgManagers = getOrgsWithState(ClientOrgManager.State.Ticking);

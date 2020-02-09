@@ -1,7 +1,11 @@
 package com.schematical.chaoscraft.client.gui;
 
+import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.NeuronBase;
 import com.schematical.chaoscraft.entities.OrgEntity;
+import com.schematical.chaoscraft.network.ChaosNetworkManager;
+import com.schematical.chaoscraft.network.packets.CCClientObserveStateChangePacket;
+import com.schematical.chaoscraft.server.ChaosCraftServerPlayerInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.Widget;
@@ -51,6 +55,31 @@ public class ChaosInGameMenuOverlayGui extends Screen {
             Minecraft.getInstance().displayGuiScreen(screen);
         }));
         y += 20;
+
+        this.addButton(new Button(this.width / 2 - 100, y, 200, 20, I18n.format(getObserverBtnText()), (button) -> {
+            ChaosCraftServerPlayerInfo.State state = ChaosCraft.getClient().getObservationState();
+            if(!state.equals(ChaosCraftServerPlayerInfo.State.None)){
+                state = ChaosCraftServerPlayerInfo.State.None;
+            }else{
+                state = ChaosCraftServerPlayerInfo.State.ObservingPassive;
+            }
+            CCClientObserveStateChangePacket pkt = new CCClientObserveStateChangePacket(state, null);
+            ChaosNetworkManager.sendToServer(pkt);
+            ChaosCraft.getClient().setObservationState(state);
+            Minecraft.getInstance().displayGuiScreen(null);
+            button.setMessage(getObserverBtnText());
+
+        }));
+        y += 20;
+    }
+    private String getObserverBtnText(){
+        String text = "chaoscraft.gui.mainmenu.observer-mode-start";
+
+        ChaosCraftServerPlayerInfo.State state = ChaosCraft.getClient().getObservationState();
+        if(!state.equals(ChaosCraftServerPlayerInfo.State.None)){
+            text = "chaoscraft.gui.mainmenu.observer-mode-stop";
+        }
+        return text;
     }
     @Override
     public void render(int p_render_1_, int p_render_2_, float p_render_3_) {

@@ -7,10 +7,7 @@ import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.fitness.ChaosCraftFitnessManager;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
-import com.schematical.chaoscraft.network.packets.CCClientOutputNeuronActionPacket;
-import com.schematical.chaoscraft.network.packets.CCServerEntitySpawnedPacket;
-import com.schematical.chaoscraft.network.packets.CCServerRequestTrainingRoomGUIPacket;
-import com.schematical.chaoscraft.network.packets.ServerIntroInfoPacket;
+import com.schematical.chaoscraft.network.packets.*;
 import com.schematical.chaoscraft.server.spawnproviders.PlayerSpawnPosProvider;
 import com.schematical.chaoscraft.server.spawnproviders.SpawnBlockPosProvider;
 import com.schematical.chaoscraft.server.spawnproviders.iServerSpawnProvider;
@@ -110,7 +107,7 @@ public class ChaosCraftServer {
     }
 
     private void longTick() {
-
+        updateObservers();
         for (ChaosCraftServerPlayerInfo value : userMap.values()) {
             if(value.organisims.size() < ChaosCraft.config.maxBotCount){
                 //Request more bots
@@ -399,5 +396,70 @@ public class ChaosCraftServer {
             sendServerInfoPacket(server.getPlayerList().getPlayerByUUID(serverPlayerInfo.playerUUID));
         }
 
+    }
+
+    public void updatePlayerObserverState(CCClientObserveStateChangePacket message, ServerPlayerEntity player) {
+        if(!userMap.containsKey(player.getUniqueID().toString())){
+            ChaosCraft.LOGGER.error("Could not find ServerPlayerEntity in `userMap` with UUID: " + player.getUniqueID().toString());
+            return;
+        }
+        ChaosCraftServerPlayerInfo serverPlayerInfo = userMap.get(player.getUniqueID().toString());
+        serverPlayerInfo.state = message.getState();
+      if(serverPlayerInfo.state.equals(ChaosCraftServerPlayerInfo.State.ObservingActive)) {
+            if (!organisms.containsKey(message.getOrgNamespace())) {
+                serverPlayerInfo.state = ChaosCraftServerPlayerInfo.State.None;
+                ChaosCraft.LOGGER.error("Could not set player observing state because find Organism:" + message.getOrgNamespace());
+                return;
+            }
+            serverPlayerInfo.observingEntity = organisms.get(message.getOrgNamespace());
+
+        }else if(serverPlayerInfo.state.equals(ChaosCraftServerPlayerInfo.State.None)) {
+                ServerPlayerEntity serverPlayerEntity  = server.getPlayerList().getPlayerByUUID(serverPlayerInfo.playerUUID);
+                serverPlayerEntity.setSpectatingEntity(null);
+
+        }
+        updateObservers();
+
+    }
+    public void updateObservers(){
+        //Find high scoring org
+        ArrayList<ChaosCraftServerPlayerInfo> observingPlayers = new ArrayList<ChaosCraftServerPlayerInfo>();
+        for (ChaosCraftServerPlayerInfo serverPlayerInfo : userMap.values()) {
+            if(
+                serverPlayerInfo.state.equals(ChaosCraftServerPlayerInfo.State.ObservingPassive)
+            ) {
+                observingPlayers.add(serverPlayerInfo);
+            }else if( serverPlayerInfo.state.equals(ChaosCraftServerPlayerInfo.State.ObservingActive)) {
+                if(
+                        !serverPlayerInfo.observingEntity.getState().equals(ServerOrgManager.State.Ticking)
+                ) {
+                    serverPlayerInfo.state = ChaosCraftServerPlayerInfo.State.None;
+                    serverPlayerInfo.observingEntity = null;
+                }
+            }
+
+        }
+        if(observingPlayers.size() == 0) {
+            return;
+        }
+
+        //Find highest scoring bot
+        ServerOrgManager highScoringServerOrgManager = null;
+        Double highScore = -99999d;
+        List<ServerOrgManager> orgs = getOrgsWithState(ServerOrgManager.State.Ticking);
+        for (ServerOrgManager org : orgs) {
+            Double orgTotalScore = org.getEntity().entityFitnessManager.totalScore();
+            if(orgTotalScore > highScore){
+                highScore = orgTotalScore;
+                highScoringServerOrgManager = org;
+            }
+        }
+        if(highScoringServerOrgManager == null){
+            return;
+        }
+        for (ChaosCraftServerPlayerInfo observingPlayer : observingPlayers) {
+            observingPlayer.getServerPlayerEntity().setSpectatingEntity(highScoringServerOrgManager.getEntity());
+        }
+        //Set to observe it
     }
 }

@@ -17,5 +17,7 @@
   "chaoscraft.gui.orgneurondetail.overridevalue": "Override Value",
   "chaoscraft.gui.orgdetail.scoreevents": "Score Events",
   "chaoscraft.gui.mainmenu.species": "Species",
-  "chaoscraft.gui.mainmenu.trainingroom": "Training Room"
+  "chaoscraft.gui.mainmenu.trainingroom": "Training Room",
+  "chaoscraft.gui.mainmenu.observer-mode-start": "Start Observing",
+  "chaoscraft.gui.mainmenu.observer-mode-stop": "Stop Observing"
 }

@@ -867,6 +867,8 @@ this.clientOrgManager.fireTickables();
             clientOrgManager == null ||
             clientOrgManager.getOrganism() == null
         ){
+            //It is probablly not your org...
+            //But try and load it anyway
             ChaosCraft.LOGGER.error("Clicked on an OrgEntity but it has no organism");
             return false;
         }
