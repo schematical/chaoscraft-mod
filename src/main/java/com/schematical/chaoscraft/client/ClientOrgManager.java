@@ -43,7 +43,7 @@ public class ClientOrgManager extends BaseOrgManager {
         for(int i = 0; i < 4; i ++) {
             BlockPos pos = orgEntity.getPosition();
             orgEntity.world.addParticle(
-                ParticleTypes.CLOUD,
+                ParticleTypes.ENCHANT,
                 (double) pos.getX() + 0.5D,
                 (double) pos.getY() + 1.2D,
                 (double) pos.getZ() + 0.5D,

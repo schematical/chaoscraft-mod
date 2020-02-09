@@ -102,6 +102,7 @@ public class OrgPositionManager implements iChaosOrgTickable {
         }
         if(
             isServer &&
+            ticksSinceLastMove != 0 &&
             ticksSinceLastMove % (20 * 5) == 0
         ){
             CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.HAS_NOT_TRAVELED);

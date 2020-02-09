@@ -6,7 +6,7 @@ import com.schematical.chaoscraft.ai.OutputNeuron;
 /**
  * Created by user1a on 12/10/18.
  */
-public class ChangeYawOutput extends OutputNeuron {
+public class ChangeHeadYawOutput extends OutputNeuron {
     @Override
     public void execute() {
 
@@ -18,9 +18,7 @@ public class ChangeYawOutput extends OutputNeuron {
         //ChaosCraft.logger.info(nNet.entity.getName() + " ChangeYawOutput: " + this._lastValue + " - " + delta);
         //;
 
-        this.nNet.entity.setDesiredYaw(this.nNet.entity.getDesiredYaw() + (delta  * 30));
-
-
+        this.nNet.entity.setDesiredHeadYaw(this.nNet.entity.getDesiredHeadYaw() + (delta  * 30));
 
     }
 }

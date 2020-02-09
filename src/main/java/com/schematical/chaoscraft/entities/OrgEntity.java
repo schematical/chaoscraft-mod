@@ -71,6 +71,7 @@ public class OrgEntity extends MobEntity {
     protected ItemStackHandler itemHandler = new ItemStackHandler();
     protected double desiredPitch;
     protected double desiredYaw;
+    protected double desiredHeadYaw;
     //Whether the bot has tried left clicking last tick.
     private boolean lastTickLeftClicked;
 
@@ -713,9 +714,9 @@ public class OrgEntity extends MobEntity {
 
     private void updatePitchAndYaw(){
         double yOffset = Math.sin(Math.toRadians(desiredPitch));
-        double zOffset = Math.cos(Math.toRadians(this.desiredYaw)) * Math.cos(Math.toRadians(desiredPitch));
-        double xOffset = Math.sin(Math.toRadians(this.desiredYaw)) * Math.cos(Math.toRadians(desiredPitch));
-        Vec3d pos = getPositionVec();
+        double zOffset = Math.cos(Math.toRadians(this.desiredHeadYaw)) * Math.cos(Math.toRadians(desiredPitch));
+        double xOffset = Math.sin(Math.toRadians(this.desiredHeadYaw)) * Math.cos(Math.toRadians(desiredPitch));
+        Vec3d pos = getEyePosition(1);
 
         this.getLookController().setLookPosition(pos.getX() + xOffset, pos.getY() + this.getEyeHeight() + yOffset, pos.getZ() + zOffset, 360, 360);
         this.renderYawOffset = 0;
@@ -911,5 +912,13 @@ this.clientOrgManager.fireTickables();
 
     public int getSpawnHash() {
         return spawnHash;
+    }
+
+    public double getDesiredHeadYaw() {
+        return desiredHeadYaw;
+    }
+
+    public void setDesiredHeadYaw(double desiredHeadYaw) {
+        this.desiredHeadYaw = desiredHeadYaw;
     }
 }

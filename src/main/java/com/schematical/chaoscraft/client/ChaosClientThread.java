@@ -91,6 +91,7 @@ public class ChaosClientThread implements Runnable {
             switch(statusCode){
                 case(502):
                 case(504):
+                case(500):
                 case(400):
 
                     ChaosCraft.getClient().repair();

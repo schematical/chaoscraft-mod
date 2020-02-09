@@ -31,7 +31,10 @@ public class IsLookingAtInput extends InputNeuron {
         /*if(this.nNet.entity.getDebug()){
             //ChaosCraft.logger.info("Debugging...");
         }*/
-
+        if(eye == null){
+            ChaosCraft.LOGGER.error("Missing: " + eyeId);
+            return getCurrentValue();
+        }
         List<CCObserviableAttributeCollection> attributeCollections = null;
         float newVal = getCurrentValue();
         switch(attributeId){
@@ -113,7 +116,7 @@ public class IsLookingAtInput extends InputNeuron {
     }
     public String toLongString(){
         String response = super.toLongString();
-        response += " " + this.attributeId + " " + this.attributeValue + " E" + this.eyeId;
+        response += " " + this.attributeId + " " + this.attributeValue + " E" + this.eyeId + "=> " + this.getCurrentValue();
         return response;
 
     }

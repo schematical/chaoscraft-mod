@@ -9,6 +9,9 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 @OnlyIn(Dist.CLIENT)
 public class ChaosOrgScoreEventListOverlayGui extends Screen {
 
@@ -37,7 +40,9 @@ public class ChaosOrgScoreEventListOverlayGui extends Screen {
                 16777215
         );
         y += 20;
-        for (CCServerScoreEventPacket serverScoreEventPacket : clientOrgManager.getServerScoreEvents()) {
+        ArrayList<CCServerScoreEventPacket> scoreEvents = (ArrayList<CCServerScoreEventPacket>)clientOrgManager.getServerScoreEvents().clone();
+        Collections.reverse(scoreEvents);
+        for (CCServerScoreEventPacket serverScoreEventPacket : scoreEvents) {
             String message = serverScoreEventPacket.fitnessRuleId +
                     " S:" + serverScoreEventPacket.score +
                     " L:" + serverScoreEventPacket.life +
