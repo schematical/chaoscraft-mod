@@ -457,9 +457,10 @@ public class ChaosCraftServer {
         if(highScoringServerOrgManager == null){
             return;
         }
+        //Set to observe it
         for (ChaosCraftServerPlayerInfo observingPlayer : observingPlayers) {
             observingPlayer.getServerPlayerEntity().setSpectatingEntity(highScoringServerOrgManager.getEntity());
         }
-        //Set to observe it
+
     }
 }
