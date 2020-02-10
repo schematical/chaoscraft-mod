@@ -15,6 +15,7 @@ import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.entities.OrgEntityRenderer;
 import com.schematical.chaoscraft.fitness.ChaosCraftFitnessManager;
 import com.schematical.chaoscraft.fitness.EntityFitnessManager;
+import com.schematical.chaoscraft.items.ChaosItems;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 
 import com.schematical.chaoscraft.server.ChaosCraftServer;
@@ -35,6 +36,8 @@ import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.BlockPos;
@@ -133,7 +136,7 @@ public class ChaosCraft
 
         ChaosBlocks.BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
         ChaosTileEntity.TILES.register(FMLJavaModLoadingContext.get().getModEventBus());
-
+        ChaosItems.ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
 
@@ -253,6 +256,7 @@ public class ChaosCraft
         );
 
     }
+
     // You can use EventBusSubscriber to automatically subscribe events on the contained class (this is subscribing to the MOD
     // Event bus for receiving Registry Events)
     @Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)

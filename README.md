@@ -25,22 +25,14 @@ gradlew runClient
 ```
 This will start minecraft and you are ready to go!
 
-### Get Authed:
-Before you can get authenticated you need credentials, these will be provided by me in the discord server.
-Afterwards you can run this command in an open world in MC to get authenticated.
-```
-/chaoscraft-auth {username} {password}
-```
-You will only have to do this once, because it will save your credentials locally.
-### Get Started:
-To actually run the mod you need to execute this command within MC.
-```
-/chaoscraft-start {trainingRoomOwnerUsername} {trainingRoomNamespace}
-```
-Currently the majority of people are using this namespace:
-```
-/chaoscraft-start schemetical test-3
-```
+## Login:
+When you start a game you should be prompted to login with your ChaosNet login credentials
+
+## Select a Training Room:
+Assuming you are NOT connecting to a server that has already been setup once you log in you should be prompted to set the Trianing Room.
+
+## Start Training:
+From there the simulation should kick off.
 
 ### Additional Helpful Notes for Beginners(Thank You 0xFFFF):
 https://pastebin.com/GwwRkDSM

@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.blocks.ChaosBlocks;
 import net.minecraft.block.CampfireBlock;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IClearable;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Inventory;
@@ -20,81 +21,124 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 
 
 public class SpawnBlockTileEntity  extends TileEntity implements ITickableTileEntity {
-        private final NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
-        private final int[] cookingTimes = new int[4];
-        private final int[] cookingTotalTimes = new int[4];
+    private final NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
+    private String spawnPointId = "default";
 
-        public SpawnBlockTileEntity() {
+    public SpawnBlockTileEntity() {
             super(ChaosTileEntity.SPAWN_TILE.get());
         }
 
     @Override
     public void tick() {
-            if(!ChaosBlocks.spawnBlocks.contains(this.getPos())) {
-                ChaosBlocks.spawnBlocks.add(this.getPos());
-                //ChaosCraft.LOGGER.info("SpawnBlock at " + this.getPos().getX() + ", " + this.getPos().getY() + ", " + this.getPos().getZ());
+        if(!ChaosBlocks.spawnBlocks.contains(this.getPos())) {
+            ChaosBlocks.spawnBlocks.add(this.getPos());
+            //ChaosCraft.LOGGER.info("SpawnBlock at " + this.getPos().getX() + ", " + this.getPos().getY() + ", " + this.getPos().getZ());
+        }
+    }
 
-            }
+
+/*
+ @Override
+    public boolean processInteract(PlayerEntity player, Hand hand)
+    {
+        if(
+                clientOrgManager == null ||
+                        clientOrgManager.getOrganism() == null
+        ){
+            //It is probablly not your org...
+            //But try and load it anyway
+            ChaosCraft.LOGGER.error("Clicked on an OrgEntity but it has no organism");
+            return false;
         }
 
-
+        if (this.world.isRemote) {
+            ChaosCraft.getClient().showOrdDetailOverlay(clientOrgManager);
+        }
+        return true;
+    }
+ */
     @Override
     public void read(CompoundNBT compound) {
-            super.read(compound);
-            this.inventory.clear();
-            ItemStackHelper.loadAllItems(compound, this.inventory);
-            if (compound.contains("CookingTimes", 11)) {
-                int[] aint = compound.getIntArray("CookingTimes");
-                System.arraycopy(aint, 0, this.cookingTimes, 0, Math.min(this.cookingTotalTimes.length, aint.length));
-            }
-
-            if (compound.contains("CookingTotalTimes", 11)) {
-                int[] aint1 = compound.getIntArray("CookingTotalTimes");
-                System.arraycopy(aint1, 0, this.cookingTotalTimes, 0, Math.min(this.cookingTotalTimes.length, aint1.length));
-            }
-
+        super.read(compound);
+        if (compound.contains("spawnPointId", 11)) {
+           spawnPointId = compound.getString("spawnPointId");
         }
+
+    }
 
     @Override
     public CompoundNBT write(CompoundNBT compound) {
-            this.writeItems(compound);
-            compound.putIntArray("CookingTimes", this.cookingTimes);
-            compound.putIntArray("CookingTotalTimes", this.cookingTotalTimes);
-            return compound;
+        super.write(compound);
+        compound.putString("spawnPointId", this.spawnPointId);
+        return compound;
+    }
+
+
+
+    /**
+     * Retrieves packet to send to the client whenever this Tile Entity is resynced via World.notifyBlockUpdate. For
+     * modded TE's, this packet comes back to you clientside in {@link #onDataPacket}
+     */
+    @Nullable
+    @Override
+    public SUpdateTileEntityPacket getUpdatePacket() {
+        return new SUpdateTileEntityPacket(this.pos, 13, this.getUpdateTag());
+    }
+
+    /**
+     * Get an NBT compound to sync to the client with SPacketChunkData, used for initial loading of the chunk or when
+     * many blocks change at once. This compound comes back to you clientside in
+     */
+    @Override
+    public CompoundNBT getUpdateTag() {
+        return this.write(new CompoundNBT());
+    }
+
+
+    public String getSpawnPointId() {
+        return spawnPointId;
+    }
+    public void setSpawnPointId(String spawnPointId){
+        setSpawnPointId(spawnPointId, false);
+    }
+    public void setSpawnPointId(String spawnPointId, boolean setSiblings) {
+        this.spawnPointId = spawnPointId;
+        if(setSiblings){
+            for(int x = -1; x <= 1; x += 2){
+                for(int z = -1; z <= 1; z += 2) {
+                   /* BlockPos blockPos = new BlockPos(
+                    this.getPos().getX() + x,
+                       this.getPos().getY(),
+                    this.getPos().getZ() + z
+                    );*/
+                    BlockPos blockPos = this.getPos().add(
+                        new Vec3i(
+                            x,
+                            0,
+                            z
+                        )
+                    );
+                    TileEntity tileentity = getWorld().getTileEntity(blockPos);
+                    if(
+                        tileentity != null &&
+                        tileentity instanceof SpawnBlockTileEntity
+                    ){
+                        SpawnBlockTileEntity spawnBlockTileEntity = (SpawnBlockTileEntity) tileentity;
+                        if(!spawnBlockTileEntity.getSpawnPointId().equals(spawnPointId)){
+                            spawnBlockTileEntity.setSpawnPointId(spawnPointId, setSiblings);
+                        }
+                    }
+                }
+            }
         }
-
-        private CompoundNBT writeItems(CompoundNBT compound) {
-            super.write(compound);
-            ItemStackHelper.saveAllItems(compound, this.inventory, true);
-            return compound;
-        }
-
-        /**
-         * Retrieves packet to send to the client whenever this Tile Entity is resynced via World.notifyBlockUpdate. For
-         * modded TE's, this packet comes back to you clientside in {@link #onDataPacket}
-         */
-        @Nullable
-        @Override
-        public SUpdateTileEntityPacket getUpdatePacket() {
-            return new SUpdateTileEntityPacket(this.pos, 13, this.getUpdateTag());
-        }
-
-        /**
-         * Get an NBT compound to sync to the client with SPacketChunkData, used for initial loading of the chunk or when
-         * many blocks change at once. This compound comes back to you clientside in
-         */
-        @Override
-        public CompoundNBT getUpdateTag() {
-            return this.writeItems(new CompoundNBT());
-        }
-
-
-
+    }
 }

@@ -7,9 +7,13 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -19,7 +23,7 @@ import javax.annotation.Nullable;
 import java.util.Random;
 
 public class SpawnBlock extends Block implements ITileEntityProvider {
-    public boolean tickHasBeenSet = false;
+
     public SpawnBlock(Properties properties) {
         super(properties);
     }
@@ -42,28 +46,29 @@ public class SpawnBlock extends Block implements ITileEntityProvider {
     }
     @Override
     public void onBlockClicked(BlockState state, World worldIn, BlockPos pos, PlayerEntity player) {
-        if(!tickHasBeenSet){
-            worldIn.getPendingBlockTicks().scheduleTick(pos, this, 1);
-        }
-        ChaosCraft.LOGGER.debug("Clicked! " + player.getName());
+
 
     }
-    @Override
-    public void onEntityWalk(World worldIn, BlockPos pos, Entity entityIn) {
-        if(!tickHasBeenSet){
-            worldIn.getPendingBlockTicks().scheduleTick(pos, this, 1);
-        }
-        //ChaosCraft.LOGGER.debug("Walked! " + entityIn.getName());
-    }
+
 
     @Nullable
     @Override
     public TileEntity createNewTileEntity(IBlockReader worldIn) {
         return new SpawnBlockTileEntity();
     }
+    @Override
+    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult p_225533_6_) {
+        TileEntity tileentity = worldIn.getTileEntity(pos);
+        if (worldIn.isRemote) {
 
-    //Load some stuff
 
-
+            ChaosCraft.getClient().showSpawnBlockGui((SpawnBlockTileEntity) tileentity);
+            return ActionResultType.SUCCESS;
+        } else {
+            ChaosCraft.LOGGER.debug("Server Clicked! " + player.getName());
+            //activate(state, worldIn, pos);
+            return ActionResultType.PASS;
+        }
+    }
 
 }

@@ -6,12 +6,15 @@ import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.*;
 import com.schematical.chaoscraft.server.ChaosCraftServerPlayerInfo;
+import com.schematical.chaoscraft.tileentity.SpawnBlockTileEntity;
 import com.schematical.chaosnet.model.*;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.Items;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -424,6 +427,13 @@ public class ChaosCraftClient {
     public void displayTrainingRoomSelectionOverlayGui() {
 
         ChaosTrainingRoomSelectionOverlayGui screen = new ChaosTrainingRoomSelectionOverlayGui();
+        Minecraft.getInstance().displayGuiScreen(screen);
+    }
+
+    public void showSpawnBlockGui(SpawnBlockTileEntity tileentity) {
+        ChaosSpawnBlockSettingScreen screen = new ChaosSpawnBlockSettingScreen(tileentity);
+        ChaosCraft.LOGGER.debug("Showing SPawnBlockGui: " +tileentity.getSpawnPointId());
+        //Open up gui
         Minecraft.getInstance().displayGuiScreen(screen);
     }
 
