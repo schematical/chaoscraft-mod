@@ -15,10 +15,9 @@ public class ChangeHeadYawOutput extends OutputNeuron {
         if(Math.abs(delta) < ChaosCraft.activationThreshold){
             return;
         }
-        //ChaosCraft.logger.info(nNet.entity.getName() + " ChangeYawOutput: " + this._lastValue + " - " + delta);
-        //;
 
-        this.nNet.entity.setDesiredHeadYaw(this.nNet.entity.getDesiredHeadYaw() + (delta  * 30));
+
+        this.nNet.entity.setDesiredHeadYaw(delta  * 90);
 
     }
 }

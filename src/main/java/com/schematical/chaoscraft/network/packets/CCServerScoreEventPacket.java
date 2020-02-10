@@ -13,15 +13,17 @@ public class CCServerScoreEventPacket {
     public int life;
     public String fitnessRuleId;
     public float multiplier = 1;
+    public int runIndex = -1;
     public int expectedLifeEndTime;
 
-    public CCServerScoreEventPacket(String orgNamespace, int score, int life, String fitnessRuleId, float multiplier, int expectedLifeEndTime)
+    public CCServerScoreEventPacket(String orgNamespace, int score, int life, String fitnessRuleId, float multiplier, int expectedLifeEndTim,  int runIndex)
     {
         this.orgNamespace = orgNamespace;
         this.score = score;
         this.life = life;
         this.fitnessRuleId = fitnessRuleId;
         this.multiplier = multiplier;
+        this.runIndex = runIndex;
         this.expectedLifeEndTime = expectedLifeEndTime;
     }
     public String getOrgNamespace(){
@@ -30,7 +32,7 @@ public class CCServerScoreEventPacket {
 
     public static void encode(CCServerScoreEventPacket pkt, PacketBuffer buf)
     {
-        String payload = pkt.orgNamespace + GLUE + pkt.score + GLUE + pkt.life + GLUE + pkt.fitnessRuleId + GLUE + pkt.multiplier + GLUE + pkt.expectedLifeEndTime;
+        String payload = pkt.orgNamespace + GLUE + pkt.score + GLUE + pkt.life + GLUE + pkt.fitnessRuleId + GLUE + pkt.multiplier + GLUE + pkt.expectedLifeEndTime + GLUE + pkt.runIndex;
         buf.writeString(payload);
     }
 
@@ -44,7 +46,8 @@ public class CCServerScoreEventPacket {
             Integer.parseInt(parts[2]),
             parts[3],
             Float.parseFloat(parts[4]),
-            Integer.parseInt(parts[5])
+            Integer.parseInt(parts[5]),
+                Integer.parseInt(parts[6])
         );
     }
 

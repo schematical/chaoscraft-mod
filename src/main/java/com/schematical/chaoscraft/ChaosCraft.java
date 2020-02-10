@@ -6,7 +6,7 @@ import com.schematical.chaoscraft.blocks.ChaosBlocks;
 import com.schematical.chaoscraft.blocks.ChaosEggBlock;
 import com.schematical.chaoscraft.blocks.SpawnBlock;
 import com.schematical.chaoscraft.blocks.WaypointBlock;
-import com.schematical.chaoscraft.client.ChaosCraftClient;
+import com.schematical.chaoscraft.client.*;
 import com.schematical.chaoscraft.commands.CCAuthCommand;
 import com.schematical.chaoscraft.commands.CCHardResetCommand;
 import com.schematical.chaoscraft.commands.CCSummonCommand;
@@ -67,7 +67,6 @@ import java.util.stream.Collectors;
 import com.schematical.chaosnet.ChaosNet;
 import com.schematical.chaosnet.auth.ChaosnetCognitoUserPool;
 import com.schematical.chaosnet.model.*;
-import sun.nio.ch.Net;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod("chaoscraft")

@@ -448,7 +448,7 @@ public class ChaosCraftServer {
         Double highScore = -99999d;
         List<ServerOrgManager> orgs = getOrgsWithState(ServerOrgManager.State.Ticking);
         for (ServerOrgManager org : orgs) {
-            Double orgTotalScore = org.getEntity().entityFitnessManager.totalScore();
+            Double orgTotalScore = org.getEntity().entityFitnessManager.getCurrFitnessRun().totalScore();
             if(orgTotalScore > highScore){
                 highScore = orgTotalScore;
                 highScoringServerOrgManager = org;

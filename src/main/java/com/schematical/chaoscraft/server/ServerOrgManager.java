@@ -26,6 +26,7 @@ public class ServerOrgManager extends BaseOrgManager {
     protected long spawnTime = 0;
     public ArrayList<CCClientOutputNeuronActionPacket> neuronActions = new ArrayList<CCClientOutputNeuronActionPacket>();
     private float maxLifeSeconds = 5;
+    private int respawnCount = 0;
 
     public ServerOrgManager(){
 
@@ -56,6 +57,7 @@ public class ServerOrgManager extends BaseOrgManager {
         this.orgEntity.attachSeverOrgManager(this);
         this.orgEntity.attachNNetRaw(this.organism.getNNetRaw());
         orgEntity.entityFitnessManager = new EntityFitnessManager(orgEntity);
+        orgEntity.entityFitnessManager.addNewRun();
         orgEntity.observableAttributeManager = new CCObservableAttributeManager(organism);
         orgEntity.setCustomName(new TranslationTextComponent(getCCNamespace()));
         orgEntity.setSpawnHash(ChaosCraft.getServer().spawnHash);

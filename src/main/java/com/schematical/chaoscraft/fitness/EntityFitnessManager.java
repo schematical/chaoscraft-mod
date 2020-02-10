@@ -20,14 +20,23 @@ import java.util.List;
  * Created by user1a on 1/4/19.
  */
 public class EntityFitnessManager {
+    protected int currRunIndex = -1;
+    protected HashMap<Integer, FitnessRun> fitnessRuns = new HashMap<Integer, FitnessRun>();
     protected HashMap<String, Integer> occurences = new HashMap<String, Integer>();
     public OrgEntity orgEntity;
-    public List<EntityFitnessScoreEvent> scoreEvents = new ArrayList<EntityFitnessScoreEvent>();
+   // public List<EntityFitnessScoreEvent> scoreEvents = new ArrayList<EntityFitnessScoreEvent>();
 
     public EntityFitnessManager(OrgEntity orgEntity) {
         this.orgEntity = orgEntity;
     }
 
+    public FitnessRun getCurrFitnessRun(){
+        return fitnessRuns.get(currRunIndex);
+    }
+    public FitnessRun addNewRun(){
+        currRunIndex += 1;
+        return fitnessRuns.put(currRunIndex, new FitnessRun());
+    }
     public void test(CCWorldEvent event){
 
 
@@ -99,7 +108,7 @@ public class EntityFitnessManager {
     }
 
     private void addScoreEvent(EntityFitnessScoreEvent scoreEvent) {
-        scoreEvents.add(scoreEvent);
+        getCurrFitnessRun().scoreEvents.add(scoreEvent);
         ServerOrgManager serverOrgManager = orgEntity.getServerOrgManager();
         //Send score event
         CCServerScoreEventPacket serverScoreEventPacket = new CCServerScoreEventPacket(
@@ -108,17 +117,18 @@ public class EntityFitnessManager {
                 scoreEvent.life,
                 scoreEvent.fitnessRule.id,
                 scoreEvent.multiplier,
-                (int) (orgEntity.world.getGameTime() + ((orgEntity.getServerOrgManager().getMaxLife() - orgEntity.getServerOrgManager().getAgeSeconds()) * 20))
+                (int) (orgEntity.world.getGameTime() + ((orgEntity.getServerOrgManager().getMaxLife() - orgEntity.getServerOrgManager().getAgeSeconds()) * 20)),
+                currRunIndex
         );
         ChaosNetworkManager.sendTo(serverScoreEventPacket, serverOrgManager.getServerPlayerEntity());
 
     }
 
-    public Double totalScore() {
+/*    public Double totalScore() {
         Double total = 0d;
         for (EntityFitnessScoreEvent scoreEvent: scoreEvents) {
             total += scoreEvent.getAdjustedScore();
         }
         return total;
-    }
+    }*/
 }

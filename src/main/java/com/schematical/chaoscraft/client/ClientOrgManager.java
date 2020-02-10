@@ -18,6 +18,7 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ClientOrgManager extends BaseOrgManager {
     protected State state = State.Uninitialized;
@@ -26,6 +27,7 @@ public class ClientOrgManager extends BaseOrgManager {
     protected int expectedLifeEndTime = -1;
     protected ServerOrgManager.DebugState debugState = ServerOrgManager.DebugState.On;
     private int reportReattempts = 0;
+    private int spawnCount = -1;
 
     public ClientOrgManager(){
         this.attatchTickable(new OrgPositionManager());
@@ -70,17 +72,56 @@ public class ClientOrgManager extends BaseOrgManager {
         this.orgEntity.observableAttributeManager = new CCObservableAttributeManager(organism);
         this.orgEntity.attachNNetRaw(organism.getNNetRaw());
         orgEntity.attachClientOrgEntity(this);
+        spawnCount += 1;
         state = State.EntityAttached;
     }
     public ArrayList<CCServerScoreEventPacket> getServerScoreEvents(){
         return serverScoreEvents;
     }
-    public Double getServerScoreEventTotal(){
+    public Double getLatestScore(){
         Double total = 0d;
         for (CCServerScoreEventPacket serverScoreEvent: serverScoreEvents) {
-            total += serverScoreEvent.getAdjustedScore();
+            if(serverScoreEvent.runIndex == spawnCount){
+                total += serverScoreEvent.getAdjustedScore();
+            }
         }
         return total;
+    }
+    public Double getServerScoreEventTotal(){
+        float flattenTo = 500;
+
+        HashMap<Integer, Float> runScores = new HashMap<>();
+
+        for (CCServerScoreEventPacket serverScoreEvent: serverScoreEvents) {
+            if(!runScores.containsKey(serverScoreEvent.runIndex)){
+                runScores.put(serverScoreEvent.runIndex, 0f);
+            }
+            float runTotal = runScores.get(serverScoreEvent.runIndex);
+            runTotal += serverScoreEvent.getAdjustedScore();
+            runScores.put(serverScoreEvent.runIndex, runTotal);
+
+        }
+        HashMap<Integer, Integer> medianScores = new HashMap<Integer, Integer>();
+        for (Integer runIndex : runScores.keySet()) {
+            float score = runScores.get(runIndex);
+            int flatScore = (int)(Math.round(score / flattenTo) * flattenTo);
+            if(!medianScores.containsKey(flatScore)){
+                medianScores.put(flatScore, 0);
+            }
+            int scoreCount = medianScores.get(flatScore);
+            scoreCount += 1;
+            medianScores.put(flatScore, scoreCount);
+        }
+        float realMedianScore = -999999;
+        float highestScoreCount = -99;
+        for (Integer flatScore : medianScores.keySet()) {
+            if(medianScores.get(flatScore) > highestScoreCount){
+                highestScoreCount = medianScores.get(flatScore);
+                realMedianScore = flatScore;
+            }
+
+        }
+        return (double)realMedianScore;
     }
 
 
@@ -112,7 +153,23 @@ public class ClientOrgManager extends BaseOrgManager {
         if(!state.equals(State.Ticking)){
             throw new ChaosNetException(getCCNamespace() + " - has invalid state: " + state);
         }
-        state = State.ReadyToReport;
+        //If high scoring and
+
+        if(
+            spawnCount > 3 ||
+            getLatestScore() < 500
+        ){
+            if(spawnCount > 3){
+                ChaosCraft.LOGGER.info("Finishing run for " + getCCNamespace() + " after " + spawnCount + " runs Score: "  + getLatestScore() + " Median: " + getServerScoreEventTotal());
+
+            }
+           state = State.ReadyToReport;
+            return;
+        }
+        ChaosCraft.LOGGER.info("Allowing " + getCCNamespace() + " to respawn after " + spawnCount + "Turns Score: "  + getLatestScore() + " Median: " + getServerScoreEventTotal());
+
+        //Get ready to retry
+        state = State.OrgAttached;
     }
     public void markTicking() {
         if(!state.equals(State.EntityAttached)){
