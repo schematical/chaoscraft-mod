@@ -27,7 +27,9 @@ public class ChaosSpawnBlockSettingScreen extends Screen {
     protected void init() {
         super.init();
         this.minecraft.keyboardListener.enableRepeatEvents(true);
+        this.spawnPointId = tileEntity.getSpawnPointId();
         this.spawnPointIdText = new TextFieldWidget(this.font, this.width / 2 - 100, 100, 200, 20, tileEntity.getSpawnPointId());
+        this.spawnPointIdText.setText(spawnPointId);
         this.spawnPointIdText.setResponder((text) -> {
             spawnPointId = text;
         });

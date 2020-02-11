@@ -8,6 +8,8 @@ import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -23,6 +25,7 @@ import javax.annotation.Nullable;
 import java.util.Random;
 
 public class SpawnBlock extends Block implements ITileEntityProvider {
+    public static final BooleanProperty LIT = BlockStateProperties.LIT;
 
     public SpawnBlock(Properties properties) {
         super(properties);

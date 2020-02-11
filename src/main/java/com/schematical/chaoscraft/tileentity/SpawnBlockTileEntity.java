@@ -30,7 +30,7 @@ import net.minecraft.world.World;
 
 
 public class SpawnBlockTileEntity  extends TileEntity implements ITickableTileEntity {
-    private final NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
+
     private String spawnPointId = "default";
 
     public SpawnBlockTileEntity() {
@@ -46,26 +46,6 @@ public class SpawnBlockTileEntity  extends TileEntity implements ITickableTileEn
     }
 
 
-/*
- @Override
-    public boolean processInteract(PlayerEntity player, Hand hand)
-    {
-        if(
-                clientOrgManager == null ||
-                        clientOrgManager.getOrganism() == null
-        ){
-            //It is probablly not your org...
-            //But try and load it anyway
-            ChaosCraft.LOGGER.error("Clicked on an OrgEntity but it has no organism");
-            return false;
-        }
-
-        if (this.world.isRemote) {
-            ChaosCraft.getClient().showOrdDetailOverlay(clientOrgManager);
-        }
-        return true;
-    }
- */
     @Override
     public void read(CompoundNBT compound) {
         super.read(compound);
@@ -112,6 +92,7 @@ public class SpawnBlockTileEntity  extends TileEntity implements ITickableTileEn
     }
     public void setSpawnPointId(String spawnPointId, boolean setSiblings) {
         this.spawnPointId = spawnPointId;
+        this.markForUpdate();
         if(setSiblings){
             for(int x = -1; x <= 1; x += 2){
                 for(int z = -1; z <= 1; z += 2) {
@@ -140,5 +121,9 @@ public class SpawnBlockTileEntity  extends TileEntity implements ITickableTileEn
                 }
             }
         }
+    }
+    private void markForUpdate() {
+        this.markDirty();
+        this.getWorld().notifyBlockUpdate(this.getPos(), this.getBlockState(), this.getBlockState(), 3);
     }
 }

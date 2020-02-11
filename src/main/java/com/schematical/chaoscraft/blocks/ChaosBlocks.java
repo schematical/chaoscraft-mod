@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 public class ChaosBlocks {
 
+
     public static final DeferredRegister<Block> BLOCKS = new DeferredRegister<>(ForgeRegistries.BLOCKS, ChaosCraft.MODID);
 
     public static final RegistryObject<Block> SPAWN_BLOCK = BLOCKS.register("spawn_block", () -> new SpawnBlock(Block.Properties.create(Material.BARRIER).tickRandomly().hardnessAndResistance(-1.0F, 3600000.0F)));
