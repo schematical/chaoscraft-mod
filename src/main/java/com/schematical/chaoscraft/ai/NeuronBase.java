@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.lang.Math;
 
 /**
  * Created by user1a on 12/8/18.
@@ -90,11 +91,12 @@ public abstract class NeuronBase extends InnovationBase {
 
     /**
      * This does an aproximation between -1 and 1 of its what the value coming in may have been
+     * x must be a float between 0 and +1 (exclusive), but should not fail if x is 0 or +1
      * @param x
      * @return
      */
     public float reverseSigmoid(float x){
-        return ((x * 2) -1);
+        return (Math.log(x / (1f + Float.MIN_VALUE - x)));
     }
     public void attachNNet(NeuralNet neuralNet) {
         this.nNet = neuralNet;
