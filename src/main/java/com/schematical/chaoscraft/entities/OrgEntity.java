@@ -111,6 +111,16 @@ public class OrgEntity extends MobEntity {
         return clientOrgManager;
     }
     public ServerOrgManager getServerOrgManager(){ return serverOrgManager; }
+    public boolean attackEntityAsMob(Entity entityIn) {
+        boolean flag = super.attackEntityAsMob(entityIn);
+        if(flag) {
+            CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.ATTACK_SUCCESS);
+            worldEvent.entity = entityIn;
+            entityFitnessManager.test(worldEvent);
+        }
+        return flag;
+
+    }
     public void attachNNetRaw(String nNetRaw){
         String nNetString = nNetRaw;//nNetRaw.getNNetRaw();
         JSONObject obj = null;
@@ -718,9 +728,9 @@ public class OrgEntity extends MobEntity {
         double xOffset = Math.sin(Math.toRadians(this.desiredHeadYaw)) * Math.cos(Math.toRadians(desiredPitch));
         Vec3d pos = getEyePosition(1);
 
-        this.getLookController().setLookPosition(pos.getX() + xOffset, pos.getY() + this.getEyeHeight() + yOffset, pos.getZ() + zOffset, 360, 360);
+        this.getLookController().setLookPosition(pos.getX() + xOffset, pos.getY()/* + this.getEyeHeight() */+ yOffset, pos.getZ() + zOffset, 360, 360);
         this.renderYawOffset = 0;
-        this.setRotation((float) this.desiredYaw, this.rotationPitch);
+        this.setRotation((float) this.desiredYaw, 0);
     }
 
     private void checkForItemPickup(){

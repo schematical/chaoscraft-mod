@@ -4,6 +4,7 @@ import com.schematical.chaoscraft.ChaosCraft;
 
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.LivingRenderer;
+import net.minecraft.client.renderer.entity.layers.HeldItemLayer;
 import net.minecraft.client.renderer.entity.model.BeeModel;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
@@ -16,6 +17,7 @@ public class OrgEntityRenderer extends LivingRenderer<OrgEntity, BipedModel<OrgE
 
     public OrgEntityRenderer(EntityRendererManager rendererManager) {
         super(rendererManager, new PlayerModel<>(0, false), 0.5f);
+        this.addLayer(new HeldItemLayer<>(this));
     }
 
 

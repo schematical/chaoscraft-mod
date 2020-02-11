@@ -27,6 +27,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
 
 
 public class SpawnBlockTileEntity  extends TileEntity implements ITickableTileEntity {
@@ -62,16 +63,19 @@ public class SpawnBlockTileEntity  extends TileEntity implements ITickableTileEn
         return compound;
     }
 
-
+    @Override
+    public void onDataPacket(net.minecraft.network.NetworkManager net, net.minecraft.network.play.server.SUpdateTileEntityPacket pkt){
+        super.onDataPacket(net, pkt);
+    }
 
     /**
      * Retrieves packet to send to the client whenever this Tile Entity is resynced via World.notifyBlockUpdate. For
      * modded TE's, this packet comes back to you clientside in {@link #onDataPacket}
      */
     @Nullable
-    @Override
+   // @Override
     public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(this.pos, 13, this.getUpdateTag());
+        return new SUpdateTileEntityPacket(this.pos, 99, this.getUpdateTag());
     }
 
     /**

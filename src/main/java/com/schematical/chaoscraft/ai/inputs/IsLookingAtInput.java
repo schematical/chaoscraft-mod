@@ -16,7 +16,6 @@ import java.util.List;
  */
 public class IsLookingAtInput extends InputNeuron {
 
-    public static final double MAX_DISTANCE = 3d;
     public String attributeId;
     public String attributeValue;
     private boolean useDistanceAsValue = true;

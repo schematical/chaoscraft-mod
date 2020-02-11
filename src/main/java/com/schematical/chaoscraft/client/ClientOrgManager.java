@@ -3,6 +3,7 @@ package com.schematical.chaoscraft.client;
 import com.schematical.chaoscraft.BaseOrgManager;
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
+import com.schematical.chaoscraft.blocks.ChaosBlocks;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.CCClientOrgDebugStateChangeRequestPacket;
@@ -42,10 +43,10 @@ public class ClientOrgManager extends BaseOrgManager {
         expectedLifeEndTime = pkt.expectedLifeEndTime;
         serverScoreEvents.add(pkt);
         orgEntity.world.playSound((PlayerEntity)null, orgEntity.getPosition(), SoundEvents.BLOCK_BELL_USE, SoundCategory.AMBIENT, 3.0F, 1f);
-        for(int i = 0; i < 4; i ++) {
+        for(int i = 0; i < pkt.score; i ++) {
             BlockPos pos = orgEntity.getPosition();
             orgEntity.world.addParticle(
-                ParticleTypes.ENCHANT,
+                ParticleTypes.ITEM_SLIME,
                 (double) pos.getX() + 0.5D,
                 (double) pos.getY() + 1.2D,
                 (double) pos.getZ() + 0.5D,
@@ -87,8 +88,21 @@ public class ClientOrgManager extends BaseOrgManager {
         }
         return total;
     }
-    public Double getServerScoreEventTotal(){
-        float flattenTo = 500;
+    public Double getServerScoreEventTotal() {
+        double total = 0;
+        for (CCServerScoreEventPacket serverScoreEvent: serverScoreEvents) {
+            if(serverScoreEvent.runIndex == 0){
+                total += serverScoreEvent.score;
+            }
+        }
+        if(total > 0){
+            ChaosCraft.LOGGER.info(getCCNamespace() + " - Scored: " + total);
+        }
+        return total;
+    }
+    public Double getServerScoreEventMedian(){
+
+        float flattenTo = 10;
 
         HashMap<Integer, Float> runScores = new HashMap<>();
 

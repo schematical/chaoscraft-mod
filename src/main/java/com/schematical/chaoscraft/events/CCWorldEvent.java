@@ -23,7 +23,8 @@ public class CCWorldEvent {
         HAS_TRAVELED,
         TRAVEL_ALONG_AXIS,
         TOUCHED_BLOCK,
-        HAS_NOT_TRAVELED
+        HAS_NOT_TRAVELED,
+        ATTACK_SUCCESS
     }
     public enum Axis{
         X,

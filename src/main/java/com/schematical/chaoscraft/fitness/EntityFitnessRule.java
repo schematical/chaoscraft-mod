@@ -90,6 +90,7 @@ public class EntityFitnessRule {
                    if(!attributeValue.contains(entityId)){
                        return null;
                    }
+                   ChaosCraft.LOGGER.info("ATTACK SUCCESS: " + entityId);
                    break;
                case(Enum.ITEM_ID):
                    if(event.item == null){

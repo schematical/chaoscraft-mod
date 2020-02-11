@@ -9,28 +9,23 @@ import org.json.simple.JSONObject;
 /**
  * Created by user1a on 12/8/18.
  */
-public class TargetDistanceInput extends InputNeuron {
-    private static final int  YAW_DEGREES = 365;
-    private String targetSlotId;
+public class TargetDistanceInput extends BaseTargetInputNeuron {
+
+
     @Override
     public float evaluate(){
-        TargetSlot targetSlot = (TargetSlot) nNet.getBiology(targetSlotId);
-        Vec3d targetPosition = targetSlot.getTargetPosition();
+        Vec3d targetPosition = getTargetPosition();
         if(targetPosition == null){
-            return -1;
+            return getCurrentValue();
         }
         double distanceTo = nNet.entity.getPositionVector().distanceTo(targetPosition);
 
-        setCurrentValue((float)distanceTo / 5);//TODO: Make this a real distance
+        setCurrentValue((float) (distanceTo * -1) + 1);//TODO: Make this a real distance
         /*if(nNet.entity.getDebug()){
             ChaosCraft.logger.info("TargetDistanceInput    " + distanceTo + "  " + _lastValue);
         }*/
         return getCurrentValue();
     }
-    @Override
-    public void parseData(JSONObject jsonObject){
-        super.parseData(jsonObject);
-        targetSlotId = jsonObject.get("targetSlotId").toString();
-    }
+
 
 }

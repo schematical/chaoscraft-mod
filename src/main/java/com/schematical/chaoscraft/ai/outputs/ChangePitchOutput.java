@@ -10,7 +10,7 @@ public class ChangePitchOutput extends OutputNeuron {
     public void execute() {
         float delta = reverseSigmoid(this.getCurrentValue());
 
-        this.nNet.entity.setDesiredPitch(delta * 90);
+        this.nNet.entity.setDesiredPitch(delta * 90 );
 
         //this.nNet.entity.rotationPitch += delta;
     }

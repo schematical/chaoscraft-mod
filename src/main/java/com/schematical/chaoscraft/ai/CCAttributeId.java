@@ -9,5 +9,6 @@ public abstract class CCAttributeId {
     public static final String ITEM_ID = "ITEM_ID";
     public static final String RECIPE_ID = "RECIPE_ID";
     public static final String BLOCK_TOUCH_STATE = "BLOCK_TOUCH_STATE";
+    public static final String TARGET_SLOT = "TARGET_SLOT";
 
 }
