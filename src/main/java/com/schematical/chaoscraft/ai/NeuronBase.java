@@ -91,12 +91,12 @@ public abstract class NeuronBase extends InnovationBase {
 
     /**
      * This does an aproximation between -1 and 1 of its what the value coming in may have been
-     * x must be a float between 0 and +1 (exclusive), but should not fail if x is 0 or +1
+     * x must be a float between 0 and +1 (exclusive), but still should not fail if x is 0 or +1
      * @param x
      * @return
      */
     public float reverseSigmoid(float x){
-        return (Math.log(x / (1f + Float.MIN_VALUE - x)));
+        return (Math.log((x + Float.MIN_VALUE) / (1f + Float.MIN_VALUE - x)));
     }
     public void attachNNet(NeuralNet neuralNet) {
         this.nNet = neuralNet;
