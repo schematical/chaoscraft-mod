@@ -35,11 +35,11 @@ public class ChaosInGameMenuOverlayGui extends Screen {
             Minecraft.getInstance().displayGuiScreen(screen);
         }));
         y += 20;
-        this.addButton(new Button(this.width / 2 - 100, y, 200, 20, I18n.format("chaoscraft.gui.mainmenu.orglist"), (p_214266_1_) -> {
+        /*this.addButton(new Button(this.width / 2 - 100, y, 200, 20, I18n.format("chaoscraft.gui.mainmenu.orglist"), (p_214266_1_) -> {
             ChaosOrgListOverlayGui screen = new ChaosOrgListOverlayGui();
             Minecraft.getInstance().displayGuiScreen(screen);
         }));
-        y += 20;
+        y += 20;*/
         this.addButton(new Button(this.width / 2 - 100, y, 200, 20, I18n.format("chaoscraft.gui.mainmenu.networkinfo"), (p_214266_1_) -> {
             ChaosNetworkInfoOverlayGui screen = new ChaosNetworkInfoOverlayGui();
             Minecraft.getInstance().displayGuiScreen(screen);
@@ -56,6 +56,7 @@ public class ChaosInGameMenuOverlayGui extends Screen {
         }));
         y += 20;
 
+
         this.addButton(new Button(this.width / 2 - 100, y, 200, 20, I18n.format(getObserverBtnText()), (button) -> {
             ChaosCraftServerPlayerInfo.State state = ChaosCraft.getClient().getObservationState();
             if(!state.equals(ChaosCraftServerPlayerInfo.State.None)){
@@ -69,6 +70,12 @@ public class ChaosInGameMenuOverlayGui extends Screen {
             Minecraft.getInstance().displayGuiScreen(null);
             button.setMessage(getObserverBtnText());
 
+        }));
+        y += 20;
+
+        this.addButton(new Button(this.width / 2 - 100, y, 200, 20, I18n.format("chaoscraft.gui.mainmenu.show-debug-neuron-view"), (p_214266_1_) -> {
+            Minecraft.getInstance().displayGuiScreen(null);
+            ChaosCraft.getClient().showPlayerNeuronTestScreen();
         }));
         y += 20;
     }

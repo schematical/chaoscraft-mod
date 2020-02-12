@@ -19,5 +19,6 @@
   "chaoscraft.gui.mainmenu.species": "Species",
   "chaoscraft.gui.mainmenu.trainingroom": "Training Room",
   "chaoscraft.gui.mainmenu.observer-mode-start": "Start Observing",
-  "chaoscraft.gui.mainmenu.observer-mode-stop": "Stop Observing"
+  "chaoscraft.gui.mainmenu.observer-mode-stop": "Stop Observing",
+  "chaoscraft.gui.mainmenu.show-debug-neuron-view": "Neuron Debug"
 }

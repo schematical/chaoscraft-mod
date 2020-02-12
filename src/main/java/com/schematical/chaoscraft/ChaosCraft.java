@@ -29,6 +29,7 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.TurtleEggBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
@@ -41,7 +42,10 @@ import net.minecraft.item.Items;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.TickEvent;
@@ -60,6 +64,7 @@ import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -132,6 +137,9 @@ public class ChaosCraft
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onClientStarting);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onKeyInputEvent);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onEntitySpawn);
+        if(FMLEnvironment.dist.equals(Dist.CLIENT)) {
+            FMLJavaModLoadingContext.get().getModEventBus().addListener(this::renderOverlayEvent);
+        }
         FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(EntityType.class, this::onEntityRegistry);
 
         ChaosBlocks.BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
@@ -142,8 +150,14 @@ public class ChaosCraft
 
         ChaosNetworkManager.register();
     }
-
-
+@SubscribeEvent
+@OnlyIn(Dist.CLIENT)
+    public void renderOverlayEvent(RenderGameOverlayEvent.Post event) {
+        if(event.getType() != RenderGameOverlayEvent.ElementType.ALL) {
+            return;
+        }
+        client.render();
+    }
 
     public static ChaosCraftServer getServer(){
         return server;
@@ -207,9 +221,10 @@ public class ChaosCraft
     }
     // You can use SubscribeEvent and let the Event Bus discover methods to call
     @SubscribeEvent
+
     public void onServerStarting(FMLServerStartingEvent event) {
         // do something when the server starts
-        LOGGER.info("HELLO from server starting");
+
         server = new ChaosCraftServer(event.getServer());
 
         CCSummonCommand.register(event.getCommandDispatcher());
@@ -222,9 +237,9 @@ public class ChaosCraft
 
     @SubscribeEvent
     public void onClientStarting(FMLClientSetupEvent event) {
-        // do something when the server starts
-        LOGGER.info("HELLO from Client starting");
-        client = new ChaosCraftClient();
+       // do something when the server starts
+
+        client = new ChaosCraftClient(event.getMinecraftSupplier().get());
         client.preInit();
 
         //If they are not logged in we need to do that
@@ -267,7 +282,7 @@ public class ChaosCraft
     public void onClientTickEvent(TickEvent.ClientTickEvent clientTickEvent){
         if(ChaosCraft.client == null){
             LOGGER.info("HELLO from Client starting");
-            client = new ChaosCraftClient();
+            client = new ChaosCraftClient(null);
         }
         if(ChaosCraft.client != null){
 

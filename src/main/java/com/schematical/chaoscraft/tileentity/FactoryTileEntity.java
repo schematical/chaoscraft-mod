@@ -19,7 +19,7 @@ import java.util.Iterator;
 
 public class FactoryTileEntity extends TileEntity implements ITickableTileEntity {
     public EntityType entityType = EntityType.CHICKEN;
-    public final int MAX_ENTITIES = 10;
+    public final int MAX_ENTITIES = 1;
     public final int RANGE = 20;
     protected ArrayList<Entity> entities = new ArrayList<Entity>();
     public FactoryTileEntity() {

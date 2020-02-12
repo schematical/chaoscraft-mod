@@ -16,6 +16,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.Items;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 
@@ -45,9 +46,15 @@ public class ChaosCraftClient {
     public static List<KeyBinding> keyBindings = new ArrayList<KeyBinding>();
     private int ticksRequiredToCallChaosNet = 100;
     private ChaosCraftServerPlayerInfo.State observationState = ChaosCraftServerPlayerInfo.State.None;
+    private Minecraft minecraft;
+    public ChaosCraftClient(Minecraft minecraft) {
+        this.minecraft = minecraft;
+    }
+
     public ChaosCraftServerPlayerInfo.State getObservationState(){
         return observationState;
     }
+    private ChaosPlayerNeuronTestScreen chaosPlayerNeuronTestScreen;
     public void setObservationState(ChaosCraftServerPlayerInfo.State observationState){
         this.observationState = observationState;
     }
@@ -56,8 +63,15 @@ public class ChaosCraftClient {
         myOrganisms.clear();
 
     }
+    public void showPlayerNeuronTestScreen(){
+        chaosPlayerNeuronTestScreen = new ChaosPlayerNeuronTestScreen(this.minecraft);
+    }
+    public void render() {
 
-
+        if(chaosPlayerNeuronTestScreen != null){
+            chaosPlayerNeuronTestScreen.render();
+        }
+    }
     public void setTrainingRoomInfo(ServerIntroInfoPacket serverInfo) {
         trainingRoomNamespace = serverInfo.getTrainingRoomNamespace();
         trainingRoomUsernameNamespace = serverInfo.getTrainingRoomUsernameNamespace();
