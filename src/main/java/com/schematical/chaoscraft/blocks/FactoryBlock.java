@@ -2,7 +2,7 @@ package com.schematical.chaoscraft.blocks;
 
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.entities.OrgEntity;
-import com.schematical.chaoscraft.tileentity.SpawnBlockTileEntity;
+import com.schematical.chaoscraft.tileentity.FactoryTileEntity;
 import com.schematical.chaoscraft.tileentity.WaypointBlockTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -19,9 +19,11 @@ import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 
-public class WaypointBlock extends Block implements ITileEntityProvider {
-    public WaypointBlock(Properties properties) {
+public class FactoryBlock extends Block implements ITileEntityProvider {
+
+    public FactoryBlock(Properties properties) {
         super(properties);
     }
     @Override
@@ -31,29 +33,13 @@ public class WaypointBlock extends Block implements ITileEntityProvider {
     }
     @Override
     public void onEntityWalk(World worldIn, BlockPos pos, Entity entityIn) {
-        ChaosCraft.LOGGER.debug("Walked! " + entityIn.getName());
-        //If it is a OrgEntity give it points
-        if(worldIn.isRemote){
-            return;
-        }
-        if(! (entityIn instanceof OrgEntity)){
-            return;
-        }
-        OrgEntity orgEntity = (OrgEntity) entityIn;
-        orgEntity.setHealth(-1);
 
-
-        ServerWorld serverWorld = ChaosCraft.getServer().server.getWorld(DimensionType.OVERWORLD);
-        FireworkRocketEntity fireworkRocketEntity = EntityType.FIREWORK_ROCKET.create(serverWorld);
-        fireworkRocketEntity.setLocationAndAngles(pos.getX(), pos.getY() + 1, pos.getZ(), 0, 0);
-
-        serverWorld.summonEntity(fireworkRocketEntity);
     }
 
     @Nullable
     @Override
     public TileEntity createNewTileEntity(IBlockReader worldIn) {
-        return new WaypointBlockTileEntity();
+        return new FactoryTileEntity();
     }
 
 

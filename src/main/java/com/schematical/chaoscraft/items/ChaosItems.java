@@ -18,5 +18,8 @@ public class ChaosItems {
     public static final RegistryObject<Item> SPAWN_BLOCK_ITEM = ITEMS.register("spawn_block_item", () ->
             new BlockItem(ChaosBlocks.SPAWN_BLOCK.get(),  new Item.Properties().group(ItemGroup.BUILDING_BLOCKS))
     );
+    public static final RegistryObject<Item> FACTORY_BLOCK_ITEM = ITEMS.register("factory_block_item", () ->
+            new BlockItem(ChaosBlocks.FACTORY_BLOCK.get(),  new Item.Properties().group(ItemGroup.BUILDING_BLOCKS))
+    );
 
 }

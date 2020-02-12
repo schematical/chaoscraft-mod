@@ -18,6 +18,7 @@ public class ChaosBlocks {
     public static final RegistryObject<Block> SPAWN_BLOCK = BLOCKS.register("spawn_block", () -> new SpawnBlock(Block.Properties.create(Material.BARRIER).tickRandomly().hardnessAndResistance(-1.0F, 3600000.0F)));
     public static final RegistryObject<Block> WAYPOINT_BLOCK = BLOCKS.register("waypoint", () -> new WaypointBlock(Block.Properties.create(Material.BARRIER).tickRandomly().hardnessAndResistance(-1.0F, 3600000.0F)));
     public static final RegistryObject<Block> EGG_BLOCK = BLOCKS.register("egg", () -> new ChaosEggBlock(Block.Properties.create(Material.BARRIER).tickRandomly().hardnessAndResistance(-1.0F, 3600000.0F)));
+    public static final RegistryObject<Block> FACTORY_BLOCK = BLOCKS.register("factory_block", () -> new FactoryBlock(Block.Properties.create(Material.BARRIER).tickRandomly().hardnessAndResistance(-1.0F, 3600000.0F)));
 
     public static ArrayList<BlockPos> spawnBlocks = new ArrayList<BlockPos>();
     public static ArrayList<BlockPos> waypointsBlocks = new ArrayList<BlockPos>();
