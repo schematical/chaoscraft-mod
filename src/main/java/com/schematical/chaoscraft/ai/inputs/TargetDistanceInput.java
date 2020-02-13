@@ -3,6 +3,7 @@ package com.schematical.chaoscraft.ai.inputs;
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.InputNeuron;
 import com.schematical.chaoscraft.ai.biology.TargetSlot;
+import com.schematical.chaoscraft.events.CCWorldEvent;
 import net.minecraft.util.math.Vec3d;
 import org.json.simple.JSONObject;
 
@@ -14,16 +15,12 @@ public class TargetDistanceInput extends BaseTargetInputNeuron {
 
     @Override
     public float evaluate(){
-        Vec3d targetPosition = getTargetPosition();
-        if(targetPosition == null){
-            return getCurrentValue();
-        }
-        double distanceTo = getEntity().getPositionVector().distanceTo(targetPosition);
 
-        setCurrentValue((float) (distanceTo * -1) + 2);//TODO: Make this a real distance
-        /*if(nNet.entity.getDebug()){
-            ChaosCraft.logger.info("TargetDistanceInput    " + distanceTo + "  " + _lastValue);
-        }*/
+        Double distanceTo = targetHelper.getDist(this);
+        if(distanceTo != null) {
+            setCurrentValue((distanceTo.floatValue() * -1) + 2);//TODO: Make this a real distance
+        }
+
         return getCurrentValue();
     }
 

@@ -24,7 +24,10 @@ public class CCWorldEvent {
         TRAVEL_ALONG_AXIS,
         TOUCHED_BLOCK,
         HAS_NOT_TRAVELED,
-        ATTACK_SUCCESS
+        ATTACK_SUCCESS,
+        TARGET_CLOSE_DIST,
+        TARGET_CLOSE_YAW,
+        TARGET_CLOSE_PITCH,
     }
     public enum Axis{
         X,
@@ -43,6 +46,7 @@ public class CCWorldEvent {
     public Vec3i position;
     public BlockTouchedState blockTouchedState;
     public Axis axis;
+    public float extraMultiplier = 1;
 
 
     public CCWorldEvent(Type _eventType){

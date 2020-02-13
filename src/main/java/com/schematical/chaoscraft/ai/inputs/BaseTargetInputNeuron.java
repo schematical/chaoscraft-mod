@@ -1,10 +1,10 @@
 package com.schematical.chaoscraft.ai.inputs;
 
-import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.CCAttributeId;
 import com.schematical.chaoscraft.ai.InputNeuron;
-import com.schematical.chaoscraft.ai.biology.Eye;
 import com.schematical.chaoscraft.ai.biology.TargetSlot;
+import com.schematical.chaoscraft.util.TargetHelper;
+import com.schematical.chaoscraft.util.iHasAttributeIdValue;
 import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -15,18 +15,23 @@ import org.json.simple.JSONObject;
 
 import java.util.List;
 
-public class BaseTargetInputNeuron extends InputNeuron {
+public class BaseTargetInputNeuron extends InputNeuron implements iHasAttributeIdValue {
     public String attributeId;
     public String attributeValue;
+    protected TargetHelper targetHelper;
 
     private int maxDistance = 20;
+    public BaseTargetInputNeuron(){
+        super();
+        targetHelper = new TargetHelper();
+    }
     protected Vec3d getTargetPosition() {
         switch(attributeId){
             case(CCAttributeId.TARGET_SLOT):
                 TargetSlot targetSlot = (TargetSlot) nNet.getBiology(attributeValue);
                 return targetSlot.getTargetPosition();
            // break;
-            case(CCAttributeId.ENTITY_ID):
+            /*case(CCAttributeId.ENTITY_ID):
 
                 AxisAlignedBB grownBox = getEntity().getBoundingBox().grow(maxDistance, maxDistance, maxDistance);
                 List<Entity> entities =  getEntity().world.getEntitiesWithinAABB(LivingEntity.class,  grownBox);
@@ -40,8 +45,8 @@ public class BaseTargetInputNeuron extends InputNeuron {
                         entityCount += 1;
                         double dist = getEntity().getPositionVec().distanceTo(entity.getPositionVec());
                         if(
-                            closestEntity == null ||
-                            closestEntityDist > dist
+                                closestEntity == null ||
+                                        closestEntityDist > dist
                         ){
                             closestEntity = entity;
                             closestEntityDist = dist;
@@ -51,9 +56,13 @@ public class BaseTargetInputNeuron extends InputNeuron {
                 if(closestEntity != null){
                     return closestEntity.getPositionVec();
                 }
-            break;
+            break;*/
             default:
-                throw new ChaosNetException("Invalid `attributeId`: " + attributeId);
+                Entity entity =  targetHelper.getTarget(this);
+                if(entity != null) {
+                    return entity.getPositionVec();
+                }
+                //throw new ChaosNetException("Invalid `attributeId`: " + attributeId);
         }
 
         return null;
@@ -65,5 +74,15 @@ public class BaseTargetInputNeuron extends InputNeuron {
         attributeId = jsonObject.get("attributeId").toString();
         attributeValue = jsonObject.get("attributeValue").toString();
 
+    }
+
+    @Override
+    public String getAttributeId() {
+        return attributeId;
+    }
+
+    @Override
+    public String getAttributeValue() {
+        return attributeValue;
     }
 }

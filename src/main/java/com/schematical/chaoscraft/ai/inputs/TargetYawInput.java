@@ -15,22 +15,13 @@ public class TargetYawInput extends BaseTargetInputNeuron {
     @Override
     public float evaluate(){
 
-        Vec3d targetPosition = getTargetPosition();
-        if(targetPosition == null){
-            return getCurrentValue();
+        Double degrees = targetHelper.getYawDelta(this);
+        if(degrees != null) {
+            setCurrentValue(degrees.floatValue() / YAW_DEGREES);
         }
-        Vec3d lookVec = getEntity().getLookVec();
-        Vec3d vecToTarget = targetPosition.subtract(getEntity().getEyePosition(1));
-        double yaw = - Math.atan2(vecToTarget.x, vecToTarget.z);
-        double degrees = Math.toDegrees(yaw);
 
-        double lookYaw = - Math.atan2(lookVec.x, lookVec.z);
-        double lookDeg = Math.toDegrees(lookYaw);
-        degrees -= lookDeg;
-       setCurrentValue((float) degrees / YAW_DEGREES);
-        /*if(nNet.entity.getDebug()){
-            ChaosCraft.logger.info("TargetYawInput    " + degrees + "  " + _lastValue);
-        }*/
+
+
         return getCurrentValue();
     }
 

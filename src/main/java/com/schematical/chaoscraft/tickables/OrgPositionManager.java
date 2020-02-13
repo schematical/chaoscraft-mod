@@ -1,12 +1,16 @@
 package com.schematical.chaoscraft.tickables;
 
 import com.schematical.chaoscraft.BaseOrgManager;
+import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.server.ServerOrgManager;
+import com.schematical.chaoscraft.util.DebugTargetHolder;
+import com.schematical.chaoscraft.util.TargetHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraftforge.event.world.WorldEvent;
 
+import java.lang.annotation.Target;
 import java.util.ArrayList;
 
 public class OrgPositionManager implements iChaosOrgTickable {
@@ -15,6 +19,8 @@ public class OrgPositionManager implements iChaosOrgTickable {
     public Vec3d maxDist = new Vec3d(0,0,0);
     public ArrayList<Vec3i> touchedBlocks = new ArrayList<Vec3i>();
     public int ticksSinceLastMove = 0;
+    public TargetHelper targetHelper = new TargetHelper();
+    public DebugTargetHolder debugTargetHolder = null;
     @Override
     public void Tick(BaseOrgManager orgManager) {
         boolean isServer = orgManager instanceof ServerOrgManager;
@@ -100,6 +106,33 @@ public class OrgPositionManager implements iChaosOrgTickable {
                 touchedBlocks.add(this.lastCheckPos);
             }
         }
+        if(isServer){
+            if(debugTargetHolder == null){
+                debugTargetHolder = new DebugTargetHolder(orgManager.getEntity());
+            }
+            Double dist = targetHelper.getDist(debugTargetHolder);
+            if(dist != null && dist < 2){
+                CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.TARGET_CLOSE_DIST);
+                worldEvent.extraMultiplier = 1;// - (Math.abs(getCurrentValue()) / MAX_DELTA);
+                orgManager.getEntity().entityFitnessManager.test(worldEvent);
+            }
+
+            Double pitch = targetHelper.getPitchDelta(debugTargetHolder);
+            if(pitch != null && Math.abs(pitch) < 15){
+                CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.TARGET_CLOSE_PITCH);
+                worldEvent.extraMultiplier = (float) (1 - (Math.abs(pitch) / 15f));
+                orgManager.getEntity().entityFitnessManager.test(worldEvent);
+            }
+
+
+            Double yaw = targetHelper.getYawDelta(debugTargetHolder);
+            if(yaw != null && Math.abs(yaw) < 15){
+                CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.TARGET_CLOSE_YAW);
+                worldEvent.extraMultiplier = (float) (1 - (Math.abs(yaw) / 15f));
+                orgManager.getEntity().entityFitnessManager.test(worldEvent);
+            }
+
+        }
         if(
             isServer &&
             ticksSinceLastMove != 0 &&
@@ -109,6 +142,7 @@ public class OrgPositionManager implements iChaosOrgTickable {
             orgManager.getEntity().entityFitnessManager.test(worldEvent);
         }
     }
+
     public boolean hasTouchedBlock(Vec3d vec3d){
         Vec3i vec = new Vec3i(
                 (int)vec3d.getX(),

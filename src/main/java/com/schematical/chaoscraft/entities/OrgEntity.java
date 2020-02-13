@@ -782,7 +782,7 @@ public class OrgEntity extends MobEntity {
                 this.clientOrgManager.markTicking();
             }
 
-this.clientOrgManager.fireTickables();
+            this.clientOrgManager.fireTickables();
 
 
             this.observationHack();
@@ -820,6 +820,7 @@ this.clientOrgManager.fireTickables();
 
             //PacketHandler.INSTANCE.sendToAllTracking(new SyncHandsMessage(this.itemHandler.getStackInSlot(i), getEntityId(), i, selectedItemIndex), this);
         }
+        item.detach();
         if (stack.isEmpty()) {
             item.remove();
         }

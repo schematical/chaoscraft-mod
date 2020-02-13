@@ -3,6 +3,8 @@ package com.schematical.chaoscraft.ai.inputs;
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.InputNeuron;
 import com.schematical.chaoscraft.ai.biology.TargetSlot;
+import com.schematical.chaoscraft.entities.OrgEntity;
+import com.schematical.chaoscraft.events.CCWorldEvent;
 import net.minecraft.util.math.Vec3d;
 import org.json.simple.JSONObject;
 
@@ -14,19 +16,12 @@ public class TargetPitchInput extends BaseTargetInputNeuron {
 
     @Override
     public float evaluate(){
-        Vec3d targetPosition = getTargetPosition();
-        if(targetPosition == null){
-            return getCurrentValue();
-        }
-        Vec3d lookVec = getEntity().getLookVec();
-        Vec3d vecToTarget = targetPosition.subtract(getEntity().getEyePosition(1));
-        double pitch = -Math.atan2((vecToTarget.y + .5), Math.sqrt(Math.pow(vecToTarget.x, 2) + Math.pow(vecToTarget.z, 2)));
-        double degrees = Math.toDegrees(pitch);
 
-        double lookPitch = -Math.atan2(lookVec.y, Math.sqrt(Math.pow(lookVec.x, 2) + Math.pow(lookVec.z, 2)));
-        double lookDeg = Math.toDegrees(lookPitch);
-        degrees -= lookDeg;
-        setCurrentValue((float) degrees / PITCH_DEGREES);
+
+        Double degrees = targetHelper.getPitchDelta(this);
+        if(degrees != null) {
+            setCurrentValue( degrees.floatValue() / PITCH_DEGREES);
+        }
 
         return getCurrentValue();
     }
