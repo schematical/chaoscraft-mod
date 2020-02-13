@@ -19,8 +19,8 @@ public class TargetYawInput extends BaseTargetInputNeuron {
         if(targetPosition == null){
             return getCurrentValue();
         }
-        Vec3d lookVec = nNet.entity.getLookVec();
-        Vec3d vecToTarget = nNet.entity.getEyePosition(1).subtract(targetPosition);
+        Vec3d lookVec = getEntity().getLookVec();
+        Vec3d vecToTarget = targetPosition.subtract(getEntity().getEyePosition(1));
         double yaw = - Math.atan2(vecToTarget.x, vecToTarget.z);
         double degrees = Math.toDegrees(yaw);
 

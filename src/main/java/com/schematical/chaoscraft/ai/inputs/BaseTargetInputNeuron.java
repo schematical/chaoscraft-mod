@@ -28,9 +28,9 @@ public class BaseTargetInputNeuron extends InputNeuron {
            // break;
             case(CCAttributeId.ENTITY_ID):
 
-                AxisAlignedBB grownBox = nNet.entity.getBoundingBox().grow(maxDistance, maxDistance, maxDistance);
-                List<Entity> entities =  nNet.entity.world.getEntitiesWithinAABB(LivingEntity.class,  grownBox);
-                entities.addAll(nNet.entity.world.getEntitiesWithinAABB(ItemEntity.class,  grownBox));
+                AxisAlignedBB grownBox = getEntity().getBoundingBox().grow(maxDistance, maxDistance, maxDistance);
+                List<Entity> entities =  getEntity().world.getEntitiesWithinAABB(LivingEntity.class,  grownBox);
+                entities.addAll(getEntity().world.getEntitiesWithinAABB(ItemEntity.class,  grownBox));
                 Entity closestEntity = null;
                 double closestEntityDist = 10000;
                 int entityCount = 0;
@@ -38,7 +38,7 @@ public class BaseTargetInputNeuron extends InputNeuron {
                     String entityId =  entity.getType().getRegistryName().getNamespace() + ":" + entity.getType().getRegistryName().getPath();
                     if(entityId.equals(attributeValue)){
                         entityCount += 1;
-                        double dist =  nNet.entity.getPositionVec().distanceTo(entity.getPositionVec());
+                        double dist = getEntity().getPositionVec().distanceTo(entity.getPositionVec());
                         if(
                             closestEntity == null ||
                             closestEntityDist > dist

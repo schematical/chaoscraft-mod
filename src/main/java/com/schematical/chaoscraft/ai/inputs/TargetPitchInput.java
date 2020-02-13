@@ -18,9 +18,9 @@ public class TargetPitchInput extends BaseTargetInputNeuron {
         if(targetPosition == null){
             return getCurrentValue();
         }
-        Vec3d lookVec = nNet.entity.getLookVec();
-        Vec3d vecToTarget = nNet.entity.getEyePosition(1).subtract(targetPosition);
-        double pitch = -Math.atan2(vecToTarget.y, Math.sqrt(Math.pow(vecToTarget.x, 2) + Math.pow(vecToTarget.z, 2)));
+        Vec3d lookVec = getEntity().getLookVec();
+        Vec3d vecToTarget = targetPosition.subtract(getEntity().getEyePosition(1));
+        double pitch = -Math.atan2((vecToTarget.y + .5), Math.sqrt(Math.pow(vecToTarget.x, 2) + Math.pow(vecToTarget.z, 2)));
         double degrees = Math.toDegrees(pitch);
 
         double lookPitch = -Math.atan2(lookVec.y, Math.sqrt(Math.pow(lookVec.x, 2) + Math.pow(lookVec.z, 2)));

@@ -2,6 +2,7 @@ package com.schematical.chaoscraft.ai;
 
 
 import com.schematical.chaosnet.model.ChaosNetException;
+import net.minecraft.entity.LivingEntity;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -16,7 +17,7 @@ import java.util.List;
 public abstract class NeuronBase extends InnovationBase {
 
     public String id;
-
+    protected LivingEntity debugEntity = null;
     public NeuralNet nNet;
     private float _lastValue;
     private float _currentValue;
@@ -29,6 +30,18 @@ public abstract class NeuronBase extends InnovationBase {
     }
     public float getCurrentValue(){
         return _currentValue;
+    }
+    public NeuralNet getNNet(){
+        return nNet;
+    }
+    public void setDebugEntity(LivingEntity debugEntity){
+        this.debugEntity = debugEntity;
+    }
+    public LivingEntity getEntity(){
+        if(debugEntity != null){
+            return debugEntity;
+        }
+        return nNet.entity;
     }
     public void parseData(JSONObject jsonObject){
         if(this.id != null){
@@ -102,15 +115,19 @@ public abstract class NeuronBase extends InnovationBase {
     public String toString(){
         String response = this.getClass().getSimpleName().replace("Input","");
         response += " ";
-        float prettyLastValue = (Math.round(this._lastValue * 1000f) / 1000f);
-        response += prettyLastValue;
+
+        response += getPrettyLastValue();
 
         return response;
     }
     public String toLongString(){
-        String response = this.getClass().getSimpleName().replace("Input","");
-
+        String response = this.getClass().getSimpleName().replace("Input","") + " ";
+        response += getPrettyLastValue();
         return response;
+    }
+    public float getPrettyLastValue(){
+        float prettyLastValue = (Math.round(this._lastValue * 100f) / 100f);
+        return prettyLastValue;
     }
 
     public boolean getHasBeenEvaluated() {

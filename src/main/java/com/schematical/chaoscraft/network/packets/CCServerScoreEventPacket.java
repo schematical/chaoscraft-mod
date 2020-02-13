@@ -47,7 +47,7 @@ public class CCServerScoreEventPacket {
             parts[3],
             Float.parseFloat(parts[4]),
             Integer.parseInt(parts[5]),
-                Integer.parseInt(parts[6])
+            Integer.parseInt(parts[6])
         );
     }
 
