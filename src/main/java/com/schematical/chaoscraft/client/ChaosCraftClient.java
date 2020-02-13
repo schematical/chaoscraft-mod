@@ -47,14 +47,20 @@ public class ChaosCraftClient {
     private int ticksRequiredToCallChaosNet = 100;
     private ChaosCraftServerPlayerInfo.State observationState = ChaosCraftServerPlayerInfo.State.None;
     private Minecraft minecraft;
+    private ChaosPlayerNeuronTestScreen chaosPlayerNeuronTestScreen;
+    private ChaosObserveOverlayScreen chaosObserveOverlayScreen;
+
+
+
     public ChaosCraftClient(Minecraft minecraft) {
         this.minecraft = minecraft;
+        chaosObserveOverlayScreen = new ChaosObserveOverlayScreen(this.minecraft);
     }
 
     public ChaosCraftServerPlayerInfo.State getObservationState(){
         return observationState;
     }
-    private ChaosPlayerNeuronTestScreen chaosPlayerNeuronTestScreen;
+
     public void setObservationState(ChaosCraftServerPlayerInfo.State observationState){
         this.observationState = observationState;
     }
@@ -70,6 +76,9 @@ public class ChaosCraftClient {
 
         if(chaosPlayerNeuronTestScreen != null){
             chaosPlayerNeuronTestScreen.render();
+        }
+        if(!observationState.equals(ChaosCraftServerPlayerInfo.State.None)){
+            chaosObserveOverlayScreen.render();
         }
     }
     public void setTrainingRoomInfo(ServerIntroInfoPacket serverInfo) {
@@ -449,6 +458,14 @@ public class ChaosCraftClient {
         ChaosCraft.LOGGER.debug("Showing SPawnBlockGui: " +tileentity.getSpawnPointId());
         //Open up gui
         Minecraft.getInstance().displayGuiScreen(screen);
+    }
+
+    public void updateObservingEntity(CCServerObserverOrgChangeEventPacket message) {
+        ClientOrgManager clientOrgManager = null;
+        if(myOrganisms.containsKey(message.orgNamespace)){
+            clientOrgManager = myOrganisms.get(message.orgNamespace);
+        }
+        chaosObserveOverlayScreen.setObservedEntity(message, clientOrgManager);
     }
 
     public enum State{

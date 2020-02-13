@@ -20,7 +20,7 @@ public class TargetDistanceInput extends BaseTargetInputNeuron {
         }
         double distanceTo = getEntity().getPositionVector().distanceTo(targetPosition);
 
-        setCurrentValue((float) (distanceTo * -1) + 5);//TODO: Make this a real distance
+        setCurrentValue((float) (distanceTo * -1) + 2);//TODO: Make this a real distance
         /*if(nNet.entity.getDebug()){
             ChaosCraft.logger.info("TargetDistanceInput    " + distanceTo + "  " + _lastValue);
         }*/

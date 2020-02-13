@@ -3,6 +3,7 @@ package com.schematical.chaoscraft.entities;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -29,6 +30,12 @@ public class CCPlayerEntityWrapper extends PlayerEntity {
             return comp.equals(entityOrganism);
         }
         return super.equals(object);
+    }
+    public ItemStack getHeldItem(Hand hand){
+        return entityOrganism.getHeldItem(hand);
+    }
+    public void setHeldItem(Hand hand, ItemStack stack) {
+        entityOrganism.setHeldItem(hand, stack);
     }
   /*  @Override
     public Vec3d getLook(float partialTicks){

@@ -239,7 +239,7 @@ public class OrgEntity extends MobEntity {
         playerWrapper.prevPosZ  = this.prevPosZ;
         playerWrapper.setPosition(getPositionVec().x, getPositionVec().y, getPositionVec().z);
         playerWrapper.onGround = this.onGround;
-        playerWrapper.setHeldItem(Hand.MAIN_HAND, getHeldItemMainhand());
+        //playerWrapper.setHeldItem(Hand.MAIN_HAND, getHeldItemMainhand());
         return playerWrapper;
     }
 
@@ -638,6 +638,10 @@ public class OrgEntity extends MobEntity {
         itemHandler.extractItem(equippedSlot, itemStack.getCount(), false);
 
         this.setHeldItem(Hand.MAIN_HAND, ItemStack.EMPTY);
+        ItemStack itemStackCheck = this.getHeldItem(Hand.MAIN_HAND);
+        if(!itemStackCheck.equals(ItemStack.EMPTY)){
+            throw new ChaosNetException("Hand still had equiped: " + itemStackCheck.getItem().toString() + " - after it was removed");
+        }
         ItemEntity entityItem = new ItemEntity(world, itemVec3d.x, itemVec3d.y, itemVec3d.z);
         entityItem.setItem(itemStack);
         world.getServer().getWorld(DimensionType.OVERWORLD).summonEntity(entityItem);

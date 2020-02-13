@@ -258,7 +258,7 @@ public class ChaosCraftServer {
     }
     public void processClientOutputNeuronActionPacket(CCClientOutputNeuronActionPacket message){
         if(!organisms.containsKey(message.getOrgNamespace())){
-            ChaosCraft.LOGGER.error("Server Cannot find org to process neuron action packet: " + message.getOrgNamespace());
+            //ChaosCraft.LOGGER.error("Server Cannot find org to process neuron action packet: " + message.getOrgNamespace());
             return;
         }
         ServerOrgManager serverOrgManager = organisms.get(message.getOrgNamespace());
@@ -460,6 +460,13 @@ public class ChaosCraftServer {
         //Set to observe it
         for (ChaosCraftServerPlayerInfo observingPlayer : observingPlayers) {
             observingPlayer.getServerPlayerEntity().setSpectatingEntity(highScoringServerOrgManager.getEntity());
+
+            CCServerObserverOrgChangeEventPacket packet = new CCServerObserverOrgChangeEventPacket(
+                    highScoringServerOrgManager.getCCNamespace(),
+                    (int) Math.round(highScoringServerOrgManager.getEntity().entityFitnessManager.getCurrFitnessRun().totalScore()),
+                    (int) (highScoringServerOrgManager.getEntity().world.getGameTime() + ((highScoringServerOrgManager.getMaxLife() - highScoringServerOrgManager.getAgeSeconds()) * 20))
+            );
+            ChaosNetworkManager.sendTo(packet, observingPlayer.getServerPlayerEntity());
         }
 
     }

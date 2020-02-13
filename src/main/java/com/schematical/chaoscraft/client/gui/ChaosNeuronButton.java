@@ -121,8 +121,9 @@ public class ChaosNeuronButton extends Button {
         }else{
             //Open detail view
 
-            ChaosOrgNeuronDetailOverlayGui screen = new ChaosOrgNeuronDetailOverlayGui(chaosNNetViewOverlayGui.getClientOrgManager(), neuronBase);
-            Minecraft.getInstance().displayGuiScreen(screen);
+           /* ChaosOrgNeuronDetailOverlayGui screen = new ChaosOrgNeuronDetailOverlayGui(chaosNNetViewOverlayGui.getClientOrgManager(), neuronBase);
+            Minecraft.getInstance().displayGuiScreen(screen);*/
+           this.min();
         }
     }
 }

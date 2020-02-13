@@ -25,14 +25,6 @@ public class TossEquippedStackOutput extends OutputNeuron {
         ){
             return;
         }
-        /*
-        switch(attributeId){
-            case(CCAttributeId.ITEM_ID):
-                itemStack = nNet.entity.equip(attributeValue);
-            break;
-            default:
-                throw new ChaosNetException("Invalid `EquipOutput.attributeId`: " + attributeId);
-        }*/
 
 
         CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.TOSSED_EQUIPPED_STACK);

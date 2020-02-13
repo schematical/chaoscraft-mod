@@ -44,6 +44,7 @@ public class ChaosNetworkManager {
         INSTANCE.registerMessage(disc++, CCClientStartTrainingSessionPacket.class, CCClientStartTrainingSessionPacket::encode, CCClientStartTrainingSessionPacket::decode, CCClientStartTrainingSessionPacket.Handler::handle);
         INSTANCE.registerMessage(disc++, CCServerRequestTrainingRoomGUIPacket.class, CCServerRequestTrainingRoomGUIPacket::encode, CCServerRequestTrainingRoomGUIPacket::decode, CCServerRequestTrainingRoomGUIPacket.Handler::handle);
         INSTANCE.registerMessage(disc++, CCClientObserveStateChangePacket.class, CCClientObserveStateChangePacket::encode, CCClientObserveStateChangePacket::decode, CCClientObserveStateChangePacket.Handler::handle);
+        INSTANCE.registerMessage(disc++, CCServerObserverOrgChangeEventPacket.class, CCServerObserverOrgChangeEventPacket::encode, CCServerObserverOrgChangeEventPacket::decode, CCServerObserverOrgChangeEventPacket.Handler::handle);
 
     }
     protected  <MSG> void registerMessage(int index, Class<MSG> messageType, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder, BiConsumer<MSG, Supplier<NetworkEvent.Context>> messageConsumer){

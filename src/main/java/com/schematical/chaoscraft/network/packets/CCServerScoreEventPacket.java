@@ -16,7 +16,7 @@ public class CCServerScoreEventPacket {
     public int runIndex = -1;
     public int expectedLifeEndTime;
 
-    public CCServerScoreEventPacket(String orgNamespace, int score, int life, String fitnessRuleId, float multiplier, int expectedLifeEndTim,  int runIndex)
+    public CCServerScoreEventPacket(String orgNamespace, int score, int life, String fitnessRuleId, float multiplier, int expectedLifeEndTime,  int runIndex)
     {
         this.orgNamespace = orgNamespace;
         this.score = score;
