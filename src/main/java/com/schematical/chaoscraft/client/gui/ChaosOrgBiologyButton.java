@@ -41,12 +41,12 @@ public class ChaosOrgBiologyButton extends Button {
         if(state.equals(State.Closed)){
             return;
         }
-       /* if(this.biologyBase instanceof Eye){
+        if(this.biologyBase instanceof Eye){
             Eye eye = ((Eye)biologyBase);
             eye.reset();
             eye.canSeenBlocks();
             eye.canSeenEntities();
-        }*/
+        }
         this.setMessage(this.biologyBase.toString());
     }
     public void min() {

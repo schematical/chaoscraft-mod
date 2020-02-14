@@ -10,7 +10,7 @@ import org.json.simple.JSONObject;
  * Created by user1a on 12/8/18.
  */
 public class TargetYawInput extends BaseTargetInputNeuron {
-    private static final int  YAW_DEGREES = 360;
+    private static final float  YAW_DEGREES = 360f;
 
     @Override
     public float evaluate(){

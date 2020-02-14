@@ -12,7 +12,7 @@ import net.minecraft.util.math.Vec3d;
 import java.util.List;
 
 public class TargetHelper {
-    public int maxDistance = 40;
+    public float maxDistance = 40f;
     public TargetHelper(){
 
     }

@@ -1,6 +1,7 @@
 package com.schematical.chaoscraft.tickables;
 
 import com.schematical.chaoscraft.BaseOrgManager;
+import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.server.ServerOrgManager;
@@ -21,7 +22,8 @@ public class OrgPositionManager implements iChaosOrgTickable {
     public int ticksSinceLastMove = 0;
     public TargetHelper targetHelper = new TargetHelper();
     public DebugTargetHolder debugTargetHolder = null;
-    public int ticksUntilNextTargetCheck = 0;
+    public int ticksWhileLookingAtTarget = 0;
+    public boolean isLookingAtTarget = false;
     @Override
     public void Tick(BaseOrgManager orgManager) {
         boolean isServer = orgManager instanceof ServerOrgManager;
@@ -108,39 +110,65 @@ public class OrgPositionManager implements iChaosOrgTickable {
             }
         }
         if(isServer ){
-            if( ticksUntilNextTargetCheck <= 0) {
-                if (debugTargetHolder == null) {
-                    debugTargetHolder = new DebugTargetHolder(orgManager.getEntity());
-                }
-                Double dist = targetHelper.getDist(debugTargetHolder);
-                if (dist != null && dist < 2) {
-                    CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.TARGET_CLOSE_DIST);
-                    worldEvent.extraMultiplier = 1;// - (Math.abs(getCurrentValue()) / MAX_DELTA);
-                    orgManager.getEntity().entityFitnessManager.test(worldEvent);
-                    ticksUntilNextTargetCheck = 20;
-                }
-
-                Double pitch = targetHelper.getPitchDelta(debugTargetHolder);
-                if (
-                    pitch != null &&
-                    Math.abs(pitch) < 7
-                ) {
-                    CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.TARGET_CLOSE_PITCH);
-                    worldEvent.extraMultiplier = (float) (((Math.abs(pitch) / 7f)) * (dist / targetHelper.maxDistance));
-                    orgManager.getEntity().entityFitnessManager.test(worldEvent);
-                    ticksUntilNextTargetCheck = 0;
-                }
-
-
-                Double yaw = targetHelper.getYawDelta(debugTargetHolder);
-                if (yaw != null && Math.abs(yaw) < 7) {
-                    CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.TARGET_CLOSE_YAW);
-                    worldEvent.extraMultiplier = (float) ((1- Math.abs(yaw) / 7f) * (1- dist / targetHelper.maxDistance));
-                    orgManager.getEntity().entityFitnessManager.test(worldEvent);
-                    ticksUntilNextTargetCheck = 20;
-                }
+            //if( ticksUntilNextTargetCheck <= 0) {
+            if (debugTargetHolder == null) {
+                debugTargetHolder = new DebugTargetHolder(orgManager.getEntity());
             }
-            ticksUntilNextTargetCheck -= 1;
+
+
+
+            Double dist = targetHelper.getDist(debugTargetHolder);
+            Double pitch = targetHelper.getPitchDelta(debugTargetHolder);
+            Double yaw = targetHelper.getYawDelta(debugTargetHolder);
+
+
+            //TODO: Avg multiplier over
+            if(
+                pitch != null &&
+                yaw != null &&
+                dist != null
+            ) {
+                float distDelta = (float) (1 - (dist / targetHelper.maxDistance));
+                float MIN_DELTA = 15f * distDelta;
+
+
+                if (
+                        dist < targetHelper.maxDistance &&
+                        Math.abs(yaw) < MIN_DELTA// &&
+                        //Math.abs(pitch) < MIN_DELTA
+                        &&
+                        ticksWhileLookingAtTarget < 20 * 5
+                ) {
+                    if (!isLookingAtTarget) {
+                        ticksWhileLookingAtTarget = 0;
+                        isLookingAtTarget = true;
+                    } else {
+                        ticksWhileLookingAtTarget += 1;
+                    }
+                } else {
+                    if (isLookingAtTarget) {
+                        if (ticksWhileLookingAtTarget > 5) {
+                            CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.TARGET_CLOSE_YAW);
+                            //float yawDelta = (float) (1 - Math.abs(yaw) / MIN_DELTA);
+                            //float pitchDelta = (float) (1 - (Math.abs(pitch) / MIN_DELTA));
+
+                            if(distDelta < 0) {
+                                distDelta = .01f;
+                            }
+                            float timeMultiplier = ticksWhileLookingAtTarget / 20f; //1x for every second of connection
+                            worldEvent.extraMultiplier = distDelta * timeMultiplier /* * pitchDelta * yawDelta*/;
+                            if( worldEvent.extraMultiplier  < 0){
+                                ChaosCraft.LOGGER.error("Negative Multiplier");
+                            }
+                            orgManager.getEntity().entityFitnessManager.test(worldEvent);
+                        }
+                        isLookingAtTarget = false;
+                    }
+                }
+            }else{
+                isLookingAtTarget = false;
+            }
+
         }
 
         if(

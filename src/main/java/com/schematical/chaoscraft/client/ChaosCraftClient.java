@@ -15,6 +15,7 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Items;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.GameType;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -63,6 +64,11 @@ public class ChaosCraftClient {
 
     public void setObservationState(ChaosCraftServerPlayerInfo.State observationState){
         this.observationState = observationState;
+        if (observationState.equals(ChaosCraftServerPlayerInfo.State.None)) {
+            this.minecraft.player.setGameType(GameType.CREATIVE);
+        }else{
+            this.minecraft.player.setGameType(GameType.SPECTATOR);
+        }
     }
     public void onWorldUnload() {
         state = State.Uninitiated;

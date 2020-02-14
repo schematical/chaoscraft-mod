@@ -55,7 +55,8 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
                 String message = serverScoreEventPacket.fitnessRuleId +
                         " S:" + serverScoreEventPacket.score +
                         " L:" + serverScoreEventPacket.life +
-                        " M:" + serverScoreEventPacket.multiplier;
+                        " M:" + Math.round(serverScoreEventPacket.multiplier * 100) / 100f +
+                        " T: " + serverScoreEventPacket.getAdjustedScore();
                 list.add(message);
             }
         }

@@ -12,7 +12,7 @@ import org.json.simple.JSONObject;
  * Created by user1a on 12/8/18.
  */
 public class TargetPitchInput extends BaseTargetInputNeuron {
-    private static final int  PITCH_DEGREES = 180;
+    private static final float  PITCH_DEGREES = 180f;
 
     @Override
     public float evaluate(){
