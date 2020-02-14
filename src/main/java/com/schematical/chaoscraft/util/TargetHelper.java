@@ -57,6 +57,45 @@ public class TargetHelper {
         if(targetEntity == null){
             return null;
         }
+        //Vec3d lookVec = x.getEntity().getLookVec();
+        Vec3d vecToTarget = targetEntity.getPositionVec().subtract(x.getEntity().getEyePosition(1));
+        double yaw = - Math.atan2(vecToTarget.x, vecToTarget.z);
+        double degrees = Math.toDegrees(yaw);
+
+        //double lookYaw = - Math.atan2(lookVec.x, lookVec.z);
+        double lookDeg = x.getEntity().rotationYaw;//Math.toDegrees(lookYaw);
+        degrees -= lookDeg;
+        degrees = degrees % 360;
+        if(degrees > 180){
+            degrees += -360;
+        }else if(degrees < -180){
+            degrees += 360;
+        }
+        return degrees;
+    }
+    public Double getPitchDelta(iHasAttributeIdValue x){
+        Entity targetEntity =  getTarget(x);
+        if(targetEntity == null){
+            return null;
+        }
+        //Vec3d lookVec = x.getEntity().getLookVec();
+        Vec3d vecToTarget = targetEntity.getPositionVec().subtract(x.getEntity().getEyePosition(1));
+        double pitch = -Math.atan2((vecToTarget.y + .5), Math.sqrt(Math.pow(vecToTarget.x, 2) + Math.pow(vecToTarget.z, 2)));
+        double degrees = Math.toDegrees(pitch);
+
+        //double lookPitch = -Math.atan2(lookVec.y, Math.sqrt(Math.pow(lookVec.x, 2) + Math.pow(lookVec.z, 2)));
+        double lookDeg =  x.getEntity().rotationPitch;//Math.toDegrees(lookPitch);
+        degrees -= lookDeg;
+        return degrees;
+    }
+
+
+
+    public Double getLookYawDelta(iHasAttributeIdValue x){
+        Entity targetEntity =  getTarget(x);
+        if(targetEntity == null){
+            return null;
+        }
         Vec3d lookVec = x.getEntity().getLookVec();
         Vec3d vecToTarget = targetEntity.getPositionVec().subtract(x.getEntity().getEyePosition(1));
         double yaw = - Math.atan2(vecToTarget.x, vecToTarget.z);
@@ -72,7 +111,7 @@ public class TargetHelper {
         }
         return degrees;
     }
-    public Double getPitchDelta(iHasAttributeIdValue x){
+    public Double getLookPitchDelta(iHasAttributeIdValue x){
         Entity targetEntity =  getTarget(x);
         if(targetEntity == null){
             return null;
