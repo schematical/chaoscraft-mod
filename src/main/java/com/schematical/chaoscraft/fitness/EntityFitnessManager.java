@@ -65,6 +65,9 @@ public class EntityFitnessManager {
                 }
             }
             if(isValid) {
+                if (scoreEvent.worldEvent.extraMultiplier != 0) {
+                    scoreEvent.multiplier = scoreEvent.worldEvent.extraMultiplier;
+                }
                 addScoreEvent(scoreEvent);
                 /*Iterator<OrgEvent> eventIterator = orgEntity.getOrgEvents().iterator();
 

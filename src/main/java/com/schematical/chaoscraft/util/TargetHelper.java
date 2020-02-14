@@ -12,7 +12,7 @@ import net.minecraft.util.math.Vec3d;
 import java.util.List;
 
 public class TargetHelper {
-    public int maxDistance = 20;
+    public int maxDistance = 40;
     public TargetHelper(){
 
     }
@@ -65,6 +65,11 @@ public class TargetHelper {
         double lookYaw = - Math.atan2(lookVec.x, lookVec.z);
         double lookDeg = Math.toDegrees(lookYaw);
         degrees -= lookDeg;
+        if(degrees > 180){
+            degrees += -360;
+        }else if(degrees < -180){
+            degrees += 360;
+        }
         return degrees;
     }
     public Double getPitchDelta(iHasAttributeIdValue x){

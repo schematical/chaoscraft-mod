@@ -13,6 +13,7 @@ import com.schematical.chaoscraft.tickables.OrgPositionManager;
 import com.schematical.chaosnet.model.ChaosNetException;
 import com.schematical.chaosnet.model.Organism;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.particles.BasicParticleType;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
@@ -43,10 +44,16 @@ public class ClientOrgManager extends BaseOrgManager {
         expectedLifeEndTime = pkt.expectedLifeEndTime;
         serverScoreEvents.add(pkt);
         orgEntity.world.playSound((PlayerEntity)null, orgEntity.getPosition(), SoundEvents.BLOCK_BELL_USE, SoundCategory.AMBIENT, 3.0F, 1f);
-        for(int i = 0; i < pkt.score; i ++) {
+        BasicParticleType particleType = ParticleTypes.ITEM_SLIME;
+        int max = (int)Math.round(pkt.score * pkt.multiplier);
+        if(max < 0){
+           particleType = ParticleTypes.LAVA;
+            max = Math.abs(max);
+        }
+        for(int i = 0; i < max; i ++) {
             BlockPos pos = orgEntity.getPosition();
             orgEntity.world.addParticle(
-                ParticleTypes.ITEM_SLIME,
+                    particleType,
                 (double) pos.getX() + 0.5D,
                 (double) pos.getY() + 1.2D,
                 (double) pos.getZ() + 0.5D,
@@ -92,7 +99,7 @@ public class ClientOrgManager extends BaseOrgManager {
         double total = 0;
         for (CCServerScoreEventPacket serverScoreEvent: serverScoreEvents) {
             if(serverScoreEvent.runIndex == 0){
-                total += serverScoreEvent.score;
+                total += serverScoreEvent.getAdjustedScore();
             }
         }
         if(total > 0){

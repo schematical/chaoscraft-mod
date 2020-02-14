@@ -15,7 +15,7 @@ public class DebugTargetHolder implements iHasAttributeIdValue {
 
     @Override
     public String getAttributeValue() {
-        return "minecraft:chicken";
+        return "minecraft:bee";
     }
 
     @Override

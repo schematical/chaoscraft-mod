@@ -21,6 +21,7 @@ public class OrgPositionManager implements iChaosOrgTickable {
     public int ticksSinceLastMove = 0;
     public TargetHelper targetHelper = new TargetHelper();
     public DebugTargetHolder debugTargetHolder = null;
+    public int ticksUntilNextTargetCheck = 0;
     @Override
     public void Tick(BaseOrgManager orgManager) {
         boolean isServer = orgManager instanceof ServerOrgManager;
@@ -106,33 +107,42 @@ public class OrgPositionManager implements iChaosOrgTickable {
                 touchedBlocks.add(this.lastCheckPos);
             }
         }
-        if(isServer){
-            if(debugTargetHolder == null){
-                debugTargetHolder = new DebugTargetHolder(orgManager.getEntity());
-            }
-            Double dist = targetHelper.getDist(debugTargetHolder);
-            if(dist != null && dist < 2){
-                CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.TARGET_CLOSE_DIST);
-                worldEvent.extraMultiplier = 1;// - (Math.abs(getCurrentValue()) / MAX_DELTA);
-                orgManager.getEntity().entityFitnessManager.test(worldEvent);
-            }
+        if(isServer ){
+            if( ticksUntilNextTargetCheck <= 0) {
+                if (debugTargetHolder == null) {
+                    debugTargetHolder = new DebugTargetHolder(orgManager.getEntity());
+                }
+                Double dist = targetHelper.getDist(debugTargetHolder);
+                if (dist != null && dist < 2) {
+                    CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.TARGET_CLOSE_DIST);
+                    worldEvent.extraMultiplier = 1;// - (Math.abs(getCurrentValue()) / MAX_DELTA);
+                    orgManager.getEntity().entityFitnessManager.test(worldEvent);
+                    ticksUntilNextTargetCheck = 20;
+                }
 
-            Double pitch = targetHelper.getPitchDelta(debugTargetHolder);
-            if(pitch != null && Math.abs(pitch) < 15){
-                CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.TARGET_CLOSE_PITCH);
-                worldEvent.extraMultiplier = (float) (1 - (Math.abs(pitch) / 15f));
-                orgManager.getEntity().entityFitnessManager.test(worldEvent);
+                Double pitch = targetHelper.getPitchDelta(debugTargetHolder);
+                if (
+                    pitch != null &&
+                    Math.abs(pitch) < 7
+                ) {
+                    CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.TARGET_CLOSE_PITCH);
+                    worldEvent.extraMultiplier = (float) (((Math.abs(pitch) / 7f)) * (dist / targetHelper.maxDistance));
+                    orgManager.getEntity().entityFitnessManager.test(worldEvent);
+                    ticksUntilNextTargetCheck = 0;
+                }
+
+
+                Double yaw = targetHelper.getYawDelta(debugTargetHolder);
+                if (yaw != null && Math.abs(yaw) < 7) {
+                    CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.TARGET_CLOSE_YAW);
+                    worldEvent.extraMultiplier = (float) ((1- Math.abs(yaw) / 7f) * (1- dist / targetHelper.maxDistance));
+                    orgManager.getEntity().entityFitnessManager.test(worldEvent);
+                    ticksUntilNextTargetCheck = 20;
+                }
             }
-
-
-            Double yaw = targetHelper.getYawDelta(debugTargetHolder);
-            if(yaw != null && Math.abs(yaw) < 15){
-                CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.TARGET_CLOSE_YAW);
-                worldEvent.extraMultiplier = (float) (1 - (Math.abs(yaw) / 15f));
-                orgManager.getEntity().entityFitnessManager.test(worldEvent);
-            }
-
+            ticksUntilNextTargetCheck -= 1;
         }
+
         if(
             isServer &&
             ticksSinceLastMove != 0 &&

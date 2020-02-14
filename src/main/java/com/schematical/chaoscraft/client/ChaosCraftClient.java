@@ -466,6 +466,9 @@ public class ChaosCraftClient {
             clientOrgManager = myOrganisms.get(message.orgNamespace);
         }
         chaosObserveOverlayScreen.setObservedEntity(message, clientOrgManager);
+        if(chaosPlayerNeuronTestScreen != null){
+            chaosPlayerNeuronTestScreen.setObservedEntity(message, clientOrgManager);
+        }
     }
 
     public enum State{

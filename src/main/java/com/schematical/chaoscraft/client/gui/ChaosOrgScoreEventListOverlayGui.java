@@ -34,7 +34,7 @@ public class ChaosOrgScoreEventListOverlayGui extends Screen {
         float secondsToLive = (clientOrgManager.getExpectedLifeEndTime() - clientOrgManager.getEntity().world.getGameTime()) /20;
         this.drawCenteredString(
                 this.font,
-                "Total: " + clientOrgManager.getServerScoreEventTotal() + " Life: " + secondsToLive,
+                "Base: " + clientOrgManager.getServerScoreEventTotal() + " Life: " + secondsToLive,
                 this.width / 2,
                 y,
                 16777215
@@ -46,7 +46,8 @@ public class ChaosOrgScoreEventListOverlayGui extends Screen {
             String message = serverScoreEventPacket.fitnessRuleId +
                     " S:" + serverScoreEventPacket.score +
                     " L:" + serverScoreEventPacket.life +
-                    " M:" + serverScoreEventPacket.multiplier;
+                    " M:" + serverScoreEventPacket.multiplier +
+                    " T:" + serverScoreEventPacket.getAdjustedScore();
             this.drawCenteredString(
                     this.font,
                     message,
