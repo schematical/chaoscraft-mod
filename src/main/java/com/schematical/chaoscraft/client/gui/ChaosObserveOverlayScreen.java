@@ -32,7 +32,7 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
 
     }
     public void render(){
-        if(message == null){
+        if(message == null || clientOrgManager == null){
             return;
         }
         RenderSystem.pushMatrix();

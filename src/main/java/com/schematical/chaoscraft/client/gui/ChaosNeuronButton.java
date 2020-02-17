@@ -1,9 +1,6 @@
 package com.schematical.chaoscraft.client.gui;
 
 import com.schematical.chaoscraft.ai.NeuronBase;
-import com.schematical.chaoscraft.ai.biology.Eye;
-import com.schematical.chaoscraft.client.ClientOrgManager;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -50,15 +47,15 @@ public class ChaosNeuronButton extends Button {
             switch(neuronBase._base_type()){
                 case(com.schematical.chaoscraft.Enum.INPUT):
                     x = 10;
-                    setMessage( "I-" + i + " " + neuronBase.getCurrentValue());
+                    setMessage( "I-" + i + " " + neuronBase.getPrettyCurrValue());
                     break;
                 case(com.schematical.chaoscraft.Enum.OUTPUT):
                     x = chaosNNetViewOverlayGui.width - 10 - MIN_WIDTH;
-                    setMessage("O-" + i + " " + neuronBase.getCurrentValue());
+                    setMessage("O-" + i + " " + neuronBase.getPrettyCurrValue());
                     break;
                 case(com.schematical.chaoscraft.Enum.MIDDLE):
                     x = chaosNNetViewOverlayGui.width / 2;
-                    setMessage("M-" + i + " " + neuronBase.getCurrentValue());
+                    setMessage("M-" + i + " " + neuronBase.getPrettyCurrValue());
                     break;
 
             }

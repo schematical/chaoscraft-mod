@@ -5,15 +5,9 @@ import com.schematical.chaoscraft.ai.InputNeuron;
 import com.schematical.chaoscraft.ai.biology.TargetSlot;
 import com.schematical.chaoscraft.util.TargetHelper;
 import com.schematical.chaoscraft.util.iHasAttributeIdValue;
-import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import org.json.simple.JSONObject;
-
-import java.util.List;
 
 public class BaseTargetInputNeuron extends InputNeuron implements iHasAttributeIdValue {
     public String attributeId;
@@ -75,7 +69,18 @@ public class BaseTargetInputNeuron extends InputNeuron implements iHasAttributeI
         attributeValue = jsonObject.get("attributeValue").toString();
 
     }
+    public String toString(){
+        String response =super.toString();
+        response += " " + getAttributeId() + "=" + getAttributeValue();
 
+        response += getPrettyCurrValue();
+
+        return response;
+    }
+    public String toLongString(){
+        String response =super.toString();response += " " + getAttributeId() + "=" + getAttributeValue();
+        return response;
+    }
     @Override
     public String getAttributeId() {
         return attributeId;
