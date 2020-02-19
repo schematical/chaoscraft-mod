@@ -116,13 +116,18 @@ public class ChaosCraftClient {
 
 
         }catch(ChaosNetException exception){
-            if(exception.sdkHttpMetadata().httpStatusCode() == 401){
+            int statusCode = exception.sdkHttpMetadata().httpStatusCode();
+            if(statusCode == 401){
                 ChaosCraft.LOGGER.error(exception.getMessage());
                 String message = "Your login has expired. Please re-run `/chaoscraft-auth {username} {password}`";
                 //ChaosCraft.chat(message);
                 ChaosCraft.LOGGER.error(message);
             }else{
-                throw exception;
+               /* throw exception;*/
+                ByteBuffer byteBuffer = exception.sdkHttpMetadata().responseContent();
+                String message = StandardCharsets.UTF_8.decode(byteBuffer).toString();//new String(byteBuffer.as().array(), StandardCharsets.UTF_8 );
+                ChaosCraft.LOGGER.error("`ChaosClient.startTrainingSession` Error: " + message + " - statusCode: " + statusCode);
+
             }
 
         }catch(Exception exception){
