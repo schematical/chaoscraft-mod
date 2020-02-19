@@ -6,6 +6,7 @@ import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.*;
 import com.schematical.chaoscraft.server.ChaosCraftServerPlayerInfo;
+import com.schematical.chaoscraft.tileentity.FactoryTileEntity;
 import com.schematical.chaoscraft.tileentity.SpawnBlockTileEntity;
 import com.schematical.chaosnet.model.*;
 
@@ -468,6 +469,11 @@ public class ChaosCraftClient {
         ChaosSpawnBlockSettingScreen screen = new ChaosSpawnBlockSettingScreen(tileentity);
         ChaosCraft.LOGGER.debug("Showing SPawnBlockGui: " +tileentity.getSpawnPointId());
         //Open up gui
+        Minecraft.getInstance().displayGuiScreen(screen);
+    }
+    public void showFactoryBlockGui(FactoryTileEntity tileentity) {
+        ChaosFactoryBlockSettingScreen screen = new ChaosFactoryBlockSettingScreen(tileentity);
+
         Minecraft.getInstance().displayGuiScreen(screen);
     }
 

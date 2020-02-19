@@ -729,7 +729,9 @@ public class OrgEntity extends MobEntity {
         List<ItemEntity> items = this.world.getEntitiesWithinAABB(ItemEntity.class, this.getBoundingBox().grow(2.0D, 1.0D, 2.0D));
 
         for (ItemEntity item : items) {
-            this.pickupItem(item);
+            if(item.isAddedToWorld() && item.isAlive()) {
+                this.pickupItem(item);
+            }
         }
     }
     public boolean checkStatus(){
@@ -811,6 +813,7 @@ public class OrgEntity extends MobEntity {
         item.detach();
         if (stack.isEmpty()) {
             item.remove();
+
         }
         CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.ITEM_COLLECTED);
         worldEvent.item = worldEventItem;
