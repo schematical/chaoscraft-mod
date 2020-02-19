@@ -59,10 +59,16 @@ public class ChaosCraftFitnessManager {
 
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+            ChaosCraft.LOGGER.error(rulesJSON.toJSONString());
         } catch (IllegalAccessException e) {
             e.printStackTrace();
+            ChaosCraft.LOGGER.error(rulesJSON.toJSONString());
         } catch (InstantiationException e) {
             e.printStackTrace();
+            ChaosCraft.LOGGER.error(rulesJSON.toJSONString());
+        }catch (Exception e){
+            e.printStackTrace();
+            ChaosCraft.LOGGER.error(rulesJSON.toJSONString());
         }
 
     }

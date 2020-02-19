@@ -98,7 +98,7 @@ public class OrgEntity extends MobEntity {
 
     public OrgEntity(EntityType<? extends MobEntity> type, World world) {
         super((EntityType<? extends MobEntity>) type, world);
-        setHealth(1);
+        //setHealth(1);
     }
     public void setSpawnHash(int _spawnHash) {
         this.spawnHash = _spawnHash;
@@ -640,12 +640,12 @@ public class OrgEntity extends MobEntity {
         this.setHeldItem(Hand.MAIN_HAND, ItemStack.EMPTY);
         ItemStack itemStackCheck = this.getHeldItem(Hand.MAIN_HAND);
         if(!itemStackCheck.equals(ItemStack.EMPTY)){
-            throw new ChaosNetException("Hand still had equiped: " + itemStackCheck.getItem().toString() + " - after it was removed");
+            throw new ChaosNetException("Hand still had equipped: " + itemStackCheck.getItem().toString() + " - after it was removed");
         }
         ItemEntity entityItem = new ItemEntity(world, itemVec3d.x, itemVec3d.y, itemVec3d.z);
         entityItem.setItem(itemStack);
         world.getServer().getWorld(DimensionType.OVERWORLD).summonEntity(entityItem);
-
+        ChaosCraft.LOGGER.info(this.getCCNamespace() + " - Tossed item: " + itemStack.getItem().getItem().getRegistryName() + " now holding " + itemStackCheck.getItem().getRegistryName());
         return itemStack;
     }
     public ItemStack getItemStackFromInventory(String resourceId) {
@@ -669,19 +669,7 @@ public class OrgEntity extends MobEntity {
     @Override
     public void baseTick(){
 
-       /* if(this.firstUpdate) {
-            if(!this.world.isRemote) {
-                ForgeChunkManager.forceChunk(chunkTicket, new ChunkPos(this.getPosition()));
-            }
-        }
 
-        if(this.isDead || this.dead) {
-            if(chunkTicket!=null) {
-                ForgeChunkManager.releaseTicket(chunkTicket);
-                chunkTicket = null;
-            }
-        }*/
-        //ticksWithouUpdate = 0;
 
 
         if(!world.isRemote){
@@ -894,6 +882,18 @@ public class OrgEntity extends MobEntity {
         return true;
     }
 
+    @Override
+    public boolean attackEntityFrom(DamageSource source, float amount)
+    {
+        if(!world.isRemote){
+            CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.HEALTH_CHANGE);
+            worldEvent.entity = this;
+            worldEvent.amount = -1 * (amount/this.getMaxHealth());
+            entityFitnessManager.test(worldEvent);
+            events.add(new OrgEvent(worldEvent, OrgEvent.DEFAULT_TTL));
+        }
+        return super.attackEntityFrom(source, amount);
+    }
 
 
     public void killWithNoReport() {

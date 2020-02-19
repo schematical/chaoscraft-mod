@@ -50,7 +50,7 @@ public class SpawnBlockTileEntity  extends TileEntity implements ITickableTileEn
     @Override
     public void read(CompoundNBT compound) {
         super.read(compound);
-        if (compound.contains("spawnPointId", 11)) {
+        if (compound.contains("spawnPointId")) {
            spawnPointId = compound.getString("spawnPointId");
         }
 
@@ -65,7 +65,8 @@ public class SpawnBlockTileEntity  extends TileEntity implements ITickableTileEn
 
     @Override
     public void onDataPacket(net.minecraft.network.NetworkManager net, net.minecraft.network.play.server.SUpdateTileEntityPacket pkt){
-        super.onDataPacket(net, pkt);
+        //super.onDataPacket(net, pkt);
+        this.read(pkt.getNbtCompound());
     }
 
     /**
@@ -75,7 +76,8 @@ public class SpawnBlockTileEntity  extends TileEntity implements ITickableTileEn
     @Nullable
    // @Override
     public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(this.pos, 99, this.getUpdateTag());
+        //return new SUpdateTileEntityPacket(this.pos, 99, this.getUpdateTag());
+        return new SUpdateTileEntityPacket(pos, 99, this.write(new CompoundNBT()));
     }
 
     /**

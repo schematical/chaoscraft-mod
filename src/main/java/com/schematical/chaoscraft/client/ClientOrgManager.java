@@ -45,7 +45,7 @@ public class ClientOrgManager extends BaseOrgManager {
         serverScoreEvents.add(pkt);
         orgEntity.world.playSound((PlayerEntity)null, orgEntity.getPosition(), SoundEvents.BLOCK_BELL_USE, SoundCategory.AMBIENT, 3.0F, 1f);
         BasicParticleType particleType = ParticleTypes.ITEM_SLIME;
-        int max = (int)Math.round(pkt.score * pkt.multiplier);
+        int max = (int)Math.round(pkt.score * pkt.multiplier * .1f);
         if(max < 0){
            particleType = ParticleTypes.LAVA;
             max = Math.abs(max);

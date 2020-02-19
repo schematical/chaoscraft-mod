@@ -1,5 +1,7 @@
 package com.schematical.chaoscraft.client.gui;
 
+import com.schematical.chaoscraft.network.ChaosNetworkManager;
+import com.schematical.chaoscraft.network.packets.CCClientSpawnBlockStateChangePacket;
 import com.schematical.chaoscraft.server.ServerOrgManager;
 import com.schematical.chaoscraft.tileentity.SpawnBlockTileEntity;
 import net.minecraft.client.Minecraft;
@@ -35,7 +37,9 @@ public class ChaosSpawnBlockSettingScreen extends Screen {
         });
         this.children.add(this.spawnPointIdText);
         this.addButton(new Button(this.width / 2 - 100, 200, 200, 20, I18n.format("chaoscraft.gui.orgdetail.nnet"), (p_214266_1_) -> {
-            tileEntity.setSpawnPointId(spawnPointId, true);
+
+            CCClientSpawnBlockStateChangePacket pkt = new CCClientSpawnBlockStateChangePacket(spawnPointId, tileEntity.getPos());
+            ChaosNetworkManager.sendToServer(pkt);
             Minecraft.getInstance().displayGuiScreen(null);
         }));
 
