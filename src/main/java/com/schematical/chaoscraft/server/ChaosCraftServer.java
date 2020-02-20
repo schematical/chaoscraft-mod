@@ -303,10 +303,37 @@ public class ChaosCraftServer {
             );
             ChaosCraft.getServer().fitnessManager = new ChaosCraftFitnessManager();
             ChaosCraft.getServer().fitnessManager.parseData(obj);
-        } catch (ChaosNetException e) {
-            e.printStackTrace();
+
         } catch (ParseException e) {
             e.printStackTrace();
+        }catch(ChaosNetException exception) {
+            //logger.error(exeception.getMessage());
+            ChaosCraft.getServer().consecutiveErrorCount += 1;
+
+            int statusCode = exception.sdkHttpMetadata().httpStatusCode();
+            switch (statusCode) {
+                case (400):
+
+                    ChaosCraft.getServer().repair();
+                    break;
+                case (401):
+                    ChaosCraft.auth();
+                    break;
+                case (409):
+                    //ChaosCraft.auth();
+                    break;
+            }
+            ByteBuffer byteBuffer = exception.sdkHttpMetadata().responseContent();
+            String message = StandardCharsets.UTF_8.decode(byteBuffer).toString();//new String(byteBuffer.as().array(), StandardCharsets.UTF_8 );
+            ChaosCraft.LOGGER.error("ChaosServerThread  Error: " + message + " - statusCode: " + statusCode);
+            exception.printStackTrace();
+        }catch(Exception exception){
+           // ChaosCraft.getServer().consecutiveErrorCount += 1;
+
+            ChaosCraft.LOGGER.error("ChaosServerThread Error: " + exception.getMessage() + " - exception type: " + exception.getClass().getName());
+            // ChaosCraft.getClient().thread = null;//End should cover this
+
+
         }
 
     }
