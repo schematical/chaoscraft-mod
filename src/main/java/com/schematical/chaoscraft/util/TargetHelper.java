@@ -1,38 +1,73 @@
 package com.schematical.chaoscraft.util;
 
 import com.schematical.chaoscraft.ai.CCAttributeId;
+import com.schematical.chaoscraft.ai.CCObserviableAttributeCollection;
 import com.schematical.chaoscraft.ai.biology.TargetSlot;
+import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaosnet.model.ChaosNetException;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 
 import java.util.List;
 
 public class TargetHelper {
-    public float maxDistance = 40f;
+    public int maxDistance = 40;
     public TargetHelper(){
 
     }
-    public Entity getTarget(iHasAttributeIdValue x){
-        switch(x.getAttributeId()){
+    public Entity getTarget(iHasAttributeIdValue iX){
+        switch(iX.getAttributeId()){
+           /* case(CCAttributeId.BLOCK_ID):
 
-            // break;
+
+                Vec3d vec3d = iX.getEntity().getEyePosition(1);
+                Vec3i vec3i = new Vec3i(
+                        (int)vec3d.getX(),
+                        (int)vec3d.getY(),
+                        (int)vec3d.getZ()
+                );
+
+
+
+               for(int x = vec3i.getX() - maxDistance; x < vec3i.getX() + maxDistance; x++){
+                   for(int y = vec3i.getY() - maxDistance; y < vec3i.getY() + maxDistance; y++) {
+                       for (int z = vec3i.getZ() - maxDistance; z < vec3i.getZ() + maxDistance; z++) {
+                            BlockPos blockPos = new BlockPos(x,y,z);
+                           BlockState blockState = iX.getEntity().world.getBlockState(
+                                   blockPos
+                           );
+                           Block block = blockState.getBlock();
+
+                           CCObserviableAttributeCollection attributeCollection = ((OrgEntity)iX.getEntity()).observableAttributeManager.Observe(block);
+                           attributeCollection.position = new Vec3d(
+                                   blockPos.getX(),
+                                   blockPos.getY(),
+                                   blockPos.getZ()
+                           );
+
+
+
+                       }
+                   }
+                }
+            // break;*/
             case(CCAttributeId.ENTITY_ID):
 
-                AxisAlignedBB grownBox = x.getEntity().getBoundingBox().grow(maxDistance, maxDistance, maxDistance);
-                List<Entity> entities =  x.getEntity().world.getEntitiesWithinAABB(LivingEntity.class,  grownBox);
-                entities.addAll(x.getEntity().world.getEntitiesWithinAABB(ItemEntity.class,  grownBox));
+                AxisAlignedBB grownBox = iX.getEntity().getBoundingBox().grow(maxDistance, maxDistance, maxDistance);
+                List<Entity> entities =  iX.getEntity().world.getEntitiesWithinAABB(LivingEntity.class,  grownBox);
+                entities.addAll(iX.getEntity().world.getEntitiesWithinAABB(ItemEntity.class,  grownBox));
                 Entity closestEntity = null;
                 double closestEntityDist = 10000;
                 int entityCount = 0;
                 for (Entity entity : entities) {
                     String entityId =  entity.getType().getRegistryName().getNamespace() + ":" + entity.getType().getRegistryName().getPath();
-                    if(entityId.equals(x.getAttributeValue())){
+                    if(entityId.equals(iX.getAttributeValue())){
                         entityCount += 1;
-                        double dist = x.getEntity().getPositionVec().distanceTo(entity.getPositionVec());
+                        double dist = iX.getEntity().getPositionVec().distanceTo(entity.getPositionVec());
                         if(
                                 closestEntity == null ||
                                 closestEntityDist > dist
@@ -47,7 +82,7 @@ public class TargetHelper {
                 }
                 break;
             default:
-                throw new ChaosNetException("Invalid `attributeId`: " + x.getAttributeId());
+                throw new ChaosNetException("Invalid `attributeId`: " + iX.getAttributeId());
         }
 
         return null;

@@ -889,11 +889,13 @@ public class OrgEntity extends MobEntity {
     public boolean attackEntityFrom(DamageSource source, float amount)
     {
         if(!world.isRemote){
-            CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.HEALTH_CHANGE);
-            worldEvent.entity = this;
-            worldEvent.amount = -1 * (amount/this.getMaxHealth());
-            entityFitnessManager.test(worldEvent);
-            events.add(new OrgEvent(worldEvent, OrgEvent.DEFAULT_TTL));
+            if(entityFitnessManager != null) {//TODO:Delete me
+                CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.HEALTH_CHANGE);
+                worldEvent.entity = this;
+                worldEvent.amount = -1 * (amount / this.getMaxHealth());
+                entityFitnessManager.test(worldEvent);
+                events.add(new OrgEvent(worldEvent, OrgEvent.DEFAULT_TTL));
+            }
         }
         return super.attackEntityFrom(source, amount);
     }
