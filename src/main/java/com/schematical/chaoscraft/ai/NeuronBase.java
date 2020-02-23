@@ -23,7 +23,7 @@ public abstract class NeuronBase extends InnovationBase {
     private float _lastValue;
     private float _currentValue;
     private boolean hasBeenEvaluated = false;
-
+    public NeuralNet.EvalGroup evalGroup;
     public List<NeuronDep> dependencies = new ArrayList<NeuronDep>();
     public abstract String _base_type();
     public void setCurrentValue(float currentValue){
@@ -60,6 +60,17 @@ public abstract class NeuronBase extends InnovationBase {
             }
             this.dependencies.add(neuronDep);
         }
+
+        Object evalGroupJSON = jsonObject.get("$EVAL_GROUP");
+
+
+        if(evalGroupJSON == null){
+            evalGroup = NeuralNet.EvalGroup.DEFAULT;
+            // throw new Error("Invalid Neuron. Missing `activator` - Org.namepace: " + nNet.entity.getCCNamespace() + " - Neuron: " + jsonObject.toJSONString());
+        }else{
+            evalGroup = NeuralNet.EvalGroup.valueOf(evalGroupJSON.toString());
+        }
+
 
         Object type = jsonObject.get("activator");
 
@@ -120,6 +131,9 @@ public abstract class NeuronBase extends InnovationBase {
         setCurrentValue(newValue);
         return getCurrentValue();
 
+    }
+    public NeuralNet.EvalGroup getEvalGroup(){
+        return evalGroup;
     }
     public void populate(){
         for (NeuronDep neuronDep: dependencies) {

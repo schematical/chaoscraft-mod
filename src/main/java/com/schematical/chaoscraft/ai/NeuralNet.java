@@ -26,6 +26,9 @@ public class NeuralNet {
         this.entity = entity;
     }
     public List<OutputNeuron> evaluate(){
+        return evaluate(EvalGroup.DEFAULT);
+    }
+    public List<OutputNeuron> evaluate(EvalGroup targetEvalGroup){
         HashMap<String, OutputGroupResult> outputGroupResults = new HashMap<String, OutputGroupResult>();
         //Iterate through output neurons
         Iterator<Map.Entry<String, NeuronBase>> iterator = neurons.entrySet().iterator();
@@ -41,7 +44,10 @@ public class NeuralNet {
         List<OutputNeuron> outputs = new ArrayList<OutputNeuron>();
         while (iterator.hasNext()) {
             NeuronBase neuronBase = iterator.next().getValue();
-            if(neuronBase._base_type().equals(com.schematical.chaoscraft.Enum.OUTPUT)){
+            if(
+                neuronBase._base_type().equals(com.schematical.chaoscraft.Enum.OUTPUT) &&
+                neuronBase.getEvalGroup().equals(targetEvalGroup)
+            ){
                 OutputNeuron outputNeuron = (OutputNeuron)neuronBase;
                 neuronEvalDepth = 0;
                 float _last_value = outputNeuron.evaluate();
@@ -146,5 +152,9 @@ public class NeuralNet {
     private class OutputGroupResult{
         public float highScore;
         public OutputNeuron highNeuron;
+    }
+    public enum EvalGroup{
+        DEFAULT,
+        TARGET
     }
 }

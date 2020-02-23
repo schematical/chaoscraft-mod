@@ -21,16 +21,14 @@ public class ScanManager {
     private ClientOrgManager clientOrgManager;
     private ArrayList<ScanEntry> entries = new ArrayList<ScanEntry>();
     private int range = 40;
-    private NeuralNet nnet;
+
     private HashMap<String, Integer> counts = new HashMap<>();
     private NeuralNet getNNet(){
-        return nnet;//TODO: Maybe get this from some type of NNet Collection
+        return clientOrgManager.getEntity().getNNet();//TODO: Maybe get this from some type of NNet Collection
     }
     public ScanManager(ClientOrgManager clientOrgManager){
         this.clientOrgManager = clientOrgManager;
         //TODO: get range from biology
-
-        //TODO Populate NNet
 
     }
     public void scan(){
@@ -73,7 +71,7 @@ public class ScanManager {
         HashMap<String, ScanEntry> highestResults = new HashMap<String, ScanEntry>();
         for (ScanEntry entry : entries) {
             focusedScanEntry = entry;
-            getNNet().evaluate();//Ideally the output neurons will set the score
+            getNNet().evaluate(NeuralNet.EvalGroup.TARGET);//Ideally the output neurons will set the score
 
             //Sort them each by the score of their output neurons
             HashMap<String, Float> scores = focusedScanEntry.getScores();
