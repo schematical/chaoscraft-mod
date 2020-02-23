@@ -22,7 +22,7 @@ public class ScoreTargetSlotOutput extends OutputNeuron {
 
         //TODO: Decide how to get the scan manager
 
-        ScanManager scanManager = new ScanManager(((OrgEntity)this.getEntity()).getClientOrgManager());  //TODO: REMOVE SUPER HACKY FAKE ... mat must sleep now
+        ScanManager scanManager = ((OrgEntity)this.getEntity()).getClientOrgManager().getScanManager();
         ScanManager.ScanEntry scanEntry = scanManager.getFocusedScanEntry();
         scanEntry.setScore(targetSlotId, this.getCurrentValue());
     }

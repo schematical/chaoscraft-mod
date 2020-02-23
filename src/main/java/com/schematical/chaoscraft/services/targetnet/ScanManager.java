@@ -110,6 +110,12 @@ public class ScanManager {
     public ScanEntry getFocusedScanEntry(){
         return focusedScanEntry;
     }
+    public int getCountOfFocusedScanEntity(){
+        return counts.get(focusedScanEntry.atts.resourceId);
+    }
+    public float getRange() {
+        return range;
+    }
 
 
     public class ScanEntry {
@@ -125,6 +131,20 @@ public class ScanManager {
         }
         public HashMap<String, Float> getScores(){
             return this.scores;
+        }
+
+        public Vec3d getPosition() {
+            if(entity != null){
+                return entity.getPositionVec();
+            }
+            if(blockPos != null) {
+                return new Vec3d(
+                        blockPos.getX(),
+                        blockPos.getY(),
+                        blockPos.getZ()
+                );
+            }
+            return null;
         }
     }
 

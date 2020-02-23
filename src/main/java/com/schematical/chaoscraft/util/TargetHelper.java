@@ -16,11 +16,13 @@ import java.util.List;
 
 public class TargetHelper {
     public int maxDistance = 40;
-    public TargetHelper(){
+
+    public TargetHelper() {
 
     }
-    public Entity getTarget(iHasAttributeIdValue iX){
-        switch(iX.getAttributeId()){
+
+    public Entity getTarget(iHasAttributeIdValue iX) {
+        switch (iX.getAttributeId()) {
            /* case(CCAttributeId.BLOCK_ID):
 
 
@@ -32,7 +34,8 @@ public class TargetHelper {
                 );
 
 
-
+                BlockPos closestBlockPos = null;
+                double closestBlockDist = 10000;
                for(int x = vec3i.getX() - maxDistance; x < vec3i.getX() + maxDistance; x++){
                    for(int y = vec3i.getY() - maxDistance; y < vec3i.getY() + maxDistance; y++) {
                        for (int z = vec3i.getZ() - maxDistance; z < vec3i.getZ() + maxDistance; z++) {
@@ -43,41 +46,48 @@ public class TargetHelper {
                            Block block = blockState.getBlock();
 
                            CCObserviableAttributeCollection attributeCollection = ((OrgEntity)iX.getEntity()).observableAttributeManager.Observe(block);
-                           attributeCollection.position = new Vec3d(
-                                   blockPos.getX(),
-                                   blockPos.getY(),
-                                   blockPos.getZ()
-                           );
+                           if(attributeCollection.resourceType.equals(iX.getAttributeValue())) {
+                               attributeCollection.position = new Vec3d(
+                                       blockPos.getX(),
+                                       blockPos.getY(),
+                                       blockPos.getZ()
+                               );
+                                Double dist = TargetHelper.getDistDelta(iX.getEntity().getEyePosition(), attributeCollection.position);
+                                if(dist < closestBlockDist){
+                                    closestBlockDist = dist;
+                                    closestBlockPos = blockPos;
+                                }
+                           }
 
 
 
                        }
                    }
-                }
-            // break;*/
-            case(CCAttributeId.ENTITY_ID):
+                }*/
+            // break;
+            case (CCAttributeId.ENTITY_ID):
 
                 AxisAlignedBB grownBox = iX.getEntity().getBoundingBox().grow(maxDistance, maxDistance, maxDistance);
-                List<Entity> entities =  iX.getEntity().world.getEntitiesWithinAABB(LivingEntity.class,  grownBox);
-                entities.addAll(iX.getEntity().world.getEntitiesWithinAABB(ItemEntity.class,  grownBox));
+                List<Entity> entities = iX.getEntity().world.getEntitiesWithinAABB(LivingEntity.class, grownBox);
+                entities.addAll(iX.getEntity().world.getEntitiesWithinAABB(ItemEntity.class, grownBox));
                 Entity closestEntity = null;
                 double closestEntityDist = 10000;
                 int entityCount = 0;
                 for (Entity entity : entities) {
-                    String entityId =  entity.getType().getRegistryName().getNamespace() + ":" + entity.getType().getRegistryName().getPath();
-                    if(entityId.equals(iX.getAttributeValue())){
+                    String entityId = entity.getType().getRegistryName().getNamespace() + ":" + entity.getType().getRegistryName().getPath();
+                    if (entityId.equals(iX.getAttributeValue())) {
                         entityCount += 1;
                         double dist = iX.getEntity().getPositionVec().distanceTo(entity.getPositionVec());
-                        if(
+                        if (
                                 closestEntity == null ||
-                                closestEntityDist > dist
-                        ){
+                                        closestEntityDist > dist
+                        ) {
                             closestEntity = entity;
                             closestEntityDist = dist;
                         }
                     }
                 }
-                if(closestEntity != null){
+                if (closestEntity != null) {
                     return closestEntity;
                 }
                 break;
@@ -87,12 +97,18 @@ public class TargetHelper {
 
         return null;
     }
-    public Double getYawDelta(iHasAttributeIdValue x){
-        Entity targetEntity =  getTarget(x);
-        if(targetEntity == null){
+
+    public Double getYawDelta(iHasAttributeIdValue x) {
+        Entity targetEntity = getTarget(x);
+        if (targetEntity == null) {
             return null;
         }
-        //Vec3d lookVec = x.getEntity().getLookVec();
+        return TargetHelper.getYawDelta(
+                targetEntity.getPositionVec(),
+                x.getEntity().getEyePosition(1),
+                x.getEntity().rotationYaw
+        );
+       /* //Vec3d lookVec = x.getEntity().getLookVec();
         Vec3d vecToTarget = targetEntity.getPositionVec().subtract(x.getEntity().getEyePosition(1));
         double yaw = - Math.atan2(vecToTarget.x, vecToTarget.z);
         double degrees = Math.toDegrees(yaw);
@@ -106,11 +122,12 @@ public class TargetHelper {
         }else if(degrees < -180){
             degrees += 360;
         }
-        return degrees;
+        return degrees;*/
     }
-    public Double getPitchDelta(iHasAttributeIdValue x){
-        Entity targetEntity =  getTarget(x);
-        if(targetEntity == null){
+
+    public Double getPitchDelta(iHasAttributeIdValue x) {
+        Entity targetEntity = getTarget(x);
+        if (targetEntity == null) {
             return null;
         }
         //Vec3d lookVec = x.getEntity().getLookVec();
@@ -119,40 +136,58 @@ public class TargetHelper {
         double degrees = Math.toDegrees(pitch);
 
         //double lookPitch = -Math.atan2(lookVec.y, Math.sqrt(Math.pow(lookVec.x, 2) + Math.pow(lookVec.z, 2)));
-        double lookDeg =  x.getEntity().rotationPitch;//Math.toDegrees(lookPitch);
+        double lookDeg = x.getEntity().rotationPitch;//Math.toDegrees(lookPitch);
         degrees -= lookDeg;
         return degrees;
     }
 
 
-
-    public Double getLookYawDelta(iHasAttributeIdValue x){
-        Entity targetEntity =  getTarget(x);
-        if(targetEntity == null){
+    public Double getLookYawDelta(iHasAttributeIdValue x) {
+        Entity targetEntity = getTarget(x);
+        if (targetEntity == null) {
             return null;
         }
         Vec3d lookVec = x.getEntity().getLookVec();
         Vec3d vecToTarget = targetEntity.getPositionVec().subtract(x.getEntity().getEyePosition(1));
-        double yaw = - Math.atan2(vecToTarget.x, vecToTarget.z);
+        double yaw = -Math.atan2(vecToTarget.x, vecToTarget.z);
         double degrees = Math.toDegrees(yaw);
 
-        double lookYaw = - Math.atan2(lookVec.x, lookVec.z);
+        double lookYaw = -Math.atan2(lookVec.x, lookVec.z);
         double lookDeg = Math.toDegrees(lookYaw);
         degrees -= lookDeg;
-        if(degrees > 180){
+        if (degrees > 180) {
             degrees += -360;
-        }else if(degrees < -180){
+        } else if (degrees < -180) {
             degrees += 360;
         }
         return degrees;
     }
-    public Double getLookPitchDelta(iHasAttributeIdValue x){
-        Entity targetEntity =  getTarget(x);
-        if(targetEntity == null){
+
+    public Double getLookPitchDelta(iHasAttributeIdValue x) {
+        Entity targetEntity = getTarget(x);
+        if (targetEntity == null) {
             return null;
         }
-        Vec3d lookVec = x.getEntity().getLookVec();
-        Vec3d vecToTarget = targetEntity.getPositionVec().subtract(x.getEntity().getEyePosition(1));
+        return getPitchDelta(
+                targetEntity.getPositionVec(),
+                x.getEntity().getEyePosition(1),
+                x.getEntity().getLookVec()
+        );
+    }
+
+    public Double getDist(iHasAttributeIdValue x) {
+        Entity targetEntity = getTarget(x);
+        if (targetEntity == null) {
+            return null;
+        }
+        return getDistDelta(x.getEntity().getPositionVector(), targetEntity.getPositionVec());
+    }
+    public static Double getDistDelta(Vec3d targetPos, Vec3d observerPos) {
+        return targetPos.distanceTo(observerPos);
+    }
+    public static Double getPitchDelta(Vec3d targetPos, Vec3d observerPos, Vec3d lookVec){
+
+        Vec3d vecToTarget =targetPos.subtract(observerPos);
         double pitch = -Math.atan2((vecToTarget.y + .5), Math.sqrt(Math.pow(vecToTarget.x, 2) + Math.pow(vecToTarget.z, 2)));
         double degrees = Math.toDegrees(pitch);
 
@@ -161,11 +196,21 @@ public class TargetHelper {
         degrees -= lookDeg;
         return degrees;
     }
-    public Double getDist(iHasAttributeIdValue x){
-      Entity targetEntity =  getTarget(x);
-      if(targetEntity == null){
-          return null;
-      }
-      return x.getEntity().getPositionVector().distanceTo(targetEntity.getPositionVec());
+    public static Double getYawDelta(Vec3d targetPos, Vec3d observerPos, double lookDeg) {
+
+        //Vec3d lookVec = x.getEntity().getLookVec();
+        Vec3d vecToTarget = targetPos.subtract(observerPos);
+        double yaw = -Math.atan2(vecToTarget.x, vecToTarget.z);
+        double degrees = Math.toDegrees(yaw);
+
+
+        degrees -= lookDeg;
+        degrees = degrees % 360;
+        if (degrees > 180) {
+            degrees += -360;
+        } else if (degrees < -180) {
+            degrees += 360;
+        }
+        return degrees;
     }
 }

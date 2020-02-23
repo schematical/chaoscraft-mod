@@ -9,6 +9,7 @@ import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.CCClientOrgDebugStateChangeRequestPacket;
 import com.schematical.chaoscraft.network.packets.CCServerScoreEventPacket;
 import com.schematical.chaoscraft.server.ServerOrgManager;
+import com.schematical.chaoscraft.services.targetnet.ScanManager;
 import com.schematical.chaoscraft.tickables.OrgPositionManager;
 import com.schematical.chaosnet.model.ChaosNetException;
 import com.schematical.chaosnet.model.Organism;
@@ -30,6 +31,7 @@ public class ClientOrgManager extends BaseOrgManager {
     protected ServerOrgManager.DebugState debugState = ServerOrgManager.DebugState.On;
     private int reportReattempts = 0;
     private int spawnCount = -1;
+    private ScanManager scanManager;
 
     public ClientOrgManager(){
         this.attatchTickable(new OrgPositionManager());
@@ -82,6 +84,7 @@ public class ClientOrgManager extends BaseOrgManager {
         }
         super.attachOrgEntity(orgEntity);
         this.orgEntity.observableAttributeManager = new CCObservableAttributeManager(organism);
+        this.scanManager = new ScanManager(this);
         this.orgEntity.attachNNetRaw(organism.getNNetRaw());
         orgEntity.attachClientOrgEntity(this);
         spawnCount += 1;
@@ -237,6 +240,10 @@ public class ClientOrgManager extends BaseOrgManager {
         if(reportReattempts > 5){
             throw new ChaosNetException("ClientOrgManager - " + getCCNamespace() + " Attempted to reReport " + reportReattempts + " times");
         }
+    }
+
+    public ScanManager getScanManager() {
+        return scanManager;
     }
 
 
