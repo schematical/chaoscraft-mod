@@ -9,7 +9,9 @@ import org.json.simple.JSONObject;
 
 /**
  * Created by user1a on 12/10/18.
+ *
  */
+@Deprecated
 public class SetTargetSlotOutput extends OutputNeuron {
     private String targetSlotId;
 
