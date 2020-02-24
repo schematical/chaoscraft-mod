@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.blocks.ChaosBlocks;
 import com.schematical.chaoscraft.server.ServerOrgManager;
+import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.block.CampfireBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -68,10 +69,10 @@ public class SpawnBlockTileEntity  extends TileEntity implements ITickableTileEn
 
     }
     public boolean canSpawn(){
-        if(maxLivingEntites < 0){
+         if(maxLivingEntites < 0){
             return true;
         }
-        if(maxLivingEntites < livingEntityCount){
+        if(maxLivingEntites > livingEntityCount){
             return true;
         }
         return false;
@@ -165,6 +166,10 @@ public class SpawnBlockTileEntity  extends TileEntity implements ITickableTileEn
     }
 
     public void addSpawnedEntity(ServerOrgManager serverOrgManager) {
+        if(entities.size() >= maxLivingEntites){
+            throw new ChaosNetException("Invalid amount of entities added: " + entities.size() + " >= " + maxLivingEntites);
+        }
         entities.add(serverOrgManager);
+        livingEntityCount += 1;
     }
 }
