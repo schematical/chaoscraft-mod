@@ -1,11 +1,15 @@
 package com.schematical.chaoscraft.tileentity;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Optional;
 import java.util.Random;
 import javax.annotation.Nullable;
 
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.blocks.ChaosBlocks;
+import com.schematical.chaoscraft.server.ServerOrgManager;
 import net.minecraft.block.CampfireBlock;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IClearable;
 import net.minecraft.inventory.IInventory;
@@ -33,7 +37,9 @@ import net.minecraft.world.dimension.DimensionType;
 public class SpawnBlockTileEntity  extends TileEntity implements ITickableTileEntity {
 
     private String spawnPointId = "default";
-
+    private int maxLivingEntites = 1;//-1;
+    private int livingEntityCount = 0;
+    protected ArrayList<ServerOrgManager> entities = new ArrayList<ServerOrgManager>();
     public SpawnBlockTileEntity() {
             super(ChaosTileEntity.SPAWN_TILE.get());
         }
@@ -44,6 +50,31 @@ public class SpawnBlockTileEntity  extends TileEntity implements ITickableTileEn
             ChaosBlocks.spawnBlocks.add(this.getPos());
             //ChaosCraft.LOGGER.info("SpawnBlock at " + this.getPos().getX() + ", " + this.getPos().getY() + ", " + this.getPos().getZ());
         }
+        if(maxLivingEntites < 0){
+
+            return;//Just keep on spawning
+        }
+        livingEntityCount = 0;
+        Iterator<ServerOrgManager> iterator = entities.iterator();
+        while (iterator.hasNext()) {
+            ServerOrgManager serverOrgManager = iterator.next();
+            if(serverOrgManager.getEntity().isAlive()){
+                livingEntityCount += 1;
+            }else{
+                iterator.remove();
+            }
+        }
+
+
+    }
+    public boolean canSpawn(){
+        if(maxLivingEntites < 0){
+            return true;
+        }
+        if(maxLivingEntites < livingEntityCount){
+            return true;
+        }
+        return false;
     }
 
 
@@ -131,5 +162,9 @@ public class SpawnBlockTileEntity  extends TileEntity implements ITickableTileEn
     private void markForUpdate() {
         this.markDirty();
         this.getWorld().notifyBlockUpdate(this.getPos(), this.getBlockState(), this.getBlockState(), 3);
+    }
+
+    public void addSpawnedEntity(ServerOrgManager serverOrgManager) {
+        entities.add(serverOrgManager);
     }
 }

@@ -222,21 +222,23 @@ public class ChaosCraftServer {
 
            return null;
         }
-
+        BlockPos pos = spawnProvider.getSpawnPos(serverOrgManager);
+        if(pos == null) {
+            return null;//Now we play the waiting game
+        }
 
         ServerWorld serverWorld = server.getWorld(DimensionType.OVERWORLD);
 
 
         OrgEntity orgEntity = OrgEntity.ORGANISM_TYPE.create(serverWorld);
         orgEntity.setSpawnHash(ChaosCraft.getServer().spawnHash);
-        BlockPos pos = spawnProvider.getSpawnPos(serverOrgManager);
-        if(pos != null) {
-            float yaw = (float)( Math.random() * 360f);
-            float pitch = (float) (Math.random() * 360f);
-            orgEntity.setDesiredYaw(yaw);
-            orgEntity.setLocationAndAngles(pos.getX(), pos.getY(), pos.getZ(), yaw, pitch);
 
-        }
+        float yaw = (float)( Math.random() * 360f);
+        float pitch = (float) (Math.random() * 360f);
+        orgEntity.setDesiredYaw(yaw);
+        orgEntity.setLocationAndAngles(pos.getX(), pos.getY(), pos.getZ(), yaw, pitch);
+
+
         serverOrgManager.attachOrgEntity(orgEntity);
         serverWorld.summonEntity(orgEntity);
 
