@@ -34,7 +34,10 @@ public class SpawnBlockPosProvider implements iServerSpawnProvider {
                 spawnBlocks.add(pos);
             }
         }
-        int i = (int)Math.floor(Math.random() *spawnBlocks.size());
+        if(spawnBlocks.size() == 0){
+            return null;
+        }
+        int i = (int)Math.floor(Math.random() * spawnBlocks.size());
         return spawnBlocks.get(i).add(new Vec3i(0,2,0));
     }
 }
