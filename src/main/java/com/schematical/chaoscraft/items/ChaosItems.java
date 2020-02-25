@@ -21,5 +21,8 @@ public class ChaosItems {
     public static final RegistryObject<Item> FACTORY_BLOCK_ITEM = ITEMS.register("factory_block_item", () ->
             new BlockItem(ChaosBlocks.FACTORY_BLOCK.get(),  new Item.Properties().group(ItemGroup.BUILDING_BLOCKS))
     );
+    public static final RegistryObject<Item> BUILD_AREA_MARKER_ITEM = ITEMS.register("build_area_marker_item", () ->
+            new BlockItem(ChaosBlocks.BUILD_AREA_MARKER.get(),  new Item.Properties().group(ItemGroup.BUILDING_BLOCKS))
+    );
 
 }

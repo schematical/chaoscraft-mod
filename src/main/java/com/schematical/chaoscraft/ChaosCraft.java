@@ -7,10 +7,7 @@ import com.schematical.chaoscraft.blocks.ChaosEggBlock;
 import com.schematical.chaoscraft.blocks.SpawnBlock;
 import com.schematical.chaoscraft.blocks.WaypointBlock;
 import com.schematical.chaoscraft.client.*;
-import com.schematical.chaoscraft.commands.CCAuthCommand;
-import com.schematical.chaoscraft.commands.CCHardResetCommand;
-import com.schematical.chaoscraft.commands.CCSummonCommand;
-import com.schematical.chaoscraft.commands.CCTestCommand;
+import com.schematical.chaoscraft.commands.*;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.entities.OrgEntityRenderer;
 import com.schematical.chaoscraft.fitness.ChaosCraftFitnessManager;
@@ -20,9 +17,13 @@ import com.schematical.chaoscraft.network.ChaosNetworkManager;
 
 import com.schematical.chaoscraft.server.ChaosCraftServer;
 
+import com.schematical.chaoscraft.tileentity.BuildAreaMarkerTileEntity;
 import com.schematical.chaoscraft.tileentity.ChaosTileEntity;
 import com.schematical.chaoscraft.tileentity.SpawnBlockTileEntity;
 import com.schematical.chaoscraft.tileentity.WaypointBlockTileEntity;
+import com.schematical.chaoscraft.util.BuildArea;
+import com.sun.media.jfxmedia.events.PlayerStateEvent;
+import javafx.geometry.BoundingBox;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SoundType;
@@ -37,11 +38,15 @@ import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.chunk.storage.ChunkLoader;
+import net.minecraft.world.chunk.storage.ChunkLoaderUtil;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
@@ -49,8 +54,15 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerSetSpawnEvent;
+import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.event.world.BlockEvent.BreakEvent;
+import net.minecraftforge.event.world.ChunkDataEvent;
+import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -67,7 +79,9 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import net.minecraftforge.event.world.BlockEvent.EntityPlaceEvent;
 
+import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -91,6 +105,8 @@ public class ChaosCraft
 
     private static ChaosCraftClient client;
     private static ChaosCraftServer server;
+    public static ArrayList<BuildArea> buildAreas = new <BuildArea>ArrayList();
+    public static ArrayList<BuildAreaMarkerTileEntity> buildAreaMarkers = new <BuildAreaMarkerTileEntity>ArrayList();
 
     public ChaosCraft() {
    /*     if(true){
@@ -137,6 +153,8 @@ public class ChaosCraft
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onClientStarting);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onKeyInputEvent);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onEntitySpawn);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onBlockEvent);
+        //FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onBlockBreakEvent);
         if(FMLEnvironment.dist.equals(Dist.CLIENT)) {
             FMLJavaModLoadingContext.get().getModEventBus().addListener(this::renderOverlayEvent);
         }
@@ -231,6 +249,7 @@ public class ChaosCraft
         CCAuthCommand.register(event.getCommandDispatcher());
         CCTestCommand.register(event.getCommandDispatcher());
         CCHardResetCommand.register(event.getCommandDispatcher());
+        CCClearBuildAreaCommand.register(event.getCommandDispatcher());
 
         server.loadFitnessFunctions();
     }
@@ -262,7 +281,6 @@ public class ChaosCraft
             return;
         }
         server.tick();
-
     }
     public void onEntityRegistry(final RegistryEvent.Register<EntityType<?>> event) {
         //setTrackingRange
@@ -290,6 +308,8 @@ public class ChaosCraft
         }
 
     }
+
+
     @SubscribeEvent
     public void onLivingUpdateEvent(PlayerEvent.LivingUpdateEvent livingUpdateEvent){
 
@@ -359,7 +379,27 @@ public class ChaosCraft
             MonsterEntity monsterEntity = (MonsterEntity) entity;
             monsterEntity.targetSelector.addGoal(2, new NearestAttackableTargetGoal(monsterEntity, OrgEntity.class, true));
         }
-
     }
 
+    @SubscribeEvent
+    public void onBlockEvent(EntityPlaceEvent blockEvent) {
+        if (blockEvent.getPlacedBlock().getBlock() != ChaosBlocks.BUILD_AREA_MARKER.get()) {
+            for (int i = 0; i < ChaosCraft.buildAreas.size(); i++) {
+                for(BlockPos markerBlock : ChaosBlocks.markerBlocks){
+                    ChaosCraft.buildAreas.get(i).getBlocks(markerBlock);
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onBlockBreakEvent(BreakEvent breakEvent) {
+        if (breakEvent.getState().getBlock() != ChaosBlocks.BUILD_AREA_MARKER.get()) {
+                for (int i = 0; i < ChaosCraft.buildAreas.size(); i++) {
+                    for(BlockPos markerBlock : ChaosBlocks.markerBlocks){
+                        ChaosCraft.buildAreas.get(i).getBlocks(markerBlock);
+                    }
+                }
+        }
+    }
 }

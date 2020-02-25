@@ -1,0 +1,9 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "chaoscraft:block/build_area_marker"
+      }
+    ]
+  }
+}

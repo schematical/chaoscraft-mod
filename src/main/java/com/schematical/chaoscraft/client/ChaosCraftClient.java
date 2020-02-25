@@ -1,6 +1,7 @@
 package com.schematical.chaoscraft.client;
 
 import com.schematical.chaoscraft.ChaosCraft;
+import com.schematical.chaoscraft.blocks.ChaosBlocks;
 import com.schematical.chaoscraft.client.gui.*;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
@@ -8,6 +9,7 @@ import com.schematical.chaoscraft.network.packets.*;
 import com.schematical.chaoscraft.server.ChaosCraftServerPlayerInfo;
 import com.schematical.chaoscraft.tileentity.FactoryTileEntity;
 import com.schematical.chaoscraft.tileentity.SpawnBlockTileEntity;
+import com.schematical.chaoscraft.util.BuildArea;
 import com.schematical.chaosnet.model.*;
 
 import net.minecraft.client.Minecraft;
@@ -16,6 +18,7 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Items;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.GameType;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -52,7 +55,7 @@ public class ChaosCraftClient {
     private ChaosPlayerNeuronTestScreen chaosPlayerNeuronTestScreen;
     private ChaosObserveOverlayScreen chaosObserveOverlayScreen;
 
-
+    private DistNormTracker distNormTracker = new DistNormTracker();
 
     public ChaosCraftClient(Minecraft minecraft) {
         this.minecraft = minecraft;
@@ -86,6 +89,9 @@ public class ChaosCraftClient {
         }
         if(!observationState.equals(ChaosCraftServerPlayerInfo.State.None)){
             chaosObserveOverlayScreen.render();
+        }
+        if(distNormTracker != null){
+            distNormTracker.render();
         }
     }
     public void setTrainingRoomInfo(ServerIntroInfoPacket serverInfo) {
@@ -192,6 +198,8 @@ public class ChaosCraftClient {
                 ChaosAuthOverlayGui screen = new ChaosAuthOverlayGui();
                 Minecraft.getInstance().displayGuiScreen(screen);
             }
+;
+
             return;
         }
 
@@ -289,9 +297,8 @@ public class ChaosCraftClient {
         if(consecutiveErrorCount > 5){
             throw new ChaosNetException("ChaosCraft.consecutiveErrorCount > 5");
         }
-
-
-
+        //if(ChaosBlocks.markerBlocks.size() !=0)
+            //ChaosCraft.buildAreas.get(0).getBlocks(ChaosBlocks.markerBlocks.get(0));
     }
 
 

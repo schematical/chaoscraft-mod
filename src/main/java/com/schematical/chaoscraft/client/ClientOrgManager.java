@@ -39,7 +39,6 @@ public class ClientOrgManager extends BaseOrgManager {
         return expectedLifeEndTime;
     }
 
-
     public void addServerScoreEvent(CCServerScoreEventPacket pkt){
         expectedLifeEndTime = pkt.expectedLifeEndTime;
         serverScoreEvents.add(pkt);

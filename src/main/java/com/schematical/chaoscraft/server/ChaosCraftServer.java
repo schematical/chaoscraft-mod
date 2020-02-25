@@ -3,6 +3,7 @@ package com.schematical.chaoscraft.server;
 import com.amazonaws.opensdk.config.ConnectionConfiguration;
 import com.amazonaws.opensdk.config.TimeoutConfiguration;
 import com.schematical.chaoscraft.ChaosCraft;
+import com.schematical.chaoscraft.blocks.ChaosBlocks;
 import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.fitness.ChaosCraftFitnessManager;
@@ -89,8 +90,6 @@ public class ChaosCraftServer {
                 spawnOrg(serverOrgManager);
             }
         }
-
-
         longTickCount += 1;
         if(longTickCount > 5 * 20){
             longTick();
