@@ -3,24 +3,19 @@ package com.schematical.chaoscraft.server;
 import com.amazonaws.opensdk.config.ConnectionConfiguration;
 import com.amazonaws.opensdk.config.TimeoutConfiguration;
 import com.schematical.chaoscraft.ChaosCraft;
-import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.fitness.ChaosCraftFitnessManager;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.*;
-import com.schematical.chaoscraft.server.spawnproviders.PlayerSpawnPosProvider;
 import com.schematical.chaoscraft.server.spawnproviders.SpawnBlockPosProvider;
 import com.schematical.chaoscraft.server.spawnproviders.iServerSpawnProvider;
 import com.schematical.chaosnet.ChaosNet;
 import com.schematical.chaosnet.auth.ChaosnetCognitoUserPool;
 import com.schematical.chaosnet.model.*;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
@@ -222,31 +217,33 @@ public class ChaosCraftServer {
 
            return null;
         }
-
+        BlockPos pos = spawnProvider.getSpawnPos(serverOrgManager);
+        if(pos == null) {
+            return null;//Now we play the waiting game
+        }
 
         ServerWorld serverWorld = server.getWorld(DimensionType.OVERWORLD);
 
 
         OrgEntity orgEntity = OrgEntity.ORGANISM_TYPE.create(serverWorld);
         orgEntity.setSpawnHash(ChaosCraft.getServer().spawnHash);
-        BlockPos pos = spawnProvider.getSpawnPos(serverOrgManager);
-        if(pos != null) {
-            float yaw = (float)( Math.random() * 360f);
-            float pitch = (float) (Math.random() * 360f);
-            orgEntity.setDesiredYaw(yaw);
-            orgEntity.setLocationAndAngles(pos.getX(), pos.getY(), pos.getZ(), yaw, pitch);
 
-        }
+        float yaw = (float)( Math.random() * 360f);
+        float pitch = (float) (Math.random() * 360f);
+        orgEntity.setDesiredYaw(yaw);
+        orgEntity.setLocationAndAngles(pos.getX(), pos.getY(), pos.getZ(), yaw, pitch);
+
+
         serverOrgManager.attachOrgEntity(orgEntity);
         serverWorld.summonEntity(orgEntity);
 
 
 
-        sendChaosCraftServerPlayerInfo(serverOrgManager);
+        sendChaosCraftEntitySpawnInfo(serverOrgManager);
 
         return orgEntity;
     }
-    protected  void sendChaosCraftServerPlayerInfo(ServerOrgManager serverOrgManager){
+    protected  void sendChaosCraftEntitySpawnInfo(ServerOrgManager serverOrgManager){
         ServerPlayerEntity serverPlayerEntity = serverOrgManager.getServerPlayerEntity();
         ChaosNetworkManager.sendTo(
                 new CCServerEntitySpawnedPacket(
