@@ -1,44 +1,23 @@
 package com.schematical.chaoscraft.tileentity;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Optional;
-import java.util.Random;
 import javax.annotation.Nullable;
 
-import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.blocks.ChaosBlocks;
 import com.schematical.chaoscraft.server.ServerOrgManager;
 import com.schematical.chaosnet.model.ChaosNetException;
-import net.minecraft.block.CampfireBlock;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IClearable;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.InventoryHelper;
-import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CampfireCookingRecipe;
-import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 
 
 public class SpawnBlockTileEntity  extends TileEntity implements ITickableTileEntity {
 
     private String spawnPointId = "default";
-    private int maxLivingEntites = 1;//-1;
+    private int maxLivingEntities = -1;
     private int livingEntityCount = 0;
     protected ArrayList<ServerOrgManager> entities = new ArrayList<ServerOrgManager>();
     public SpawnBlockTileEntity() {
@@ -51,7 +30,7 @@ public class SpawnBlockTileEntity  extends TileEntity implements ITickableTileEn
             ChaosBlocks.spawnBlocks.add(this.getPos());
             //ChaosCraft.LOGGER.info("SpawnBlock at " + this.getPos().getX() + ", " + this.getPos().getY() + ", " + this.getPos().getZ());
         }
-        if(maxLivingEntites < 0){
+        if(maxLivingEntities < 0){
 
             return;//Just keep on spawning
         }
@@ -68,11 +47,18 @@ public class SpawnBlockTileEntity  extends TileEntity implements ITickableTileEn
 
 
     }
+    public int getMaxLivingEntities(){
+        return maxLivingEntities;
+    }
+    public void setMaxLivingEntities(int maxLivingEntities){
+        this.maxLivingEntities = maxLivingEntities;
+        this.markForUpdate();
+    }
     public boolean canSpawn(){
-         if(maxLivingEntites < 0){
+         if(maxLivingEntities < 0){
             return true;
         }
-        if(maxLivingEntites > livingEntityCount){
+        if(maxLivingEntities > livingEntityCount){
             return true;
         }
         return false;
@@ -85,6 +71,9 @@ public class SpawnBlockTileEntity  extends TileEntity implements ITickableTileEn
         if (compound.contains("spawnPointId")) {
            spawnPointId = compound.getString("spawnPointId");
         }
+        if (compound.contains("maxLivingEntities")) {
+            maxLivingEntities = compound.getInt("maxLivingEntities");
+        }
 
     }
 
@@ -92,6 +81,7 @@ public class SpawnBlockTileEntity  extends TileEntity implements ITickableTileEn
     public CompoundNBT write(CompoundNBT compound) {
         super.write(compound);
         compound.putString("spawnPointId", this.spawnPointId);
+        compound.putInt("maxLivingEntities", this.maxLivingEntities);
         return compound;
     }
 
@@ -166,8 +156,11 @@ public class SpawnBlockTileEntity  extends TileEntity implements ITickableTileEn
     }
 
     public void addSpawnedEntity(ServerOrgManager serverOrgManager) {
-        if(entities.size() >= maxLivingEntites){
-            throw new ChaosNetException("Invalid amount of entities added: " + entities.size() + " >= " + maxLivingEntites);
+        if(
+                maxLivingEntities > 0 &&
+                entities.size() >= maxLivingEntities
+        ){
+            throw new ChaosNetException("Invalid amount of entities added: " + entities.size() + " >= " + maxLivingEntities);
         }
         entities.add(serverOrgManager);
         livingEntityCount += 1;
