@@ -28,6 +28,7 @@ public class CCWorldEvent {
         TARGET_CLOSE_DIST,
         TARGET_CLOSE_YAW,
         TARGET_CLOSE_PITCH,
+        BUILD_COMPLETE
     }
     public enum Axis{
         X,

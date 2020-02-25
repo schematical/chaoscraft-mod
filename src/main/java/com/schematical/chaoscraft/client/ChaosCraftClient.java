@@ -4,6 +4,7 @@ import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.blocks.ChaosBlocks;
 import com.schematical.chaoscraft.client.gui.*;
 import com.schematical.chaoscraft.entities.OrgEntity;
+import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.*;
 import com.schematical.chaoscraft.server.ChaosCraftServerPlayerInfo;
@@ -297,8 +298,6 @@ public class ChaosCraftClient {
         if(consecutiveErrorCount > 5){
             throw new ChaosNetException("ChaosCraft.consecutiveErrorCount > 5");
         }
-        //if(ChaosBlocks.markerBlocks.size() !=0)
-            //ChaosCraft.buildAreas.get(0).getBlocks(ChaosBlocks.markerBlocks.get(0));
     }
 
 
@@ -308,9 +307,11 @@ public class ChaosCraftClient {
         for (ClientOrgManager clientOrgManager : clientOrgManagers) {
 
             if (!clientOrgManager.getEntity().isAlive()) {
-
+                for(BuildArea buildArea : ChaosCraft.buildAreas){
+                    if(buildArea.getCurrentClientOrgManager().equals(clientOrgManager)){
+                    }
+                }
                 clientOrgManager.markDead();
-
             }
         }
         return clientOrgManagers;
@@ -347,6 +348,7 @@ public class ChaosCraftClient {
 
         while (iterator.hasNext()) {
             ClientOrgManager clientOrgManager = iterator.next();
+            //ChaosCraft.buildAreas.get(0).assignCurrentOrgManager(clientOrgManager);
 
             if (_debugSpawnedOrgNamespaces.contains(clientOrgManager.getCCNamespace())) {
                 ChaosCraft.LOGGER.error("Client already tried to spawn: " + clientOrgManager.getCCNamespace()  + " State: " + clientOrgManager.getState());

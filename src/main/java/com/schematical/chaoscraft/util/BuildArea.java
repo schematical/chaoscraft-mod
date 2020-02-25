@@ -4,6 +4,8 @@ import com.google.common.primitives.Doubles;
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.biology.BlockPositionSensor;
 import com.schematical.chaoscraft.blocks.ChaosBlocks;
+import com.schematical.chaoscraft.client.ClientOrgManager;
+import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.tileentity.BuildAreaMarkerTileEntity;
 import com.schematical.chaoscraft.tileentity.ChaosTileEntity;
 import net.minecraft.block.Block;
@@ -38,6 +40,8 @@ public class BuildArea{
     public Array2DRowRealMatrix[] areaMatrices = new Array2DRowRealMatrix[4];
     private BuildAreaMarkerTileEntity buildaAreaEntity;
 
+    private ClientOrgManager currentClientOrgManager;
+
     public void getBlocks(BlockPos pos){
         pos = pos.add(1, -2, -1);
         BlockPos currentBlock;
@@ -63,6 +67,13 @@ public class BuildArea{
         this.buildaAreaEntity = tileEntity;
     }
 
+    public void assignCurrentOrgManager(ClientOrgManager orgManager){
+        this.currentClientOrgManager = orgManager;
+    }
+
+    public ClientOrgManager getCurrentClientOrgManager(){
+        return this.currentClientOrgManager;
+    }
     public BuildAreaMarkerTileEntity getBuildaAreaEntity(){
         return this.buildaAreaEntity;
     }
