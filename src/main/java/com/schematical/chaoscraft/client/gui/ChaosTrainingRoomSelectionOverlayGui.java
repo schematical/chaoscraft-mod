@@ -70,9 +70,9 @@ public class ChaosTrainingRoomSelectionOverlayGui extends Screen {
         this.trainingRoomNamespaceInput.setResponder((namespace) -> {
            trainingRoomNamespace = namespace;
         });
+        this.children.add(this.trainingRoomNamespaceInput);
 
-
-        this.envInput = new TextFieldWidget(this.font, this.width / 2 - 100, 140, 200, 20, ChaosCraft.getClient().getEnv());
+        this.envInput = new TextFieldWidget(this.font, this.width / 2 - 100, 140, 200, 20, env);
         this.envInput.setText(env);
         this.envInput.setResponder((namespace) -> {
             env = namespace;
@@ -84,7 +84,7 @@ public class ChaosTrainingRoomSelectionOverlayGui extends Screen {
     @Override
     public void render(int p_render_1_, int p_render_2_, float p_render_3_) {
         this.renderBackground();
-        this.drawCenteredString(this.font, this.title.getFormattedText(), this.width / 2, 70, 16777215);
+        this.drawCenteredString(this.font, this.title.getFormattedText(), this.width / 2, 30, 16777215);
 
         this.drawCenteredString(this.font, "Username", this.width / 2, 50, 16777215);
         this.drawCenteredString(this.font, "Training Room", this.width / 2, 90, 16777215);

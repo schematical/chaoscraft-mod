@@ -1,17 +1,9 @@
-package com.schematical.chaoscraft.ai.inputs.targetnet;
+package com.schematical.chaoscraft.ai.inputs;
 
-import com.schematical.chaoscraft.ChaosCraft;
-import com.schematical.chaoscraft.ai.CCAttributeId;
-import com.schematical.chaoscraft.ai.CCObserviableAttributeCollection;
 import com.schematical.chaoscraft.ai.InputNeuron;
-import com.schematical.chaoscraft.ai.biology.Eye;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.services.targetnet.ScanManager;
-import com.schematical.chaoscraft.tickables.OrgPositionManager;
 import com.schematical.chaoscraft.util.TargetHelper;
-import org.json.simple.JSONObject;
-
-import java.util.List;
 
 /**
  * Created by user1a on 12/8/18.

@@ -1,18 +1,15 @@
-package com.schematical.chaoscraft.ai.inputs.targetnet;
+package com.schematical.chaoscraft.ai.inputs;
 
-import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.CCAttributeId;
 import com.schematical.chaoscraft.ai.InputNeuron;
-import com.schematical.chaoscraft.ai.biology.Eye;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.services.targetnet.ScanManager;
-import com.schematical.chaoscraft.util.TargetHelper;
 import org.json.simple.JSONObject;
 
 /**
  * Created by user1a on 12/8/18.
  */
-public class TargetCandidateIsTypeInput extends InputNeuron {
+public class TargetCandidateTypeInput extends InputNeuron {
     public String attributeId;
     public String attributeValue;
 

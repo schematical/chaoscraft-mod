@@ -1,12 +1,9 @@
-package com.schematical.chaoscraft.ai.outputs.targetnet;
+package com.schematical.chaoscraft.ai.outputs;
 
-import com.schematical.chaoscraft.ai.CCObserviableAttributeCollection;
 import com.schematical.chaoscraft.ai.OutputNeuron;
-import com.schematical.chaoscraft.ai.biology.Eye;
-import com.schematical.chaoscraft.ai.biology.TargetSlot;
+import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.services.targetnet.ScanManager;
-import com.schematical.chaosnet.model.ChaosNetException;
 import org.json.simple.JSONObject;
 
 /**
@@ -14,15 +11,16 @@ import org.json.simple.JSONObject;
  *
  */
 
-public class ScoreTargetSlotOutput extends OutputNeuron {
+public class TargetCandidateSetScoreOutput extends OutputNeuron {
     private String targetSlotId;
-
+    public ExecuteSide executeSide = ExecuteSide.Server;
     @Override
     public void execute() {
 
         //TODO: Decide how to get the scan manager
-
-        ScanManager scanManager = ((OrgEntity)this.getEntity()).getClientOrgManager().getScanManager();
+        OrgEntity orgEntity =  ((OrgEntity)this.getEntity());
+        ClientOrgManager clientOrgManager = orgEntity.getClientOrgManager();
+        ScanManager scanManager = clientOrgManager.getScanManager();
         ScanManager.ScanEntry scanEntry = scanManager.getFocusedScanEntry();
         scanEntry.setScore(targetSlotId, this.getCurrentValue());
     }

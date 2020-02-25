@@ -1,4 +1,4 @@
-package com.schematical.chaoscraft.ai.inputs.targetnet;
+package com.schematical.chaoscraft.ai.inputs;
 
 import com.schematical.chaoscraft.ai.InputNeuron;
 import com.schematical.chaoscraft.entities.OrgEntity;

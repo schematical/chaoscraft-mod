@@ -197,5 +197,4 @@ public abstract class NeuronBase extends InnovationBase {
         return hasBeenEvaluated;
     }
 
-
 }

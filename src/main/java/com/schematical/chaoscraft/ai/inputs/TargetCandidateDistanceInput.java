@@ -1,4 +1,4 @@
-package com.schematical.chaoscraft.ai.inputs.targetnet;
+package com.schematical.chaoscraft.ai.inputs;
 
 import com.schematical.chaoscraft.ai.InputNeuron;
 import com.schematical.chaoscraft.entities.OrgEntity;
@@ -8,7 +8,7 @@ import com.schematical.chaoscraft.util.TargetHelper;
 /**
  * Created by user1a on 12/8/18.
  */
-public class TargetCandidateDistInput extends InputNeuron {
+public class TargetCandidateDistanceInput extends InputNeuron {
 
     private static final float  YAW_DEGREES = 360f;
 

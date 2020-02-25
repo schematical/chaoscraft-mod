@@ -140,7 +140,7 @@ public class NeuralNet {
             e.printStackTrace();
         }*/catch(Exception e){
             e.printStackTrace();
-            throw new ChaosNetException(e.getMessage() + " -Look above for Stacktrace");
+            throw new ChaosNetException(e.getClass().getSimpleName() + " - " + e.getMessage() + " -Look above for Stacktrace");
         }
     }
     public BiologyBase getBiology(String id){

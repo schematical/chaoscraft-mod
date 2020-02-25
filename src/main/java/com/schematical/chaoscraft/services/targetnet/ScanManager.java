@@ -109,6 +109,9 @@ public class ScanManager {
         return focusedScanEntry;
     }
     public int getCountOfFocusedScanEntity(){
+        if(focusedScanEntry == null){
+            return -1;
+        }
         return counts.get(focusedScanEntry.atts.resourceId);
     }
     public float getRange() {
