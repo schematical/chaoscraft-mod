@@ -21,6 +21,7 @@ public class ChaosCraftConfig {
     public String sessionNamespace;
     public String trainingRoomUsernameNamespace;
     public String trainingRoomNamespace;
+    public String env = "prod";
     public void save(){
 
         JSONObject obj = new JSONObject();
@@ -33,6 +34,7 @@ public class ChaosCraftConfig {
         obj.put("sessionNamespace", sessionNamespace);
         obj.put("trainingRoomNamespace", trainingRoomNamespace);
         obj.put("trainingRoomUsernameNamespace", trainingRoomUsernameNamespace);
+        obj.put("env", env);
         // try-with-resources statement based on post comment below :)
         try {
             String configFilePath = getConfigPath();
@@ -82,6 +84,7 @@ public class ChaosCraftConfig {
                 trainingRoomNamespace = obj.get("trainingRoomNamespace").toString();
                 trainingRoomUsernameNamespace = obj.get("trainingRoomUsernameNamespace").toString();
                 sessionNamespace = obj.get("sessionNamespace").toString();
+                env = obj.get("env").toString();
             } catch (Exception e) {
                 e.printStackTrace();
             }

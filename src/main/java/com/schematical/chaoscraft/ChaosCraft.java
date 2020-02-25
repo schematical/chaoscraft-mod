@@ -23,6 +23,7 @@ import com.schematical.chaoscraft.server.ChaosCraftServer;
 import com.schematical.chaoscraft.tileentity.ChaosTileEntity;
 import com.schematical.chaoscraft.tileentity.SpawnBlockTileEntity;
 import com.schematical.chaoscraft.tileentity.WaypointBlockTileEntity;
+import com.schematical.chaosnet.ChaosNetClientBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SoundType;
@@ -98,26 +99,10 @@ public class ChaosCraft
         }*/
         config = new ChaosCraftConfig();
         config.load();
-        LOGGER.info("Config Loaded...");
+        LOGGER.info("Config Loaded - Env: " + config.env);
         LOGGER.info("Config Username: " + config.username);
-        sdk =  ChaosNet.builder()
-                .connectionConfiguration(
-                        new ConnectionConfiguration()
-                                .maxConnections(100)
-                                .connectionMaxIdleMillis(1000)
-                )
-                .timeoutConfiguration(
-                        new TimeoutConfiguration()
-                                .httpRequestTimeout(60000)
-                                .totalExecutionTimeout(60000)
-                                .socketTimeout(60000)
-                )
-                .signer(
-                        (ChaosnetCognitoUserPool) request -> ChaosCraft.config.accessToken
-                        //new ChaosNetSigner()
-                )
-                .build();
 
+        setupSDK(config.env);
         auth();
         // Register the setup method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
@@ -162,7 +147,29 @@ public class ChaosCraft
     public static ChaosCraftServer getServer(){
         return server;
     }
-
+    public static void setupSDK(String env){
+        ChaosNetClientBuilder builder = ChaosNet.builder()
+                .connectionConfiguration(
+                        new ConnectionConfiguration()
+                                .maxConnections(100)
+                                .connectionMaxIdleMillis(1000)
+                )
+                .timeoutConfiguration(
+                        new TimeoutConfiguration()
+                                .httpRequestTimeout(60000)
+                                .totalExecutionTimeout(60000)
+                                .socketTimeout(60000)
+                )
+                .signer(
+                        (ChaosnetCognitoUserPool) request -> ChaosCraft.config.accessToken
+                        //new ChaosNetSigner()
+                );
+        switch(env){
+            case("dev"):
+                builder = builder.endpoint("https://dev-api.chaosnet.ai");
+        }
+        sdk =  builder.build();
+    }
     public static void auth(){
         LOGGER.info("REFRESH TOKEN:" + config.refreshToken );
         if(config.refreshToken != null){

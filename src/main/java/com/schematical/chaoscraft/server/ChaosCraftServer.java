@@ -193,11 +193,11 @@ public class ChaosCraftServer {
         ServerIntroInfoPacket serverIntroInfoPacket = new ServerIntroInfoPacket(
                 ChaosCraft.config.trainingRoomNamespace,
                 ChaosCraft.config.trainingRoomUsernameNamespace,
-                ChaosCraft.config.sessionNamespace
+                ChaosCraft.config.env
         );
 
         ChaosNetworkManager.sendTo(serverIntroInfoPacket, player);
-        ChaosCraft.LOGGER.info("SENT `serverIntroInfoPacket`: " + serverIntroInfoPacket.getTrainingRoomNamespace() + ", " + serverIntroInfoPacket.getTrainingRoomUsernameNamespace() + ", " + serverIntroInfoPacket.getSessionNamespace());
+        ChaosCraft.LOGGER.info("SENT `serverIntroInfoPacket`: " + serverIntroInfoPacket.getTrainingRoomNamespace() + ", " + serverIntroInfoPacket.getTrainingRoomUsernameNamespace() + ", " + serverIntroInfoPacket.getEnv());
 
     }
 
@@ -410,10 +410,14 @@ public class ChaosCraftServer {
             throw exception;
         }
     }
-    public void setTrainingRoom(String trainingRoomUsernameNamespace, String trainingRoomNamespace){
+    public void setTrainingRoom(String trainingRoomUsernameNamespace, String trainingRoomNamespace, String env){
 
         ChaosCraft.config.trainingRoomUsernameNamespace = trainingRoomUsernameNamespace;
         ChaosCraft.config.trainingRoomNamespace = trainingRoomNamespace;
+        if(!env.equals(ChaosCraft.config.env)) {
+            ChaosCraft.config.env = env;
+            ChaosCraft.setupSDK(ChaosCraft.config.env);
+        }
         ChaosCraft.config.save();
 
         for (ChaosCraftServerPlayerInfo serverPlayerInfo : userMap.values()) {

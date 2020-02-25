@@ -38,6 +38,7 @@ public class ChaosCraftClient {
     protected String trainingRoomNamespace;
     protected String trainingRoomUsernameNamespace;
     protected String sessionNamespace;
+    protected String env = "prod";
 
     public ArrayList<String> _debugSpawnedOrgNamespaces = new ArrayList<String>();
     public ArrayList<String> _debugReportedOrgNamespaces = new ArrayList<String>();
@@ -91,8 +92,13 @@ public class ChaosCraftClient {
     public void setTrainingRoomInfo(ServerIntroInfoPacket serverInfo) {
         trainingRoomNamespace = serverInfo.getTrainingRoomNamespace();
         trainingRoomUsernameNamespace = serverInfo.getTrainingRoomUsernameNamespace();
+
+        if(!env.equals(serverInfo.getEnv())){
+            env = serverInfo.getEnv();
+            ChaosCraft.setupSDK(env);
+        }
        //sessionNamespace = serverInfo.getSessionNamespace();
-        ChaosCraft.LOGGER.info("TrainingRoomInfo Set: " + trainingRoomNamespace + ", " + trainingRoomUsernameNamespace + ", " + sessionNamespace);
+        ChaosCraft.LOGGER.info("TrainingRoomInfo Set: " + trainingRoomNamespace + ", " + trainingRoomUsernameNamespace + ", " + sessionNamespace + " - ENV: " + env);
         state = State.Authed;
         if((Minecraft.getInstance().currentScreen instanceof ChaosTrainingRoomSelectionOverlayGui)) {
 
@@ -153,6 +159,9 @@ public class ChaosCraftClient {
     }
     public String getSessionNamespace(){
         return sessionNamespace;
+    }
+    public String getEnv(){
+        return env;
     }
 
     public void preInit(){
