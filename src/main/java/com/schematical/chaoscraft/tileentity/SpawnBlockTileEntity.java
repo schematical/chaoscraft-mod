@@ -128,7 +128,6 @@ public class SpawnBlockTileEntity  extends TileEntity implements ITickableTileEn
             }
         }
     }
-
     private void markForUpdate() {
         this.markDirty();
         this.getWorld().notifyBlockUpdate(this.getPos(), this.getBlockState(), this.getBlockState(), 3);
