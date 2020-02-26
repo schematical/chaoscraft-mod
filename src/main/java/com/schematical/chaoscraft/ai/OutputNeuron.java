@@ -8,7 +8,7 @@ import org.json.simple.JSONObject;
 public abstract class OutputNeuron extends NeuronBase {
     public static final String OUTPUT_GROUP_NONE = "OUTPUT_GROUP_NONE";
     public String _outputGroup = "OUTPUT_GROUP_NONE";
-    public ExecuteSide executeSide = ExecuteSide.Client;
+    public ExecuteSide executeSide = ExecuteSide.Server;
 
 
     public String _base_type(){

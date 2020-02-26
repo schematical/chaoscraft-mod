@@ -11,6 +11,7 @@ import com.schematical.chaoscraft.network.packets.CCServerScoreEventPacket;
 import com.schematical.chaoscraft.server.ServerOrgManager;
 import com.schematical.chaoscraft.services.targetnet.ScanManager;
 import com.schematical.chaoscraft.tickables.OrgPositionManager;
+import com.schematical.chaoscraft.tickables.TargetNNetManager;
 import com.schematical.chaosnet.model.ChaosNetException;
 import com.schematical.chaosnet.model.Organism;
 import net.minecraft.entity.player.PlayerEntity;
@@ -87,6 +88,7 @@ public class ClientOrgManager extends BaseOrgManager {
         this.scanManager = new ScanManager(this);
         this.orgEntity.attachNNetRaw(organism.getNNetRaw());
         orgEntity.attachClientOrgEntity(this);
+        this.attatchTickable(new TargetNNetManager(this.scanManager));
         spawnCount += 1;
         state = State.EntityAttached;
     }

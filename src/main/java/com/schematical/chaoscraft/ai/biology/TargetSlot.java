@@ -1,6 +1,10 @@
 package com.schematical.chaoscraft.ai.biology;
 
+import com.schematical.chaoscraft.ai.CCObserviableAttributeCollection;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.json.simple.JSONObject;
 
@@ -9,20 +13,23 @@ import org.json.simple.JSONObject;
  */
 public class TargetSlot extends BiologyBase {
     public Entity entity;
-    public Vec3d position;
-    public float weight;
+    public BlockPos blockPos;
 
     public void setTarget(Entity entity){
         this.entity = entity;
     }
-    public void setTarget(Vec3d vec3d){
-        this.position = vec3d;
+    public void setTarget(BlockPos blockPos){
+        this.blockPos = blockPos;
     }
     public Vec3d getTargetPosition(){
         if(entity != null){
             return entity.getPositionVector();
         }
-        return this.position;
+        return new Vec3d(
+            this.blockPos.getX(),
+            this.blockPos.getY(),
+            this.blockPos.getZ()
+        );
     }
     @Override
     public void parseData(JSONObject jsonObject){
@@ -33,6 +40,21 @@ public class TargetSlot extends BiologyBase {
     @Override
     public void reset() {
 
+    }
+    public String toString(){
+
+        String message = id + ": ";
+        if(entity != null){
+            message += entity.getType().getRegistryName();
+        }else if(blockPos != null){
+
+            BlockState blockState = Minecraft.getInstance().world.getBlockState(blockPos);
+            message += blockState.getBlock().getRegistryName();
+        }else{
+            message += " null";
+        }
+
+        return message;
     }
 
 }

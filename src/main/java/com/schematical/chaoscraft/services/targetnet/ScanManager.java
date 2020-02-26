@@ -1,10 +1,14 @@
 package com.schematical.chaoscraft.services.targetnet;
 
+import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.CCObserviableAttributeCollection;
 import com.schematical.chaoscraft.ai.NeuralNet;
+import com.schematical.chaoscraft.ai.OutputNeuron;
 import com.schematical.chaoscraft.ai.biology.TargetSlot;
 import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.entities.OrgEntity;
+import com.schematical.chaoscraft.network.ChaosNetworkManager;
+import com.schematical.chaoscraft.network.packets.CCClientOutputNeuronActionPacket;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
@@ -14,13 +18,14 @@ import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 public class ScanManager {
     private ScanEntry focusedScanEntry;
     private ClientOrgManager clientOrgManager;
     private ArrayList<ScanEntry> entries = new ArrayList<ScanEntry>();
-    private int range = 40;
+    private int range = 10;
 
     private HashMap<String, Integer> counts = new HashMap<>();
     private NeuralNet getNNet(){
@@ -71,8 +76,17 @@ public class ScanManager {
         HashMap<String, ScanEntry> highestResults = new HashMap<String, ScanEntry>();
         for (ScanEntry entry : entries) {
             focusedScanEntry = entry;
-            getNNet().evaluate(NeuralNet.EvalGroup.TARGET);//Ideally the output neurons will set the score
 
+
+            List<OutputNeuron> outputs = getNNet().evaluate(NeuralNet.EvalGroup.TARGET);//Ideally the output neurons will set the score
+
+
+            Iterator<OutputNeuron> iterator = outputs.iterator();
+
+            while (iterator.hasNext()) {
+                OutputNeuron outputNeuron = iterator.next();
+                outputNeuron.execute();
+            }
             //Sort them each by the score of their output neurons
             HashMap<String, Float> scores = focusedScanEntry.getScores();
             for (String targetSlotId : scores.keySet()) {
@@ -93,13 +107,19 @@ public class ScanManager {
             TargetSlot targetSlot = (TargetSlot )orgEntity.getNNet().getBiology(targetSlotId);
             ScanEntry scanEntry = highestResults.get(targetSlotId);
             if(scanEntry.entity != null) {
+                ChaosCraft.LOGGER.info(
+                        orgEntity.getCCNamespace() + " targeted: " +
+                                scanEntry.entity.getType().getRegistryName().toString()
+                );
                 targetSlot.setTarget(scanEntry.entity);
             }else  if(scanEntry.blockPos != null){
-                targetSlot.setTarget(new Vec3d(
-                        scanEntry.blockPos.getX(),
-                        scanEntry.blockPos.getY(),
-                        scanEntry.blockPos.getZ()
-                ));
+                if(!orgEntity.world.getBlockState(scanEntry.blockPos).getBlock().getRegistryName().toString().equals("minecraft:void_air")){
+                    ChaosCraft.LOGGER.info(
+                            orgEntity.getCCNamespace() + " targeted: " +
+                            orgEntity.world.getBlockState(scanEntry.blockPos).getBlock().getRegistryName().toString()
+                    );
+                }
+                targetSlot.setTarget(scanEntry.blockPos);
             }
 
         }

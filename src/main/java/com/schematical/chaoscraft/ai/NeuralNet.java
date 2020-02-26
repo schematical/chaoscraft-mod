@@ -18,6 +18,7 @@ public class NeuralNet {
     public HashMap<String, NeuronBase> neurons = new HashMap<String, NeuronBase>();
     public HashMap<String, BiologyBase> biology = new HashMap<String, BiologyBase>();
     public boolean ready = false;
+    private EvalGroup currentTargetEvalGroup;
 
     public NeuralNet() {
 
@@ -29,6 +30,10 @@ public class NeuralNet {
         return evaluate(EvalGroup.DEFAULT);
     }
     public List<OutputNeuron> evaluate(EvalGroup targetEvalGroup){
+        if(currentTargetEvalGroup != null){
+            throw new ChaosNetException("Dobule eval - Two processes are calling eval at once or you forgot to set `currentTargetEvalGroup` to null when you are done");
+        }
+        currentTargetEvalGroup = targetEvalGroup;
         HashMap<String, OutputGroupResult> outputGroupResults = new HashMap<String, OutputGroupResult>();
         //Iterate through output neurons
         Iterator<Map.Entry<String, NeuronBase>> iterator = neurons.entrySet().iterator();
@@ -46,7 +51,7 @@ public class NeuralNet {
             NeuronBase neuronBase = iterator.next().getValue();
             if(
                 neuronBase._base_type().equals(com.schematical.chaoscraft.Enum.OUTPUT) &&
-                neuronBase.getEvalGroup().equals(targetEvalGroup)
+                neuronBase.getEvalGroup().equals(currentTargetEvalGroup)
             ){
                 OutputNeuron outputNeuron = (OutputNeuron)neuronBase;
                 neuronEvalDepth = 0;
@@ -80,8 +85,11 @@ public class NeuralNet {
             OutputGroupResult outputGroupResult = outputGroupResultIterator.next();
             outputs.add(outputGroupResult.highNeuron);
         }
-
+        currentTargetEvalGroup = null;
         return outputs;
+    }
+    public EvalGroup getCurrentTargetEvalGroup(){
+        return currentTargetEvalGroup;
     }
     public void parseData(JSONObject jsonObject){
         try {

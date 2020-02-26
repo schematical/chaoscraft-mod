@@ -29,10 +29,10 @@ public class SetTargetSlotOutput extends OutputNeuron {
         switch(atts.resourceType){
             case("BLOCK"):
                 //Just use the position
-                if(atts.position == null){
+                if(atts._blockPos == null){
                     throw new ChaosNetException("Invalid `CCObserviableAttributeCollection` passed in. Missing `position`");
                 }
-                targetSlot.setTarget(atts.position);
+                targetSlot.setTarget(atts._blockPos);
             break;
             case("ENTITY"):
                 targetSlot.setTarget(atts._entity);

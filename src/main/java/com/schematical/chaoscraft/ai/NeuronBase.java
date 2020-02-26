@@ -121,8 +121,13 @@ public abstract class NeuronBase extends InnovationBase {
                 String orgNamespace = nNet.entity.getCCNamespace();
                 throw new ChaosNetException("Missing `neuronDep.depNeuron` : " + orgNamespace + " " + neuronDep.depNeuronId);
             }
-
-            neuronDep.evaluate();
+            NeuralNet.EvalGroup targetEvalGroup = nNet.getCurrentTargetEvalGroup();
+            if(!targetEvalGroup.equals(NeuralNet.EvalGroup.DEFAULT)){
+                neuronDep.evaluate();//Defaults need to get evaluated
+            }else if(targetEvalGroup.equals(neuronDep.depNeuron.getEvalGroup())){
+                neuronDep.evaluate();//
+            }
+            //neuronDep.evaluate();
             totalScore += neuronDep.getCurrentValue();
         }
         newValue = activator.activateValue(totalScore);//sigmoid(totalScore);

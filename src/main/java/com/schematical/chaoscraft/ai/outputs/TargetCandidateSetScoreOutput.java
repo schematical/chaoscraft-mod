@@ -13,7 +13,7 @@ import org.json.simple.JSONObject;
 
 public class TargetCandidateSetScoreOutput extends OutputNeuron {
     private String targetSlotId;
-    public ExecuteSide executeSide = ExecuteSide.Server;
+
     @Override
     public void execute() {
 
@@ -22,10 +22,13 @@ public class TargetCandidateSetScoreOutput extends OutputNeuron {
         ClientOrgManager clientOrgManager = orgEntity.getClientOrgManager();
         ScanManager scanManager = clientOrgManager.getScanManager();
         ScanManager.ScanEntry scanEntry = scanManager.getFocusedScanEntry();
-        scanEntry.setScore(targetSlotId, this.getCurrentValue());
+        if(scanEntry != null) {
+            scanEntry.setScore(targetSlotId, this.getCurrentValue());
+        }
     }
     @Override
     public void parseData(JSONObject jsonObject){
+        executeSide = ExecuteSide.Client;
         super.parseData(jsonObject);
         targetSlotId = jsonObject.get("targetSlotId").toString();
     }
