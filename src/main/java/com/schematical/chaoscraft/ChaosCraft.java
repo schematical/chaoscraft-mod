@@ -107,7 +107,7 @@ public class ChaosCraft
     private static ChaosCraftServer server;
     public static ArrayList<BuildArea> buildAreas = new <BuildArea>ArrayList();
     public static ArrayList<BuildAreaMarkerTileEntity> buildAreaMarkers = new <BuildAreaMarkerTileEntity>ArrayList();
-
+    public final static boolean isBuildExperiment = true;
     public ChaosCraft() {
    /*     if(true){
             return;
@@ -365,6 +365,7 @@ public class ChaosCraft
            client.onWorldUnload();
        }
     }
+
     @SubscribeEvent
     public void onKeyInputEvent(final InputEvent.KeyInputEvent event)  {
         if(client == null){
@@ -385,21 +386,20 @@ public class ChaosCraft
     public void onBlockEvent(EntityPlaceEvent blockEvent) {
         if (blockEvent.getPlacedBlock().getBlock() != ChaosBlocks.BUILD_AREA_MARKER.get()) {
             for (int i = 0; i < ChaosCraft.buildAreas.size(); i++) {
-                for(BlockPos markerBlock : ChaosBlocks.markerBlocks){
-                    ChaosCraft.buildAreas.get(i).getBlocks(markerBlock);
+                    ChaosCraft.buildAreas.get(i).getBlocks(ChaosBlocks.markerBlocks.get(i));
                 }
-            }
         }
     }
 
     @SubscribeEvent
     public void onBlockBreakEvent(BreakEvent breakEvent) {
+        /*
         if (breakEvent.getState().getBlock() != ChaosBlocks.BUILD_AREA_MARKER.get()) {
-                for (int i = 0; i < ChaosCraft.buildAreas.size(); i++) {
-                    for(BlockPos markerBlock : ChaosBlocks.markerBlocks){
-                        ChaosCraft.buildAreas.get(i).getBlocks(markerBlock);
-                    }
-                }
+            for (int i = 0; i < ChaosCraft.buildAreas.size(); i++) {
+                    ChaosCraft.buildAreas.get(i).getBlocks(ChaosBlocks.markerBlocks.get(i));
+            }
         }
+         */
     }
+
 }

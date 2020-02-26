@@ -5,6 +5,7 @@ import com.schematical.chaoscraft.blocks.ChaosBlocks;
 import com.schematical.chaoscraft.client.gui.*;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.events.CCWorldEvent;
+import com.schematical.chaoscraft.fitness.EntityFitnessRule;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.*;
 import com.schematical.chaoscraft.server.ChaosCraftServerPlayerInfo;
@@ -32,6 +33,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+
+import static com.schematical.chaoscraft.ChaosCraft.LOGGER;
 
 public class ChaosCraftClient {
 
@@ -78,7 +81,6 @@ public class ChaosCraftClient {
     public void onWorldUnload() {
         state = State.Uninitiated;
         myOrganisms.clear();
-
     }
     public void showPlayerNeuronTestScreen(){
         chaosPlayerNeuronTestScreen = new ChaosPlayerNeuronTestScreen(this.minecraft);
@@ -99,7 +101,7 @@ public class ChaosCraftClient {
         trainingRoomNamespace = serverInfo.getTrainingRoomNamespace();
         trainingRoomUsernameNamespace = serverInfo.getTrainingRoomUsernameNamespace();
        //sessionNamespace = serverInfo.getSessionNamespace();
-        ChaosCraft.LOGGER.info("TrainingRoomInfo Set: " + trainingRoomNamespace + ", " + trainingRoomUsernameNamespace + ", " + sessionNamespace);
+        LOGGER.info("TrainingRoomInfo Set: " + trainingRoomNamespace + ", " + trainingRoomUsernameNamespace + ", " + sessionNamespace);
         state = State.Authed;
         if((Minecraft.getInstance().currentScreen instanceof ChaosTrainingRoomSelectionOverlayGui)) {
 
@@ -126,22 +128,22 @@ public class ChaosCraftClient {
         }catch(ChaosNetException exception){
             int statusCode = exception.sdkHttpMetadata().httpStatusCode();
             if(statusCode == 401){
-                ChaosCraft.LOGGER.error(exception.getMessage());
+                LOGGER.error(exception.getMessage());
                 String message = "Your login has expired. Please re-run `/chaoscraft-auth {username} {password}`";
                 //ChaosCraft.chat(message);
-                ChaosCraft.LOGGER.error(message);
+                LOGGER.error(message);
             }else{
                /* throw exception;*/
                 ByteBuffer byteBuffer = exception.sdkHttpMetadata().responseContent();
                 String message = StandardCharsets.UTF_8.decode(byteBuffer).toString();//new String(byteBuffer.as().array(), StandardCharsets.UTF_8 );
-                ChaosCraft.LOGGER.error("`ChaosClient.startTrainingSession` Error: " + message + " - statusCode: " + statusCode);
+                LOGGER.error("`ChaosClient.startTrainingSession` Error: " + message + " - statusCode: " + statusCode);
 
             }
 
         }catch(Exception exception){
             ChaosCraft.getClient().consecutiveErrorCount += 1;
 
-            ChaosCraft.LOGGER.error("ChaosClientThread `/next` Error: " + exception.getMessage() + " - exception type: " + exception.getClass().getName());
+            LOGGER.error("ChaosClientThread `/next` Error: " + exception.getMessage() + " - exception type: " + exception.getClass().getName());
             ChaosCraft.getClient().thread = null;
             ChaosCraft.getClient().setTicksRequiredToCallChaosNet(1000);
 
@@ -205,7 +207,7 @@ public class ChaosCraftClient {
         }
 
 
-        ChaosCraft.LOGGER.info("Client Sending Auth!!");
+        LOGGER.info("Client Sending Auth!!");
         //!!!!!!!
         ChaosNetworkManager.sendToServer(new ClientAuthPacket(ChaosCraft.config.accessToken));
         state = State.AuthSent;
@@ -217,13 +219,13 @@ public class ChaosCraftClient {
     public void attachOrgToEntity(String orgNamespace, int entityId) {
         OrgEntity orgEntity = (OrgEntity)Minecraft.getInstance().world.getEntityByID(entityId);
         if(orgEntity == null){
-            ChaosCraft.LOGGER.error("Client could not find entityId: " + entityId + " to attach org: " + orgNamespace);
+            LOGGER.error("Client could not find entityId: " + entityId + " to attach org: " + orgNamespace);
 
             Iterator<Entity> iterator = Minecraft.getInstance().world.getAllEntities().iterator();
             while(iterator.hasNext() && orgEntity == null){
                 Entity entity = iterator.next();
                 if( entity.getDisplayName().getString().equals(orgNamespace)) {
-                    ChaosCraft.LOGGER.error("Client found a potential match after all entityId: " + entity.getEntityId() + " will attach org: " + orgNamespace + " == " + entity.getDisplayName().getString());
+                    LOGGER.error("Client found a potential match after all entityId: " + entity.getEntityId() + " will attach org: " + orgNamespace + " == " + entity.getDisplayName().getString());
                     orgEntity = (OrgEntity) entity;
                 }
                 /*if(entity instanceof  OrgEntity){
@@ -236,7 +238,7 @@ public class ChaosCraftClient {
             }
             if(orgEntity == null) {//If it is still null lets drop out
                 //orgsQueuedToSpawn.remove(orgNamespace);
-                ChaosCraft.LOGGER.error("TODO: Requeue for spawn");// Try the spawn over again. If it fails again then the server will just let us know again which one it is
+                LOGGER.error("TODO: Requeue for spawn");// Try the spawn over again. If it fails again then the server will just let us know again which one it is
                 return;
             }
         }
@@ -301,16 +303,11 @@ public class ChaosCraftClient {
     }
 
 
-    public List<ClientOrgManager> checkForDeadOrgs(){
+    public List<ClientOrgManager> checkForDeadOrgs() {
 
         List<ClientOrgManager> clientOrgManagers = getOrgsWithState(ClientOrgManager.State.Ticking);
         for (ClientOrgManager clientOrgManager : clientOrgManagers) {
-
             if (!clientOrgManager.getEntity().isAlive()) {
-                for(BuildArea buildArea : ChaosCraft.buildAreas){
-                    if(buildArea.getCurrentClientOrgManager().equals(clientOrgManager)){
-                    }
-                }
                 clientOrgManager.markDead();
             }
         }
@@ -348,10 +345,9 @@ public class ChaosCraftClient {
 
         while (iterator.hasNext()) {
             ClientOrgManager clientOrgManager = iterator.next();
-            //ChaosCraft.buildAreas.get(0).assignCurrentOrgManager(clientOrgManager);
 
             if (_debugSpawnedOrgNamespaces.contains(clientOrgManager.getCCNamespace())) {
-                ChaosCraft.LOGGER.error("Client already tried to spawn: " + clientOrgManager.getCCNamespace()  + " State: " + clientOrgManager.getState());
+                LOGGER.error("Client already tried to spawn: " + clientOrgManager.getCCNamespace()  + " State: " + clientOrgManager.getState());
             } else {
                 _debugSpawnedOrgNamespaces.add(clientOrgManager.getCCNamespace());
             }
@@ -417,7 +413,7 @@ public class ChaosCraftClient {
 
     public void attachScoreEventToEntity(CCServerScoreEventPacket message) {
         if(!myOrganisms.containsKey(message.orgNamespace)){
-            ChaosCraft.LOGGER.error("attatchScoreEventToEntity - Cannot find orgNamespace: " + message.orgNamespace);
+            LOGGER.error("attatchScoreEventToEntity - Cannot find orgNamespace: " + message.orgNamespace);
             return;
         }
         myOrganisms.get(message.orgNamespace).addServerScoreEvent(message);
@@ -476,7 +472,7 @@ public class ChaosCraftClient {
 
     public void showSpawnBlockGui(SpawnBlockTileEntity tileentity) {
         ChaosSpawnBlockSettingScreen screen = new ChaosSpawnBlockSettingScreen(tileentity);
-        ChaosCraft.LOGGER.debug("Showing SPawnBlockGui: " +tileentity.getSpawnPointId());
+        LOGGER.debug("Showing SPawnBlockGui: " +tileentity.getSpawnPointId());
         //Open up gui
         Minecraft.getInstance().displayGuiScreen(screen);
     }

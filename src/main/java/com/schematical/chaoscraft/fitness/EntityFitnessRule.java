@@ -5,6 +5,7 @@ import com.schematical.chaoscraft.Enum;
 import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.events.EntityFitnessScoreEvent;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
+import com.schematical.chaoscraft.util.BuildArea;
 import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.ResourceLocation;
@@ -14,6 +15,9 @@ import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.schematical.chaoscraft.ChaosCraft.*;
+
 
 /**
  * Created by user1a on 1/4/19.
@@ -61,7 +65,6 @@ public class EntityFitnessRule {
             return null;
         }
 
-
         if(
             attributeId != null &&
             attributeValue != null
@@ -82,7 +85,7 @@ public class EntityFitnessRule {
                break;
                case(Enum.ENTITY_ID):
                    if(event.entity == null){
-                       ChaosCraft.LOGGER.error("No `entity` to check against!");
+                       LOGGER.error("No `entity` to check against!");
                    }
 
                    resourceLocation = EntityType.getKey(event.entity.getType());
@@ -90,11 +93,11 @@ public class EntityFitnessRule {
                    if(!attributeValue.contains(entityId)){
                        return null;
                    }
-                   ChaosCraft.LOGGER.info("ATTACK SUCCESS: " + entityId);
+                   LOGGER.info("ATTACK SUCCESS: " + entityId);
                    break;
                case(Enum.ITEM_ID):
                    if(event.item == null){
-                       ChaosCraft.LOGGER.error("No `item` to check against!");
+                       LOGGER.error("No `item` to check against!");
                    }
                    resourceLocation = event.item.getRegistryName();
                    String itemId = resourceLocation.getNamespace() + ":" + resourceLocation.getPath();
@@ -103,13 +106,13 @@ public class EntityFitnessRule {
                    if(!attributeValue.contains(itemId)){
                        return null;
                    }else{
-                       ChaosCraft.LOGGER.info("Item Pickup Check Success: " + itemId);
+                       LOGGER.info("Item Pickup Check Success: " + itemId);
                    }
                    break;
 
                case(Enum.AXIS):
                    if(event.axis == null){
-                       ChaosCraft.LOGGER.error("No `axis` to check against!");
+                       LOGGER.error("No `axis` to check against!");
                    }
 
 
@@ -122,7 +125,7 @@ public class EntityFitnessRule {
                    break;
                case(Enum.BLOCK_TOUCH_STATE):
                    if(event.position == null){
-                       ChaosCraft.LOGGER.error("No `position` to check against!");
+                       LOGGER.error("No `position` to check against!");
                    }
 
 
@@ -134,7 +137,7 @@ public class EntityFitnessRule {
                    break;
 
                default:
-                   ChaosCraft.LOGGER.error("Invalid `attributeId`: " + attributeId);
+                   LOGGER.error("Invalid `attributeId`: " + attributeId);
                    return null;
            }
         }

@@ -37,7 +37,6 @@ public class BuildAreaMarkerTileEntity extends TileEntity implements ITickableTi
         }
     }
 
-
     public static void resetBuildArea(BlockPos block, World world){
         BlockPos origValue = block;
         block = block.add(1, -2, -1);

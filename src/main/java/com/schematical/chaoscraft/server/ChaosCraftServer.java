@@ -4,7 +4,9 @@ import com.amazonaws.opensdk.config.ConnectionConfiguration;
 import com.amazonaws.opensdk.config.TimeoutConfiguration;
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.entities.OrgEntity;
+import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.fitness.ChaosCraftFitnessManager;
+import com.schematical.chaoscraft.fitness.EntityFitnessRule;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.*;
 import com.schematical.chaoscraft.server.spawnproviders.SpawnBlockPosProvider;
@@ -51,7 +53,7 @@ public class ChaosCraftServer {
 
     public void tick(){
         if(
-            ChaosCraft.getServer().fitnessManager == null
+                ChaosCraft.getServer().fitnessManager == null
         ){
             loadFitnessFunctions();
             return;
@@ -65,11 +67,11 @@ public class ChaosCraftServer {
         List<ServerOrgManager> orgNamepacesQueuedToSpawn = getOrgsWithState(ServerOrgManager.State.PlayerAttached);
         ticksSinceLastThread += 1;
         if(
-            orgNamepacesQueuedToSpawn.size() > 0 &&
-                    (
-                            thread == null||
-                            ticksSinceLastThread > (120 * 20)//TWO MINutes?
-                    )
+                orgNamepacesQueuedToSpawn.size() > 0 &&
+                        (
+                                thread == null||
+                                        ticksSinceLastThread > (120 * 20)//TWO MINutes?
+                        )
         ){
             if(thread != null){
                 thread.interrupt();
@@ -175,8 +177,8 @@ public class ChaosCraftServer {
 
 
         if(
-            ChaosCraft.config.trainingRoomNamespace == null ||
-            ChaosCraft.config.trainingRoomUsernameNamespace == null
+                ChaosCraft.config.trainingRoomNamespace == null ||
+                        ChaosCraft.config.trainingRoomUsernameNamespace == null
         ){
             CCServerRequestTrainingRoomGUIPacket serverIntroInfoPacket = new CCServerRequestTrainingRoomGUIPacket( );
 
@@ -215,7 +217,7 @@ public class ChaosCraftServer {
             }
             ChaosCraft.LOGGER.error(debugMessage);
 
-           return null;
+            return null;
         }
         BlockPos pos = spawnProvider.getSpawnPos(serverOrgManager);
         if(pos == null) {
@@ -268,18 +270,25 @@ public class ChaosCraftServer {
         for (ServerOrgManager serverOrgManager : serverOrgManagers) {
 
             if (!serverOrgManager.getEntity().isAlive()) {
-
+                if(ChaosCraft.buildAreas.size() > 0){
+                    EntityFitnessRule fitnessRule = new EntityFitnessRule();
+                    fitnessRule.scoreEffect = (int) ChaosCraft.buildAreas.get(0).getScore();
+                    CCWorldEvent buildEvent = new CCWorldEvent(CCWorldEvent.Type.BUILD_COMPLETE);
+                    buildEvent.entity = serverOrgManager.getEntity();
+                    buildEvent.eventType = CCWorldEvent.Type.BUILD_COMPLETE;
+                    fitnessRule.testWorldEvent(buildEvent);
+                }
                 serverOrgManager.markDead();
-
             }
         }
         return serverOrgManagers;
     }
+
     public void loadFitnessFunctions(){
         if(
-            fitnessManager != null ||
-            ChaosCraft.config.trainingRoomNamespace == null ||
-            ChaosCraft.config.trainingRoomUsernameNamespace == null
+                fitnessManager != null ||
+                        ChaosCraft.config.trainingRoomNamespace == null ||
+                        ChaosCraft.config.trainingRoomUsernameNamespace == null
         ){
             ChaosCraft.LOGGER.error("Not enough TrainingRoom Data set");
             return;
@@ -296,7 +305,7 @@ public class ChaosCraftServer {
             JSONParser parser = new JSONParser();
 
             JSONArray obj = (JSONArray) parser.parse(
-                fitnessRulesRaw
+                    fitnessRulesRaw
             );
             ChaosCraft.getServer().fitnessManager = new ChaosCraftFitnessManager();
             ChaosCraft.getServer().fitnessManager.parseData(obj);
@@ -325,7 +334,7 @@ public class ChaosCraftServer {
             ChaosCraft.LOGGER.error("ChaosServerThread  Error: " + message + " - statusCode: " + statusCode);
             exception.printStackTrace();
         }catch(Exception exception){
-           // ChaosCraft.getServer().consecutiveErrorCount += 1;
+            // ChaosCraft.getServer().consecutiveErrorCount += 1;
 
             ChaosCraft.LOGGER.error("ChaosServerThread Error: " + exception.getMessage() + " - exception type: " + exception.getClass().getName());
             // ChaosCraft.getClient().thread = null;//End should cover this
@@ -354,10 +363,10 @@ public class ChaosCraftServer {
     }
 
     public void removeEntityFromWorld(ServerOrgManager serverOrgManager) {
-       if(!organisms.containsKey(serverOrgManager.getCCNamespace())){
-           ChaosCraft.LOGGER.error("Server is trying to remove an org from its `organisims` but it is not there: " + serverOrgManager.getCCNamespace());
-           return;
-       }
+        if(!organisms.containsKey(serverOrgManager.getCCNamespace())){
+            ChaosCraft.LOGGER.error("Server is trying to remove an org from its `organisims` but it is not there: " + serverOrgManager.getCCNamespace());
+            return;
+        }
         organisms.remove(serverOrgManager.getCCNamespace());
     }
 
@@ -429,7 +438,7 @@ public class ChaosCraftServer {
         }
         ChaosCraftServerPlayerInfo serverPlayerInfo = userMap.get(player.getUniqueID().toString());
         serverPlayerInfo.state = message.getState();
-      if(serverPlayerInfo.state.equals(ChaosCraftServerPlayerInfo.State.ObservingActive)) {
+        if(serverPlayerInfo.state.equals(ChaosCraftServerPlayerInfo.State.ObservingActive)) {
             if (!organisms.containsKey(message.getOrgNamespace())) {
                 serverPlayerInfo.state = ChaosCraftServerPlayerInfo.State.None;
                 ChaosCraft.LOGGER.error("Could not set player observing state because find Organism:" + message.getOrgNamespace());
@@ -438,8 +447,8 @@ public class ChaosCraftServer {
             serverPlayerInfo.observingEntity = organisms.get(message.getOrgNamespace());
 
         }else if(serverPlayerInfo.state.equals(ChaosCraftServerPlayerInfo.State.None)) {
-                ServerPlayerEntity serverPlayerEntity  = server.getPlayerList().getPlayerByUUID(serverPlayerInfo.playerUUID);
-                serverPlayerEntity.setSpectatingEntity(null);
+            ServerPlayerEntity serverPlayerEntity  = server.getPlayerList().getPlayerByUUID(serverPlayerInfo.playerUUID);
+            serverPlayerEntity.setSpectatingEntity(null);
 
         }
         updateObservers();
@@ -450,7 +459,7 @@ public class ChaosCraftServer {
         ArrayList<ChaosCraftServerPlayerInfo> observingPlayers = new ArrayList<ChaosCraftServerPlayerInfo>();
         for (ChaosCraftServerPlayerInfo serverPlayerInfo : userMap.values()) {
             if(
-                serverPlayerInfo.state.equals(ChaosCraftServerPlayerInfo.State.ObservingPassive)
+                    serverPlayerInfo.state.equals(ChaosCraftServerPlayerInfo.State.ObservingPassive)
             ) {
                 observingPlayers.add(serverPlayerInfo);
             }else if( serverPlayerInfo.state.equals(ChaosCraftServerPlayerInfo.State.ObservingActive)) {

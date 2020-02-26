@@ -29,7 +29,7 @@ public class SpawnBlockPosProvider implements iServerSpawnProvider {
             SpawnBlockTileEntity spawnBlockTileEntity = (SpawnBlockTileEntity)ChaosCraft.getServer().server.getWorld(DimensionType.OVERWORLD).getTileEntity(pos);
             if(
                 spawnBlockTileEntity != null &&
-                spawnBlockTileEntity.getSpawnPointId().equals("hill") &&
+                spawnBlockTileEntity.getSpawnPointId().equals("default") &&
                 spawnBlockTileEntity.canSpawn()
             ){
                 spawnBlocks.add(pos);

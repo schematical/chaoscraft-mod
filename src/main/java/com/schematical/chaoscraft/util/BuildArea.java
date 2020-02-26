@@ -8,6 +8,7 @@ import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.tileentity.BuildAreaMarkerTileEntity;
 import com.schematical.chaoscraft.tileentity.ChaosTileEntity;
+import jdk.nashorn.internal.runtime.logging.Loggable;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -39,7 +40,6 @@ public class BuildArea{
     public Array2DRowRealMatrix[] templates = new Array2DRowRealMatrix[4];
     public Array2DRowRealMatrix[] areaMatrices = new Array2DRowRealMatrix[4];
     private BuildAreaMarkerTileEntity buildaAreaEntity;
-
     private ClientOrgManager currentClientOrgManager;
 
     public void getBlocks(BlockPos pos){
@@ -176,7 +176,7 @@ public class BuildArea{
         double score = 0.0;
         for(int i = 0; i < templates.length; i++){
             double diff = calculateDifference(templates[i], areaMatrices[i]);
-            if(diff == 0){
+            if(diff == 2 || diff == 0){
                 score += 15;
             }
             else if (diff <= 8)
@@ -188,6 +188,10 @@ public class BuildArea{
     }
 
     public double getDiffNorm(){
-        return templates[1].subtract(areaMatrices[1]).getNorm();
+        return templates[2].subtract(areaMatrices[2]).getNorm();
+    }
+
+    public double getAreamatrixNorm(){
+        return areaMatrices[0].getNorm();
     }
 }
