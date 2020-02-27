@@ -384,11 +384,13 @@ public class ChaosCraft
 
     @SubscribeEvent
     public void onBlockEvent(EntityPlaceEvent blockEvent) {
+        /*
         if (blockEvent.getPlacedBlock().getBlock() != ChaosBlocks.BUILD_AREA_MARKER.get()) {
             for (int i = 0; i < ChaosCraft.buildAreas.size(); i++) {
                     ChaosCraft.buildAreas.get(i).getBlocks(ChaosBlocks.markerBlocks.get(i));
                 }
         }
+         */
     }
 
     @SubscribeEvent

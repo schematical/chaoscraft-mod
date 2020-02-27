@@ -4,6 +4,7 @@ import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.events.EntityFitnessScoreEvent;
+import com.schematical.chaoscraft.server.ChaosCraftServer;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -19,6 +20,17 @@ public class ChaosCraftFitnessManager {
     List<EntityFitnessScoreEvent> scoreEvents = new ArrayList<EntityFitnessScoreEvent>();
     public List<EntityFitnessScoreEvent> testEntityFitnessEvent(OrgEntity entityOrganism, CCWorldEvent event){
             EntityFitnessScoreEvent scoreEvent = null;
+            /*
+            if(event.eventType == CCWorldEvent.Type.BUILD_COMPLETE)
+            {
+                scoreEvent = ChaosCraftServer.fitnessRule.testWorldEvent(event);
+                if(scoreEvent != null){
+                    scoreEvents.add(scoreEvent);
+                }
+
+            }
+
+             */
             for (EntityFitnessRule rule: rules) {
                 scoreEvent = rule.testWorldEvent(event);
                 if(scoreEvent != null) {
@@ -53,6 +65,9 @@ public class ChaosCraftFitnessManager {
                 rule.parseData(ruleJSON);
                 this.rules.add(rule);
             }
+            ChaosCraftServer.fitnessRule = new EntityFitnessRule();
+
+
 
         } catch (ClassNotFoundException e) {
             e.printStackTrace();

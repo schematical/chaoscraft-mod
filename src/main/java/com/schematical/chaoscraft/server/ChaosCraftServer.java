@@ -6,6 +6,7 @@ import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.fitness.ChaosCraftFitnessManager;
+import com.schematical.chaoscraft.fitness.EntityFitnessManager;
 import com.schematical.chaoscraft.fitness.EntityFitnessRule;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.*;
@@ -14,6 +15,7 @@ import com.schematical.chaoscraft.server.spawnproviders.iServerSpawnProvider;
 import com.schematical.chaosnet.ChaosNet;
 import com.schematical.chaosnet.auth.ChaosnetCognitoUserPool;
 import com.schematical.chaosnet.model.*;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
@@ -44,6 +46,7 @@ public class ChaosCraftServer {
     public int longTickCount = 0;
     public int ticksSinceLastThread = -1;
     public iServerSpawnProvider spawnProvider = new SpawnBlockPosProvider();//PlayerSpawnPosProvider();
+    public static EntityFitnessRule fitnessRule;
 
     public ChaosCraftServer(MinecraftServer server) {
 
@@ -270,14 +273,19 @@ public class ChaosCraftServer {
         for (ServerOrgManager serverOrgManager : serverOrgManagers) {
 
             if (!serverOrgManager.getEntity().isAlive()) {
+                /*
                 if(ChaosCraft.buildAreas.size() > 0){
-                    EntityFitnessRule fitnessRule = new EntityFitnessRule();
+;
                     fitnessRule.scoreEffect = (int) ChaosCraft.buildAreas.get(0).getScore();
                     CCWorldEvent buildEvent = new CCWorldEvent(CCWorldEvent.Type.BUILD_COMPLETE);
                     buildEvent.entity = serverOrgManager.getEntity();
-                    buildEvent.eventType = CCWorldEvent.Type.BUILD_COMPLETE;
-                    fitnessRule.testWorldEvent(buildEvent);
+                    fitnessRule.eventType = CCWorldEvent.Type.BUILD_COMPLETE.toString();
+                    EntityFitnessManager fitnessManager = new EntityFitnessManager(serverOrgManager.getEntity());
+                    //fitnessManager.test(buildEvent);
+                    //fitnessRule.testWorldEvent(buildEvent);
                 }
+
+                 */
                 serverOrgManager.markDead();
             }
         }

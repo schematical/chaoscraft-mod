@@ -61,9 +61,9 @@ public class EntityFitnessRule {
     }
 
     public EntityFitnessScoreEvent testWorldEvent(CCWorldEvent event) {
-        if(!eventType.equals(event.eventType.toString())) {
-            return null;
-        }
+        //if(!eventType.equals(event.eventType.toString())) {
+        //    return null;
+        //}
 
         if(
             attributeId != null &&
