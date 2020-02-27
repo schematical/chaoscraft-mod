@@ -7,6 +7,7 @@ import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.server.ServerOrgManager;
 import com.schematical.chaosnet.model.ChaosNetException;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
@@ -16,6 +17,7 @@ import org.apache.logging.log4j.core.jmx.Server;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.lwjgl.opengl.GL;
+import org.lwjgl.system.CallbackI;
 
 import java.io.FileReader;
 import java.util.UUID;
@@ -58,7 +60,7 @@ public class CCClientActionPacket {
         obj.put("action",pkt.action.toString());
 
         if(pkt.entity != null){
-            obj.put("entity", pkt.entity.getUniqueID());
+            obj.put("entity", pkt.entity.getUniqueID().toString());
         }
         if(pkt.blockPos != null){
             obj.put("blockPos", pkt.blockPos.getX() + "," + pkt.blockPos.getY() + "," + pkt.blockPos.getZ());
@@ -100,10 +102,11 @@ public class CCClientActionPacket {
             }
             if(obj.get("biology") != null){
                 ServerOrgManager serverOrgManager = ChaosCraft.getServer().getOrgByNamespace(pkt.orgNamespace);
-                pkt.biologyBase = serverOrgManager.getNNet().getBiology(obj.get("biology"));
+                pkt.biologyBase = serverOrgManager.getNNet().getBiology(obj.get("biology").toString());
 
             }
         } catch (Exception e) {
+            ChaosCraft.LOGGER.error(payload);
             e.printStackTrace();
         }
         return pkt;
@@ -131,7 +134,8 @@ public class CCClientActionPacket {
                         worldEvent.entity = message.entity;
                     }else if (message.blockPos != null){
                         targetSlot.setTarget(message.blockPos);
-                        worldEvent.entity = message.entity;
+                        BlockState blockState =ChaosCraft.getServer().server.getWorld(DimensionType.OVERWORLD).getBlockState(message.blockPos);
+                        worldEvent.block = blockState.getBlock();
 
                     }else{
                         throw new ChaosNetException("No valid target in message");

@@ -117,9 +117,7 @@ public class OrgPositionManager implements iChaosOrgTickable {
             for (BiologyBase biologyBase : targetSlots) {
 
                 TargetSlot target = (TargetSlot)biologyBase;
-                if(target.getTargetPosition() != null){
-                    ChaosCraft.LOGGER.info("This one has a target");
-                }
+
                 Double dist = target.getDist();
                 Double pitch = target.getPitchDelta();
                 Double yaw = target.getYawDelta();

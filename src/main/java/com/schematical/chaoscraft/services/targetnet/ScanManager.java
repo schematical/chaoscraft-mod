@@ -157,6 +157,7 @@ public class ScanManager {
                 }
                 targetSlot.setTarget(scanEntry.entity);
                 clientActionPacket.setEntity(scanEntry.entity);
+                ChaosNetworkManager.sendToServer(clientActionPacket);
              /*
                 CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.TARGET_SELECTED);
                 worldEvent.entity = scanEntry.entity;
@@ -173,13 +174,15 @@ public class ScanManager {
                             orgEntity.getCCNamespace() + " targeted: " +
                             orgEntity.world.getBlockState(scanEntry.blockPos).getBlock().getRegistryName().toString()
                     );
+                    clientActionPacket.setBlockPos(scanEntry.blockPos);
+                    targetSlot.setTarget(scanEntry.blockPos);
+                    ChaosNetworkManager.sendToServer(clientActionPacket);
                 }
-                clientActionPacket.setBlockPos(scanEntry.blockPos);
-                targetSlot.setTarget(scanEntry.blockPos);
+
             }else{
                 throw new ChaosNetException("Invalid ScanEntry: No blockPos nor Entity");
             }
-ChaosNetworkManager.sendToServer(clientActionPacket);
+
 
 
         }
