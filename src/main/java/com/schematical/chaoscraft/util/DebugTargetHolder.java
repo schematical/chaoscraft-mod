@@ -4,7 +4,7 @@ import com.schematical.chaoscraft.ai.CCAttributeId;
 import net.minecraft.entity.LivingEntity;
 
 public class DebugTargetHolder implements iHasAttributeIdValue {
-    public static final String ATTRIBUTE_VALUE = "minecraft:bee";//"chaoscraft:waypoint";
+    public static final String ATTRIBUTE_VALUE = "minecraft:chicken";//"chaoscraft:waypoint";
     public static final String ATTRIBUTE_ID = CCAttributeId.ENTITY_ID;;
     private LivingEntity entity;
     public DebugTargetHolder(LivingEntity entity){

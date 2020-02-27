@@ -78,7 +78,10 @@ public class FactoryTileEntity extends TileEntity implements ITickableTileEntity
         return compound;
     }
 
-
+    @Override
+    public void onDataPacket(net.minecraft.network.NetworkManager net, net.minecraft.network.play.server.SUpdateTileEntityPacket pkt){
+        this.read(pkt.getNbtCompound());
+    }
 
     /**
      * Retrieves packet to send to the client whenever this Tile Entity is resynced via World.notifyBlockUpdate. For

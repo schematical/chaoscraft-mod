@@ -7,8 +7,10 @@ import com.schematical.chaoscraft.ai.OutputNeuron;
 import com.schematical.chaoscraft.ai.biology.TargetSlot;
 import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.entities.OrgEntity;
+import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.CCClientOutputNeuronActionPacket;
+import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
@@ -22,10 +24,14 @@ import java.util.Iterator;
 import java.util.List;
 
 public class ScanManager {
+    private ScanState scanState = ScanState.Finished;
     private ScanEntry focusedScanEntry;
     private ClientOrgManager clientOrgManager;
     private ArrayList<ScanEntry> entries = new ArrayList<ScanEntry>();
     private int range = 10;
+    private int index = 0;
+    private int BATCH_SIZE = 1000;
+    private int MAX_RANGE_INDEX;
 
     private HashMap<String, Integer> counts = new HashMap<>();
     private NeuralNet getNNet(){
@@ -34,28 +40,57 @@ public class ScanManager {
     public ScanManager(ClientOrgManager clientOrgManager){
         this.clientOrgManager = clientOrgManager;
         //TODO: get range from biology
+        MAX_RANGE_INDEX = (int)Math.pow(range * 2, 3);
+    }
+    public void resetScan() {
+        if(!scanState.equals(ScanState.Finished)){
+            throw new ChaosNetException("Invalid `scanState`: " + scanState.toString());
+        }
+        entries.clear();
+        index = 0;
+        scanState = ScanState.Ticking;
 
     }
-    public void scan(){
-        entries.clear();
+    public ScanState tickScan(){
+        if(!scanState.equals(ScanState.Ticking)){
+            throw new ChaosNetException("Invalid `scanState`: " + scanState.toString());
+        }
         OrgEntity orgEntity = this.clientOrgManager.getEntity();
         BlockPos entityPosition = orgEntity.getPosition();
         //Iterate through all blocks in bounds
-        for(int x = entityPosition.getX() - range; x < entityPosition.getX() + range; x++){
-            for(int y = entityPosition.getY() - range; y < entityPosition.getY() + range; y++){
-                for(int z = entityPosition.getZ() - range; z < entityPosition.getZ() + range; z++){
-                    BlockPos blockPos = new BlockPos(x, y, z);
-                    ScanEntry scanEntry = new ScanEntry();
-                    scanEntry.blockPos = blockPos;
-                    scanEntry.atts = orgEntity.observableAttributeManager.Observe(blockPos, orgEntity.world);
-                    if(!counts.containsKey(scanEntry.atts.resourceId)){
-                        counts.put(scanEntry.atts.resourceId, 0);
-                    }
-                    counts.put(scanEntry.atts.resourceId, counts.get(scanEntry.atts.resourceId) + 1);
+        int dividend = range * 2;
+        int batchCount = 0;
+        while(
+            index < MAX_RANGE_INDEX  &&
+            batchCount < BATCH_SIZE
+        ) {
 
-                    entries.add(scanEntry);
-                }
+            int x = entityPosition.getX() + index % dividend;
+            int z = entityPosition.getZ() + (int) Math.floor(index / dividend) % dividend;
+            int y = entityPosition.getY() + (int) Math.floor(index / Math.pow(dividend, 2)) % dividend;
+            //ChaosCraft.LOGGER.info(x + ", " + y + ", " + z);
+        /*for(int x = entityPosition.getX() - range; x < entityPosition.getX() + range; x++){
+            for(int y = entityPosition.getY() - range; y < entityPosition.getY() + range; y++){
+                for(int z = entityPosition.getZ() - range; z < entityPosition.getZ() + range; z++){*/
+            BlockPos blockPos = new BlockPos(x, y, z);
+            ScanEntry scanEntry = new ScanEntry();
+            scanEntry.blockPos = blockPos;
+            scanEntry.atts = orgEntity.observableAttributeManager.Observe(blockPos, orgEntity.world);
+            if (!counts.containsKey(scanEntry.atts.resourceId)) {
+                counts.put(scanEntry.atts.resourceId, 0);
             }
+            counts.put(scanEntry.atts.resourceId, counts.get(scanEntry.atts.resourceId) + 1);
+
+            entries.add(scanEntry);
+            batchCount += 1;
+            index += 1;
+
+    /*            }
+            }
+        }*/
+        }
+        if(index < MAX_RANGE_INDEX){
+            return scanState;
         }
         //iterate through all entities in those bounds
         AxisAlignedBB grownBox = orgEntity.getBoundingBox().grow(range, range, range);
@@ -72,6 +107,7 @@ public class ScanManager {
             }
             counts.put(scanEntry.atts.resourceId, counts.get(scanEntry.atts.resourceId) + 1);
             entries.add(scanEntry);
+
         }
         HashMap<String, ScanEntry> highestResults = new HashMap<String, ScanEntry>();
         for (ScanEntry entry : entries) {
@@ -111,18 +147,39 @@ public class ScanManager {
                         orgEntity.getCCNamespace() + " targeted: " +
                                 scanEntry.entity.getType().getRegistryName().toString()
                 );
-                targetSlot.setTarget(scanEntry.entity);
+                if(scanEntry.entity.getType().getRegistryName().toString().equals("minecraft:chicken")){
+                    ChaosCraft.LOGGER.info(
+                            orgEntity.getCCNamespace() + " targeted: CHICKEN"
+                    );
+                }
+             /*   targetSlot.setTarget(scanEntry.entity);
+                CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.TARGET_SELECTED);
+                worldEvent.entity = scanEntry.entity;
+                orgEntity.entityFitnessManager.test(worldEvent);*/
             }else  if(scanEntry.blockPos != null){
-                if(!orgEntity.world.getBlockState(scanEntry.blockPos).getBlock().getRegistryName().toString().equals("minecraft:void_air")){
+                String name = orgEntity.world.getBlockState(scanEntry.blockPos).getBlock().getRegistryName().toString();
+                if(
+                    (
+                        !name.equals("minecraft:void_air") &&
+                        !name.equals("minecraft:air")
+                    )
+                ){
                     ChaosCraft.LOGGER.info(
                             orgEntity.getCCNamespace() + " targeted: " +
                             orgEntity.world.getBlockState(scanEntry.blockPos).getBlock().getRegistryName().toString()
                     );
                 }
+
                 targetSlot.setTarget(scanEntry.blockPos);
+            }else{
+                throw new ChaosNetException("Invalid ScanEntry: No blockPos nor Entity");
             }
 
+
+
         }
+        scanState = ScanState.Finished;
+        return scanState;
 
     }
     public ScanEntry getFocusedScanEntry(){
@@ -137,7 +194,14 @@ public class ScanManager {
     public float getRange() {
         return range;
     }
-
+    public ScanState getState(){
+        return scanState;
+    }
+    public enum ScanState{
+        //Reset,
+        Ticking,
+        Finished
+    }
 
     public class ScanEntry {
         public Entity entity;

@@ -3,7 +3,9 @@ package com.schematical.chaoscraft.client.gui;
 import com.google.common.base.Strings;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.schematical.chaoscraft.ai.CCAttributeId;
+import com.schematical.chaoscraft.ai.NeuralNet;
 import com.schematical.chaoscraft.ai.NeuronBase;
+import com.schematical.chaoscraft.ai.biology.TargetSlot;
 import com.schematical.chaoscraft.ai.inputs.BaseTargetInputNeuron;
 import com.schematical.chaoscraft.ai.inputs.TargetDistanceInput;
 import com.schematical.chaoscraft.ai.inputs.TargetPitchInput;
@@ -46,6 +48,11 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
             list.add("Last Expected Life End: " + secondsToLive);
         }else{
             list.add("Observing: " + clientOrgManager.getCCNamespace());
+            NeuralNet nNet = clientOrgManager.getEntity().getNNet();
+            TargetSlot targetSlot = (TargetSlot)nNet.getBiology("TargetSlot_0");
+            if(targetSlot != null){
+                list.add(targetSlot.toString());
+            }
             list.add("Score: " + clientOrgManager.getLatestScore());
             float secondsToLive = (clientOrgManager.getExpectedLifeEndTime() - clientOrgManager.getEntity().world.getGameTime()) /20;
             list.add("Expected Life End: " + secondsToLive);
@@ -59,6 +66,7 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
                         " T: " + serverScoreEventPacket.getAdjustedScore();
                 list.add(message);
             }
+
         }
 
 
