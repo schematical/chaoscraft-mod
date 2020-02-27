@@ -15,7 +15,7 @@ public class TargetYawInput extends BaseTargetInputNeuron {
     @Override
     public float evaluate(){
 
-        Double degrees = targetHelper.getYawDelta(this);
+        Double degrees = getTarget().getYawDelta();
         if(degrees != null) {
             setCurrentValue(degrees.floatValue() / YAW_DEGREES);
         }

@@ -16,14 +16,16 @@ import java.util.List;
 
 public class TargetHelper {
     public int maxDistance = 40;
-
+    public iHasAttributeIdValue iX;
     public TargetHelper() {
 
     }
+   /* public Vec3d getTargetPosition(){
 
-    public Entity getTarget(iHasAttributeIdValue iX) {
+    }
+    public Entity getFixedTarget(iHasAttributeIdValue iX) {
         switch (iX.getAttributeId()) {
-           /* case(CCAttributeId.BLOCK_ID):
+           *//* case(CCAttributeId.BLOCK_ID):
 
 
                 Vec3d vec3d = iX.getEntity().getEyePosition(1);
@@ -63,7 +65,7 @@ public class TargetHelper {
 
                        }
                    }
-                }*/
+                }*//*
             // break;
             case (CCAttributeId.ENTITY_ID):
 
@@ -99,16 +101,16 @@ public class TargetHelper {
     }
 
     public Double getYawDelta(iHasAttributeIdValue x) {
-        Entity targetEntity = getTarget(x);
-        if (targetEntity == null) {
+        Vec3d targetPosition = getTargetPosition(x);
+        if (targetPosition == null) {
             return null;
         }
         return TargetHelper.getYawDelta(
-                targetEntity.getPositionVec(),
+                targetPosition,
                 x.getEntity().getEyePosition(1),
                 x.getEntity().rotationYaw
         );
-       /* //Vec3d lookVec = x.getEntity().getLookVec();
+       *//* //Vec3d lookVec = x.getEntity().getLookVec();
         Vec3d vecToTarget = targetEntity.getPositionVec().subtract(x.getEntity().getEyePosition(1));
         double yaw = - Math.atan2(vecToTarget.x, vecToTarget.z);
         double degrees = Math.toDegrees(yaw);
@@ -122,16 +124,16 @@ public class TargetHelper {
         }else if(degrees < -180){
             degrees += 360;
         }
-        return degrees;*/
+        return degrees;*//*
     }
 
     public Double getPitchDelta(iHasAttributeIdValue x) {
-        Entity targetEntity = getTarget(x);
-        if (targetEntity == null) {
+        Vec3d targetPosition = getTargetPosition(x);
+        if (targetPosition == null) {
             return null;
         }
         //Vec3d lookVec = x.getEntity().getLookVec();
-        Vec3d vecToTarget = targetEntity.getPositionVec().subtract(x.getEntity().getEyePosition(1));
+        Vec3d vecToTarget = targetPosition.subtract(x.getEntity().getEyePosition(1));
         double pitch = -Math.atan2((vecToTarget.y + .5), Math.sqrt(Math.pow(vecToTarget.x, 2) + Math.pow(vecToTarget.z, 2)));
         double degrees = Math.toDegrees(pitch);
 
@@ -176,12 +178,12 @@ public class TargetHelper {
     }
 
     public Double getDist(iHasAttributeIdValue x) {
-        Entity targetEntity = getTarget(x);
-        if (targetEntity == null) {
+        Vec3d targetPosition = getTargetPosition(x);
+        if (targetPosition == null) {
             return null;
         }
-        return getDistDelta(x.getEntity().getPositionVector(), targetEntity.getPositionVec());
-    }
+        return getDistDelta(x.getEntity().getPositionVector(),targetPosition);
+    }*/
     public static Double getDistDelta(Vec3d targetPos, Vec3d observerPos) {
         return targetPos.distanceTo(observerPos);
     }

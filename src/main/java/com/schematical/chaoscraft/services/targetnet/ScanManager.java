@@ -28,7 +28,7 @@ public class ScanManager {
     private ScanEntry focusedScanEntry;
     private ClientOrgManager clientOrgManager;
     private ArrayList<ScanEntry> entries = new ArrayList<ScanEntry>();
-    private int range = 10;
+    public static final int range = 10;
     private int index = 0;
     private int BATCH_SIZE = 1000;
     private int MAX_RANGE_INDEX;

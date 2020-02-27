@@ -63,7 +63,7 @@ public class ChaosPlayerNeuronTestScreen extends AbstractGui {
             debugNeuron.evaluate();
             list.add(debugNeuron.toLongString());
         }
-        Double dist = targetHelper.getDist(debugTargetHolder);
+      /*  Double dist = targetHelper.getDist(debugTargetHolder);
         if (dist != null){
             list.add("Target Dist: " + dist);
         }
@@ -75,7 +75,7 @@ public class ChaosPlayerNeuronTestScreen extends AbstractGui {
         if(yaw != null){
             list.add("Target Yaw: " + yaw);
         }
-
+*/
         for(int i = 0; i < list.size(); ++i) {
             String s = list.get(i);
             if (!Strings.isNullOrEmpty(s)) {

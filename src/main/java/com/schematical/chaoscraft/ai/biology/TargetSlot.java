@@ -1,6 +1,8 @@
 package com.schematical.chaoscraft.ai.biology;
 
 import com.schematical.chaoscraft.ai.CCObserviableAttributeCollection;
+import com.schematical.chaoscraft.util.TargetHelper;
+import com.schematical.chaoscraft.util.iHasAttributeIdValue;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -11,7 +13,7 @@ import org.json.simple.JSONObject;
 /**
  * Created by user1a on 2/26/19.
  */
-public class TargetSlot extends BiologyBase {
+public class TargetSlot extends BiologyBase implements iTargetable {
     public Entity entity;
     public BlockPos blockPos;
 
@@ -25,10 +27,49 @@ public class TargetSlot extends BiologyBase {
         if(entity != null){
             return entity.getPositionVector();
         }
-        return new Vec3d(
-            this.blockPos.getX(),
-            this.blockPos.getY(),
-            this.blockPos.getZ()
+        if(blockPos != null) {
+            return new Vec3d(
+                    this.blockPos.getX(),
+                    this.blockPos.getY(),
+                    this.blockPos.getZ()
+            );
+        }
+        return null;
+    }
+    public Double getYawDelta() {
+        Vec3d targetPosition = getTargetPosition();
+        if (targetPosition == null) {
+            return null;
+        }
+        return TargetHelper.getYawDelta(
+                targetPosition,
+                entity.getEyePosition(1),
+                entity.rotationYaw
+        );
+
+    }
+
+    public Double getPitchDelta() {
+        Vec3d targetPosition = getTargetPosition();
+        if (targetPosition == null) {
+            return null;
+        }
+
+        return TargetHelper.getPitchDelta(
+                targetPosition,
+                entity.getPositionVec(),
+                entity.getLookVec()
+        );
+    }
+
+    public Double getDist() {
+        Vec3d targetPosition = getTargetPosition();
+        if (targetPosition == null) {
+            return null;
+        }
+        return TargetHelper.getDistDelta(
+                entity.getPositionVector(),
+                targetPosition
         );
     }
     @Override

@@ -18,7 +18,7 @@ public class TargetPitchInput extends BaseTargetInputNeuron {
     public float evaluate(){
 
 
-        Double degrees = targetHelper.getPitchDelta(this);
+        Double degrees = getTarget().getPitchDelta();
         if(degrees != null) {
             setCurrentValue( degrees.floatValue() / PITCH_DEGREES);
         }

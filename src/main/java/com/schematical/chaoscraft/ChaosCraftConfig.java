@@ -83,7 +83,7 @@ public class ChaosCraftConfig {
                 maxBotCount = Integer.parseInt(obj.get("maxBotCount").toString());
                 trainingRoomNamespace = obj.get("trainingRoomNamespace").toString();
                 trainingRoomUsernameNamespace = obj.get("trainingRoomUsernameNamespace").toString();
-                sessionNamespace = obj.get("sessionNamespace").toString();
+                //sessionNamespace = obj.get("sessionNamespace").toString();
                 env = obj.get("env").toString();
             } catch (Exception e) {
                 e.printStackTrace();

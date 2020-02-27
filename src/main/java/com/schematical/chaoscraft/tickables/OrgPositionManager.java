@@ -1,17 +1,17 @@
 package com.schematical.chaoscraft.tickables;
 
 import com.schematical.chaoscraft.BaseOrgManager;
-import com.schematical.chaoscraft.ChaosCraft;
-import com.schematical.chaoscraft.entities.OrgEntity;
+import com.schematical.chaoscraft.ai.biology.BiologyBase;
+import com.schematical.chaoscraft.ai.biology.TargetSlot;
+import com.schematical.chaoscraft.ai.biology.iTargetable;
 import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.server.ServerOrgManager;
+import com.schematical.chaoscraft.services.targetnet.ScanManager;
 import com.schematical.chaoscraft.util.DebugTargetHolder;
-import com.schematical.chaoscraft.util.TargetHelper;
+import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
-import net.minecraftforge.event.world.WorldEvent;
 
-import java.lang.annotation.Target;
 import java.util.ArrayList;
 
 public class OrgPositionManager implements iChaosOrgTickable {
@@ -20,7 +20,7 @@ public class OrgPositionManager implements iChaosOrgTickable {
     public Vec3d maxDist = new Vec3d(0,0,0);
     public ArrayList<Vec3i> touchedBlocks = new ArrayList<Vec3i>();
     public int ticksSinceLastMove = 0;
-    public TargetHelper targetHelper = new TargetHelper();
+    //public TargetHelper targetHelper = new TargetHelper();
     public DebugTargetHolder debugTargetHolder = null;
     public int ticksWhileLookingAtTarget = 0;
     public boolean isLookingAtTarget = false;
@@ -110,63 +110,61 @@ public class OrgPositionManager implements iChaosOrgTickable {
             }
         }
         if(isServer ){
-            //if( ticksUntilNextTargetCheck <= 0) {
-            if (debugTargetHolder == null) {
-                debugTargetHolder = new DebugTargetHolder(orgManager.getEntity());
-            }
+
+            ArrayList<BiologyBase> targetSlots = orgManager.getNNet().getBiologyByType(TargetSlot.class);
+            for (BiologyBase biologyBase : targetSlots) {
+                iTargetable target = (TargetSlot)biologyBase;
+                Double dist = target.getDist();
+                Double pitch = target.getPitchDelta();
+                Double yaw = target.getYawDelta();
 
 
-
-            Double dist = targetHelper.getDist(debugTargetHolder);
-            Double pitch = targetHelper.getPitchDelta(debugTargetHolder);
-            Double yaw = targetHelper.getYawDelta(debugTargetHolder);
-
-
-            //TODO: Avg multiplier over
-            if(
-                pitch != null &&
-                yaw != null &&
-                dist != null
-            ) {
-                float distDelta = (float) (1 - (dist / targetHelper.maxDistance));
-                float MIN_DELTA = 15f * distDelta;
-
-
+                //TODO: Avg multiplier over
                 if (
-                        dist < targetHelper.maxDistance &&
+                    pitch != null &&
+                    yaw != null &&
+                    dist != null
+                ) {
+                    float distDelta = (float) (1 - (dist / ScanManager.range));
+                    float MIN_DELTA = 15f * distDelta;
+
+
+                    if (
+                        dist < ScanManager.range &&
                         Math.abs(yaw) < MIN_DELTA// &&
                         //Math.abs(pitch) < MIN_DELTA
                         &&
                         ticksWhileLookingAtTarget < 20 * 5
-                ) {
-                    if (!isLookingAtTarget) {
-                        ticksWhileLookingAtTarget = 0;
-                        isLookingAtTarget = true;
+                    ) {
+                        if (!isLookingAtTarget) {
+                            ticksWhileLookingAtTarget = 0;
+                            isLookingAtTarget = true;
+                        } else {
+                            ticksWhileLookingAtTarget += 1;
+                        }
                     } else {
-                        ticksWhileLookingAtTarget += 1;
+                        if (isLookingAtTarget) {
+                            if (ticksWhileLookingAtTarget > 5) {
+                                CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.IS_FACING);
+                                //float yawDelta = (float) (1 - Math.abs(yaw) / MIN_DELTA);
+                                //float pitchDelta = (float) (1 - (Math.abs(pitch) / MIN_DELTA));
+
+                                if (distDelta < 0) {
+                                    distDelta = .01f;
+                                }
+                                float timeMultiplier = ticksWhileLookingAtTarget / 20f; //1x for every second of connection
+                                worldEvent.extraMultiplier = distDelta * timeMultiplier /* * pitchDelta * yawDelta*/;
+                                if (worldEvent.extraMultiplier < 0) {
+                                    throw new ChaosNetException("Negative Multiplier");
+                                }
+                                orgManager.getEntity().entityFitnessManager.test(worldEvent);
+                            }
+                            isLookingAtTarget = false;
+                        }
                     }
                 } else {
-                    if (isLookingAtTarget) {
-                        if (ticksWhileLookingAtTarget > 5) {
-                            CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.TARGET_CLOSE_YAW);
-                            //float yawDelta = (float) (1 - Math.abs(yaw) / MIN_DELTA);
-                            //float pitchDelta = (float) (1 - (Math.abs(pitch) / MIN_DELTA));
-
-                            if(distDelta < 0) {
-                                distDelta = .01f;
-                            }
-                            float timeMultiplier = ticksWhileLookingAtTarget / 20f; //1x for every second of connection
-                            worldEvent.extraMultiplier = distDelta * timeMultiplier /* * pitchDelta * yawDelta*/;
-                            if( worldEvent.extraMultiplier  < 0){
-                                ChaosCraft.LOGGER.error("Negative Multiplier");
-                            }
-                            orgManager.getEntity().entityFitnessManager.test(worldEvent);
-                        }
-                        isLookingAtTarget = false;
-                    }
+                    isLookingAtTarget = false;
                 }
-            }else{
-                isLookingAtTarget = false;
             }
 
         }

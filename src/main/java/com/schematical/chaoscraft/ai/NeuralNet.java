@@ -157,6 +157,15 @@ public class NeuralNet {
         }
         return biology.get(id);
     }
+    public ArrayList<BiologyBase> getBiologyByType(Class c){
+        ArrayList<BiologyBase> biologies = new ArrayList<BiologyBase>();
+        for (BiologyBase biologyBase : this.biology.values()) {
+            if(biologyBase.getClass().equals(c)){
+                biologies.add(biologyBase);
+            }
+        }
+        return biologies;
+    }
     private class OutputGroupResult{
         public float highScore;
         public OutputNeuron highNeuron;

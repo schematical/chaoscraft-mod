@@ -3,7 +3,8 @@ package com.schematical.chaoscraft.ai.inputs;
 import com.schematical.chaoscraft.ai.CCAttributeId;
 import com.schematical.chaoscraft.ai.InputNeuron;
 import com.schematical.chaoscraft.ai.biology.TargetSlot;
-import com.schematical.chaoscraft.util.TargetHelper;
+//import com.schematical.chaoscraft.util.TargetHelper;
+import com.schematical.chaoscraft.ai.biology.iTargetable;
 import com.schematical.chaoscraft.util.iHasAttributeIdValue;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
@@ -12,20 +13,22 @@ import org.json.simple.JSONObject;
 public class BaseTargetInputNeuron extends InputNeuron implements iHasAttributeIdValue {
     public String attributeId;
     public String attributeValue;
-    protected TargetHelper targetHelper;
+    public TargetSlot targetSlot;
 
-    private int maxDistance = 20;
+   // protected TargetHelper targetHelper;
+
+    //private int maxDistance = 20;
     public BaseTargetInputNeuron(){
         super();
-        targetHelper = new TargetHelper();
+        //targetHelper = new TargetHelper();
     }
-    protected Vec3d getTargetPosition() {
+    /*protected Vec3d getTargetPosition() {
         switch(attributeId){
             case(CCAttributeId.TARGET_SLOT):
                 TargetSlot targetSlot = (TargetSlot) nNet.getBiology(attributeValue);
                 return targetSlot.getTargetPosition();
            // break;
-            /*case(CCAttributeId.ENTITY_ID):
+            *//*case(CCAttributeId.ENTITY_ID):
 
                 AxisAlignedBB grownBox = getEntity().getBoundingBox().grow(maxDistance, maxDistance, maxDistance);
                 List<Entity> entities =  getEntity().world.getEntitiesWithinAABB(LivingEntity.class,  grownBox);
@@ -50,7 +53,7 @@ public class BaseTargetInputNeuron extends InputNeuron implements iHasAttributeI
                 if(closestEntity != null){
                     return closestEntity.getPositionVec();
                 }
-            break;*/
+            break;*//*
             default:
                 Entity entity =  targetHelper.getTarget(this);
                 if(entity != null) {
@@ -60,13 +63,19 @@ public class BaseTargetInputNeuron extends InputNeuron implements iHasAttributeI
         }
 
         return null;
+    }*/
+    public iTargetable getTarget(){
+        return targetSlot;
     }
     @Override
     public void parseData(JSONObject jsonObject){
         super.parseData(jsonObject);
-
-        attributeId = jsonObject.get("attributeId").toString();
-        attributeValue = jsonObject.get("attributeValue").toString();
+        if(jsonObject.get("targetSlotId") != null){
+            targetSlot = (TargetSlot)nNet.getBiology(jsonObject.get("targetSlotId").toString());
+        }else {
+            attributeId = jsonObject.get("attributeId").toString();
+            attributeValue = jsonObject.get("attributeValue").toString();
+        }
 
     }
     public String toString(){
