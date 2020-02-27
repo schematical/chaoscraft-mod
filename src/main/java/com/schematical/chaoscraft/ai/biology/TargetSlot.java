@@ -1,8 +1,6 @@
 package com.schematical.chaoscraft.ai.biology;
 
-import com.schematical.chaoscraft.ai.CCObserviableAttributeCollection;
 import com.schematical.chaoscraft.util.TargetHelper;
-import com.schematical.chaoscraft.util.iHasAttributeIdValue;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -14,18 +12,18 @@ import org.json.simple.JSONObject;
  * Created by user1a on 2/26/19.
  */
 public class TargetSlot extends BiologyBase implements iTargetable {
-    public Entity entity;
-    public BlockPos blockPos;
+    private Entity targetEntity;
+    private BlockPos blockPos;
 
     public void setTarget(Entity entity){
-        this.entity = entity;
+        this.targetEntity = entity;
     }
     public void setTarget(BlockPos blockPos){
         this.blockPos = blockPos;
     }
     public Vec3d getTargetPosition(){
-        if(entity != null){
-            return entity.getPositionVector();
+        if(targetEntity != null){
+            return targetEntity.getPositionVector();
         }
         if(blockPos != null) {
             return new Vec3d(
@@ -43,8 +41,8 @@ public class TargetSlot extends BiologyBase implements iTargetable {
         }
         return TargetHelper.getYawDelta(
                 targetPosition,
-                entity.getEyePosition(1),
-                entity.rotationYaw
+                getEntity().getEyePosition(1),
+                getEntity() .rotationYaw
         );
 
     }
@@ -57,8 +55,8 @@ public class TargetSlot extends BiologyBase implements iTargetable {
 
         return TargetHelper.getPitchDelta(
                 targetPosition,
-                entity.getPositionVec(),
-                entity.getLookVec()
+                getEntity().getPositionVec(),
+                getEntity().getLookVec()
         );
     }
 
@@ -68,7 +66,7 @@ public class TargetSlot extends BiologyBase implements iTargetable {
             return null;
         }
         return TargetHelper.getDistDelta(
-                entity.getPositionVector(),
+                getEntity().getPositionVector(),
                 targetPosition
         );
     }
@@ -85,8 +83,8 @@ public class TargetSlot extends BiologyBase implements iTargetable {
     public String toString(){
 
         String message = id + ": ";
-        if(entity != null){
-            message += entity.getType().getRegistryName();
+        if(targetEntity != null){
+            message += targetEntity.getType().getRegistryName();
         }else if(blockPos != null){
 
             BlockState blockState = Minecraft.getInstance().world.getBlockState(blockPos);

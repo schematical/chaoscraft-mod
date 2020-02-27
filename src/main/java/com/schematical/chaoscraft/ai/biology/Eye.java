@@ -29,8 +29,8 @@ public class Eye  extends BiologyBase {
         if(_blocksCached){
             return seenBlocks;
         }
-        Vec3d vec3d = entity.getEyePosition(1);
-        Vec3d vec3d1 = entity.getLook(1);
+        Vec3d vec3d = getEntity().getEyePosition(1);
+        Vec3d vec3d1 = getEntity().getLook(1);
         vec3d1 = vec3d1.rotatePitch(this.pitch);
         vec3d1 = vec3d1.rotateYaw(this.yaw);
         Vec3d vec3d2 = vec3d.add(
@@ -42,18 +42,18 @@ public class Eye  extends BiologyBase {
         );
 
 
-        RayTraceResult rayTraceResult = entity.world.rayTraceBlocks(new RayTraceContext(vec3d, vec3d2, RayTraceContext.BlockMode.OUTLINE, RayTraceContext.FluidMode.NONE/* RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.ANY*/, entity));
+        RayTraceResult rayTraceResult = getEntity().world.rayTraceBlocks(new RayTraceContext(vec3d, vec3d2, RayTraceContext.BlockMode.OUTLINE, RayTraceContext.FluidMode.NONE/* RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.ANY*/, getEntity()));
 
         if(rayTraceResult != null && !rayTraceResult.getType().equals(RayTraceResult.Type.MISS)) {
             BlockPos blockPos = new BlockPos(
                     rayTraceResult.getHitVec()
             );
-            BlockState blockState = entity.world.getBlockState(
+            BlockState blockState = getEntity().world.getBlockState(
                     blockPos
             );
             Block block = blockState.getBlock();
 
-            CCObserviableAttributeCollection attributeCollection = entity.observableAttributeManager.Observe(block);
+            CCObserviableAttributeCollection attributeCollection = getEntity().observableAttributeManager.Observe(block);
             attributeCollection.position = new Vec3d(
                 blockPos.getX(),
                 blockPos.getY(),
@@ -69,12 +69,12 @@ public class Eye  extends BiologyBase {
         if(_entitiesCached){
             return seenEntities;
         }
-        AxisAlignedBB grownBox = entity.getBoundingBox().grow(maxDistance, maxDistance, maxDistance);
-        List<Entity> entities =  entity.world.getEntitiesWithinAABB(LivingEntity.class,  grownBox);
-        entities.addAll(entity.world.getEntitiesWithinAABB(ItemEntity.class,  grownBox));
+        AxisAlignedBB grownBox = getEntity().getBoundingBox().grow(maxDistance, maxDistance, maxDistance);
+        List<Entity> entities =  getEntity().world.getEntitiesWithinAABB(LivingEntity.class,  grownBox);
+        entities.addAll(getEntity().world.getEntitiesWithinAABB(ItemEntity.class,  grownBox));
 
-        Vec3d vec3d = entity.getEyePosition(1);
-        Vec3d vec3d1 = entity.getLook(1);
+        Vec3d vec3d = getEntity().getEyePosition(1);
+        Vec3d vec3d1 = getEntity().getLook(1);
         vec3d1 = vec3d1.rotatePitch(this.pitch);
         vec3d1 = vec3d1.rotateYaw(this.yaw);
         Vec3d vec3d2 = vec3d.add(
@@ -87,10 +87,10 @@ public class Eye  extends BiologyBase {
 
         for (Entity target : entities) {
 
-            if(!target.equals(entity)) {
+            if(!target.equals(getEntity())) {
 
                 target.getBoundingBox().rayTrace(vec3d, vec3d2).ifPresent(position -> {
-                    CCObserviableAttributeCollection attributeCollection = entity.observableAttributeManager.Observe(target);
+                    CCObserviableAttributeCollection attributeCollection = getEntity().observableAttributeManager.Observe(target);
                     if (attributeCollection != null) {
                         //ChaosCraft.logger.info(entity.getCCNamespace() + " can see " + attributeCollection.resourceId);
                         seenEntities.add(attributeCollection);
@@ -106,7 +106,7 @@ public class Eye  extends BiologyBase {
         double closestDist = 999999;
         CCObserviableAttributeCollection closest = null;
         ArrayList<CCObserviableAttributeCollection> seenColl = getAllSeenObjects();
-        Vec3d entityPos = new Vec3d(entity.getPosition().getX(), entity.getPosition().getY(), entity.getPosition().getZ());
+        Vec3d entityPos = new Vec3d(getEntity().getPosition().getX(), getEntity().getPosition().getY(), getEntity().getPosition().getZ());
         for(CCObserviableAttributeCollection seen: seenColl){
             if(
 

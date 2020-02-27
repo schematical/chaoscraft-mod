@@ -107,7 +107,7 @@ public class NeuralNet {
                 Class cls = Class.forName(fullClassName);
                 BiologyBase biologyBase = (BiologyBase) cls.newInstance();
                 biologyBase.parseData(outputBaseJSON);
-                biologyBase.entity = this.entity;
+                biologyBase.setEntity(this.entity);
                 biology.put(biologyBase.id, biologyBase);
             }
 

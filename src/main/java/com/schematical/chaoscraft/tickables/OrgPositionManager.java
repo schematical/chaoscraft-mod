@@ -1,6 +1,7 @@
 package com.schematical.chaoscraft.tickables;
 
 import com.schematical.chaoscraft.BaseOrgManager;
+import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.biology.BiologyBase;
 import com.schematical.chaoscraft.ai.biology.TargetSlot;
 import com.schematical.chaoscraft.ai.biology.iTargetable;
@@ -12,6 +13,7 @@ import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 
+import java.lang.annotation.Target;
 import java.util.ArrayList;
 
 public class OrgPositionManager implements iChaosOrgTickable {
@@ -113,7 +115,11 @@ public class OrgPositionManager implements iChaosOrgTickable {
 
             ArrayList<BiologyBase> targetSlots = orgManager.getNNet().getBiologyByType(TargetSlot.class);
             for (BiologyBase biologyBase : targetSlots) {
-                iTargetable target = (TargetSlot)biologyBase;
+
+                TargetSlot target = (TargetSlot)biologyBase;
+                if(target.getTargetPosition() != null){
+                    ChaosCraft.LOGGER.info("This one has a target");
+                }
                 Double dist = target.getDist();
                 Double pitch = target.getPitchDelta();
                 Double yaw = target.getYawDelta();

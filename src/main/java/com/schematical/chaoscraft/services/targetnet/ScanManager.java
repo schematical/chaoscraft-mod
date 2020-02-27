@@ -9,6 +9,7 @@ import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
+import com.schematical.chaoscraft.network.packets.CCClientActionPacket;
 import com.schematical.chaoscraft.network.packets.CCClientOutputNeuronActionPacket;
 import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.entity.Entity;
@@ -142,6 +143,8 @@ public class ScanManager {
         for (String targetSlotId : highestResults.keySet()) {
             TargetSlot targetSlot = (TargetSlot )orgEntity.getNNet().getBiology(targetSlotId);
             ScanEntry scanEntry = highestResults.get(targetSlotId);
+            CCClientActionPacket clientActionPacket = new CCClientActionPacket(orgEntity.getCCNamespace(), CCClientActionPacket.Action.SET_TARGET);
+            clientActionPacket.setBiology(targetSlot);
             if(scanEntry.entity != null) {
                 ChaosCraft.LOGGER.info(
                         orgEntity.getCCNamespace() + " targeted: " +
@@ -152,7 +155,9 @@ public class ScanManager {
                             orgEntity.getCCNamespace() + " targeted: CHICKEN"
                     );
                 }
-             /*   targetSlot.setTarget(scanEntry.entity);
+                targetSlot.setTarget(scanEntry.entity);
+                clientActionPacket.setEntity(scanEntry.entity);
+             /*
                 CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.TARGET_SELECTED);
                 worldEvent.entity = scanEntry.entity;
                 orgEntity.entityFitnessManager.test(worldEvent);*/
@@ -169,12 +174,12 @@ public class ScanManager {
                             orgEntity.world.getBlockState(scanEntry.blockPos).getBlock().getRegistryName().toString()
                     );
                 }
-
+                clientActionPacket.setBlockPos(scanEntry.blockPos);
                 targetSlot.setTarget(scanEntry.blockPos);
             }else{
                 throw new ChaosNetException("Invalid ScanEntry: No blockPos nor Entity");
             }
-
+ChaosNetworkManager.sendToServer(clientActionPacket);
 
 
         }
