@@ -16,6 +16,9 @@ public class TargetCandidateDistanceInput extends InputNeuron {
     public float evaluate(){
         ScanManager scanManager =  ((OrgEntity)this.getEntity()).getClientOrgManager().getScanManager();
         ScanManager.ScanEntry scanEntry = scanManager.getFocusedScanEntry();
+        if(scanEntry == null){
+            return getCurrentValue();
+        }
         Double dist = TargetHelper.getDistDelta(scanEntry.getPosition(), this.getEntity().getPositionVec());
         if(dist != null) {
             setCurrentValue( dist.floatValue() / scanManager.getRange());

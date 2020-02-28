@@ -1,6 +1,7 @@
 package com.schematical.chaoscraft.network.packets;
 
 import com.schematical.chaoscraft.ChaosCraft;
+import com.schematical.chaoscraft.ai.NeuralNet;
 import com.schematical.chaoscraft.ai.biology.BiologyBase;
 import com.schematical.chaoscraft.ai.biology.TargetSlot;
 import com.schematical.chaoscraft.client.ClientOrgManager;
@@ -102,7 +103,8 @@ public class CCClientActionPacket {
             }
             if(obj.get("biology") != null){
                 ServerOrgManager serverOrgManager = ChaosCraft.getServer().getOrgByNamespace(pkt.orgNamespace);
-                pkt.biologyBase = serverOrgManager.getNNet().getBiology(obj.get("biology").toString());
+                NeuralNet neuralNet = serverOrgManager.getNNet();
+                pkt.biologyBase = neuralNet.getBiology(obj.get("biology").toString());
 
             }
         } catch (Exception e) {
@@ -129,6 +131,7 @@ public class CCClientActionPacket {
                 if(message.action.equals(Action.SET_TARGET)){
                     CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.TARGET_SELECTED);
                     TargetSlot targetSlot = (TargetSlot)message.biologyBase;
+
                     if(message.entity != null) {
                         targetSlot.setTarget(message.entity);
                         worldEvent.entity = message.entity;

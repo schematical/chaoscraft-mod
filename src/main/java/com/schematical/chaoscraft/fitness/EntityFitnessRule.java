@@ -82,7 +82,7 @@ public class EntityFitnessRule {
                break;
                case(Enum.ENTITY_ID):
                    if(event.entity == null){
-                       ChaosCraft.LOGGER.error("No `entity` to check against!");
+                       return null;//throw new ChaosNetException("No `entity` to check against!");
                    }
 
                    resourceLocation = EntityType.getKey(event.entity.getType());
@@ -90,7 +90,7 @@ public class EntityFitnessRule {
                    if(!attributeValue.contains(entityId)){
                        return null;
                    }
-                   ChaosCraft.LOGGER.info("ATTACK SUCCESS: " + entityId);
+                   //ChaosCraft.LOGGER.info("ATTACK SUCCESS: " + entityId);
                    break;
                case(Enum.ITEM_ID):
                    if(event.item == null){

@@ -116,7 +116,7 @@ public class OrgPositionManager implements iChaosOrgTickable {
             ArrayList<BiologyBase> targetSlots = orgManager.getNNet().getBiologyByType(TargetSlot.class);
             for (BiologyBase biologyBase : targetSlots) {
 
-                TargetSlot target = (TargetSlot)biologyBase;
+                iTargetable target = (TargetSlot)biologyBase;
 
                 Double dist = target.getDist();
                 Double pitch = target.getPitchDelta();
