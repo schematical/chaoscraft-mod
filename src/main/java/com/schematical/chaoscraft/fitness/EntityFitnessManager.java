@@ -11,11 +11,14 @@ import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.CCServerScoreEventPacket;
 import com.schematical.chaoscraft.server.ServerOrgManager;
 import com.schematical.chaosnet.model.ChaosNetException;
+import org.apache.logging.log4j.spi.LoggerRegistry;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+
+import static com.schematical.chaoscraft.ChaosCraft.LOGGER;
 
 /**
  * Created by user1a on 1/4/19.
@@ -110,6 +113,11 @@ public class EntityFitnessManager {
         }
 
     private void addScoreEvent(EntityFitnessScoreEvent scoreEvent) {
+        if(getCurrFitnessRun()==null)
+        {
+            LOGGER.error("Nope, getCurrentFitnessRun is null");
+            return;
+        }
         getCurrFitnessRun().scoreEvents.add(scoreEvent);
         ServerOrgManager serverOrgManager = orgEntity.getServerOrgManager();
         //Send score event

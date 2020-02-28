@@ -3,15 +3,18 @@ package com.schematical.chaoscraft.server;
 import com.amazonaws.opensdk.config.ConnectionConfiguration;
 import com.amazonaws.opensdk.config.TimeoutConfiguration;
 import com.schematical.chaoscraft.ChaosCraft;
+import com.schematical.chaoscraft.blocks.ChaosBlocks;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.fitness.ChaosCraftFitnessManager;
 import com.schematical.chaoscraft.fitness.EntityFitnessManager;
 import com.schematical.chaoscraft.fitness.EntityFitnessRule;
+import com.schematical.chaoscraft.fitness.FitnessRun;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.*;
 import com.schematical.chaoscraft.server.spawnproviders.SpawnBlockPosProvider;
 import com.schematical.chaoscraft.server.spawnproviders.iServerSpawnProvider;
+import com.schematical.chaoscraft.tileentity.BuildAreaMarkerTileEntity;
 import com.schematical.chaosnet.ChaosNet;
 import com.schematical.chaosnet.auth.ChaosnetCognitoUserPool;
 import com.schematical.chaosnet.model.*;
@@ -273,19 +276,22 @@ public class ChaosCraftServer {
         for (ServerOrgManager serverOrgManager : serverOrgManagers) {
 
             if (!serverOrgManager.getEntity().isAlive()) {
-                /*
+
                 if(ChaosCraft.buildAreas.size() > 0){
-;
+;                    ChaosCraft.buildAreas.get(0).getBlocks(ChaosBlocks.markerBlocks.get(0));
                     fitnessRule.scoreEffect = (int) ChaosCraft.buildAreas.get(0).getScore();
+                    fitnessRule.id =  "Build_Rule";
                     CCWorldEvent buildEvent = new CCWorldEvent(CCWorldEvent.Type.BUILD_COMPLETE);
                     buildEvent.entity = serverOrgManager.getEntity();
                     fitnessRule.eventType = CCWorldEvent.Type.BUILD_COMPLETE.toString();
-                    EntityFitnessManager fitnessManager = new EntityFitnessManager(serverOrgManager.getEntity());
+                    serverOrgManager.getEntity().entityFitnessManager.test(buildEvent);
+                    //EntityFitnessManager fitnessManager = new EntityFitnessManager(serverOrgManager.getEntity());
+                    //fitnessManager.addNewRun();
                     //fitnessManager.test(buildEvent);
                     //fitnessRule.testWorldEvent(buildEvent);
+                    ChaosCraft.buildAreas.get(0).resetScore();
+                    BuildAreaMarkerTileEntity.resetBuildArea(ChaosBlocks.markerBlocks.get(0), ChaosCraft.buildAreaMarkers.get(0).getWorld());
                 }
-
-                 */
                 serverOrgManager.markDead();
             }
         }

@@ -28,7 +28,6 @@ public class DistNormTracker extends AbstractGui {
             }
             */
 
-
             for(int i = 0; i < ChaosBlocks.markerBlocks.size(); i++)
             {
                 fontrenderer.drawString("Score :" + ChaosCraft.buildAreas.get(i).getScore(),  25 + (i * i * 45), 25, 14737632);

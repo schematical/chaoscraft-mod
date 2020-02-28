@@ -33,7 +33,7 @@ public class BuildAreaMarkerTileEntity extends TileEntity implements ITickableTi
             ChaosCraft.buildAreas.add(buildArea);
             ChaosCraft.buildAreaMarkers.add(this);
             buildArea.assignBuildAreaTileEntity(this);
-            buildArea.getBlocks(this.pos);
+            //buildArea.getBlocks(this.pos);
         }
     }
 
@@ -61,7 +61,7 @@ public class BuildAreaMarkerTileEntity extends TileEntity implements ITickableTi
             for (int j = 0; j < 12; j++) {
                     if (world != null && !world.isRemote()) {
                         currentBlock = block.add(i, 0, -j);
-                        world.setBlockState(currentBlock, Blocks.DIRT.getDefaultState());
+                        world.setBlockState(currentBlock, Blocks.GRASS_BLOCK.getDefaultState());
                     }
                 }
             }

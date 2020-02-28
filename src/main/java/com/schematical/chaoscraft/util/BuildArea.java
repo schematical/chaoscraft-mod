@@ -41,6 +41,8 @@ public class BuildArea{
     public Array2DRowRealMatrix[] areaMatrices = new Array2DRowRealMatrix[4];
     private BuildAreaMarkerTileEntity buildaAreaEntity;
     private ClientOrgManager currentClientOrgManager;
+    private double score;
+    private int blockPlacedCount = 0;
 
     public void getBlocks(BlockPos pos){
         pos = pos.add(1, -2, -1);
@@ -103,15 +105,24 @@ public class BuildArea{
     }
 
     public void updateMatrix(int row, int col, String block, int areaMatrixIndex){
-            switch(block){
+        int maxBlockCount = 56;
+        switch(block){
                 case "Block{minecraft:oak_planks}":
                     areaMatrices[areaMatrixIndex].getDataRef()[row][col] = 8.0;
+                    blockPlacedCount += 1;
+                    if(blockPlacedCount < maxBlockCount){
+                        score += 1;
+                    }
                     break;
                 case "Block{minecraft:air}":
                     areaMatrices[areaMatrixIndex].getDataRef()[row][col] = 2.0;
                     break;
                 case "Block{minecraft:oak_door}":
                     areaMatrices[areaMatrixIndex].getDataRef()[row][col] = 10.0;
+                    blockPlacedCount += 1;
+                    if(blockPlacedCount < maxBlockCount){
+                        score += 1;
+                    }
                     break;
         }
     }
@@ -140,8 +151,8 @@ public class BuildArea{
         pattern[6][7] = 8.0;
 
         pattern[7][4] = 8.0;
-        pattern[7][5] = 8.0;
-        pattern[7][6] = 10.0;
+        pattern[7][5] = 10.0;
+        pattern[7][6] = 8.0;
         pattern[7][7] = 8.0;
 
         for(int i = 0; i < 4; i++){
@@ -173,22 +184,25 @@ public class BuildArea{
     }
 
     public double getScore(){
-        double score = 0.0;
         for(int i = 0; i < templates.length; i++){
             double diff = calculateDifference(templates[i], areaMatrices[i]);
-            if(diff == 2 || diff == 0){
-                score += 15;
+            if(diff == 0){
+                score += 100;
             }
-            else if (diff <= 8)
+            else if (diff <= 8 && diff > 0)
             {
-                score += 5;
+                score += 75;
             }
         }
         return score;
     }
 
+    public void resetScore(){
+        score = 0.0;
+    }
+
     public double getDiffNorm(){
-        return templates[2].subtract(areaMatrices[2]).getNorm();
+        return templates[0].subtract(areaMatrices[0]).getNorm();
     }
 
     public double getAreamatrixNorm(){

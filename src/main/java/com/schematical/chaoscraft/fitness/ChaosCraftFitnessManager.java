@@ -20,7 +20,7 @@ public class ChaosCraftFitnessManager {
     List<EntityFitnessScoreEvent> scoreEvents = new ArrayList<EntityFitnessScoreEvent>();
     public List<EntityFitnessScoreEvent> testEntityFitnessEvent(OrgEntity entityOrganism, CCWorldEvent event){
             EntityFitnessScoreEvent scoreEvent = null;
-            /*
+
             if(event.eventType == CCWorldEvent.Type.BUILD_COMPLETE)
             {
                 scoreEvent = ChaosCraftServer.fitnessRule.testWorldEvent(event);
@@ -30,13 +30,14 @@ public class ChaosCraftFitnessManager {
 
             }
 
-             */
-            for (EntityFitnessRule rule: rules) {
-                scoreEvent = rule.testWorldEvent(event);
-                if(scoreEvent != null) {
-                    scoreEvents.add(scoreEvent);
-                }
-            }
+
+
+            //for (EntityFitnessRule rule: rules) {
+            //    scoreEvent = rule.testWorldEvent(event);
+            //    if(scoreEvent != null) {
+             //       scoreEvents.add(scoreEvent);
+            //   }
+            //}
         return scoreEvents;
     }
 
