@@ -12,6 +12,9 @@ import com.schematical.chaoscraft.tickables.iChaosOrgTickable;
 import com.schematical.chaosnet.model.ChaosNetException;
 import com.schematical.chaosnet.model.Organism;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.util.Hand;
 import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.ArrayList;
@@ -56,6 +59,7 @@ public class ServerOrgManager extends BaseOrgManager {
         super.attachOrgEntity(orgEntity);
         this.orgEntity.attachSeverOrgManager(this);
         this.orgEntity.attachNNetRaw(this.organism.getNNetRaw());
+        this.orgEntity.setHeldItem(Hand.MAIN_HAND, new ItemStack(Items.LADDER));
         orgEntity.entityFitnessManager = new EntityFitnessManager(orgEntity);
         orgEntity.entityFitnessManager.addNewRun();
         orgEntity.observableAttributeManager = new CCObservableAttributeManager(organism);

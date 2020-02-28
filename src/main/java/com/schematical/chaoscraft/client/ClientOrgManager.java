@@ -185,21 +185,9 @@ public class ClientOrgManager extends BaseOrgManager {
         }
         //If high scoring and
 
-        if(
-            spawnCount > 3 ||
-            getLatestScore() < 500
-        ){
-            if(spawnCount > 3){
-                ChaosCraft.LOGGER.info("Finishing run for " + getCCNamespace() + " after " + spawnCount + " runs Score: "  + getLatestScore() + " Median: " + getServerScoreEventTotal());
+       state = State.ReadyToReport;
 
-            }
-           state = State.ReadyToReport;
-            return;
-        }
-        ChaosCraft.LOGGER.info("Allowing " + getCCNamespace() + " to respawn after " + spawnCount + "Turns Score: "  + getLatestScore() + " Median: " + getServerScoreEventTotal());
 
-        //Get ready to retry
-        state = State.OrgAttached;
     }
     public void markTicking() {
         if(!state.equals(State.EntityAttached)){

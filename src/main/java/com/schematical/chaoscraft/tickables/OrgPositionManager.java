@@ -135,9 +135,8 @@ public class OrgPositionManager implements iChaosOrgTickable {
 
                     if (
                         dist < ScanManager.range &&
-                        Math.abs(yaw) < MIN_DELTA// &&
-                        //Math.abs(pitch) < MIN_DELTA
-                        &&
+                        Math.abs(yaw) < MIN_DELTA &&
+                        Math.abs(pitch) < MIN_DELTA &&
                         ticksWhileLookingAtTarget < 20 * 5
                     ) {
                         if (!isLookingAtTarget) {

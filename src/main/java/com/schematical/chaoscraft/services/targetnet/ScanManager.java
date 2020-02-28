@@ -31,7 +31,7 @@ public class ScanManager {
     private ArrayList<ScanEntry> entries = new ArrayList<ScanEntry>();
     public static final int range = 10;
     private int index = 0;
-    private int BATCH_SIZE = 1000;
+    private int BATCH_SIZE = 250;
     private int MAX_RANGE_INDEX;
 
     private HashMap<String, Integer> counts = new HashMap<>();

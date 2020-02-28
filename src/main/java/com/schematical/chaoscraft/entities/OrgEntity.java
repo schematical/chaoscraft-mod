@@ -569,6 +569,11 @@ public class OrgEntity extends MobEntity {
             if (this.getPlayerWrapper().getCooldownTracker().hasCooldown(itemstack.getItem())) {
                 return ActionResultType.PASS;
             } else {
+                BlockPos targetPos = blockRayTraceResult.getPos().offset(blockRayTraceResult.getFace());
+                AlteredBlockInfo alteredBlockInfo =   new AlteredBlockInfo(
+                        targetPos,
+                        world.getBlockState(targetPos)
+                );
                 ItemUseContext itemUseContext1 = new ItemUseContext(
                         this.getPlayerWrapper(),
                         hand,
@@ -576,6 +581,14 @@ public class OrgEntity extends MobEntity {
                 );
                 ActionResultType result = itemstack.onItemUse(itemUseContext1);
                 if (result == ActionResultType.SUCCESS) {
+
+
+
+                    alteredBlocks.add(
+                        alteredBlockInfo
+                    );
+
+
 
                 }
                 return result;
