@@ -59,20 +59,27 @@ public class ChaosTrainingRoomSelectionOverlayGui extends Screen {
         this.addButton(button);
 
         this.usernameInput = new TextFieldWidget(this.font, this.width / 2 - 100, 60, 200, 20, trainingRoomUsername);
-        this.usernameInput.setText(trainingRoomUsername);
+        if(trainingRoomUsername != null) {
+            this.usernameInput.setText(trainingRoomUsername);
+        }
         this.usernameInput.setResponder((username) -> {
             trainingRoomUsername = username;
         });
         this.children.add(this.usernameInput);
 
         this.trainingRoomNamespaceInput = new TextFieldWidget(this.font, this.width / 2 - 100, 100, 200, 20,trainingRoomNamespace);
-        this.trainingRoomNamespaceInput.setText(trainingRoomNamespace);
+        if(trainingRoomNamespace != null) {
+            this.trainingRoomNamespaceInput.setText(trainingRoomNamespace);
+        }
         this.trainingRoomNamespaceInput.setResponder((namespace) -> {
            trainingRoomNamespace = namespace;
         });
         this.children.add(this.trainingRoomNamespaceInput);
 
         this.envInput = new TextFieldWidget(this.font, this.width / 2 - 100, 140, 200, 20, env);
+        if(env == null){
+            env = "prod";
+        }
         this.envInput.setText(env);
         this.envInput.setResponder((namespace) -> {
             env = namespace;

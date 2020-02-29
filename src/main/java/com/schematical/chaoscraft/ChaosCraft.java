@@ -306,7 +306,6 @@ public class ChaosCraft
             ChaosCraft.client != null &&
             ChaosCraft.client.getState().equals(ChaosCraftClient.State.Uninitiated)
         ){
-            LOGGER.info("onLivingUpdateEvent FIRING  2");
             ChaosCraft.client.init();
         }
     }
