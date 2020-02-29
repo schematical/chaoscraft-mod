@@ -114,9 +114,11 @@ public class BuildArea{
                         score += 1;
                     }
                     break;
+
                 case "Block{minecraft:air}":
                     areaMatrices[areaMatrixIndex].getDataRef()[row][col] = 2.0;
                     break;
+
                 case "Block{minecraft:oak_door}":
                     areaMatrices[areaMatrixIndex].getDataRef()[row][col] = 10.0;
                     blockPlacedCount += 1;
