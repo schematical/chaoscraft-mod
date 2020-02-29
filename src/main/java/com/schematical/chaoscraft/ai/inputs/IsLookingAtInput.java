@@ -115,7 +115,7 @@ public class IsLookingAtInput extends InputNeuron {
     }
     public String toLongString(){
         String response = super.toLongString();
-        response += " " + this.attributeId + " " + this.attributeValue + " E" + this.eyeId + "=> " + this.getCurrentValue();
+        response += " " + this.attributeId + " " + this.attributeValue + " E" + this.eyeId + "=> " + this.getPrettyCurrValue();
         return response;
 
     }

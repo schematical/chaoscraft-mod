@@ -28,7 +28,11 @@ public class WaypointBlockTileEntity extends TileEntity implements ITickableTile
             }
         }
 
+    @Override
+    public void onDataPacket(net.minecraft.network.NetworkManager net, net.minecraft.network.play.server.SUpdateTileEntityPacket pkt){
 
+        this.read(pkt.getNbtCompound());
+    }
     @Override
     public void read(CompoundNBT compound) {
             super.read(compound);

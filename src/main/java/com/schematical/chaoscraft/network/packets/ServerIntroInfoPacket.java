@@ -1,7 +1,6 @@
 package com.schematical.chaoscraft.network.packets;
 
 import com.schematical.chaoscraft.ChaosCraft;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -11,14 +10,14 @@ public class ServerIntroInfoPacket {
     private static final String GLUE = "@";
     private final String trainingRoomNamespace;
     private final String trainingRoomUsernameNamespace;
-    private final String sessionNamespace;
+    private final String env;
 
-    public ServerIntroInfoPacket(String trainingRoomNamespace, String trainingRoomUsernameNamespace, String sessionNamespace)
+    public ServerIntroInfoPacket(String trainingRoomNamespace, String trainingRoomUsernameNamespace, String env)
     {
 
         this.trainingRoomNamespace = trainingRoomNamespace;
         this.trainingRoomUsernameNamespace = trainingRoomUsernameNamespace;
-        this.sessionNamespace = sessionNamespace;
+        this.env = env;
     }
     public String getTrainingRoomNamespace(){
         return trainingRoomNamespace;
@@ -26,12 +25,12 @@ public class ServerIntroInfoPacket {
     public String getTrainingRoomUsernameNamespace(){
         return trainingRoomUsernameNamespace;
     }
-    public String getSessionNamespace(){
-        return sessionNamespace;
+    public String getEnv(){
+        return env;
     }
     public static void encode(ServerIntroInfoPacket pkt, PacketBuffer buf)
     {
-        String payload = pkt.trainingRoomNamespace + GLUE + pkt.trainingRoomUsernameNamespace +  GLUE + pkt.sessionNamespace;
+        String payload = pkt.trainingRoomNamespace + GLUE + pkt.trainingRoomUsernameNamespace +  GLUE + pkt.env;
         buf.writeString(payload);
     }
 

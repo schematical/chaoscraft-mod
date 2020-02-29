@@ -7,7 +7,10 @@ import com.schematical.chaoscraft.blocks.ChaosEggBlock;
 import com.schematical.chaoscraft.blocks.SpawnBlock;
 import com.schematical.chaoscraft.blocks.WaypointBlock;
 import com.schematical.chaoscraft.client.*;
-import com.schematical.chaoscraft.commands.*;
+import com.schematical.chaoscraft.commands.CCAuthCommand;
+import com.schematical.chaoscraft.commands.CCHardResetCommand;
+import com.schematical.chaoscraft.commands.CCSummonCommand;
+import com.schematical.chaoscraft.commands.CCTestCommand;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.entities.OrgEntityRenderer;
 import com.schematical.chaoscraft.fitness.ChaosCraftFitnessManager;
@@ -22,8 +25,7 @@ import com.schematical.chaoscraft.tileentity.ChaosTileEntity;
 import com.schematical.chaoscraft.tileentity.SpawnBlockTileEntity;
 import com.schematical.chaoscraft.tileentity.WaypointBlockTileEntity;
 import com.schematical.chaoscraft.util.BuildArea;
-import com.sun.media.jfxmedia.events.PlayerStateEvent;
-import javafx.geometry.BoundingBox;
+import com.schematical.chaosnet.ChaosNetClientBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SoundType;
@@ -38,15 +40,11 @@ import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.chunk.storage.ChunkLoader;
-import net.minecraft.world.chunk.storage.ChunkLoaderUtil;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
@@ -54,15 +52,8 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
-import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.entity.player.PlayerSetSpawnEvent;
-import net.minecraftforge.event.world.BlockEvent;
-import net.minecraftforge.event.world.BlockEvent.BreakEvent;
-import net.minecraftforge.event.world.ChunkDataEvent;
-import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -79,7 +70,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import net.minecraftforge.event.world.BlockEvent.EntityPlaceEvent;
 
 import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
@@ -105,35 +95,20 @@ public class ChaosCraft
 
     private static ChaosCraftClient client;
     private static ChaosCraftServer server;
-    public static ArrayList<BuildArea> buildAreas = new <BuildArea>ArrayList();
-    public static ArrayList<BuildAreaMarkerTileEntity> buildAreaMarkers = new <BuildAreaMarkerTileEntity>ArrayList();
-    public final static boolean isBuildExperiment = true;
+    public static ArrayList<BuildArea> buildAreas = new ArrayList<BuildArea>();
+    public static ArrayList<BuildAreaMarkerTileEntity> buildAreaMarkers = new ArrayList<BuildAreaMarkerTileEntity>();
+
     public ChaosCraft() {
    /*     if(true){
             return;
         }*/
         config = new ChaosCraftConfig();
         config.load();
-        LOGGER.info("Config Loaded...");
+        LOGGER.info("Config Loaded - Env: " + config.env);
         LOGGER.info("Config Username: " + config.username);
-        sdk =  ChaosNet.builder()
-                .connectionConfiguration(
-                        new ConnectionConfiguration()
-                                .maxConnections(100)
-                                .connectionMaxIdleMillis(1000)
-                )
-                .timeoutConfiguration(
-                        new TimeoutConfiguration()
-                                .httpRequestTimeout(60000)
-                                .totalExecutionTimeout(60000)
-                                .socketTimeout(60000)
-                )
-                .signer(
-                        (ChaosnetCognitoUserPool) request -> ChaosCraft.config.accessToken
-                        //new ChaosNetSigner()
-                )
-                .build();
 
+
+        setupSDK(config.env);
         auth();
         // Register the setup method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
@@ -153,8 +128,6 @@ public class ChaosCraft
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onClientStarting);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onKeyInputEvent);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onEntitySpawn);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onBlockEvent);
-        //FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onBlockBreakEvent);
         if(FMLEnvironment.dist.equals(Dist.CLIENT)) {
             FMLJavaModLoadingContext.get().getModEventBus().addListener(this::renderOverlayEvent);
         }
@@ -180,7 +153,29 @@ public class ChaosCraft
     public static ChaosCraftServer getServer(){
         return server;
     }
-
+    public static void setupSDK(String env){
+        ChaosNetClientBuilder builder = ChaosNet.builder()
+                .connectionConfiguration(
+                        new ConnectionConfiguration()
+                                .maxConnections(100)
+                                .connectionMaxIdleMillis(1000)
+                )
+                .timeoutConfiguration(
+                        new TimeoutConfiguration()
+                                .httpRequestTimeout(60000)
+                                .totalExecutionTimeout(60000)
+                                .socketTimeout(60000)
+                )
+                .signer(
+                        (ChaosnetCognitoUserPool) request -> ChaosCraft.config.accessToken
+                        //new ChaosNetSigner()
+                );
+        switch(env){
+            case("dev"):
+                builder = builder.endpoint("https://dev-api.chaosnet.ai");
+        }
+        sdk =  builder.build();
+    }
     public static void auth(){
         LOGGER.info("REFRESH TOKEN:" + config.refreshToken );
         if(config.refreshToken != null){
@@ -249,7 +244,6 @@ public class ChaosCraft
         CCAuthCommand.register(event.getCommandDispatcher());
         CCTestCommand.register(event.getCommandDispatcher());
         CCHardResetCommand.register(event.getCommandDispatcher());
-        CCClearBuildAreaCommand.register(event.getCommandDispatcher());
 
         server.loadFitnessFunctions();
     }
@@ -281,6 +275,7 @@ public class ChaosCraft
             return;
         }
         server.tick();
+
     }
     public void onEntityRegistry(final RegistryEvent.Register<EntityType<?>> event) {
         //setTrackingRange
@@ -308,8 +303,6 @@ public class ChaosCraft
         }
 
     }
-
-
     @SubscribeEvent
     public void onLivingUpdateEvent(PlayerEvent.LivingUpdateEvent livingUpdateEvent){
 
@@ -365,7 +358,6 @@ public class ChaosCraft
            client.onWorldUnload();
        }
     }
-
     @SubscribeEvent
     public void onKeyInputEvent(final InputEvent.KeyInputEvent event)  {
         if(client == null){
@@ -380,28 +372,7 @@ public class ChaosCraft
             MonsterEntity monsterEntity = (MonsterEntity) entity;
             monsterEntity.targetSelector.addGoal(2, new NearestAttackableTargetGoal(monsterEntity, OrgEntity.class, true));
         }
-    }
 
-    @SubscribeEvent
-    public void onBlockEvent(EntityPlaceEvent blockEvent) {
-        /*
-        if (blockEvent.getPlacedBlock().getBlock() != ChaosBlocks.BUILD_AREA_MARKER.get()) {
-            for (int i = 0; i < ChaosCraft.buildAreas.size(); i++) {
-                    ChaosCraft.buildAreas.get(i).getBlocks(ChaosBlocks.markerBlocks.get(i));
-                }
-        }
-         */
-    }
-
-    @SubscribeEvent
-    public void onBlockBreakEvent(BreakEvent breakEvent) {
-        /*
-        if (breakEvent.getState().getBlock() != ChaosBlocks.BUILD_AREA_MARKER.get()) {
-            for (int i = 0; i < ChaosCraft.buildAreas.size(); i++) {
-                    ChaosCraft.buildAreas.get(i).getBlocks(ChaosBlocks.markerBlocks.get(i));
-            }
-        }
-         */
     }
 
 }

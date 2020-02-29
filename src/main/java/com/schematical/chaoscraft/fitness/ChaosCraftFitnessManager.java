@@ -30,12 +30,10 @@ public class ChaosCraftFitnessManager {
 
             }
 
-
-
             //for (EntityFitnessRule rule: rules) {
             //    scoreEvent = rule.testWorldEvent(event);
-            //    if(scoreEvent != null) {
-             //       scoreEvents.add(scoreEvent);
+            //    if(scoreEvent != null && scoreEvent.worldEvent.eventType == CCWorldEvent.Type.BUILD_COMPLETE) {
+            //        scoreEvents.add(scoreEvent);
             //   }
             //}
         return scoreEvents;
@@ -67,6 +65,7 @@ public class ChaosCraftFitnessManager {
                 this.rules.add(rule);
             }
             ChaosCraftServer.fitnessRule = new EntityFitnessRule();
+            this.rules.add(ChaosCraftServer.fitnessRule);
 
 
 

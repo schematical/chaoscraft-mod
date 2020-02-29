@@ -50,6 +50,7 @@ public class ChaosCraftServer {
     public int ticksSinceLastThread = -1;
     public iServerSpawnProvider spawnProvider = new SpawnBlockPosProvider();//PlayerSpawnPosProvider();
     public static EntityFitnessRule fitnessRule;
+    CCWorldEvent buildEvent = new CCWorldEvent(CCWorldEvent.Type.BUILD_COMPLETE);
 
     public ChaosCraftServer(MinecraftServer server) {
 
@@ -201,11 +202,11 @@ public class ChaosCraftServer {
         ServerIntroInfoPacket serverIntroInfoPacket = new ServerIntroInfoPacket(
                 ChaosCraft.config.trainingRoomNamespace,
                 ChaosCraft.config.trainingRoomUsernameNamespace,
-                ChaosCraft.config.sessionNamespace
+                ChaosCraft.config.env
         );
 
         ChaosNetworkManager.sendTo(serverIntroInfoPacket, player);
-        ChaosCraft.LOGGER.info("SENT `serverIntroInfoPacket`: " + serverIntroInfoPacket.getTrainingRoomNamespace() + ", " + serverIntroInfoPacket.getTrainingRoomUsernameNamespace() + ", " + serverIntroInfoPacket.getSessionNamespace());
+        ChaosCraft.LOGGER.info("SENT `serverIntroInfoPacket`: " + serverIntroInfoPacket.getTrainingRoomNamespace() + ", " + serverIntroInfoPacket.getTrainingRoomUsernameNamespace() + ", " + serverIntroInfoPacket.getEnv());
 
     }
 
@@ -271,18 +272,15 @@ public class ChaosCraftServer {
 
     }
     public List<ServerOrgManager> checkForDeadOrgs(){
-
         List<ServerOrgManager> serverOrgManagers = getOrgsWithState(ServerOrgManager.State.Ticking);
         for (ServerOrgManager serverOrgManager : serverOrgManagers) {
-
             if (!serverOrgManager.getEntity().isAlive()) {
-
                 if(ChaosCraft.buildAreas.size() > 0){
                         ChaosCraft.buildAreas.get(0).getBlocks(ChaosBlocks.markerBlocks.get(0));
                         fitnessRule.scoreEffect = (int) ChaosCraft.buildAreas.get(0).getScore();
                         fitnessRule.id =  "Build_Rule";
-                        CCWorldEvent buildEvent = new CCWorldEvent(CCWorldEvent.Type.BUILD_COMPLETE);
                         buildEvent.entity = serverOrgManager.getEntity();
+                        buildEvent.amount = 1;
                         fitnessRule.eventType = CCWorldEvent.Type.BUILD_COMPLETE.toString();
                         serverOrgManager.getEntity().entityFitnessManager.test(buildEvent);
                         //EntityFitnessManager fitnessManager = new EntityFitnessManager(serverOrgManager.getEntity());
@@ -291,7 +289,8 @@ public class ChaosCraftServer {
                         //fitnessRule.testWorldEvent(buildEvent);
                         ChaosCraft.buildAreas.get(0).resetScore();
                         BuildAreaMarkerTileEntity.resetBuildArea(ChaosBlocks.markerBlocks.get(0), ChaosCraft.buildAreaMarkers.get(0).getWorld());
-                    }
+                   }
+
                 serverOrgManager.markDead();
             }
         }
@@ -433,10 +432,14 @@ public class ChaosCraftServer {
             throw exception;
         }
     }
-    public void setTrainingRoom(String trainingRoomUsernameNamespace, String trainingRoomNamespace){
+    public void setTrainingRoom(String trainingRoomUsernameNamespace, String trainingRoomNamespace, String env){
 
         ChaosCraft.config.trainingRoomUsernameNamespace = trainingRoomUsernameNamespace;
         ChaosCraft.config.trainingRoomNamespace = trainingRoomNamespace;
+        if(!env.equals(ChaosCraft.config.env)) {
+            ChaosCraft.config.env = env;
+            ChaosCraft.setupSDK(ChaosCraft.config.env);
+        }
         ChaosCraft.config.save();
 
         for (ChaosCraftServerPlayerInfo serverPlayerInfo : userMap.values()) {

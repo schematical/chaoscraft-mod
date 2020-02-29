@@ -9,7 +9,9 @@ import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.CCClientOrgDebugStateChangeRequestPacket;
 import com.schematical.chaoscraft.network.packets.CCServerScoreEventPacket;
 import com.schematical.chaoscraft.server.ServerOrgManager;
+import com.schematical.chaoscraft.services.targetnet.ScanManager;
 import com.schematical.chaoscraft.tickables.OrgPositionManager;
+import com.schematical.chaoscraft.tickables.TargetNNetManager;
 import com.schematical.chaosnet.model.ChaosNetException;
 import com.schematical.chaosnet.model.Organism;
 import net.minecraft.entity.player.PlayerEntity;
@@ -30,6 +32,7 @@ public class ClientOrgManager extends BaseOrgManager {
     protected ServerOrgManager.DebugState debugState = ServerOrgManager.DebugState.On;
     private int reportReattempts = 0;
     private int spawnCount = -1;
+    private ScanManager scanManager;
 
     public ClientOrgManager(){
         this.attatchTickable(new OrgPositionManager());
@@ -81,8 +84,10 @@ public class ClientOrgManager extends BaseOrgManager {
         }
         super.attachOrgEntity(orgEntity);
         this.orgEntity.observableAttributeManager = new CCObservableAttributeManager(organism);
+        this.scanManager = new ScanManager(this);
         this.orgEntity.attachNNetRaw(organism.getNNetRaw());
         orgEntity.attachClientOrgEntity(this);
+        this.attatchTickable(new TargetNNetManager(this.scanManager));
         spawnCount += 1;
         state = State.EntityAttached;
     }
@@ -179,21 +184,9 @@ public class ClientOrgManager extends BaseOrgManager {
         }
         //If high scoring and
 
-        if(
-            spawnCount > 3 ||
-            getLatestScore() < 500
-        ){
-            if(spawnCount > 3){
-                ChaosCraft.LOGGER.info("Finishing run for " + getCCNamespace() + " after " + spawnCount + " runs Score: "  + getLatestScore() + " Median: " + getServerScoreEventTotal());
+       state = State.ReadyToReport;
 
-            }
-           state = State.ReadyToReport;
-            return;
-        }
-        ChaosCraft.LOGGER.info("Allowing " + getCCNamespace() + " to respawn after " + spawnCount + "Turns Score: "  + getLatestScore() + " Median: " + getServerScoreEventTotal());
 
-        //Get ready to retry
-        state = State.OrgAttached;
     }
     public void markTicking() {
         if(!state.equals(State.EntityAttached)){
@@ -238,6 +231,10 @@ public class ClientOrgManager extends BaseOrgManager {
         }
     }
 
+    public ScanManager getScanManager() {
+        return scanManager;
+    }
+
 
     public enum State{
         Uninitialized,
@@ -249,4 +246,5 @@ public class ClientOrgManager extends BaseOrgManager {
         AttemptingToReport,
         FinishedReport,
     }
+
 }

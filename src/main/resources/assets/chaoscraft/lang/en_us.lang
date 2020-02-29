@@ -14,6 +14,7 @@ chaoscraft.gui.mainmenu.auth="Auth"
 chaoscraft.gui.auth.login="Login"
 chaoscraft.gui.mainmenu.networkinfo="Network Info"
 chaoscraft.gui.networkinfo.ping-server="Ping Server"
+chaoscraft.gui.networkinfo.env="Env"
 chaoscraft.gui.orgdetail.nnet="NNet"
 chaoscraft.gui.orgdetail.biology="Biology",
 chaoscraft.gui.orgdetail.debug-on="Debug On",

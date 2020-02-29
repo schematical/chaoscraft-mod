@@ -1,6 +1,7 @@
 package com.schematical.chaoscraft.network.packets;
 
 import com.schematical.chaoscraft.ChaosCraft;
+import com.schematical.chaoscraft.services.targetnet.ScanManager;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -15,6 +16,7 @@ public class CCServerScoreEventPacket {
     public float multiplier = 1;
     public int runIndex = -1;
     public int expectedLifeEndTime;
+
 
     public CCServerScoreEventPacket(String orgNamespace, int score, int life, String fitnessRuleId, float multiplier, int expectedLifeEndTime,  int runIndex)
     {

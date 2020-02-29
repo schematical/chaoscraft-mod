@@ -32,8 +32,9 @@ public class AreaOfFocus extends BiologyBase{
         if(this.currFocusVec != null){
             return this.currFocusVec;
         }
-        Vec3d vec3d = entity.getEyePosition(1);
-        Vec3d vec3d1 = entity.getLook(1);
+        Vec3d vec3d = getEntity().getEyePosition(1);
+        Vec3d vec3d1 = getEntity().getLook(1);
+
 
         this.currFocusVec = vec3d.add(
             new Vec3d(
@@ -56,13 +57,13 @@ public class AreaOfFocus extends BiologyBase{
                 vec3d.z + z
             )
         );
-        BlockState blockState = entity.world.getBlockState(
+        BlockState blockState = getEntity().world.getBlockState(
            blockPos
         );
 
         Block block = blockState.getBlock();
 
-        CCObserviableAttributeCollection attributeCollection = entity.observableAttributeManager.Observe(block);
+        CCObserviableAttributeCollection attributeCollection = getEntity().observableAttributeManager.Observe(block);
         return attributeCollection;
 
     }
@@ -80,8 +81,8 @@ public class AreaOfFocus extends BiologyBase{
             vec3d.y - dist,
             vec3d.z - dist
             );
-            seenEntities.addAll(entity.world.getEntitiesWithinAABB(LivingEntity.class, grownBox));
-            seenEntities.addAll(entity.world.getEntitiesWithinAABB(ItemEntity.class, grownBox));
+            seenEntities.addAll(getEntity().world.getEntitiesWithinAABB(LivingEntity.class, grownBox));
+            seenEntities.addAll(getEntity().world.getEntitiesWithinAABB(ItemEntity.class, grownBox));
             _entitiesCached = true;
         }
 
@@ -105,10 +106,10 @@ public class AreaOfFocus extends BiologyBase{
         vec3d.z + z
         );
         BlockPos blockPos = new BlockPos(searchVecStart);
-        BlockState blockState = entity.world.getBlockState(
+        BlockState blockState = getEntity().world.getBlockState(
             blockPos
         );
-        VoxelShape voxelShape = blockState.getCollisionShape(entity.world, blockPos);
+        VoxelShape voxelShape = blockState.getCollisionShape(getEntity().world, blockPos);
         if(voxelShape == null ||  voxelShape.isEmpty()){
             return observedEntities;
         }
@@ -117,11 +118,11 @@ public class AreaOfFocus extends BiologyBase{
 
         for (Entity target : seenEntities) {
 
-            if(!target.equals(entity)) {
+            if(!target.equals(getEntity())) {
 
                 if (target.getBoundingBox().intersects(blockBox)) {
 
-                    CCObserviableAttributeCollection attributeCollection = entity.observableAttributeManager.Observe(target);
+                    CCObserviableAttributeCollection attributeCollection = getEntity().observableAttributeManager.Observe(target);
                     if (attributeCollection != null) {
                         //ChaosCraft.logger.info(entity.getCCNamespace() + " can see " + attributeCollection.resourceId);
                         observedEntities.add(attributeCollection);

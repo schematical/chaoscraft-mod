@@ -47,11 +47,11 @@ public class ChaosNeuronButton extends Button {
             switch(neuronBase._base_type()){
                 case(com.schematical.chaoscraft.Enum.INPUT):
                     x = 10;
-                    setMessage( "I-" + i + " " + neuronBase.getPrettyCurrValue());
+                    setMessage( neuronBase.toAbreviation() + " " + neuronBase.getPrettyCurrValue());
                     break;
                 case(com.schematical.chaoscraft.Enum.OUTPUT):
                     x = chaosNNetViewOverlayGui.width - 10 - MIN_WIDTH;
-                    setMessage("O-" + i + " " + neuronBase.getPrettyCurrValue());
+                    setMessage( neuronBase.toAbreviation() + " " + neuronBase.getPrettyCurrValue());
                     break;
                 case(com.schematical.chaoscraft.Enum.MIDDLE):
                     x = chaosNNetViewOverlayGui.width / 2;

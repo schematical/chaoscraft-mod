@@ -13,6 +13,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
 
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -50,6 +52,14 @@ public class CCObservableAttributeManager {
             return true;
         }
         return false;
+    }
+    public CCObserviableAttributeCollection Observe(BlockPos blockPos, World world){
+
+        BlockState blockState = world.getBlockState(blockPos);
+        CCObserviableAttributeCollection atts = Observe(blockState);
+        atts._blockPos = blockPos;
+        return atts;
+
     }
     public CCObserviableAttributeCollection Observe(BlockState blockState){
         CCObserviableAttributeCollection atts = Observe(blockState.getBlock());

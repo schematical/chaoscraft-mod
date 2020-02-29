@@ -18,6 +18,7 @@ public class NeuralNet {
     public HashMap<String, NeuronBase> neurons = new HashMap<String, NeuronBase>();
     public HashMap<String, BiologyBase> biology = new HashMap<String, BiologyBase>();
     public boolean ready = false;
+    private EvalGroup currentTargetEvalGroup;
 
     public NeuralNet() {
 
@@ -26,6 +27,13 @@ public class NeuralNet {
         this.entity = entity;
     }
     public List<OutputNeuron> evaluate(){
+        return evaluate(EvalGroup.DEFAULT);
+    }
+    public List<OutputNeuron> evaluate(EvalGroup targetEvalGroup){
+        if(currentTargetEvalGroup != null){
+            throw new ChaosNetException("Dobule eval - Two processes are calling eval at once or you forgot to set `currentTargetEvalGroup` to null when you are done");
+        }
+        currentTargetEvalGroup = targetEvalGroup;
         HashMap<String, OutputGroupResult> outputGroupResults = new HashMap<String, OutputGroupResult>();
         //Iterate through output neurons
         Iterator<Map.Entry<String, NeuronBase>> iterator = neurons.entrySet().iterator();
@@ -41,7 +49,10 @@ public class NeuralNet {
         List<OutputNeuron> outputs = new ArrayList<OutputNeuron>();
         while (iterator.hasNext()) {
             NeuronBase neuronBase = iterator.next().getValue();
-            if(neuronBase._base_type().equals(com.schematical.chaoscraft.Enum.OUTPUT)){
+            if(
+                neuronBase._base_type().equals(com.schematical.chaoscraft.Enum.OUTPUT) &&
+                neuronBase.getEvalGroup().equals(currentTargetEvalGroup)
+            ){
                 OutputNeuron outputNeuron = (OutputNeuron)neuronBase;
                 neuronEvalDepth = 0;
                 float _last_value = outputNeuron.evaluate();
@@ -74,8 +85,11 @@ public class NeuralNet {
             OutputGroupResult outputGroupResult = outputGroupResultIterator.next();
             outputs.add(outputGroupResult.highNeuron);
         }
-
+        currentTargetEvalGroup = null;
         return outputs;
+    }
+    public EvalGroup getCurrentTargetEvalGroup(){
+        return currentTargetEvalGroup;
     }
     public void parseData(JSONObject jsonObject){
         try {
@@ -93,7 +107,7 @@ public class NeuralNet {
                 Class cls = Class.forName(fullClassName);
                 BiologyBase biologyBase = (BiologyBase) cls.newInstance();
                 biologyBase.parseData(outputBaseJSON);
-                biologyBase.entity = this.entity;
+                biologyBase.setEntity(this.entity);
                 biology.put(biologyBase.id, biologyBase);
             }
 
@@ -134,7 +148,7 @@ public class NeuralNet {
             e.printStackTrace();
         }*/catch(Exception e){
             e.printStackTrace();
-            throw new ChaosNetException(e.getMessage() + " -Look above for Stacktrace");
+            throw new ChaosNetException(e.getClass().getSimpleName() + " - " + e.getMessage() + " -Look above for Stacktrace");
         }
     }
     public BiologyBase getBiology(String id){
@@ -143,8 +157,21 @@ public class NeuralNet {
         }
         return biology.get(id);
     }
+    public ArrayList<BiologyBase> getBiologyByType(Class c){
+        ArrayList<BiologyBase> biologies = new ArrayList<BiologyBase>();
+        for (BiologyBase biologyBase : this.biology.values()) {
+            if(biologyBase.getClass().equals(c)){
+                biologies.add(biologyBase);
+            }
+        }
+        return biologies;
+    }
     private class OutputGroupResult{
         public float highScore;
         public OutputNeuron highNeuron;
+    }
+    public enum EvalGroup{
+        DEFAULT,
+        TARGET
     }
 }

@@ -1,5 +1,7 @@
 package com.schematical.chaoscraft;
 
+import com.schematical.chaoscraft.ai.NeuralNet;
+import com.schematical.chaoscraft.ai.biology.BiologyBase;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.tickables.OrgPositionManager;
 import com.schematical.chaoscraft.tickables.iChaosOrgTickable;
@@ -52,5 +54,15 @@ public abstract class BaseOrgManager {
             }
         }
         return null;
+    }
+    public NeuralNet getNNet(){
+        if(getEntity() == null){
+            return null;
+        }
+        return getEntity().getNNet();
+    }
+    public BiologyBase getBiology(String biologyId){
+
+        return getEntity().getNNet().getBiology(biologyId);
     }
 }

@@ -23,9 +23,12 @@ public class ChaosTrainingRoomSelectionOverlayGui extends Screen {
     private TextFieldWidget usernameInput;
 
     private TextFieldWidget trainingRoomNamespaceInput;
+    private TextFieldWidget envInput;
 
-private String trainingRoomUsername;
-private String trainingRoomNamespace;
+    private String trainingRoomUsername;
+    private String trainingRoomNamespace;
+    private String env;
+
     private String infoMessage;
     private Button button;
     private boolean nextClose = false;
@@ -37,7 +40,9 @@ private String trainingRoomNamespace;
     @Override
     protected void init() {
         super.init();
-
+        env = ChaosCraft.getClient().getEnv();
+        trainingRoomUsername = ChaosCraft.getClient().getTrainingRoomUsernameNamespace();
+        trainingRoomNamespace = ChaosCraft.getClient().getTrainingRoomNamespace();
         this.minecraft.keyboardListener.enableRepeatEvents(true);
         button = new Button(this.width / 2 - 100, this.height / 4 + 120, 200, 20, I18n.format("chaoscraft.gui.auth.login"), (p_214266_1_) -> {
             if(nextClose){
@@ -45,45 +50,48 @@ private String trainingRoomNamespace;
                 return;
             }
             CCClientStartTrainingSessionPacket packet = new CCClientStartTrainingSessionPacket(
-                    trainingRoomUsername,
-                    trainingRoomNamespace
+                trainingRoomUsername,
+                trainingRoomNamespace,
+                env
             );
             ChaosNetworkManager.sendToServer(packet);
         });
         this.addButton(button);
 
-        this.usernameInput = new TextFieldWidget(this.font, this.width / 2 - 100, 60, 200, 20, ChaosCraft.config.trainingRoomUsernameNamespace) {
-            protected String getNarrationMessage() {
-                return"IDK what this is";
-            }
-        };
+        this.usernameInput = new TextFieldWidget(this.font, this.width / 2 - 100, 60, 200, 20, trainingRoomUsername);
+        this.usernameInput.setText(trainingRoomUsername);
         this.usernameInput.setResponder((username) -> {
             trainingRoomUsername = username;
-            //authLogin.setPassword(this.password);
         });
         this.children.add(this.usernameInput);
 
-        this.trainingRoomNamespaceInput = new TextFieldWidget(this.font, this.width / 2 - 100, 100, 200, 20, ChaosCraft.config.trainingRoomNamespace) {
-            protected String getNarrationMessage() {
-                return"IDK what this is";
-            }
-        };
+        this.trainingRoomNamespaceInput = new TextFieldWidget(this.font, this.width / 2 - 100, 100, 200, 20,trainingRoomNamespace);
+        this.trainingRoomNamespaceInput.setText(trainingRoomNamespace);
         this.trainingRoomNamespaceInput.setResponder((namespace) -> {
            trainingRoomNamespace = namespace;
         });
         this.children.add(this.trainingRoomNamespaceInput);
+
+        this.envInput = new TextFieldWidget(this.font, this.width / 2 - 100, 140, 200, 20, env);
+        this.envInput.setText(env);
+        this.envInput.setResponder((namespace) -> {
+            env = namespace;
+        });
+        this.children.add(this.envInput);
 
 
     }
     @Override
     public void render(int p_render_1_, int p_render_2_, float p_render_3_) {
         this.renderBackground();
-        this.drawCenteredString(this.font, this.title.getFormattedText(), this.width / 2, 70, 16777215);
+        this.drawCenteredString(this.font, this.title.getFormattedText(), this.width / 2, 30, 16777215);
 
         this.drawCenteredString(this.font, "Username", this.width / 2, 50, 16777215);
         this.drawCenteredString(this.font, "Training Room", this.width / 2, 90, 16777215);
+        this.drawCenteredString(this.font, "Env", this.width / 2, 130, 16777215);
         this.usernameInput.render(p_render_1_, p_render_2_, p_render_3_);
         this.trainingRoomNamespaceInput.render(p_render_1_, p_render_2_, p_render_3_);
+        this.envInput.render(p_render_1_, p_render_2_, p_render_3_);
 
         this.drawCenteredString(this.font, this.infoMessage, this.width / 2, 150, 16777215);
         super.render(p_render_1_, p_render_2_, p_render_3_);
