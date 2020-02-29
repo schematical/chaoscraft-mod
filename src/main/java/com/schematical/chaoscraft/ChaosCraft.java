@@ -164,6 +164,9 @@ public class ChaosCraft
                         (ChaosnetCognitoUserPool) request -> ChaosCraft.config.accessToken
                         //new ChaosNetSigner()
                 );
+        if(env != null){
+            env = env.toString();
+        }
         switch(env){
             case("dev"):
                 builder = builder.endpoint("https://dev-api.chaosnet.ai");
@@ -171,7 +174,7 @@ public class ChaosCraft
         sdk =  builder.build();
     }
     public static void auth(){
-        LOGGER.info("REFRESH TOKEN:" + config.refreshToken );
+        LOGGER.info("REFRESH TOKEN:" + config.refreshToken.substring(0, 10) );
         if(config.refreshToken != null){
             AuthTokenRequest authTokenRequest = new AuthTokenRequest();
             authTokenRequest.setUsername(config.username);
@@ -197,13 +200,12 @@ public class ChaosCraft
     private void setup(final FMLCommonSetupEvent event)
     {
         // some preinit code
-        LOGGER.info("HELLO FROM PREINIT");
-        LOGGER.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
+
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
         // do something that can only be done on the client
-        LOGGER.info("Got game settings {}", event.getMinecraftSupplier().get().gameSettings);
+       //LOGGER.info("Got game settings {}", event.getMinecraftSupplier().get().gameSettings);
 
         RenderingRegistry.registerEntityRenderingHandler(
             OrgEntity.ORGANISM_TYPE,
@@ -222,9 +224,9 @@ public class ChaosCraft
     private void processIMC(final InterModProcessEvent event)
     {
         // some example code to receive and process InterModComms from other mods
-        LOGGER.info("Got IMC {}", event.getIMCStream().
+        /*LOGGER.info("Got IMC {}", event.getIMCStream().
                 map(m->m.getMessageSupplier().get()).
-                collect(Collectors.toList()));
+                collect(Collectors.toList()));*/
     }
     // You can use SubscribeEvent and let the Event Bus discover methods to call
     @SubscribeEvent
@@ -288,7 +290,7 @@ public class ChaosCraft
     @SubscribeEvent
     public void onClientTickEvent(TickEvent.ClientTickEvent clientTickEvent){
         if(ChaosCraft.client == null){
-            LOGGER.info("HELLO from Client starting");
+
             client = new ChaosCraftClient(null);
         }
         if(ChaosCraft.client != null){
@@ -318,7 +320,7 @@ public class ChaosCraft
             ChaosCraft.client != null &&
             ChaosCraft.client.getState().equals(ChaosCraftClient.State.Uninitiated)
         ){
-            LOGGER.info("onPlayerLoggedInEvent FIRING  2");
+
 
 
         }
@@ -332,22 +334,19 @@ public class ChaosCraft
                 ChaosCraft.server != null
         ){
 
-            LOGGER.info("onPlayerLoggedOutEvent FIRING SERVER: " + playerLoggedOutEvent.getPlayer().getName().getString());
-            ChaosCraft.server.logOutPlayer(playerLoggedOutEvent.getPlayer());
+           ChaosCraft.server.logOutPlayer(playerLoggedOutEvent.getPlayer());
         }
 
         if(
             ChaosCraft.client != null
         ){
 
-            LOGGER.info("onPlayerLoggedOutEvent FIRING CLIENT: " + playerLoggedOutEvent.getPlayer().getName());
             //ChaosCraft.client.init();
         }
     }
     @SubscribeEvent
     public void onWorldUnloadEvent(WorldEvent.Unload worldUnloadEvent) {
-        LOGGER.info("onWorldUnloadEvent FIRING CLIENT: ");
-       if(client != null) {
+        if(client != null) {
            client.onWorldUnload();
        }
     }
