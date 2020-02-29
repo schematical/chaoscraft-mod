@@ -49,8 +49,7 @@ public class ChaosCraftServer {
     public int longTickCount = 0;
     public int ticksSinceLastThread = -1;
     public iServerSpawnProvider spawnProvider = new SpawnBlockPosProvider();//PlayerSpawnPosProvider();
-    public static EntityFitnessRule fitnessRule;
-    CCWorldEvent buildEvent = new CCWorldEvent(CCWorldEvent.Type.BUILD_COMPLETE);
+
 
     public ChaosCraftServer(MinecraftServer server) {
 
@@ -277,16 +276,15 @@ public class ChaosCraftServer {
             if (!serverOrgManager.getEntity().isAlive()) {
                 if(ChaosCraft.buildAreas.size() > 0){
                         ChaosCraft.buildAreas.get(0).getBlocks(ChaosBlocks.markerBlocks.get(0));
-                        fitnessRule.scoreEffect = (int) ChaosCraft.buildAreas.get(0).getScore();
-                        fitnessRule.id =  "Build_Rule";
-                        buildEvent.entity = serverOrgManager.getEntity();
-                        buildEvent.amount = 1;
-                        fitnessRule.eventType = CCWorldEvent.Type.BUILD_COMPLETE.toString();
+
+
+                        CCWorldEvent buildEvent = new CCWorldEvent(CCWorldEvent.Type.BUILD_COMPLETE);
+                        buildEvent.amount = (float) ChaosCraft.buildAreas.get(0).getScore();
+                        if(buildEvent.amount > 0){
+                            ChaosCraft.LOGGER.info("We have a score: " + buildEvent.amount);
+                        }
                         serverOrgManager.getEntity().entityFitnessManager.test(buildEvent);
-                        //EntityFitnessManager fitnessManager = new EntityFitnessManager(serverOrgManager.getEntity());
-                        //fitnessManager.addNewRun();
-                        //fitnessManager.test(buildEvent);
-                        //fitnessRule.testWorldEvent(buildEvent);
+
                         ChaosCraft.buildAreas.get(0).resetScore();
                         BuildAreaMarkerTileEntity.resetBuildArea(ChaosBlocks.markerBlocks.get(0), ChaosCraft.buildAreaMarkers.get(0).getWorld());
                    }

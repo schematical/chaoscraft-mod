@@ -583,10 +583,10 @@ public class OrgEntity extends MobEntity {
                 if (result == ActionResultType.SUCCESS) {
 
 
-
-                    alteredBlocks.add(
-                        alteredBlockInfo
-                    );
+                LOGGER.info("Block Placed: " + itemstack.getItem().getRegistryName().toString());
+                alteredBlocks.add(
+                    alteredBlockInfo
+                );
 
 
 
