@@ -174,8 +174,9 @@ public class ChaosCraft
         sdk =  builder.build();
     }
     public static void auth(){
-        LOGGER.info("REFRESH TOKEN:" + config.refreshToken.substring(0, 10) );
+
         if(config.refreshToken != null){
+            LOGGER.info("REFRESH TOKEN:" + config.refreshToken.substring(0, 10) );
             AuthTokenRequest authTokenRequest = new AuthTokenRequest();
             authTokenRequest.setUsername(config.username);
             authTokenRequest.setRefreshToken(config.refreshToken);
