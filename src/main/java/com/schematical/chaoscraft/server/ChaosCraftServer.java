@@ -66,10 +66,10 @@ public class ChaosCraftServer {
         ticksSinceLastThread += 1;
         if(
             orgNamepacesQueuedToSpawn.size() > 0 &&
-                    (
-                            thread == null||
-                            ticksSinceLastThread > (120 * 20)//TWO MINutes?
-                    )
+            (
+                    thread == null||
+                    ticksSinceLastThread > (120 * 20)//TWO MINutes?
+            )
         ){
             if(thread != null){
                 thread.interrupt();

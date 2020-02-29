@@ -25,5 +25,8 @@
 
   "chaoscraft.gui.spawnblock.maxlivingentities": "Max Living Bots",
   "chaoscraft.gui.spawnblock.spawnpointid": "Spawn Point Id",
-  "chaoscraft.gui.save": "Save"
+  "chaoscraft.gui.save": "Save",
+  "chaoscraft.gui.trainingroomselectionoverlay.training-room-username": "Training Room Username",
+  "chaoscraft.gui.trainingroomselectionoverlay.training-room-namespace": "Training Room Namespace",
+  "chaoscraft.gui.trainingroomselectionoverlay.env": "Environment"
 }

@@ -58,7 +58,7 @@ public class ChaosTrainingRoomSelectionOverlayGui extends Screen {
         });
         this.addButton(button);
 
-        this.usernameInput = new TextFieldWidget(this.font, this.width / 2 - 100, 60, 200, 20, trainingRoomUsername);
+        this.usernameInput = new TextFieldWidget(this.font, this.width / 2 - 100, 60, 200, 20, I18n.format("chaoscraft.gui.trainingroomselectionoverlay.training-room-username"));
         if(trainingRoomUsername != null) {
             this.usernameInput.setText(trainingRoomUsername);
         }
@@ -67,7 +67,7 @@ public class ChaosTrainingRoomSelectionOverlayGui extends Screen {
         });
         this.children.add(this.usernameInput);
 
-        this.trainingRoomNamespaceInput = new TextFieldWidget(this.font, this.width / 2 - 100, 100, 200, 20,trainingRoomNamespace);
+        this.trainingRoomNamespaceInput = new TextFieldWidget(this.font, this.width / 2 - 100, 100, 200, 20, I18n.format("chaoscraft.gui.trainingroomselectionoverlay.training-room-namespace"));
         if(trainingRoomNamespace != null) {
             this.trainingRoomNamespaceInput.setText(trainingRoomNamespace);
         }
@@ -76,7 +76,7 @@ public class ChaosTrainingRoomSelectionOverlayGui extends Screen {
         });
         this.children.add(this.trainingRoomNamespaceInput);
 
-        this.envInput = new TextFieldWidget(this.font, this.width / 2 - 100, 140, 200, 20, env);
+        this.envInput = new TextFieldWidget(this.font, this.width / 2 - 100, 140, 200, 20, I18n.format("chaoscraft.gui.trainingroomselectionoverlay.env"));
         if(env == null){
             env = "prod";
         }
