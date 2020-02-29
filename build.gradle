@@ -152,8 +152,13 @@ shadowJar {
     classifier = ''
 }
 
-jar.enabled(false)
-jar.dependsOn(shadowJar)
+reobf {
+    shadowJar {} // Reobfuscate the shadowed JAR
+}
+
+artifacts {
+    archives shadowJar
+}
 
 // Example configuration to allow publishing using the maven-publish task
 // we define a custom artifact that is sourced from the reobfJar output task
