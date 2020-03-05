@@ -26,6 +26,7 @@ public class OrgPositionManager implements iChaosOrgTickable {
     public DebugTargetHolder debugTargetHolder = null;
     public int ticksWhileLookingAtTarget = 0;
     public boolean isLookingAtTarget = false;
+    public float lookAtScore = 0;
     @Override
     public void Tick(BaseOrgManager orgManager) {
         boolean isServer = orgManager instanceof ServerOrgManager;
@@ -142,23 +143,32 @@ public class OrgPositionManager implements iChaosOrgTickable {
                         if (!isLookingAtTarget) {
                             ticksWhileLookingAtTarget = 0;
                             isLookingAtTarget = true;
+                            lookAtScore = 0;
                         } else {
                             ticksWhileLookingAtTarget += 1;
+                            float yawDelta = (float) (1 - Math.abs(yaw) / MIN_DELTA);
+                            float pitchDelta = (float) (1 - (Math.abs(pitch) / MIN_DELTA));
+                            if (distDelta < 0) {
+                                distDelta = .01f;
+                            }
+                            lookAtScore += distDelta  * pitchDelta * yawDelta;
                         }
                     } else {
                         if (isLookingAtTarget) {
+
                             if (ticksWhileLookingAtTarget > 5) {
                                 CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.IS_FACING);
-                                //float yawDelta = (float) (1 - Math.abs(yaw) / MIN_DELTA);
-                                //float pitchDelta = (float) (1 - (Math.abs(pitch) / MIN_DELTA));
 
-                                if (distDelta < 0) {
-                                    distDelta = .01f;
-                                }
                                 float timeMultiplier = ticksWhileLookingAtTarget / 20f; //1x for every second of connection
-                                worldEvent.extraMultiplier = distDelta * timeMultiplier /* * pitchDelta * yawDelta*/;
+                                worldEvent.extraMultiplier = timeMultiplier * (lookAtScore/ticksWhileLookingAtTarget);
                                 if (worldEvent.extraMultiplier < 0) {
                                     throw new ChaosNetException("Negative Multiplier");
+                                }
+                                if(target.getTargetEntity() != null){
+                                    worldEvent.entity = target.getTargetEntity();
+                                }
+                                if(target.getTargetBlockPos() != null){
+                                    worldEvent.block = orgManager.getEntity().world.getBlockState(target.getTargetBlockPos()).getBlock();
                                 }
                                 orgManager.getEntity().entityFitnessManager.test(worldEvent);
                             }

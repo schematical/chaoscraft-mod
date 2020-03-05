@@ -5,14 +5,17 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.schematical.chaoscraft.ai.CCAttributeId;
 import com.schematical.chaoscraft.ai.NeuralNet;
 import com.schematical.chaoscraft.ai.NeuronBase;
+import com.schematical.chaoscraft.ai.biology.BiologyBase;
 import com.schematical.chaoscraft.ai.biology.TargetSlot;
 import com.schematical.chaoscraft.ai.inputs.BaseTargetInputNeuron;
 import com.schematical.chaoscraft.ai.inputs.TargetDistanceInput;
 import com.schematical.chaoscraft.ai.inputs.TargetPitchInput;
 import com.schematical.chaoscraft.ai.inputs.TargetYawInput;
+import com.schematical.chaoscraft.ai.outputs.LookAtTargetOutput;
 import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.network.packets.CCServerObserverOrgChangeEventPacket;
 import com.schematical.chaoscraft.network.packets.CCServerScoreEventPacket;
+import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.AbstractGui;
@@ -49,10 +52,7 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
         }else{
             list.add("Observing: " + clientOrgManager.getCCNamespace());
             NeuralNet nNet = clientOrgManager.getEntity().getNNet();
-            TargetSlot targetSlot = (TargetSlot)nNet.getBiology("TargetSlot_0");
-            if(targetSlot != null){
-                list.add(targetSlot.toString());
-            }
+
             list.add("Score: " + clientOrgManager.getLatestScore());
             float secondsToLive = (clientOrgManager.getExpectedLifeEndTime() - clientOrgManager.getEntity().world.getGameTime()) /20;
             list.add("Expected Life End: " + secondsToLive);
@@ -79,6 +79,33 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
                 int y = 2 + j * i;
                 fill(x  - 1, y- 1, x + k + 1, y + j - 1, -1873784752);
                 this.fontRenderer.drawString(s, (float)x, (float)y, 14737632);
+            }
+        }
+        int i = 1;
+        for (BiologyBase biologyBase : this.clientOrgManager.getNNet().biology.values()) {
+            if(biologyBase instanceof  TargetSlot) {
+                LookAtTargetOutput lookAtTargetOutput = (LookAtTargetOutput)this.clientOrgManager.getNNet().neurons.get("look-at-target-output");
+                if(lookAtTargetOutput != null) {
+
+
+                    TargetSlot targetSlot = (TargetSlot) biologyBase;
+                    if (targetSlot != null) {
+                        String s = targetSlot.toString() + " LATO:" + lookAtTargetOutput.getPrettyCurrValue();
+                        s += " EP:" + clientOrgManager.getEntity().rotationPitch;
+                        if (targetSlot.hasTarget()) {
+                            s += " YD:" + Math.round(targetSlot.getYawDelta());
+                            s += " PD:" + Math.round(targetSlot.getPitchDelta());
+                            s += " DD:" + Math.round(targetSlot.getDist());
+                        }
+                        int j = 9;
+                        int k = this.fontRenderer.getStringWidth(s);
+                        int x = this.mc.getMainWindow().getScaledWidth() - 400;
+                        int y = 2 + j * i;
+                        fill(x - 1, y - 1, x + k + 1, y + j - 1, -1873784752);
+                        this.fontRenderer.drawString(s, (float) x, (float) y, 14737632);
+                        i += 1;
+                    }
+                }
             }
         }
         RenderSystem.popMatrix();

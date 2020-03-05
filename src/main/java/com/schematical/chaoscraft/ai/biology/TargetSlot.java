@@ -1,5 +1,7 @@
 package com.schematical.chaoscraft.ai.biology;
 
+import com.schematical.chaoscraft.ai.CCObserviableAttributeCollection;
+import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.util.TargetHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -16,9 +18,11 @@ public class TargetSlot extends BiologyBase implements iTargetable {
     private BlockPos blockPos;
 
     public void setTarget(Entity entity){
+        this.blockPos = null;
         this.targetEntity = entity;
     }
     public void setTarget(BlockPos blockPos){
+        this.targetEntity = null;
         this.blockPos = blockPos;
     }
     public Vec3d getTargetPosition(){
@@ -34,6 +38,27 @@ public class TargetSlot extends BiologyBase implements iTargetable {
         }
         return null;
     }
+    public CCObserviableAttributeCollection getObservedAttributes(OrgEntity orgEntity){
+        if(this.targetEntity != null){
+            return orgEntity.observableAttributeManager.Observe(this.targetEntity);
+        }
+        if(this.blockPos != null){
+            return orgEntity.observableAttributeManager.Observe(this.blockPos, orgEntity.world);
+        }
+        return null;
+
+    }
+
+    @Override
+    public Entity getTargetEntity() {
+        return targetEntity;
+    }
+
+    @Override
+    public BlockPos getTargetBlockPos() {
+        return blockPos;
+    }
+
     public Double getYawDelta() {
         Vec3d targetPosition = getTargetPosition();
         if (targetPosition == null) {
@@ -55,8 +80,8 @@ public class TargetSlot extends BiologyBase implements iTargetable {
 
         return TargetHelper.getPitchDelta(
                 targetPosition,
-                getEntity().getPositionVec(),
-                getEntity().getLookVec()
+                getEntity().getEyePosition(1),//getEntity().getPositionVec(),
+                getEntity().rotationPitch //getEntity().getLookVec()
         );
     }
 
@@ -84,17 +109,26 @@ public class TargetSlot extends BiologyBase implements iTargetable {
 
         String message = id + ": ";
         if(targetEntity != null){
-            message += targetEntity.getType().getRegistryName();
+            message += targetEntity.getType().getRegistryName().toString();
         }else if(blockPos != null){
 
             BlockState blockState = Minecraft.getInstance().world.getBlockState(blockPos);
-            message += blockState.getBlock().getRegistryName();
+            message += blockState.getBlock().getRegistryName().toString();
         }else{
-            message += " null";
+            message += " xnull";
         }
 
         return message;
     }
 
+    public boolean hasTarget() {
+        if(targetEntity != null){
+            return true;
+        }
+        if(blockPos != null){
+            return true;
+        }
+        return false;
+    }
 }
 

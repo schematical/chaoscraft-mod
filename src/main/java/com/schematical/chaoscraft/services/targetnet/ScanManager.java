@@ -150,9 +150,9 @@ public class ScanManager {
                         orgEntity.getCCNamespace() + " targeted: " +
                                 scanEntry.entity.getType().getRegistryName().toString()
                 );
-                if(scanEntry.entity.getType().getRegistryName().toString().equals("minecraft:chicken")){
+                if(scanEntry.entity.getType().getRegistryName().toString().equals("minecraft:bee")){
                     ChaosCraft.LOGGER.info(
-                            orgEntity.getCCNamespace() + " targeted: CHICKEN"
+                            orgEntity.getCCNamespace() + " targeted: Bee"
                     );
                 }
                 targetSlot.setTarget(scanEntry.entity);

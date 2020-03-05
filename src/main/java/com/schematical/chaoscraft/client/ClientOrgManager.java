@@ -112,7 +112,7 @@ public class ClientOrgManager extends BaseOrgManager {
             }
         }
         if(total > 0){
-            ChaosCraft.LOGGER.info(getCCNamespace() + " - Scored: " + total);
+            //ChaosCraft.LOGGER.info(getCCNamespace() + " - Scored: " + total);
         }
         return total;
     }

@@ -32,6 +32,7 @@ public class CCClientActionPacket {
     private BlockPos blockPos;
     private Entity entity;
     private BiologyBase biologyBase;
+    public String payload;
 
     public CCClientActionPacket(String orgNamespace, Action action)
     {
@@ -78,6 +79,7 @@ public class CCClientActionPacket {
         String payload = buf.readString(32767);
 
         CCClientActionPacket pkt = null;
+
         try {
 
             JSONParser parser = new JSONParser();
@@ -89,27 +91,40 @@ public class CCClientActionPacket {
                     obj.get("orgNamespace").toString(),
                     Action.valueOf(obj.get("action").toString())
             );
-
+            pkt.payload = payload;
             if(obj.get("entity") != null){
                 pkt.entity = ChaosCraft.getServer().server.getWorld(DimensionType.OVERWORLD).getEntityByUuid(UUID.fromString(obj.get("entity").toString()));
-            }
-            if(obj.get("blockPos") != null){
+                if( pkt.entity == null){
+                   throw new ChaosNetException("CCClientActionPacket = Could not find entity: " + UUID.fromString(obj.get("entity").toString()));
+                }
+            }else if(obj.get("blockPos") != null){
                 String[] parts = obj.get("blockPos").toString().split(",");
                 pkt.blockPos = new BlockPos(
                     Integer.parseInt(parts[0]),
                     Integer.parseInt(parts[1]),
                     Integer.parseInt(parts[2])
                 );
+            }else{
+
+                throw new ChaosNetException("No valid target in message");
             }
             if(obj.get("biology") != null){
                 ServerOrgManager serverOrgManager = ChaosCraft.getServer().getOrgByNamespace(pkt.orgNamespace);
                 NeuralNet neuralNet = serverOrgManager.getNNet();
                 pkt.biologyBase = neuralNet.getBiology(obj.get("biology").toString());
+                if(pkt.biologyBase == null){
+                    ChaosCraft.LOGGER.error(payload);
+                    throw new ChaosNetException("No valid `biology` in message: " + obj.get("biology").toString());
+                }
 
+            }else{
+                ChaosCraft.LOGGER.error(payload);
+                throw new ChaosNetException("No `biology` in message");
             }
         } catch (Exception e) {
             ChaosCraft.LOGGER.error(payload);
             e.printStackTrace();
+            throw new ChaosNetException(e.getMessage() + "\n\n" + payload + "\n\n");
         }
         return pkt;
     }

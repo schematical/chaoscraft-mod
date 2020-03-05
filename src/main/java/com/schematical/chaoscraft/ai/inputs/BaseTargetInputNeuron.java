@@ -79,19 +79,24 @@ public class BaseTargetInputNeuron extends InputNeuron implements iHasAttributeI
 
     }
     public String toString(){
-        String response =super.toString();
+        String response = super.toString();
         if(targetSlot != null){
             response += targetSlot.toString();
+        }else {
+            response += " " + getAttributeId() + "=" + getAttributeValue();
         }
-        response += " " + getAttributeId() + "=" + getAttributeValue();
-
         response += getPrettyCurrValue();
 
         return response;
     }
     public String toLongString(){
         String response = super.toString();
-        response += " " + getAttributeId() + "=" + getAttributeValue();
+        if(targetSlot != null){
+            response += targetSlot.toString();
+        }else {
+            response += " " + getAttributeId() + "=" + getAttributeValue();
+        }
+        response += getPrettyCurrValue();
         return response;
     }
     @Override
