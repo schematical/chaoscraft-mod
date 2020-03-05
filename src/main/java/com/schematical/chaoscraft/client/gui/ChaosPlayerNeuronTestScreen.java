@@ -26,13 +26,12 @@ public class ChaosPlayerNeuronTestScreen extends AbstractGui {
     private final FontRenderer fontRenderer;
     private ClientPlayerEntity playerEntity;
     private ArrayList<NeuronBase> debugNeurons = new ArrayList<NeuronBase>();
-    private DebugTargetHolder debugTargetHolder;
-    public TargetHelper targetHelper = new TargetHelper();
+
     public ChaosPlayerNeuronTestScreen(Minecraft mc) {
         this.mc = mc;
         this.fontRenderer = mc.fontRenderer;
         playerEntity = mc.player;
-        debugTargetHolder = new DebugTargetHolder(playerEntity);
+
 
         BaseTargetInputNeuron neuronBase = new TargetDistanceInput();
         neuronBase.setDebugEntity(playerEntity);
@@ -57,7 +56,7 @@ public class ChaosPlayerNeuronTestScreen extends AbstractGui {
         RenderSystem.pushMatrix();
         ArrayList<String> list = new ArrayList<String>();
         list.add("");
-        list.add("Debugging: " + debugTargetHolder.getEntity().getDisplayName().getString());
+
         for (NeuronBase debugNeuron : debugNeurons) {
             debugNeuron.reset();
             debugNeuron.evaluate();
@@ -94,7 +93,7 @@ public class ChaosPlayerNeuronTestScreen extends AbstractGui {
         if(clientOrgManager == null){
             return;
         }
-        debugTargetHolder = new DebugTargetHolder(clientOrgManager.getEntity());
+      
         for (NeuronBase debugNeuron : debugNeurons) {
             debugNeuron.setDebugEntity(clientOrgManager.getEntity());
         }

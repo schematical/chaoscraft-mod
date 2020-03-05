@@ -84,14 +84,20 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
         int i = 1;
         for (BiologyBase biologyBase : this.clientOrgManager.getNNet().biology.values()) {
             if(biologyBase instanceof  TargetSlot) {
-                LookAtTargetOutput lookAtTargetOutput = (LookAtTargetOutput)this.clientOrgManager.getNNet().neurons.get("look-at-target-output");
+
+                LookAtTargetOutput lookAtTargetOutput = null;
+                for (NeuronBase neuronBase : this.clientOrgManager.getNNet().neurons.values()) {
+                    if(neuronBase instanceof  LookAtTargetOutput){
+                        lookAtTargetOutput = (LookAtTargetOutput) neuronBase;
+                    }
+                }
                 if(lookAtTargetOutput != null) {
 
 
                     TargetSlot targetSlot = (TargetSlot) biologyBase;
                     if (targetSlot != null) {
                         String s = targetSlot.toString() + " LATO:" + lookAtTargetOutput.getPrettyCurrValue();
-                        s += " EP:" + clientOrgManager.getEntity().rotationPitch;
+                        s += " EP:" + Math.round(clientOrgManager.getEntity().rotationPitch);
                         if (targetSlot.hasTarget()) {
                             s += " YD:" + Math.round(targetSlot.getYawDelta());
                             s += " PD:" + Math.round(targetSlot.getPitchDelta());

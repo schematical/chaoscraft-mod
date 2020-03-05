@@ -22,8 +22,7 @@ public class OrgPositionManager implements iChaosOrgTickable {
     public Vec3d maxDist = new Vec3d(0,0,0);
     public ArrayList<Vec3i> touchedBlocks = new ArrayList<Vec3i>();
     public int ticksSinceLastMove = 0;
-    //public TargetHelper targetHelper = new TargetHelper();
-    public DebugTargetHolder debugTargetHolder = null;
+
     public int ticksWhileLookingAtTarget = 0;
     public boolean isLookingAtTarget = false;
     public float lookAtScore = 0;

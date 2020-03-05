@@ -16,8 +16,9 @@ public class LookAtTargetOutput extends OutputNeuron {
         if (getHasBeenEvaluated()) {
             return getCurrentValue();
         }
+
         if(!targetSlot.hasTarget()){
-            return getCurrentValue();
+            targetSlot.populateDebug();// return getCurrentValue();
         }
         return super.evaluate();
     }
@@ -32,11 +33,19 @@ public class LookAtTargetOutput extends OutputNeuron {
         }else if(deltaYaw < -30){
             deltaYaw = -30d;
         }
-
-
         this.nNet.entity.setDesiredYaw(this.nNet.entity.rotationYaw + deltaYaw);
+        this.nNet.entity.setDesiredHeadYaw(this.nNet.entity.rotationYaw + deltaYaw);
 
-        this.nNet.entity.setDesiredPitch(this.nNet.entity.rotationPitch + targetSlot.getPitchDelta());
+        Double deltaPitch = targetSlot.getPitchDelta();
+        if(deltaPitch > 5d){
+            deltaPitch = 5d;
+        }else if(deltaPitch < -5d){
+            deltaPitch = -5d;
+        }
+
+
+        this.nNet.entity.getLookController().setLookPosition(targetSlot.getTargetPosition());
+        this.nNet.entity.setDesiredPitch(this.nNet.entity.rotationPitch + deltaPitch);
 
     }
 

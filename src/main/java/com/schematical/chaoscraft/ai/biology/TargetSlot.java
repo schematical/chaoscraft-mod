@@ -2,13 +2,20 @@ package com.schematical.chaoscraft.ai.biology;
 
 import com.schematical.chaoscraft.ai.CCObserviableAttributeCollection;
 import com.schematical.chaoscraft.entities.OrgEntity;
+import com.schematical.chaoscraft.network.ChaosNetworkManager;
+import com.schematical.chaoscraft.network.packets.CCClientActionPacket;
 import com.schematical.chaoscraft.util.TargetHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.json.simple.JSONObject;
+
+import java.util.List;
 
 /**
  * Created by user1a on 2/26/19.
@@ -129,6 +136,35 @@ public class TargetSlot extends BiologyBase implements iTargetable {
             return true;
         }
         return false;
+    }
+
+    public void populateDebug() {
+        int maxDistance = 50;
+        AxisAlignedBB grownBox = getEntity().getBoundingBox().grow(maxDistance, maxDistance, maxDistance);
+        List<Entity> entities =  getEntity().world.getEntitiesWithinAABB(LivingEntity.class,  grownBox);
+        entities.addAll(getEntity().world.getEntitiesWithinAABB(ItemEntity.class,  grownBox));
+        for (Entity target : entities) {
+
+            //if(!target.equals(getEntity())) {
+
+
+            CCObserviableAttributeCollection attributeCollection = getEntity().observableAttributeManager.Observe(target);
+            if (attributeCollection != null) {
+                //ChaosCraft.logger.info(entity.getCCNamespace() + " can see " + attributeCollection.resourceId);
+                if(attributeCollection.resourceId.equals("minecraft:bee")){
+                    setTarget(target);
+                    CCClientActionPacket clientActionPacket = new CCClientActionPacket(getEntity().getCCNamespace(), CCClientActionPacket.Action.SET_TARGET);
+                    clientActionPacket.setBiology(this);
+
+                    clientActionPacket.setEntity(target);
+                    ChaosNetworkManager.sendToServer(clientActionPacket);
+                    return;
+                }
+            }
+
+            //}
+        }
+
     }
 }
 

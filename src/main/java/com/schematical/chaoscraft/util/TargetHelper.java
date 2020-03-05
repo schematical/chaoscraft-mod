@@ -54,11 +54,11 @@ public class TargetHelper {
 
         degrees -= rotationPitch;
         degrees = degrees % 360;
-        if (degrees > 180) {
+       /* if (degrees > 180) {
             degrees += -360;
         } else if (degrees < -180) {
             degrees += 360;
-        }
+        }*/
         return degrees;
     }
     public static Double getYawDelta(Vec3d targetPos, Vec3d observerPos, double lookDeg) {
