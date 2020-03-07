@@ -4,6 +4,7 @@ import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.OutputNeuron;
 import com.schematical.chaoscraft.ai.biology.TargetSlot;
 import com.schematical.chaosnet.model.ChaosNetException;
+import net.minecraft.util.math.Vec3d;
 import org.json.simple.JSONObject;
 
 /**
@@ -18,7 +19,7 @@ public class LookAtTargetOutput extends OutputNeuron {
         }
 
         if(!targetSlot.hasTarget()){
-            targetSlot.populateDebug();// return getCurrentValue();
+            return getCurrentValue();//targetSlot.populateDebug();
         }
         return super.evaluate();
     }
@@ -44,7 +45,19 @@ public class LookAtTargetOutput extends OutputNeuron {
         }
 
 
-        this.nNet.entity.getLookController().setLookPosition(targetSlot.getTargetPosition());
+        Vec3d pos = targetSlot.getTargetPosition();
+        Vec3d newPos = pos.add(new Vec3d(
+                .5f,
+                .5f,
+                .5f
+        ));
+        this.nNet.entity.getLookController().setLookPosition(
+            newPos.getX(),
+            newPos.getY(),
+            newPos.getZ(),
+            360,
+            360
+        );
         this.nNet.entity.setDesiredPitch(this.nNet.entity.rotationPitch + deltaPitch);
 
     }

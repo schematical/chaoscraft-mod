@@ -31,7 +31,7 @@ public class ScanManager {
     private ArrayList<ScanEntry> entries = new ArrayList<ScanEntry>();
     public static final int range = 10;
     private int index = 0;
-    private int BATCH_SIZE = 250;
+    private int BATCH_SIZE = 500;
     private int MAX_RANGE_INDEX;
 
     private HashMap<String, Integer> counts = new HashMap<>();
@@ -66,10 +66,10 @@ public class ScanManager {
             batchCount < BATCH_SIZE
         ) {
 
-            int x = entityPosition.getX() + index % dividend;
-            int z = entityPosition.getZ() + (int) Math.floor(index / dividend) % dividend;
-            int y = entityPosition.getY() + (int) Math.floor(index / Math.pow(dividend, 2)) % dividend;
-            //ChaosCraft.LOGGER.info(x + ", " + y + ", " + z);
+            int x = entityPosition.getX() - range + index % dividend;
+            int z = entityPosition.getZ() - range + (int) Math.floor(index / dividend) % dividend;
+            int y = entityPosition.getY() - range + (int) Math.floor(index / Math.pow(dividend, 2)) % dividend;
+            //ChaosCraft.LOGGER.info(this.clientOrgManager.getCCNamespace() + "  " + x + ", " + y + ", " + z + " - " + index);
         /*for(int x = entityPosition.getX() - range; x < entityPosition.getX() + range; x++){
             for(int y = entityPosition.getY() - range; y < entityPosition.getY() + range; y++){
                 for(int z = entityPosition.getZ() - range; z < entityPosition.getZ() + range; z++){*/
@@ -81,7 +81,11 @@ public class ScanManager {
                 counts.put(scanEntry.atts.resourceId, 0);
             }
             counts.put(scanEntry.atts.resourceId, counts.get(scanEntry.atts.resourceId) + 1);
-
+           /*if(scanEntry.atts.resourceId.contains("waypoint")){
+                ChaosCraft.LOGGER.info(
+                        orgEntity.getCCNamespace() + " Scanned: Waypoint"
+                );
+            }*/
             entries.add(scanEntry);
             batchCount += 1;
             index += 1;
@@ -164,6 +168,11 @@ public class ScanManager {
                 orgEntity.entityFitnessManager.test(worldEvent);*/
             }else  if(scanEntry.blockPos != null){
                 String name = orgEntity.world.getBlockState(scanEntry.blockPos).getBlock().getRegistryName().toString();
+                if(name.equals("chaoscraft:waypoint")){
+                    ChaosCraft.LOGGER.info(
+                            orgEntity.getCCNamespace() + " targeted: Waypoint"
+                    );
+                }
                 if(
                     (
                         !name.equals("minecraft:void_air") &&

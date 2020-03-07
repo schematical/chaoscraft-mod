@@ -29,7 +29,8 @@ public class CCWorldEvent {
         TARGET_CLOSE_YAW,
         TARGET_CLOSE_PITCH,
         TARGET_SELECTED,
-        IS_FACING
+        IS_FACING,
+        BLOCK_PLACED_TOUCHING_WAYPOINT
     }
     public enum Axis{
         X,

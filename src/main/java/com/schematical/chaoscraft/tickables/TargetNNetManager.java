@@ -15,7 +15,6 @@ public class TargetNNetManager implements iChaosOrgTickable {
 
     @Override
     public void Tick(BaseOrgManager serverOrgManager) {
-        /*
         if(scanManager.getState().equals(ScanManager.ScanState.Ticking)){
             scanManager.tickScan();
             return;
@@ -26,7 +25,7 @@ public class TargetNNetManager implements iChaosOrgTickable {
             return;
         }
         ticksSinceLastScan = 0;
-        scanManager.resetScan();*/
+        scanManager.resetScan();
 
     }
 }

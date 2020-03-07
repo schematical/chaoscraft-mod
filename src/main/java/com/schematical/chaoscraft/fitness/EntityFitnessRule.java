@@ -70,7 +70,7 @@ public class EntityFitnessRule {
            switch (attributeId){
                case(Enum.BLOCK_ID):
                    if(event.block == null){
-                       throw new ChaosNetException("No block to check against! " + event.eventType);
+                       return null;//throw new ChaosNetException("No block to check against! " + event.eventType);
                    }
 
                    resourceLocation = event.block.getRegistryName();

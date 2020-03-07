@@ -3,6 +3,7 @@ package com.schematical.chaoscraft.server;
 import com.amazonaws.opensdk.config.ConnectionConfiguration;
 import com.amazonaws.opensdk.config.TimeoutConfiguration;
 import com.schematical.chaoscraft.ChaosCraft;
+import com.schematical.chaoscraft.entities.AlteredBlockInfo;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.fitness.ChaosCraftFitnessManager;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
@@ -497,5 +498,18 @@ public class ChaosCraftServer {
             ChaosNetworkManager.sendTo(packet, observingPlayer.getServerPlayerEntity());
         }
 
+    }
+
+    public ServerOrgManager findOrgThatAlteredBlock(BlockPos blockPos) {
+        for (ServerOrgManager serverOrgManager : organisms.values()) {
+            if(serverOrgManager.getEntity() != null) {
+                for (AlteredBlockInfo alteredBlock : serverOrgManager.getEntity().alteredBlocks) {
+                    if (alteredBlock.blockPos.equals(blockPos)) {
+                        return serverOrgManager;
+                    }
+                }
+            }
+        }
+        return null;
     }
 }
