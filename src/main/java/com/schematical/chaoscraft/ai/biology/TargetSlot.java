@@ -45,6 +45,23 @@ public class TargetSlot extends BiologyBase implements iTargetable {
         }
         return null;
     }
+    public Vec3d getTargetPositionCenter(){
+        if(targetEntity != null){
+            Vec3d vec3d = targetEntity.getPositionVector();
+            AxisAlignedBB box = targetEntity.getBoundingBox();
+            return vec3d.add(
+                    box.getCenter()
+            );
+        }
+        if(blockPos != null) {
+            return new Vec3d(
+                    this.blockPos.getX() + .5f,
+                    this.blockPos.getY()+ .5f,
+                    this.blockPos.getZ()+ .5f
+            );
+        }
+        return null;
+    }
     public CCObserviableAttributeCollection getObservedAttributes(OrgEntity orgEntity){
         if(this.targetEntity != null){
             return orgEntity.observableAttributeManager.Observe(this.targetEntity);
@@ -67,7 +84,7 @@ public class TargetSlot extends BiologyBase implements iTargetable {
     }
 
     public Double getYawDelta() {
-        Vec3d targetPosition = getTargetPosition();
+        Vec3d targetPosition = getTargetPositionCenter();
         if (targetPosition == null) {
             return null;
         }
@@ -80,7 +97,7 @@ public class TargetSlot extends BiologyBase implements iTargetable {
     }
 
     public Double getPitchDelta() {
-        Vec3d targetPosition = getTargetPosition();
+        Vec3d targetPosition = getTargetPositionCenter();
         if (targetPosition == null) {
             return null;
         }
@@ -93,7 +110,7 @@ public class TargetSlot extends BiologyBase implements iTargetable {
     }
 
     public Double getDist() {
-        Vec3d targetPosition = getTargetPosition();
+        Vec3d targetPosition = getTargetPositionCenter();
         if (targetPosition == null) {
             return null;
         }

@@ -94,6 +94,7 @@ public class OrgEntity extends MobEntity {
     private int ticksSinceObservationHack = -1;
 
     private int spawnHash;
+    private Vec3d desiredLookVec = null;
 
 
     public OrgEntity(EntityType<? extends MobEntity> type, World world) {
@@ -336,23 +337,28 @@ public class OrgEntity extends MobEntity {
     }
 
     public BlockRayTraceResult rayTraceBlocks(double blockReachDistance) {
-        Vec3d vec3d = this.getEyePosition(1);
-        Vec3d vec3d1 = this.getLook(1);
+        Vec3d vec3d = this.getEyePosition( 1.0F);
+        //Vec3d vec3d1 = this.getLook(1);
+       // if(desiredLookVec == null){
+            desiredLookVec = this.getLook( 1.0F);
+        //}
+        Vec3d vec3d1 = desiredLookVec.scale(25);
         Vec3d vec3d2 = vec3d.add(
-                new Vec3d(
-                        vec3d1.x * blockReachDistance,
-                        vec3d1.y * blockReachDistance,
-                        vec3d1.z * blockReachDistance
-                )
+            vec3d1
         );
 
-        return this.world.rayTraceBlocks(new RayTraceContext(vec3d, vec3d2, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.ANY, this));
+        return this.world.rayTraceBlocks(new RayTraceContext(vec3d, vec3d2, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this));
     }
 
 
     public void dig(BlockPos pos) {
-
-        if (!this.world.getWorldBorder().contains(pos) || pos.distanceSq(getPosition()) > REACH_DISTANCE * REACH_DISTANCE) {
+        BlockPos myPos = getPosition();
+        this.swingArm(Hand.MAIN_HAND);
+        boolean withInDist = pos.withinDistance(myPos, REACH_DISTANCE);
+        if (
+           // !this.world.getWorldBorder().contains(pos) ||
+            !withInDist
+        ) {
             resetMining();
             return;
         }
@@ -369,9 +375,9 @@ public class OrgEntity extends MobEntity {
 
         Material material = state.getMaterial();
         if(
-                material == Material.WATER ||
-                        material == Material.AIR ||
-                        material == Material.LAVA
+            material == Material.WATER ||
+            material == Material.AIR ||
+            material == Material.LAVA
         ){
             return;
         }
@@ -473,7 +479,7 @@ public class OrgEntity extends MobEntity {
         return null;
     }
 
-    public int hasInInventory(Item item){
+    public int hasInInventory(String itemId/*Item item*/){
         //Check if it is in their inventory
         ItemStack stack = null;
         int slot = -1;
@@ -481,7 +487,7 @@ public class OrgEntity extends MobEntity {
             ItemStack checkStack = this.orgInventory.get(i);
             Item _item = checkStack.getItem();
 
-            if(_item.equals(item)){
+            if(_item.getRegistryName().toString().equals(itemId)){
                 slot = i;
             }
 
@@ -728,6 +734,16 @@ public class OrgEntity extends MobEntity {
     }
 
     private void updatePitchAndYaw(){
+        if(desiredLookVec == null){
+            desiredLookVec = this.getLook(1);
+        }
+        this.nNet.entity.getLookController().setLookPosition(
+                desiredLookVec.getX(),
+                desiredLookVec.getY(),
+                desiredLookVec.getZ(),
+                360,
+                360
+        );
       /*  double yOffset = Math.sin(Math.toRadians(desiredPitch));
         double zOffset = Math.cos(Math.toRadians(this.desiredHeadYaw)) * Math.cos(Math.toRadians(desiredPitch));
         double xOffset = Math.sin(Math.toRadians(this.desiredHeadYaw)) * Math.cos(Math.toRadians(desiredPitch));
@@ -961,5 +977,9 @@ public class OrgEntity extends MobEntity {
 
     public void setDesiredHeadYaw(double desiredHeadYaw) {
         this.desiredHeadYaw = desiredHeadYaw;
+    }
+
+    public void setDesiredLookPosition(Vec3d newPos) {
+        this.desiredLookVec = newPos;
     }
 }

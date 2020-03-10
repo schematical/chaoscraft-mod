@@ -20,6 +20,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -81,7 +85,25 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
                 this.fontRenderer.drawString(s, (float)x, (float)y, 14737632);
             }
         }
-        int i = 1;
+
+
+
+        list.clear();
+        BlockRayTraceResult rayTraceResult = clientOrgManager.getEntity().rayTraceBlocks(clientOrgManager.getEntity().REACH_DISTANCE);
+        String s = "RayTrace: ";
+        if(rayTraceResult == null){
+            s += "null";
+        }else{
+            s += rayTraceResult.getType() + " ";
+            BlockPos blockPos = rayTraceResult.getPos();
+            s += clientOrgManager.getEntity().world.getBlockState(blockPos).getBlock().getRegistryName().toString();
+            list.add(s);
+            Vec3d eyePos = clientOrgManager.getEntity().getEyePosition(1f);
+            list.add(rayTraceResult.getPos().getX() + ","  + rayTraceResult.getPos().getY() + "," + rayTraceResult.getPos().getZ() + "   " + Math.round(eyePos.getX()) + ", "+ Math.round(eyePos.getY()) + ", " + Math.round(eyePos.getZ()));
+        }
+
+
+
         for (BiologyBase biologyBase : this.clientOrgManager.getNNet().biology.values()) {
             if(biologyBase instanceof  TargetSlot) {
 
@@ -96,24 +118,29 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
 
                     TargetSlot targetSlot = (TargetSlot) biologyBase;
                     if (targetSlot != null) {
-                        String s = targetSlot.toString() + " LATO:" + lookAtTargetOutput.getPrettyCurrValue();
+                        s = targetSlot.toString() + " LATO:" + lookAtTargetOutput.getPrettyCurrValue();
                         s += " EP:" + Math.round(clientOrgManager.getEntity().rotationPitch);
                         if (targetSlot.hasTarget()) {
                             s += " YD:" + Math.round(targetSlot.getYawDelta());
                             s += " PD:" + Math.round(targetSlot.getPitchDelta());
                             s += " DD:" + Math.round(targetSlot.getDist());
                         }
-                        int j = 9;
-                        int k = this.fontRenderer.getStringWidth(s);
-                        int x = this.mc.getMainWindow().getScaledWidth() - 400;
-                        int y = 2 + j * i;
-                        fill(x - 1, y - 1, x + k + 1, y + j - 1, -1873784752);
-                        this.fontRenderer.drawString(s, (float) x, (float) y, 14737632);
-                        i += 1;
+                       list.add(s);
                     }
                 }
             }
         }
+        int i = 1;
+        for (String _s : list) {
+            int j = 9;
+            int k = this.fontRenderer.getStringWidth(_s);
+            int x = this.mc.getMainWindow().getScaledWidth() - k;
+            int y = 2 + j * i;
+            fill(x - 1, y - 1, x + k + 1, y + j - 1, -1873784752);
+            this.fontRenderer.drawString(_s, (float) x, (float) y, 14737632);
+            i += 1;
+        }
+
         RenderSystem.popMatrix();
     }
 

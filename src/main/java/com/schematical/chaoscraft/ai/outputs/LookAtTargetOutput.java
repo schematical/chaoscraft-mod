@@ -45,19 +45,10 @@ public class LookAtTargetOutput extends OutputNeuron {
         }
 
 
-        Vec3d pos = targetSlot.getTargetPosition();
-        Vec3d newPos = pos.add(new Vec3d(
-                .5f,
-                .5f,
-                .5f
-        ));
-        this.nNet.entity.getLookController().setLookPosition(
-            newPos.getX(),
-            newPos.getY(),
-            newPos.getZ(),
-            360,
-            360
-        );
+        Vec3d pos = targetSlot.getTargetPositionCenter();
+
+        this.nNet.entity.setDesiredLookPosition(pos);
+
         this.nNet.entity.setDesiredPitch(this.nNet.entity.rotationPitch + deltaPitch);
 
     }

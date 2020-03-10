@@ -20,7 +20,7 @@ public class HasInInventoryInput extends InputNeuron {
     @Override
     public float evaluate(){
         //Iterate through all blocks entities etc with in the range
-        int slot = nNet.entity.hasInInventory(item);
+        int slot = nNet.entity.hasInInventory(attributeValue);
         if(slot == -1){
             setCurrentValue(-1);
             return getCurrentValue();
@@ -36,18 +36,7 @@ public class HasInInventoryInput extends InputNeuron {
         super.parseData(jsonObject);
         attributeId = jsonObject.get("attributeId").toString();
         attributeValue = jsonObject.get("attributeValue").toString();
-        //positionRange = new PositionRange();
-        //positionRange.parseData((JSONObject) jsonObject.get("positionRange"));
-        switch(attributeId){
-            case(CCAttributeId.ITEM_ID):
-                item = Item.getItemById(Integer.parseInt(attributeValue));
-                if(item == null){
-                    throw new ChaosNetException("Could not find Item: " + attributeValue);
-                }
-            break;
-            default:
-                throw new ChaosNetException("Invalid `HasInInventoryInput.attributeId`: " + attributeId);
-        }
+
     }
     public String toLongString(){
         String response = super.toLongString();

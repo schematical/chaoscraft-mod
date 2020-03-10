@@ -18,6 +18,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.GameType;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
 import org.json.simple.JSONArray;
@@ -434,7 +435,9 @@ public class ChaosCraftServer {
         }
         ChaosCraftServerPlayerInfo serverPlayerInfo = userMap.get(player.getUniqueID().toString());
         serverPlayerInfo.state = message.getState();
-      if(serverPlayerInfo.state.equals(ChaosCraftServerPlayerInfo.State.ObservingActive)) {
+        serverPlayerInfo.getServerPlayerEntity().setGameType(GameType.SPECTATOR);
+        if(serverPlayerInfo.state.equals(ChaosCraftServerPlayerInfo.State.ObservingActive)) {
+
             if (!organisms.containsKey(message.getOrgNamespace())) {
                 serverPlayerInfo.state = ChaosCraftServerPlayerInfo.State.None;
                 ChaosCraft.LOGGER.error("Could not set player observing state because find Organism:" + message.getOrgNamespace());
@@ -443,6 +446,7 @@ public class ChaosCraftServer {
             serverPlayerInfo.observingEntity = organisms.get(message.getOrgNamespace());
 
         }else if(serverPlayerInfo.state.equals(ChaosCraftServerPlayerInfo.State.None)) {
+            serverPlayerInfo.getServerPlayerEntity().setGameType(GameType.CREATIVE);
                 ServerPlayerEntity serverPlayerEntity  = server.getPlayerList().getPlayerByUUID(serverPlayerInfo.playerUUID);
                 serverPlayerEntity.setSpectatingEntity(null);
 
