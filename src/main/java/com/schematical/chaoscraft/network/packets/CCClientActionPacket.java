@@ -110,6 +110,10 @@ public class CCClientActionPacket {
             }
             if(obj.get("biology") != null){
                 ServerOrgManager serverOrgManager = ChaosCraft.getServer().getOrgByNamespace(pkt.orgNamespace);
+                if(serverOrgManager== null){
+
+                    throw new ChaosNetException("No valid organism found with namespace: " + pkt.orgNamespace);
+                }
                 NeuralNet neuralNet = serverOrgManager.getNNet();
                 pkt.biologyBase = neuralNet.getBiology(obj.get("biology").toString());
                 if(pkt.biologyBase == null){
@@ -124,7 +128,7 @@ public class CCClientActionPacket {
         } catch (Exception e) {
             ChaosCraft.LOGGER.error(payload);
             e.printStackTrace();
-            throw new ChaosNetException(e.getMessage() + "\n\n" + payload + "\n\n");
+            ChaosCraft.LOGGER.error(e.getMessage() + "\n\n" + payload + "\n\n");
         }
         return pkt;
     }

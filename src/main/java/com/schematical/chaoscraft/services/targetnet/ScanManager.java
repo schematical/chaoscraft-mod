@@ -183,10 +183,10 @@ public class ScanManager {
                             orgEntity.getCCNamespace() + " targeted: " +
                             orgEntity.world.getBlockState(scanEntry.blockPos).getBlock().getRegistryName().toString()
                     );
-                    clientActionPacket.setBlockPos(scanEntry.blockPos);
-                    targetSlot.setTarget(scanEntry.blockPos);
-                    ChaosNetworkManager.sendToServer(clientActionPacket);
                 }
+                clientActionPacket.setBlockPos(scanEntry.blockPos);
+                targetSlot.setTarget(scanEntry.blockPos);
+                ChaosNetworkManager.sendToServer(clientActionPacket);
 
             }else{
                 throw new ChaosNetException("Invalid ScanEntry: No blockPos nor Entity");

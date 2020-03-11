@@ -10,9 +10,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 import org.json.simple.JSONObject;
 
-public class BaseTargetInputNeuron extends InputNeuron implements iHasAttributeIdValue {
-    public String attributeId;
-    public String attributeValue;
+public class BaseTargetInputNeuron extends InputNeuron {
+
     public TargetSlot targetSlot;
 
    // protected TargetHelper targetHelper;
@@ -64,7 +63,7 @@ public class BaseTargetInputNeuron extends InputNeuron implements iHasAttributeI
 
         return null;
     }*/
-    public iTargetable getTarget(){
+    public TargetSlot getTarget(){
         return targetSlot;
     }
     @Override
@@ -72,9 +71,6 @@ public class BaseTargetInputNeuron extends InputNeuron implements iHasAttributeI
         super.parseData(jsonObject);
         if(jsonObject.get("targetSlotId") != null){
             targetSlot = (TargetSlot)nNet.getBiology(jsonObject.get("targetSlotId").toString());
-        }else {
-            attributeId = jsonObject.get("attributeId").toString();
-            attributeValue = jsonObject.get("attributeValue").toString();
         }
 
     }
@@ -82,8 +78,6 @@ public class BaseTargetInputNeuron extends InputNeuron implements iHasAttributeI
         String response = super.toString();
         if(targetSlot != null){
             response += targetSlot.toString();
-        }else {
-            response += " " + getAttributeId() + "=" + getAttributeValue();
         }
         response += getPrettyCurrValue();
 
@@ -93,19 +87,9 @@ public class BaseTargetInputNeuron extends InputNeuron implements iHasAttributeI
         String response = super.toString();
         if(targetSlot != null){
             response += targetSlot.toString();
-        }else {
-            response += " " + getAttributeId() + "=" + getAttributeValue();
         }
         response += getPrettyCurrValue();
         return response;
     }
-    @Override
-    public String getAttributeId() {
-        return attributeId;
-    }
 
-    @Override
-    public String getAttributeValue() {
-        return attributeValue;
-    }
 }

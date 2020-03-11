@@ -35,20 +35,17 @@ public class ChaosPlayerNeuronTestScreen extends AbstractGui {
 
         BaseTargetInputNeuron neuronBase = new TargetDistanceInput();
         neuronBase.setDebugEntity(playerEntity);
-        neuronBase.attributeId = DebugTargetHolder.ATTRIBUTE_ID;//CCAttributeId.ENTITY_ID;
-        neuronBase.attributeValue =  DebugTargetHolder.ATTRIBUTE_VALUE;//
+
         debugNeurons.add(neuronBase);
 
         neuronBase = new TargetPitchInput();
         neuronBase.setDebugEntity(playerEntity);
-        neuronBase.attributeId = DebugTargetHolder.ATTRIBUTE_ID;// CCAttributeId.ENTITY_ID;
-        neuronBase.attributeValue = "minecraft:bee";
+
         debugNeurons.add(neuronBase);
 
         neuronBase = new TargetYawInput();
         neuronBase.setDebugEntity(playerEntity);
-        neuronBase.attributeId =  DebugTargetHolder.ATTRIBUTE_ID;//CCAttributeId.ENTITY_ID;
-        neuronBase.attributeValue = "minecraft:bee";
+
         debugNeurons.add(neuronBase);
 
     }
