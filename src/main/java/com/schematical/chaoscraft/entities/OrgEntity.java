@@ -7,39 +7,32 @@ import com.schematical.chaoscraft.ai.CCObserviableAttributeCollection;
 import com.schematical.chaoscraft.ai.NeuralNet;
 import com.schematical.chaoscraft.ai.OutputNeuron;
 import com.schematical.chaoscraft.client.ClientOrgManager;
-import com.schematical.chaoscraft.client.gui.ChaosNNetViewOverlayGui;
-import com.schematical.chaoscraft.client.gui.ChaosOrgDetailOverlayGui;
 import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.events.OrgEvent;
 import com.schematical.chaoscraft.fitness.EntityFitnessManager;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.CCClientOutputNeuronActionPacket;
-import com.schematical.chaoscraft.server.ChaosCraftServerPlayerInfo;
 import com.schematical.chaoscraft.server.ServerOrgManager;
 import com.schematical.chaosnet.model.ChaosNetException;
-import com.schematical.chaosnet.model.Organism;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.*;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
+import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.RecipeItemHelper;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldType;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.registries.ObjectHolder;
@@ -48,7 +41,6 @@ import org.json.simple.JSONObject;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.UUID;
 
 public class OrgEntity extends MobEntity {
 
@@ -56,7 +48,7 @@ public class OrgEntity extends MobEntity {
     public static final EntityType<OrgEntity> ORGANISM_TYPE = null;
     public final double REACH_DISTANCE = 5.0D;
 
-    public final NonNullList<ItemStack> orgInventory = NonNullList.withSize(36, ItemStack.EMPTY);
+    //public final NonNullList<ItemStack> orgInventory = NonNullList.withSize(36, ItemStack.EMPTY);
     public EntityFitnessManager entityFitnessManager;
 
     protected CCPlayerEntityWrapper playerWrapper;
@@ -67,39 +59,41 @@ public class OrgEntity extends MobEntity {
     protected ClientOrgManager clientOrgManager = null;
 
     //The current selected item
-    private int currentItem = 0;
-    protected ItemStackHandler itemHandler = new ItemStackHandler();
+    private int selectedItemIndex = 0;
+    protected ItemStackHandler itemHandler = new ItemStackHandler(36);
     protected double desiredPitch;
     protected double desiredYaw;
     protected double desiredHeadYaw;
-    //Whether the bot has tried left clicking last tick.
-    private boolean lastTickLeftClicked;
+
+
 
     //Mining related variables
-    private float hardness = 0;
+
     private BlockPos lastMinePos = BlockPos.ZERO;
-    private int blockSoundTimer;
+
 
     private int miningTicks = 0;
 
     public List<AlteredBlockInfo> alteredBlocks = new ArrayList<AlteredBlockInfo>();
     private int equippedSlot = -1;
-    private int rightClickDelay;
+
 
     protected NeuralNet nNet;
 
-    private int selectedItemIndex;
+
     private boolean hasTraveled = false;
     private Vec3d spawnPos;
     private int ticksSinceObservationHack = -1;
 
     private int spawnHash;
     private Vec3d desiredLookVec = null;
+    private int rightClickDelay;
 
 
     public OrgEntity(EntityType<? extends MobEntity> type, World world) {
         super((EntityType<? extends MobEntity>) type, world);
         //setHealth(1);
+        //itemHandler.setStackInSlot(3, new ItemStack(Items.OAK_PLANKS, 12));
     }
     public void setSpawnHash(int _spawnHash) {
         this.spawnHash = _spawnHash;
@@ -264,8 +258,8 @@ public class OrgEntity extends MobEntity {
         RecipeItemHelper recipeItemHelper = new RecipeItemHelper();
 
 
-        for(int i = 0; i < orgInventory.size(); i++) {
-            ItemStack itemStack = orgInventory.get(i);
+        for(int i = 0; i < itemHandler.getSlots(); i++) {
+            ItemStack itemStack = itemHandler.getStackInSlot(i);
 
             if(!itemStack.isEmpty()){
                 recipeItemHelper.accountStack(itemStack);
@@ -289,25 +283,25 @@ public class OrgEntity extends MobEntity {
         recipeItems = recipe.getIngredients();
         //Check to see if they have the items in inventory for that
         RecipeItemHelper recipeItemHelper = new RecipeItemHelper();
-        int slots = orgInventory.size();
-        int emptySlot = -1;
+        int slots = itemHandler.getSlots();
+        int emptySlotIndex = -1;
 
         List<Integer> usedSlots = new ArrayList<Integer>();
         for(Ingredient ingredient: recipeItems) {
 
             for (int i = 0; i < slots; i++) {
-                ItemStack itemStack = orgInventory.get(i);
+                ItemStack itemStack = itemHandler.getStackInSlot(i);
                 if(itemStack.isEmpty()) {
-                    emptySlot = i;
+                    emptySlotIndex = i;
                 }else{
                     int packedItem = RecipeItemHelper.pack(itemStack);
                     IntList ingredientItemIds = ingredient.getValidItemStacksPacked();
                     if (ingredientItemIds.contains(packedItem)) {
                         //int amountTaken = recipeItemHelper.tryTake(packedItem, 1);
-                        if (orgInventory.get(i).getCount() < 1) {
+                        if (itemHandler.getStackInSlot(i).getCount() < 1) {
                             throw new ChaosNetException("Cannot get any more of these");
                         }
-                        orgInventory.remove(i);
+                        itemHandler.setStackInSlot(i, ItemStack.EMPTY);
                     }
                 }
 
@@ -318,8 +312,9 @@ public class OrgEntity extends MobEntity {
 
         ItemStack outputStack = recipe.getRecipeOutput().copy();
         //ChaosCraft.logger.info(this.getCCNamespace() + " - Crafted: " + outputStack.getDisplayName());
-        if(emptySlot != -1) {
-            orgInventory.add(emptySlot, outputStack);
+        if(emptySlotIndex != -1) {
+            itemHandler.setStackInSlot(emptySlotIndex,outputStack);//        orgInventory.add(emptySlotIndex, outputStack);
+
             observableAttributeManager.ObserveCraftableRecipes(this);
         }else{
 
@@ -331,7 +326,7 @@ public class OrgEntity extends MobEntity {
     }
     public ItemStack getStackInSlot( EquipmentSlotType slotIn) throws Exception {
         if (slotIn == EquipmentSlotType.MAINHAND) {
-            return this.orgInventory.get(currentItem);
+            return this.itemHandler.getStackInSlot(selectedItemIndex);
         }
         throw new Exception("TODO: Build inventory for :" + slotIn.getName());
     }
@@ -483,8 +478,8 @@ public class OrgEntity extends MobEntity {
         //Check if it is in their inventory
         ItemStack stack = null;
         int slot = -1;
-        for (int i = 0; i < this.orgInventory.size(); i++) {
-            ItemStack checkStack = this.orgInventory.get(i);
+        for (int i = 0; i < this.itemHandler.getSlots(); i++) {
+            ItemStack checkStack = this.itemHandler.getStackInSlot(i);
             Item _item = checkStack.getItem();
 
             if(_item.getRegistryName().toString().equals(itemId)){
