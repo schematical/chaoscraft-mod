@@ -142,13 +142,14 @@ public class ChaosNNetViewOverlayGui extends Screen {
                         c.getBlue()/255f,
                             a
                     );
+                    float width = Math.abs(dependency.weight) + .2f;
                     CCGUIHelper.drawLine(
                             chaosNeuronButton.x + chaosNeuronButton.getWidth() / 2,
                             chaosNeuronButton.y  + chaosNeuronButton.getHeight() / 2,
                             depBtn.x + depBtn.getWidth() /2,
                             depBtn.y  + depBtn.getHeight() /2,
                             c,
-                            dependency.weight
+                            width
                     );
                 }
             }

@@ -240,7 +240,7 @@ public class OrgEntity extends MobEntity {
         playerWrapper.prevPosZ  = this.prevPosZ;
         playerWrapper.setPosition(getPositionVec().x, getPositionVec().y, getPositionVec().z);
         playerWrapper.onGround = this.onGround;
-        //playerWrapper.setHeldItem(Hand.MAIN_HAND, getHeldItemMainhand());
+        playerWrapper.setHeldItem(Hand.MAIN_HAND, getHeldItemMainhand());
         return playerWrapper;
     }
 
@@ -467,8 +467,8 @@ public class OrgEntity extends MobEntity {
             if(!itemStack.isEmpty()){
                 CCObserviableAttributeCollection observiableAttributeCollection = observableAttributeManager.Observe(itemStack.getItem());
                 if(
-                        observiableAttributeCollection != null &&
-                                observiableAttributeCollection.resourceId.equals(resourceId)
+                    observiableAttributeCollection != null &&
+                    observiableAttributeCollection.resourceId.equals(resourceId)
                 ){
                     this.setHeldItem(Hand.MAIN_HAND, itemStack);
                     equippedSlot = i;
@@ -654,7 +654,7 @@ public class OrgEntity extends MobEntity {
             )
         );
         equippedSlot = 0;//TODO: fix this
-        itemHandler.extractItem(equippedSlot, itemStack.getCount(), false);
+         itemHandler.extractItem(equippedSlot, itemStack.getCount(), false);
 
         this.setHeldItem(Hand.MAIN_HAND, ItemStack.EMPTY);
         ItemStack itemStackCheck = this.getHeldItem(Hand.MAIN_HAND);

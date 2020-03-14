@@ -18,8 +18,13 @@ public class CraftOutput extends OutputNeuron {
     private String recipeId;
     protected IRecipe recipe;
     public void init(){
-
-        for (IRecipe irecipe : this.nNet.entity.getServer().getRecipeManager().getRecipes())
+        RecipeManager recipeManager = this.nNet.entity.world.getRecipeManager();;
+       /* if(this.nNet.entity.world.isRemote){
+            t
+        }else {
+            recipeManager = this.nNet.entity.getServer().getRecipeManager();
+        }*/
+        for (IRecipe irecipe : recipeManager.getRecipes())
         {
 
             String key = irecipe.getId().getNamespace() + ":" + irecipe.getId().getPath();
@@ -79,8 +84,8 @@ public class CraftOutput extends OutputNeuron {
     @Override
     public void parseData(JSONObject jsonObject){
         super.parseData(jsonObject);
-        recipeId = jsonObject.get("recipeId").toString();
-
+        //recipeId = jsonObject.get("attributeId").toString();
+        recipeId = jsonObject.get("attributeValue").toString();
         init();
     }
     public String toLongString(){
