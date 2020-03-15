@@ -150,15 +150,11 @@ public class ScanManager {
             CCClientActionPacket clientActionPacket = new CCClientActionPacket(orgEntity.getCCNamespace(), CCClientActionPacket.Action.SET_TARGET);
             clientActionPacket.setBiology(targetSlot);
             if(scanEntry.entity != null) {
-                ChaosCraft.LOGGER.info(
+                /*ChaosCraft.LOGGER.info(
                         orgEntity.getCCNamespace() + " targeted: " +
                                 scanEntry.entity.getType().getRegistryName().toString()
-                );
-                if(scanEntry.entity.getType().getRegistryName().toString().equals("minecraft:bee")){
-                    ChaosCraft.LOGGER.info(
-                            orgEntity.getCCNamespace() + " targeted: Bee"
-                    );
-                }
+                );*/
+
                 targetSlot.setTarget(scanEntry.entity);
                 clientActionPacket.setEntity(scanEntry.entity);
                 ChaosNetworkManager.sendToServer(clientActionPacket);

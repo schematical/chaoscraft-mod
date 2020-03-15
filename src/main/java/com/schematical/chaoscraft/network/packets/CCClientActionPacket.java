@@ -110,7 +110,7 @@ public class CCClientActionPacket {
             }
             if(obj.get("biology") != null){
                 ServerOrgManager serverOrgManager = ChaosCraft.getServer().getOrgByNamespace(pkt.orgNamespace);
-                if(serverOrgManager== null){
+                if(serverOrgManager == null){
 
                     throw new ChaosNetException("No valid organism found with namespace: " + pkt.orgNamespace);
                 }
@@ -150,7 +150,9 @@ public class CCClientActionPacket {
                 if(message.action.equals(Action.SET_TARGET)){
                     CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.TARGET_SELECTED);
                     TargetSlot targetSlot = (TargetSlot)message.biologyBase;
-
+                    if(targetSlot == null){
+                        throw new ChaosNetException("No `TargetSlot` found.");
+                    }
                     if(message.entity != null) {
                         targetSlot.setTarget(message.entity);
                         worldEvent.entity = message.entity;

@@ -397,6 +397,7 @@ public class ChaosCraftServer {
         }
     }
     public void repair(){
+        //TODO: Remove this server cannot repair
         try{
 
             PostUsernameTrainingroomsTrainingroomSessionsSessionRepairRequest request = new PostUsernameTrainingroomsTrainingroomSessionsSessionRepairRequest();

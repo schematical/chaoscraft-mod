@@ -74,11 +74,11 @@ public class CraftOutput extends OutputNeuron {
             throw new ChaosNetException("Something went wrong crafting: " + recipe.getType().toString() + " this should not be possible with the `evaluate` check above");
         }
 
-        CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.CRAFT);
+        CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.ITEM_CRAFTED);
         worldEvent.item = outputStack.getItem();
         nNet.entity.entityFitnessManager.test(worldEvent);
         //TODO: Move this to a GUI thing.
-        String message = nNet.entity.getCCNamespace() +" Crafted Recipe: " + recipe.getType().toString() + " - Item: " + worldEvent.item.getRegistryName();
+        //String message = nNet.entity.getCCNamespace() +" Crafted Recipe: " + recipe.getType().toString() + " - Item: " + worldEvent.item.getRegistryName();
 
     }
     @Override

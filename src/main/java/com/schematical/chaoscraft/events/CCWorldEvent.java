@@ -12,7 +12,7 @@ import net.minecraft.util.math.Vec3i;
  */
 public class CCWorldEvent {
     public enum Type {
-        CRAFT,
+        ITEM_CRAFTED,
         EQUIP,
         BLOCK_MINED,
         BLOCK_PLACED,

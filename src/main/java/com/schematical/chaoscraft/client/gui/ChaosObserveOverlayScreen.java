@@ -20,10 +20,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.items.ItemStackHandler;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -130,6 +133,17 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
                 }
             }
         }
+        s = "Held Item: " + clientOrgManager.getEntity().getHeldItem(Hand.MAIN_HAND).toString();
+        list.add(s);
+        ItemStackHandler itemStackHandler = clientOrgManager.getEntity().getItemHandler();
+        for(int i = 0; i < itemStackHandler.getSlots(); i++){
+            ItemStack itemStack = itemStackHandler.getStackInSlot(i);
+            if(!itemStack.isEmpty()){
+                s = "Inv:" + i + " " + itemStack.getItem().getRegistryName().toString() + " x " + itemStack.getCount();
+                list.add(s);
+            }
+        }
+
         int i = 1;
         for (String _s : list) {
             int j = 9;
