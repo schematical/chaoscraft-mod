@@ -19,6 +19,7 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.CraftingTableBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.*;
 import net.minecraft.entity.item.ItemEntity;
@@ -247,7 +248,20 @@ public class OrgEntity extends MobEntity {
             return false;
         }
         RecipeItemHelper recipeItemHelper = getRecipeItemHelper();
-
+        boolean isUsingCraftingTable = false;
+        BlockRayTraceResult rayTraceResult = nNet.entity.rayTraceBlocks(nNet.entity.REACH_DISTANCE);
+        if(world.getBlockState(rayTraceResult.getPos()).getBlock() instanceof CraftingTableBlock){
+            isUsingCraftingTable = true;
+        }
+        if(!isUsingCraftingTable) {
+            if (!recipe.canFit(2, 2)) {
+                return false;
+            }
+        }else{
+            if (!recipe.canFit(3, 3)) {
+                return false;
+            }
+        }
         boolean result = recipeItemHelper.canCraft(recipe, null);
 
         return result;
@@ -514,7 +528,7 @@ public class OrgEntity extends MobEntity {
     }
 
     public void rightClick(BlockRayTraceResult result) {
-        this.rightClickDelay = 4;
+
         for (Hand hand : Hand.values()) {
 
 
