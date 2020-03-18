@@ -5,7 +5,6 @@ import com.schematical.chaoscraft.ChaosCraft;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.layers.HeldItemLayer;
-import net.minecraft.client.renderer.entity.model.BeeModel;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.util.ResourceLocation;
@@ -24,6 +23,6 @@ public class OrgEntityRenderer extends LivingRenderer<OrgEntity, BipedModel<OrgE
     @Nullable
     @Override
     public ResourceLocation getEntityTexture(@Nonnull OrgEntity entity) {
-        return new ResourceLocation(ChaosCraft.MODID, "batman.png");
+        return new ResourceLocation(ChaosCraft.MODID, "bot.png");
     }
 }

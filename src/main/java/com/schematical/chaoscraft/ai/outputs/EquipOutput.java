@@ -60,8 +60,8 @@ public class EquipOutput extends OutputNeuron {
                 throw new ChaosNetException("Invalid `EquipOutput.attributeId`: " + attributeId);
         }
         if(itemStack == null){
-            throw new ChaosNetException("Matt Look Here: This should not be possible");
-            //return;
+            //throw new ChaosNetException("Matt Look Here: This should not be possible");
+            return;
         }
 
         CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.EQUIP);

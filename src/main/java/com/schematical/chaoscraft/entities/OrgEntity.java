@@ -251,7 +251,7 @@ public class OrgEntity extends MobEntity {
         boolean isUsingCraftingTable = false;
         BlockRayTraceResult rayTraceResult = nNet.entity.rayTraceBlocks(nNet.entity.REACH_DISTANCE);
         if(world.getBlockState(rayTraceResult.getPos()).getBlock() instanceof CraftingTableBlock){
-            isUsingCraftingTable = true;
+             isUsingCraftingTable = true;
         }
         if(!isUsingCraftingTable) {
             if (!recipe.canFit(2, 2)) {
@@ -286,6 +286,9 @@ public class OrgEntity extends MobEntity {
 
 
     public ItemStack craft(IRecipe recipe) {
+        if(!nNet.entity.canCraft(recipe)){
+            throw new ChaosNetException("Cannot craft " + recipe.getId().toString());
+        }
         NonNullList<Ingredient> recipeItems = null;
 
         recipeItems = recipe.getIngredients();
@@ -868,7 +871,7 @@ public class OrgEntity extends MobEntity {
     }
     public void pickupItem(ItemEntity item) {
         if (item.cannotPickup()) return;
-        ChaosCraft.LOGGER.info(this.getCCNamespace() + " - Picked up: " + item.getItem().getItem().getRegistryName());
+        //ChaosCraft.LOGGER.info(this.getCCNamespace() + " - Picked up: " + item.getItem().getItem().getRegistryName());
         ItemStack stack = item.getItem();
 
         Item worldEventItem = stack.getItem();

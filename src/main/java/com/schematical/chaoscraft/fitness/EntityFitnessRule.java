@@ -103,7 +103,7 @@ public class EntityFitnessRule {
                    if(!attributeValue.contains(itemId)){
                        return null;
                    }else{
-                       ChaosCraft.LOGGER.info("Item Pickup Check Success: " + itemId);
+                       //ChaosCraft.LOGGER.info("Item Pickup Check Success: " + itemId);
                    }
                    break;
 

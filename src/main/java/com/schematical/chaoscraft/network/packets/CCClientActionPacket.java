@@ -97,6 +97,7 @@ public class CCClientActionPacket {
                 if( pkt.entity == null){
                    throw new ChaosNetException("CCClientActionPacket = Could not find entity: " + UUID.fromString(obj.get("entity").toString()));
                 }
+
             }else if(obj.get("blockPos") != null){
                 String[] parts = obj.get("blockPos").toString().split(",");
                 pkt.blockPos = new BlockPos(
@@ -113,6 +114,12 @@ public class CCClientActionPacket {
                 if(serverOrgManager == null){
 
                     throw new ChaosNetException("No valid organism found with namespace: " + pkt.orgNamespace);
+                }
+                if(serverOrgManager.getEntity() == null){
+                    throw new ChaosNetException("CCClientActionPacket - Entity does not exist: " + UUID.fromString(obj.get("entity").toString()));
+                }
+                if(!serverOrgManager.getEntity().isAlive()){
+                    throw new ChaosNetException("CCClientActionPacket - Entity is dead: " + UUID.fromString(obj.get("entity").toString()));
                 }
                 NeuralNet neuralNet = serverOrgManager.getNNet();
                 pkt.biologyBase = neuralNet.getBiology(obj.get("biology").toString());

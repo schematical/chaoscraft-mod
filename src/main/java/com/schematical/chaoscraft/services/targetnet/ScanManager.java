@@ -175,10 +175,10 @@ public class ScanManager {
                         !name.equals("minecraft:air")
                     )
                 ){
-                    ChaosCraft.LOGGER.info(
+                   /* ChaosCraft.LOGGER.info(
                             orgEntity.getCCNamespace() + " targeted: " +
                             orgEntity.world.getBlockState(scanEntry.blockPos).getBlock().getRegistryName().toString()
-                    );
+                    );*/
                 }
                 clientActionPacket.setBlockPos(scanEntry.blockPos);
                 targetSlot.setTarget(scanEntry.blockPos);

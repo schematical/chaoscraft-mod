@@ -497,6 +497,13 @@ public class ChaosCraftClient {
         }
     }
 
+    public void stir() {
+        //Iterate through all creatures
+
+        //Send message to server
+
+    }
+
     public enum State{
         Uninitiated,
         AuthSent,
