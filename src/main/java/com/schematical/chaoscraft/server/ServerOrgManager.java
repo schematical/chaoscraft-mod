@@ -8,13 +8,9 @@ import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.fitness.EntityFitnessManager;
 import com.schematical.chaoscraft.network.packets.CCClientOutputNeuronActionPacket;
 import com.schematical.chaoscraft.tickables.OrgPositionManager;
-import com.schematical.chaoscraft.tickables.iChaosOrgTickable;
 import com.schematical.chaosnet.model.ChaosNetException;
 import com.schematical.chaosnet.model.Organism;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.Hand;
 import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.ArrayList;
@@ -30,6 +26,7 @@ public class ServerOrgManager extends BaseOrgManager {
     public ArrayList<CCClientOutputNeuronActionPacket> neuronActions = new ArrayList<CCClientOutputNeuronActionPacket>();
     private float maxLifeSeconds = 5;
     private int respawnCount = 0;
+    private int longTicksSinceStateChange = 0;
 
     public ServerOrgManager(){
 
@@ -48,7 +45,7 @@ public class ServerOrgManager extends BaseOrgManager {
             return;
         }
         super.attachOrganism(organism);
-        state = State.OrgAttached;
+        setState(State.OrgAttached);
     }
     @Override
     public void attachOrgEntity(OrgEntity orgEntity){
@@ -66,7 +63,8 @@ public class ServerOrgManager extends BaseOrgManager {
         orgEntity.setCustomName(new TranslationTextComponent(getCCNamespace()));
         orgEntity.setSpawnHash(ChaosCraft.getServer().spawnHash);
         spawnTime = orgEntity.world.getGameTime();
-        state = State.Spawned;
+
+        setState(State.Spawned);
     }
     public void setPlayerEntity(ServerPlayerEntity serverPlayerEntity){
         if(!state.equals(State.Uninitialized)){
@@ -74,7 +72,8 @@ public class ServerOrgManager extends BaseOrgManager {
             return;
         }
         this.serverPlayerEntity = serverPlayerEntity;
-        state = State.PlayerAttached;
+
+        setState(State.PlayerAttached);
     }
 
     public ServerPlayerEntity getServerPlayerEntity(){
@@ -91,15 +90,21 @@ public class ServerOrgManager extends BaseOrgManager {
             ChaosCraft.LOGGER.error("ServerOrgManager.state != " + State.Uninitialized);
             return;
         }
-        state = State.QueuedForSpawn;
+
+        setState(State.QueuedForSpawn);
     }
     public float getAgeSeconds(){
         return (this.orgEntity.world.getGameTime() - spawnTime)  / 20;
     }
 
+    public void longServerTick(){
+        longTicksSinceStateChange += 1;
+        if(longTicksSinceStateChange > 2){
 
+        }
+    }
 
-    public void tickServer(){
+    public void tickOrg(){
         if( this.orgEntity.getBoundingBox() == null){
             return;
         }
@@ -111,17 +116,6 @@ public class ServerOrgManager extends BaseOrgManager {
             return;
         }
 
-
-//TODO: DELETE THIS
-        /*ItemStack healdItemStack = this.orgEntity.getHeldItem(Hand.MAIN_HAND);
-        if(!healdItemStack.getItem().equals(Items.FLINT_AND_STEEL)){
-            healdItemStack = new ItemStack(Items.FLINT_AND_STEEL);
-            healdItemStack.setCount(32);
-            this.orgEntity.setHeldItem(Hand.MAIN_HAND, healdItemStack);
-            healdItemStack = this.orgEntity.getHeldItem(Hand.MAIN_HAND);
-        }else{
-            //ChaosCraft.LOGGER.info("ALready have the TNT");
-        }*/
 
 
 
@@ -155,21 +149,27 @@ public class ServerOrgManager extends BaseOrgManager {
         }
 
     }
-
+    public void setState(State newState){
+        if(state.equals(newState)){
+            throw new ChaosNetException("State is already: " + state.toString());
+        }
+        longTicksSinceStateChange = 0;
+        state = newState;
+    }
 
     public void markTicking() {
         if(!state.equals(ServerOrgManager.State.Spawned)){
             ChaosCraft.LOGGER.error(getCCNamespace() + " - has invalid state: " + state);
             return;
         }
-        state = State.Ticking;
+        setState(State.Ticking);
     }
     public void markDead() {
         if(!state.equals(ServerOrgManager.State.Ticking)){
             ChaosCraft.LOGGER.error(getCCNamespace() + " - has invalid state: " + state);
             return;
         }
-        state = State.Dead;
+        setState(State.Dead);
     }
     public float getMaxLife(){
         return maxLifeSeconds;

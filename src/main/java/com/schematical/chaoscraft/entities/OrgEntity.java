@@ -738,7 +738,7 @@ public class OrgEntity extends MobEntity {
 
             if(this.serverOrgManager != null) {
                 this.checkHasTraveled();
-                this.serverOrgManager.tickServer();
+                this.serverOrgManager.tickOrg();
                 this.updatePitchAndYaw();
                 this.checkForItemPickup();
             }else{

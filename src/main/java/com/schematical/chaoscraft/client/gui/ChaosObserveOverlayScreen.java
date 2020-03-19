@@ -121,13 +121,14 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
 
                     TargetSlot targetSlot = (TargetSlot) biologyBase;
                     if (targetSlot != null) {
-                        s = targetSlot.toString() + " LATO:" + lookAtTargetOutput.getPrettyCurrValue();
+                        s = targetSlot.toShortString();
+                       /* s += " LATO:" + lookAtTargetOutput.getPrettyCurrValue();
                         s += " EP:" + Math.round(clientOrgManager.getEntity().rotationPitch);
                         if (targetSlot.hasTarget()) {
                             s += " YD:" + Math.round(targetSlot.getYawDelta());
                             s += " PD:" + Math.round(targetSlot.getPitchDelta());
                             s += " DD:" + Math.round(targetSlot.getDist());
-                        }
+                        }*/
                        list.add(s);
                     }
                 }

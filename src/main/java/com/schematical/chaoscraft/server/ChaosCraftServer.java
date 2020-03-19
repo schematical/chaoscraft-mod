@@ -117,6 +117,9 @@ public class ChaosCraftServer {
 */
             }
         }
+        for (ServerOrgManager serverOrgManager : organisms.values()) {
+            serverOrgManager.longServerTick();
+        }
         cleanUp();
         longTickCount = 0;
     }

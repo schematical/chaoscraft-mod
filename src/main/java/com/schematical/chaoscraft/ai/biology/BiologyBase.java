@@ -1,6 +1,7 @@
 package com.schematical.chaoscraft.ai.biology;
 
 import com.schematical.chaoscraft.entities.OrgEntity;
+import com.schematical.chaosnet.model.ChaosNetException;
 import org.json.simple.JSONObject;
 
 /**
@@ -20,6 +21,26 @@ public abstract class BiologyBase {
     }
 
     public void reset() {
+
+    }
+    public String toAbreviation(){
+        String name =  id;
+
+        String abreviation = "";
+        int i = 0;
+        try {
+            for (i = 0; i < name.length(); i++) {
+                String letter = name.substring(i, i + 1);
+                if (letter.equals(letter.toUpperCase())) {
+                    abreviation += letter;
+                }
+            }
+        }catch (Exception e){
+            String message = e.getMessage();
+            message += " " + i + " " + abreviation;
+            throw new ChaosNetException(message);
+        }
+        return abreviation;
 
     }
 

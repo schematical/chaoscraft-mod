@@ -183,5 +183,18 @@ public class TargetSlot extends BiologyBase implements iTargetable {
         }
 
     }
+    public String toShortString(){
+        String message = toAbreviation() + ": ";
+        if(targetEntity != null){
+            message += targetEntity.getType().getRegistryName().toString();
+        }else if(blockPos != null){
+
+            BlockState blockState = Minecraft.getInstance().world.getBlockState(blockPos);
+            message += blockState.getBlock().getRegistryName().toString();
+        }else{
+            message += " xnull";
+        }
+        return message;
+    }
 }
 
