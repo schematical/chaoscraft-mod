@@ -12,6 +12,7 @@ import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.CCClientActionPacket;
 import com.schematical.chaoscraft.network.packets.CCClientOutputNeuronActionPacket;
 import com.schematical.chaosnet.model.ChaosNetException;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
@@ -69,30 +70,22 @@ public class ScanManager {
             int x = entityPosition.getX() - range + index % dividend;
             int z = entityPosition.getZ() - range + (int) Math.floor(index / dividend) % dividend;
             int y = entityPosition.getY() - range + (int) Math.floor(index / Math.pow(dividend, 2)) % dividend;
-            //ChaosCraft.LOGGER.info(this.clientOrgManager.getCCNamespace() + "  " + x + ", " + y + ", " + z + " - " + index);
-        /*for(int x = entityPosition.getX() - range; x < entityPosition.getX() + range; x++){
-            for(int y = entityPosition.getY() - range; y < entityPosition.getY() + range; y++){
-                for(int z = entityPosition.getZ() - range; z < entityPosition.getZ() + range; z++){*/
+
             BlockPos blockPos = new BlockPos(x, y, z);
             ScanEntry scanEntry = new ScanEntry();
-            scanEntry.blockPos = blockPos;
-            scanEntry.atts = orgEntity.observableAttributeManager.Observe(blockPos, orgEntity.world);
-            if (!counts.containsKey(scanEntry.atts.resourceId)) {
-                counts.put(scanEntry.atts.resourceId, 0);
+            BlockState blockState = orgEntity.getBlockState();
+            if(blockState.getLightValue() > 0) {
+                scanEntry.blockPos = blockPos;
+                scanEntry.atts = orgEntity.observableAttributeManager.Observe(blockPos, orgEntity.world);
+                if (!counts.containsKey(scanEntry.atts.resourceId)) {
+                    counts.put(scanEntry.atts.resourceId, 0);
+                }
+                counts.put(scanEntry.atts.resourceId, counts.get(scanEntry.atts.resourceId) + 1);
+                entries.add(scanEntry);
+                batchCount += 1;
             }
-            counts.put(scanEntry.atts.resourceId, counts.get(scanEntry.atts.resourceId) + 1);
-           /*if(scanEntry.atts.resourceId.contains("waypoint")){
-                ChaosCraft.LOGGER.info(
-                        orgEntity.getCCNamespace() + " Scanned: Waypoint"
-                );
-            }*/
-            entries.add(scanEntry);
-            batchCount += 1;
             index += 1;
 
-    /*            }
-            }
-        }*/
         }
         if(index < MAX_RANGE_INDEX){
             return scanState;
@@ -120,7 +113,6 @@ public class ScanManager {
 
 
             List<OutputNeuron> outputs = getNNet().evaluate(NeuralNet.EvalGroup.TARGET);//Ideally the output neurons will set the score
-
 
             Iterator<OutputNeuron> iterator = outputs.iterator();
 
@@ -150,36 +142,13 @@ public class ScanManager {
             CCClientActionPacket clientActionPacket = new CCClientActionPacket(orgEntity.getCCNamespace(), CCClientActionPacket.Action.SET_TARGET);
             clientActionPacket.setBiology(targetSlot);
             if(scanEntry.entity != null) {
-                /*ChaosCraft.LOGGER.info(
-                        orgEntity.getCCNamespace() + " targeted: " +
-                                scanEntry.entity.getType().getRegistryName().toString()
-                );*/
 
                 targetSlot.setTarget(scanEntry.entity);
                 clientActionPacket.setEntity(scanEntry.entity);
                 ChaosNetworkManager.sendToServer(clientActionPacket);
-             /*
-                CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.TARGET_SELECTED);
-                worldEvent.entity = scanEntry.entity;
-                orgEntity.entityFitnessManager.test(worldEvent);*/
+
             }else  if(scanEntry.blockPos != null){
-                String name = orgEntity.world.getBlockState(scanEntry.blockPos).getBlock().getRegistryName().toString();
-                if(name.equals("chaoscraft:waypoint")){
-                    ChaosCraft.LOGGER.info(
-                            orgEntity.getCCNamespace() + " targeted: Waypoint"
-                    );
-                }
-                if(
-                    (
-                        !name.equals("minecraft:void_air") &&
-                        !name.equals("minecraft:air")
-                    )
-                ){
-                   /* ChaosCraft.LOGGER.info(
-                            orgEntity.getCCNamespace() + " targeted: " +
-                            orgEntity.world.getBlockState(scanEntry.blockPos).getBlock().getRegistryName().toString()
-                    );*/
-                }
+
                 clientActionPacket.setBlockPos(scanEntry.blockPos);
                 targetSlot.setTarget(scanEntry.blockPos);
                 ChaosNetworkManager.sendToServer(clientActionPacket);
@@ -203,6 +172,9 @@ public class ScanManager {
             return -1;
         }
         return counts.get(focusedScanEntry.atts.resourceId);
+    }
+    public int getCountOfScanEntry(String resourceId){
+        return counts.get(resourceId);
     }
     public float getRange() {
         return range;
