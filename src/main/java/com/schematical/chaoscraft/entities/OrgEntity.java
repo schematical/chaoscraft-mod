@@ -47,7 +47,7 @@ public class OrgEntity extends MobEntity {
 
     @ObjectHolder("chaoscraft:org_entity")
     public static final EntityType<OrgEntity> ORGANISM_TYPE = null;
-    public final double REACH_DISTANCE = 5.0D;
+    public static final double REACH_DISTANCE = 5.0D;
 
     //public final NonNullList<ItemStack> orgInventory = NonNullList.withSize(36, ItemStack.EMPTY);
     public EntityFitnessManager entityFitnessManager;

@@ -15,8 +15,7 @@ import net.minecraft.util.math.*;
 import java.util.List;
 
 public class TargetHelper {
-    public int maxDistance = 40;
-    public iHasAttributeIdValue iX;
+
     public TargetHelper() {
 
     }

@@ -57,8 +57,9 @@ public abstract class NeuronBase extends InnovationBase {
             neuronDep.parseData(neuronDepJSON);
             if(neuronDep.depNeuronId.equals(id)){
                 throw new ChaosNetException("Invalid `neuronDep` - NeuronDep on self: " + id);
+            }else {
+                this.dependencies.add(neuronDep);
             }
-            this.dependencies.add(neuronDep);
         }
 
         Object evalGroupJSON = jsonObject.get("$EVAL_GROUP");

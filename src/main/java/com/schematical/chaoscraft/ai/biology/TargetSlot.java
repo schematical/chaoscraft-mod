@@ -4,6 +4,7 @@ import com.schematical.chaoscraft.ai.CCObserviableAttributeCollection;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.CCClientActionPacket;
+import com.schematical.chaoscraft.util.ChaosTarget;
 import com.schematical.chaoscraft.util.TargetHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -21,103 +22,48 @@ import java.util.List;
  * Created by user1a on 2/26/19.
  */
 public class TargetSlot extends BiologyBase implements iTargetable {
-    private Entity targetEntity;
-    private BlockPos blockPos;
 
+    private ChaosTarget chaosTarget = new ChaosTarget();
     public void setTarget(Entity entity){
-        this.blockPos = null;
-        this.targetEntity = entity;
+        this.chaosTarget.setTarget(entity);
     }
     public void setTarget(BlockPos blockPos){
-        this.targetEntity = null;
-        this.blockPos = blockPos;
+        this.chaosTarget.setTarget(blockPos);
     }
     public Vec3d getTargetPosition(){
-        if(targetEntity != null){
-            return targetEntity.getPositionVector();
-        }
-        if(blockPos != null) {
-            return new Vec3d(
-                    this.blockPos.getX(),
-                    this.blockPos.getY(),
-                    this.blockPos.getZ()
-            );
-        }
-        return null;
+
+        return this.chaosTarget.getTargetPosition();
     }
     public Vec3d getTargetPositionCenter(){
-        if(targetEntity != null){
-            Vec3d vec3d = targetEntity.getPositionVector();
-            AxisAlignedBB box = targetEntity.getBoundingBox();
-            return vec3d.add(
-                    box.getCenter()
-            );
-        }
-        if(blockPos != null) {
-            return new Vec3d(
-                    this.blockPos.getX() + .5f,
-                    this.blockPos.getY()+ .5f,
-                    this.blockPos.getZ()+ .5f
-            );
-        }
-        return null;
+
+        return this.chaosTarget.getTargetPositionCenter();
     }
     public CCObserviableAttributeCollection getObservedAttributes(OrgEntity orgEntity){
-        if(this.targetEntity != null){
-            return orgEntity.observableAttributeManager.Observe(this.targetEntity);
-        }
-        if(this.blockPos != null){
-            return orgEntity.observableAttributeManager.Observe(this.blockPos, orgEntity.world);
-        }
-        return null;
+
+        return this.chaosTarget.getObservedAttributes(orgEntity);
 
     }
 
     @Override
     public Entity getTargetEntity() {
-        return targetEntity;
+        return this.chaosTarget.getTargetEntity();
     }
 
     @Override
     public BlockPos getTargetBlockPos() {
-        return blockPos;
+        return this.chaosTarget.getTargetBlockPos();
     }
 
     public Double getYawDelta() {
-        Vec3d targetPosition = getTargetPositionCenter();
-        if (targetPosition == null) {
-            return null;
-        }
-        return TargetHelper.getYawDelta(
-                targetPosition,
-                getEntity().getEyePosition(1),
-                getEntity() .rotationYaw
-        );
-
+       return this.chaosTarget.getYawDelta(getEntity());
     }
 
     public Double getPitchDelta() {
-        Vec3d targetPosition = getTargetPositionCenter();
-        if (targetPosition == null) {
-            return null;
-        }
-
-        return TargetHelper.getPitchDelta(
-                targetPosition,
-                getEntity().getEyePosition(1),//getEntity().getPositionVec(),
-                getEntity().rotationPitch //getEntity().getLookVec()
-        );
+        return this.chaosTarget.getPitchDelta(getEntity());
     }
 
     public Double getDist() {
-        Vec3d targetPosition = getTargetPositionCenter();
-        if (targetPosition == null) {
-            return null;
-        }
-        return TargetHelper.getDistDelta(
-                getEntity().getPositionVector(),
-                targetPosition
-        );
+        return this.chaosTarget.getDist(getEntity());
     }
     @Override
     public void parseData(JSONObject jsonObject){
@@ -132,11 +78,11 @@ public class TargetSlot extends BiologyBase implements iTargetable {
     public String toString(){
 
         String message = id + ": ";
-        if(targetEntity != null){
-            message += targetEntity.getType().getRegistryName().toString();
-        }else if(blockPos != null){
+        if(chaosTarget.getTargetEntity() != null){
+            message += chaosTarget.getTargetEntity().getType().getRegistryName().toString();
+        }else if(chaosTarget.getTargetBlockPos() != null){
 
-            BlockState blockState = Minecraft.getInstance().world.getBlockState(blockPos);
+            BlockState blockState = Minecraft.getInstance().world.getBlockState(chaosTarget.getTargetBlockPos());
             message += blockState.getBlock().getRegistryName().toString();
         }else{
             message += " xnull";
@@ -146,16 +92,10 @@ public class TargetSlot extends BiologyBase implements iTargetable {
     }
 
     public boolean hasTarget() {
-        if(targetEntity != null){
-            return true;
-        }
-        if(blockPos != null){
-            return true;
-        }
-        return false;
+       return chaosTarget.hasTarget();
     }
 
-    public void populateDebug() {
+   /* public void populateDebug() {
         int maxDistance = 50;
         AxisAlignedBB grownBox = getEntity().getBoundingBox().grow(maxDistance, maxDistance, maxDistance);
         List<Entity> entities =  getEntity().world.getEntitiesWithinAABB(LivingEntity.class,  grownBox);
@@ -182,14 +122,14 @@ public class TargetSlot extends BiologyBase implements iTargetable {
             //}
         }
 
-    }
+    }*/
     public String toShortString(){
         String message = toAbreviation() + ": ";
-        if(targetEntity != null){
-            message += targetEntity.getType().getRegistryName().toString();
-        }else if(blockPos != null){
+        if(chaosTarget.getTargetEntity() != null){
+            message += chaosTarget.getTargetEntity().getType().getRegistryName().toString();
+        }else if(chaosTarget.getTargetBlockPos() != null){
 
-            BlockState blockState = Minecraft.getInstance().world.getBlockState(blockPos);
+            BlockState blockState = Minecraft.getInstance().world.getBlockState(chaosTarget.getTargetBlockPos());
             message += blockState.getBlock().getRegistryName().toString();
         }else{
             message += " xnull";
