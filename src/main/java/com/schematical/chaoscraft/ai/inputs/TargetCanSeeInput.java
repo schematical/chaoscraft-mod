@@ -1,5 +1,7 @@
 package com.schematical.chaoscraft.ai.inputs;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -19,7 +21,20 @@ public class TargetCanSeeInput extends BaseTargetInputNeuron {
 
         Vec3d vec3d = this.getEntity().getEyePosition(1);
         Vec3d vec3d1 = this.getTarget().getTargetPosition();
-        boolean canBeSeen = this.getEntity().world.rayTraceBlocks(new RayTraceContext(vec3d, vec3d1, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this.getEntity())).getType() == RayTraceResult.Type.MISS;
+        if(vec3d1 == null) {
+            return getCurrentValue();
+        }
+        Entity entity = this.getEntity();
+        BlockRayTraceResult blockRayTraceResult = entity.world.rayTraceBlocks(
+                new RayTraceContext(
+                        vec3d,
+                        vec3d1,
+                        RayTraceContext.BlockMode.COLLIDER,
+                        RayTraceContext.FluidMode.NONE,
+                        this.getEntity()
+                )
+        );
+        boolean canBeSeen = blockRayTraceResult.getType() == RayTraceResult.Type.MISS;
 
         if(canBeSeen) {
             setCurrentValue(1);

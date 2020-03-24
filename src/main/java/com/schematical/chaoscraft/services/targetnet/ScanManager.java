@@ -73,8 +73,9 @@ public class ScanManager {
 
             BlockPos blockPos = new BlockPos(x, y, z);
             ScanEntry scanEntry = new ScanEntry();
-            BlockState blockState = orgEntity.getBlockState();
-            if(blockState.getLightValue() > 0) {
+            //BlockState blockState = orgEntity.getBlockState();
+            //int light = orgEntity.world.getNeighborAwareLightSubtracted(blockPos, 0);
+            //if(light > 0) {
                 scanEntry.blockPos = blockPos;
                 scanEntry.atts = orgEntity.observableAttributeManager.Observe(blockPos, orgEntity.world);
                 if (!counts.containsKey(scanEntry.atts.resourceId)) {
@@ -82,8 +83,9 @@ public class ScanManager {
                 }
                 counts.put(scanEntry.atts.resourceId, counts.get(scanEntry.atts.resourceId) + 1);
                 entries.add(scanEntry);
-                batchCount += 1;
-            }
+
+            //}
+            batchCount += 1;
             index += 1;
 
         }
@@ -209,10 +211,23 @@ public class ScanManager {
             }
             if(blockPos != null) {
                 return new Vec3d(
-                        blockPos.getX(),
-                        blockPos.getY(),
-                        blockPos.getZ()
+                    blockPos.getX(),
+                    blockPos.getY(),
+                    blockPos.getZ()
                 );
+            }
+            return null;
+        }
+        public BlockPos getTargetBlockPos() {
+            if(entity != null){
+                return new BlockPos(
+                    Math.round(entity.getEyePosition(1).getX()),
+                    Math.round(entity.getEyePosition(1).getY()),
+                    Math.round(entity.getEyePosition(1).getZ())
+                );
+            }
+            if(blockPos != null) {
+                return blockPos;
             }
             return null;
         }

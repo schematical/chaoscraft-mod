@@ -126,6 +126,11 @@ public class NeuralNet {
 
                 String clsName = type.toString();  // use fully qualified name
 
+                if(clsName.equals("TargetCandidateCountInput")){//TODO: Remove this hackyness
+                    clsName = "TargetCandidateCanSeeInput";
+                }
+
+
                 String fullClassName = "com.schematical.chaoscraft.ai." + neuronBaseJSON.get("_base_type").toString()  +  "s." + clsName;
                 //ChaosCraft.logger.info("Full Class name: " + fullClassName);
                 Class cls = Class.forName(fullClassName);
