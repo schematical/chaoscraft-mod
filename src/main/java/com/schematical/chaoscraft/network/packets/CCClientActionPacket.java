@@ -33,6 +33,7 @@ public class CCClientActionPacket {
     private Entity entity;
     private BiologyBase biologyBase;
     public String payload;
+    private Class actionBase;
 
     public CCClientActionPacket(String orgNamespace, Action action)
     {
@@ -66,6 +67,9 @@ public class CCClientActionPacket {
         }
         if(pkt.blockPos != null){
             obj.put("blockPos", pkt.blockPos.getX() + "," + pkt.blockPos.getY() + "," + pkt.blockPos.getZ());
+        }
+        if(pkt.actionBase != null){
+            obj.put("actionBase", pkt.actionBase.getCanonicalName());
         }
         if(pkt.biologyBase != null){
             obj.put("biology", pkt.biologyBase.id);
@@ -109,6 +113,9 @@ public class CCClientActionPacket {
 
                 throw new ChaosNetException("No valid target in message");
             }
+            if(obj.get("actionBase") != null){
+                pkt.actionBase = Class.forName(obj.get("actionBase").toString());
+            }
             if(obj.get("biology") != null){
                 ServerOrgManager serverOrgManager = ChaosCraft.getServer().getOrgByNamespace(pkt.orgNamespace);
                 if(serverOrgManager == null){
@@ -145,6 +152,10 @@ public class CCClientActionPacket {
     }
     public BiologyBase getBiology(){
         return biologyBase;
+    }
+
+    public void setActionBase(Class actionBase) {
+        this.actionBase = actionBase;
     }
 
 

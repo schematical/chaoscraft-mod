@@ -4,6 +4,7 @@ import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.CCObserviableAttributeCollection;
 import com.schematical.chaoscraft.ai.NeuralNet;
 import com.schematical.chaoscraft.ai.OutputNeuron;
+import com.schematical.chaoscraft.ai.action.ActionTargetSlot;
 import com.schematical.chaoscraft.ai.biology.TargetSlot;
 import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.entities.OrgEntity;
@@ -143,6 +144,10 @@ public class ScanManager {
             ScanEntry scanEntry = highestResults.get(targetSlotId);
             CCClientActionPacket clientActionPacket = new CCClientActionPacket(orgEntity.getCCNamespace(), CCClientActionPacket.Action.SET_TARGET);
             clientActionPacket.setBiology(targetSlot);
+            if(targetSlot instanceof ActionTargetSlot){
+                ActionTargetSlot actionTargetSlot = (ActionTargetSlot) targetSlot;
+                clientActionPacket.setActionBase(actionTargetSlot.actionBase);
+            }
             if(scanEntry.entity != null) {
 
                 targetSlot.setTarget(scanEntry.entity);

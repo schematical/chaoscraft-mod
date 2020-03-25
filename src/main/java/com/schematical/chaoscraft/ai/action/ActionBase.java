@@ -6,6 +6,7 @@ import com.schematical.chaosnet.model.ChaosNetException;
 
 public abstract class ActionBase {
     private OrgEntity orgEntity;
+    private float actionScore = 0;
     private int actionAgeTicks = 0;
     private ActionState state = ActionState.Pending;
     public ChaosTarget target;

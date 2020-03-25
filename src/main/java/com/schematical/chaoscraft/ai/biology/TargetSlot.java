@@ -30,6 +30,9 @@ public class TargetSlot extends BiologyBase implements iTargetable {
     public void setTarget(BlockPos blockPos){
         this.chaosTarget.setTarget(blockPos);
     }
+    public void setTarget(ChaosTarget chaosTarget){
+        this.chaosTarget = chaosTarget;
+    }
     public Vec3d getTargetPosition(){
 
         return this.chaosTarget.getTargetPosition();

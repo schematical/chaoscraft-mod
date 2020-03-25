@@ -17,7 +17,7 @@ public class TargetCandidateSetScoreOutput extends OutputNeuron {
     @Override
     public void execute() {
 
-        //TODO: Decide how to get the scan manager
+
         OrgEntity orgEntity =  ((OrgEntity)this.getEntity());
         ClientOrgManager clientOrgManager = orgEntity.getClientOrgManager();
         ScanManager scanManager = clientOrgManager.getScanManager();
