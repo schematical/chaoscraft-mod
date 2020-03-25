@@ -9,7 +9,7 @@ public abstract class ActionBase {
     private int actionAgeTicks = 0;
     private ActionState state = ActionState.Pending;
     public ChaosTarget target;
-    public static boolean validateTarget(ChaosTarget chaosTarget){
+    public static boolean validateTarget(OrgEntity orgEntity, ChaosTarget chaosTarget){
         return true;
     }
 

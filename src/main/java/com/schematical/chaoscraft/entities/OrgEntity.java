@@ -374,7 +374,7 @@ public class OrgEntity extends MobEntity {
     }
 
 
-    public void dig(BlockPos pos) {
+    public ActionResultType dig(BlockPos pos) {
         BlockPos myPos = getPosition();
         this.swingArm(Hand.MAIN_HAND);
         boolean withInDist = pos.withinDistance(myPos, REACH_DISTANCE);
@@ -383,7 +383,7 @@ public class OrgEntity extends MobEntity {
             !withInDist
         ) {
             resetMining();
-            return;
+            return ActionResultType.PASS;
         }
 
         if (!lastMinePos.equals(pos)) {
@@ -402,7 +402,7 @@ public class OrgEntity extends MobEntity {
             material == Material.AIR ||
             material == Material.LAVA
         ){
-            return;
+            return ActionResultType.PASS;
         }
 
         this.world.sendBlockBreakProgress(this.getEntityId(), pos, (int) (state.getPlayerRelativeBlockHardness(this.getPlayerWrapper(), world, pos) * miningTicks * 10.0F) - 1);
@@ -420,9 +420,6 @@ public class OrgEntity extends MobEntity {
             miningTicks = 0;
 
             world.playEvent(2001, pos, Block.getStateId(state));
-
-
-
 
 
             alteredBlocks.add(
@@ -444,9 +441,12 @@ public class OrgEntity extends MobEntity {
                 CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.BLOCK_MINED);
                 worldEvent.block = state.getBlock();
                 entityFitnessManager.test(worldEvent);
+                return ActionResultType.SUCCESS;
             }
 
+
         }
+        return ActionResultType.PASS;
     }
 
     private void resetMining() {
