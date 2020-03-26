@@ -530,7 +530,7 @@ public class OrgEntity extends MobEntity {
         return slot;
     }
 
-    public void rightClick(BlockRayTraceResult result) {
+    public ActionResultType rightClick(BlockRayTraceResult result) {
 
         for (Hand hand : Hand.values()) {
 
@@ -539,29 +539,31 @@ public class OrgEntity extends MobEntity {
             BlockState state = this.world.getBlockState(blockpos);
             if (state.getMaterial() != Material.AIR) {
 
-                ActionResultType enumactionresult = rightClickBlock(blockpos, hand, result);
+                ActionResultType actionResultType = rightClickBlock(blockpos, hand, result);
 
 
-                if (enumactionresult == ActionResultType.SUCCESS) {
+                if (actionResultType.equals(ActionResultType.SUCCESS)) {
                     this.swingArm(hand);
                     BlockState newBlockState = this.world.getBlockState(blockpos.offset(result.getFace()));
                     CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.BLOCK_PLACED);
                     worldEvent.block = newBlockState.getBlock();
                     entityFitnessManager.test(worldEvent);
-                    return;
+                    return actionResultType;
                 }
             }
 
 
 
             ItemStack itemstack = getHeldItem(hand);
-
-            if (!itemstack.isEmpty() && itemRightClick(hand).equals(ActionResultType.SUCCESS)) {
+            ActionResultType actionResultType = itemRightClick(hand);
+            if (!itemstack.isEmpty() && actionResultType.equals(ActionResultType.SUCCESS)) {
                 //this.entityRenderer.itemRenderer.resetEquippedProgress(enumhand);
                 //TODO: Make a fitness event for this
-                return;
+                return actionResultType;
             }
+            return actionResultType;
         }
+        return ActionResultType.PASS;//TODO: Maybe fail?
     }
 
     private ActionResultType rightClickBlock(BlockPos pos,  Hand hand, BlockRayTraceResult blockRayTraceResult) {
@@ -727,7 +729,14 @@ public class OrgEntity extends MobEntity {
         return null;
     }
 
-
+    public void onInsideBlock(BlockState blockstate) {
+        if(
+            onGround &&
+            blockstate.isSolid()
+        ){
+            this.jump();
+        }
+    }
     @Override
     public void baseTick(){
 

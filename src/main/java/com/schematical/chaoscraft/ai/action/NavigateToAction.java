@@ -9,6 +9,7 @@ import net.minecraft.util.math.Vec3d;
 public abstract class NavigateToAction extends ActionBase{
 
     public void tickNavigate(){
+        getOrgEntity().getMoveHelper().strafe(2, 0);
         Double deltaYaw = target.getYawDelta(getOrgEntity());
         if(deltaYaw == null){
             return;
@@ -22,6 +23,7 @@ public abstract class NavigateToAction extends ActionBase{
 
     }
     public void tickLook(){
+        getOrgEntity().getMoveHelper().strafe(0, 0);
         Vec3d pos = target.getTargetPositionCenter();
 
         this.getOrgEntity().setDesiredLookPosition(pos);

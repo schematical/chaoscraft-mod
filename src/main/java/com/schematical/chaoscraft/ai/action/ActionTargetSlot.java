@@ -24,6 +24,7 @@ public class ActionTargetSlot extends TargetSlot {
         classes.add(MeleeAttackAction.class);
         classes.add(DigBlockAction.class);
         classes.add(PlaceBlockAction.class);
+        classes.add(UseItemAction.class);
 
         for (Class c : classes) {
             ActionTargetSlot actionTargetSlot = new ActionTargetSlot();

@@ -2,20 +2,13 @@ package com.schematical.chaoscraft.client.gui;
 
 import com.google.common.base.Strings;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.schematical.chaoscraft.ai.CCAttributeId;
 import com.schematical.chaoscraft.ai.NeuralNet;
 import com.schematical.chaoscraft.ai.NeuronBase;
 import com.schematical.chaoscraft.ai.biology.BiologyBase;
 import com.schematical.chaoscraft.ai.biology.TargetSlot;
-import com.schematical.chaoscraft.ai.inputs.BaseTargetInputNeuron;
-import com.schematical.chaoscraft.ai.inputs.TargetDistanceInput;
-import com.schematical.chaoscraft.ai.inputs.TargetPitchInput;
-import com.schematical.chaoscraft.ai.inputs.TargetYawInput;
-import com.schematical.chaoscraft.ai.outputs.LookAtTargetOutput;
 import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.network.packets.CCServerObserverOrgChangeEventPacket;
 import com.schematical.chaoscraft.network.packets.CCServerScoreEventPacket;
-import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.AbstractGui;
@@ -24,7 +17,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.items.ItemStackHandler;
 
