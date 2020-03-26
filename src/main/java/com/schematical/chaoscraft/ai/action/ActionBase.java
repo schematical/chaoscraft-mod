@@ -9,7 +9,7 @@ public abstract class ActionBase {
     private float actionScore = 0;
     private int actionAgeTicks = 0;
     private ActionState state = ActionState.Pending;
-    public ChaosTarget target;
+    private ChaosTarget target;
 
     //TODO: Track score events that happened when this action was happening
 
@@ -87,6 +87,11 @@ public abstract class ActionBase {
         }
         this.setState(ActionState.Failed);
     }
+
+    public ChaosTarget getTarget() {
+        return target;
+    }
+
     public enum ActionState{
         Pending,
         Running,

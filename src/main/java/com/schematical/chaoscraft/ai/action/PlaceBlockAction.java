@@ -11,13 +11,13 @@ public class PlaceBlockAction extends NavigateToAction{
 
     @Override
     protected void _tick() {
-        if(!target.canEntityTouch(getOrgEntity())){
+        if(!getTarget().canEntityTouch(getOrgEntity())){
             tickNavigate();
             return;
         }
         //Attack stuff
         //Look at stuff
-        if(!target.isEntityLookingAt(getOrgEntity())){
+        if(!getTarget().isEntityLookingAt(getOrgEntity())){
             tickLook();
             return;
         }
@@ -28,7 +28,7 @@ public class PlaceBlockAction extends NavigateToAction{
         }
         //When looking at stuff do stuff.
         getOrgEntity().rightClick(rayTraceResult);
-        if(!target.getTargetEntity().isAlive()){
+        if(!getTarget().getTargetEntity().isAlive()){
             markCompleted();
         }
     }

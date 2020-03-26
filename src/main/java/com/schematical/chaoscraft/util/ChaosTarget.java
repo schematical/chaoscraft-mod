@@ -2,10 +2,12 @@ package com.schematical.chaoscraft.util;
 
 import com.schematical.chaoscraft.ai.CCObserviableAttributeCollection;
 import com.schematical.chaoscraft.entities.OrgEntity;
+import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.*;
+import net.minecraft.world.World;
 
 public class ChaosTarget {
     private Entity targetEntity;
@@ -164,5 +166,41 @@ public class ChaosTarget {
         }
 
         return message;
+    }
+
+    public String getSerializedString() {
+        if(getTargetEntity() != null){
+            return "entity:" + getTargetEntity().getEntityId();
+        }else if(getTargetBlockPos() != null){
+
+            BlockPos blockPos = getTargetBlockPos();
+            return "blockpos:" +blockPos.getX() + ","+ blockPos.getY() + "," +blockPos.getZ();
+        }else{
+            return "null";
+        }
+
+    }
+    public static ChaosTarget deserializeTarget(World world, String payload) {
+        ChaosTarget chaosTarget = new ChaosTarget();
+        String[] parts = payload.split(":");
+        switch(parts[0]){
+            case("entity"):
+                chaosTarget.targetEntity = world.getEntityByID(Integer.parseInt(parts[1]));
+                break;
+            case("blockpos"):
+                String[] parts2 = payload.split(",");
+                chaosTarget.blockPos = new BlockPos(
+                    Integer.parseInt(parts2[0]),
+                    Integer.parseInt(parts2[1]),
+                    Integer.parseInt(parts2[2])
+                );
+                break;
+            case("null"):
+                throw new ChaosNetException("TODO: Figure out what to do with this");
+            default:
+                throw new ChaosNetException("Invalid TargetType: " + parts[0]);
+        }
+       return chaosTarget;
+
     }
 }

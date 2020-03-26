@@ -17,13 +17,13 @@ public class UseItemAction extends NavigateToAction{
 
     @Override
     protected void _tick() {
-        if(!target.canEntityTouch(getOrgEntity())){
+        if(!getTarget().canEntityTouch(getOrgEntity())){
             tickNavigate();
             return;
         }
         //Attack stuff
         //Look at stuff
-        if(!target.isEntityLookingAt(getOrgEntity())){
+        if(!getTarget().isEntityLookingAt(getOrgEntity())){
             tickLook();
             return;
         }
