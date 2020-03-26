@@ -36,7 +36,7 @@ public class ActionBuffer {
                 currAction.getActionState().equals(ActionBase.ActionState.Running) ||
                 currAction.getActionState().equals(ActionBase.ActionState.Failed)
             ){
-                recentActions.add(currAction);
+                recentActions.add(currAction);//Prob remove this. This should happen client side
                 currAction = null;
             }else{
                 throw new ChaosNetException("Invalid ActionState at this point: " + currAction.getActionState().toString());
@@ -58,6 +58,8 @@ public class ActionBuffer {
             CCClientActionPacket clientActionPacket = new CCClientActionPacket(orgManager.getCCNamespace(), CCClientActionPacket.Action.SET_TARGET);
             //clientActionPacket.setBiology(targetSlot);
             ChaosNetworkManager.sendToServer(clientActionPacket);
+        }else{
+            throw new ChaosNetException("Todo: Write me");
         }
     }
     public void interrupt(){

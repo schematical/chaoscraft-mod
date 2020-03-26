@@ -22,7 +22,7 @@ import java.util.List;
  * Created by user1a on 2/26/19.
  */
 public class TargetSlot extends BiologyBase implements iTargetable {
-
+    private float targetScore = 0;
     private ChaosTarget chaosTarget = new ChaosTarget();
    /* public void setTarget(Entity entity){
         this.chaosTarget.setTarget(entity);
@@ -32,6 +32,12 @@ public class TargetSlot extends BiologyBase implements iTargetable {
     }*/
     public ChaosTarget getTarget(){
         return chaosTarget;
+    }
+    public void setTargetScore(float targetScore){
+        this.targetScore = targetScore;
+    }
+    public float getTargetScore(){
+        return targetScore;
     }
     public void setTarget(ChaosTarget chaosTarget){
         this.chaosTarget = chaosTarget;

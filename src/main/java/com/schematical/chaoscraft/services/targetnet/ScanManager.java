@@ -146,8 +146,8 @@ public class ScanManager {
             ScanEntry scanEntry = highestResults.get(targetSlotId);
             //CCClientActionPacket clientActionPacket = new CCClientActionPacket(orgEntity.getCCNamespace(), CCClientActionPacket.Action.SET_TARGET);
             //clientActionPacket.setBiology(targetSlot);
-
-
+            float currScore = scanEntry.getScore(targetSlotId);
+            targetSlot.setTargetScore(currScore);
             if(scanEntry.entity != null) {
 
                 targetSlot.setTarget(new ChaosTarget(scanEntry.entity));
@@ -165,7 +165,7 @@ public class ScanManager {
                 throw new ChaosNetException("Invalid ScanEntry: No blockPos nor Entity");
             }
 
-            float currScore = scanEntry.getScore(targetSlotId);
+
             if(currScore > highestATSScore){
                 if(targetSlot instanceof  ActionTargetSlot){
                     ActionTargetSlot actionTargetSlot = (ActionTargetSlot) targetSlot;

@@ -21,6 +21,9 @@ public abstract class ActionBase {
     }
     protected abstract void _tick();
     public void tick(){
+        if(!this.actionBuffer.isServer()){
+            throw new ChaosNetException("Client should not be ticking `actionBuffer` state");
+        }
         actionAgeTicks += 1;
         if(state.equals(ActionState.Pending)){
             markRunning();
@@ -29,10 +32,14 @@ public abstract class ActionBase {
 
     }
     public void setTarget(ChaosTarget target){
+
         this.target = target;
     }
 
     private void markRunning() {
+        if(!this.actionBuffer.isServer()){
+            throw new ChaosNetException("Client should not be changing `actionBuffer` state");
+        }
         if(!this.state.equals(ActionState.Pending)){
             throw new ChaosNetException("Invalid `ActionBase.state`: " + this.state);
         }
@@ -47,6 +54,9 @@ public abstract class ActionBase {
     }
 
     public void markInterrupted() {
+        if(!this.actionBuffer.isServer()){
+            throw new ChaosNetException("Client should not be changing `actionBuffer` state");
+        }
         if(!this.state.equals(ActionState.Running)){
             throw new ChaosNetException("Invalid `ActionBase.state`: " + this.state);
         }
@@ -59,6 +69,9 @@ public abstract class ActionBase {
         return actionBuffer.getOrgManager().getEntity();
     }
     public void markCompleted(){
+        if(!this.actionBuffer.isServer()){
+            throw new ChaosNetException("Client should not be changing `actionBuffer` state");
+        }
         if(!this.state.equals(ActionState.Running)){
             throw new ChaosNetException("Invalid `ActionBase.state`: " + this.state);
         }
@@ -66,6 +79,9 @@ public abstract class ActionBase {
     }
 
     public void markFailed(){
+        if(!this.actionBuffer.isServer()){
+            throw new ChaosNetException("Client should not be changing `actionBuffer` state");
+        }
         if(!this.state.equals(ActionState.Running)){
             throw new ChaosNetException("Invalid `ActionBase.state`: " + this.state);
         }

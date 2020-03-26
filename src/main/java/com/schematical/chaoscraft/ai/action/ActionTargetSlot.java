@@ -63,7 +63,5 @@ public class ActionTargetSlot extends TargetSlot {
         } catch (InvocationTargetException e) {
             throw new ChaosNetException(e.getMessage());
         }
-
-
     }
 }
