@@ -24,11 +24,14 @@ import java.util.List;
 public class TargetSlot extends BiologyBase implements iTargetable {
 
     private ChaosTarget chaosTarget = new ChaosTarget();
-    public void setTarget(Entity entity){
+   /* public void setTarget(Entity entity){
         this.chaosTarget.setTarget(entity);
     }
     public void setTarget(BlockPos blockPos){
         this.chaosTarget.setTarget(blockPos);
+    }*/
+    public ChaosTarget getTarget(){
+        return chaosTarget;
     }
     public void setTarget(ChaosTarget chaosTarget){
         this.chaosTarget = chaosTarget;

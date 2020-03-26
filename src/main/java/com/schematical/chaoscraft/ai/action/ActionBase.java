@@ -5,15 +5,20 @@ import com.schematical.chaoscraft.util.ChaosTarget;
 import com.schematical.chaosnet.model.ChaosNetException;
 
 public abstract class ActionBase {
-    private OrgEntity orgEntity;
+    private ActionBuffer actionBuffer;
     private float actionScore = 0;
     private int actionAgeTicks = 0;
     private ActionState state = ActionState.Pending;
     public ChaosTarget target;
+
+    //TODO: Track score events that happened when this action was happening
+
     public static boolean validateTarget(OrgEntity orgEntity, ChaosTarget chaosTarget){
         return true;
     }
-
+    public void setActionBuffer(ActionBuffer actionBuffer){
+        this.actionBuffer = actionBuffer;
+    }
     protected abstract void _tick();
     public void tick(){
         actionAgeTicks += 1;
@@ -22,6 +27,9 @@ public abstract class ActionBase {
         }
         _tick();
 
+    }
+    public void setTarget(ChaosTarget target){
+        this.target = target;
     }
 
     private void markRunning() {
@@ -48,10 +56,7 @@ public abstract class ActionBase {
         this.state = state;
     }
     public OrgEntity getOrgEntity(){
-        return orgEntity;
-    }
-    public void setOrgEntity(OrgEntity orgEntity){
-        this.orgEntity = orgEntity;
+        return actionBuffer.getOrgManager().getEntity();
     }
     public void markCompleted(){
         if(!this.state.equals(ActionState.Running)){

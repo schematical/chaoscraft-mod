@@ -12,6 +12,7 @@ import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.CCClientActionPacket;
 import com.schematical.chaoscraft.network.packets.CCClientOutputNeuronActionPacket;
+import com.schematical.chaoscraft.util.ChaosTarget;
 import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -138,35 +139,50 @@ public class ScanManager {
         }
 
         //TODO: Iterate through the biology of the main NNet and set the targets
-
+        float highestATSScore = -1000;
+        ActionTargetSlot highestActionTargetSlot = null;
         for (String targetSlotId : highestResults.keySet()) {
             TargetSlot targetSlot = (TargetSlot )orgEntity.getNNet().getBiology(targetSlotId);
             ScanEntry scanEntry = highestResults.get(targetSlotId);
-            CCClientActionPacket clientActionPacket = new CCClientActionPacket(orgEntity.getCCNamespace(), CCClientActionPacket.Action.SET_TARGET);
-            clientActionPacket.setBiology(targetSlot);
-            if(targetSlot instanceof ActionTargetSlot){
-                ActionTargetSlot actionTargetSlot = (ActionTargetSlot) targetSlot;
-                clientActionPacket.setActionBase(actionTargetSlot.actionBase);
-            }
+            //CCClientActionPacket clientActionPacket = new CCClientActionPacket(orgEntity.getCCNamespace(), CCClientActionPacket.Action.SET_TARGET);
+            //clientActionPacket.setBiology(targetSlot);
+
+
             if(scanEntry.entity != null) {
 
-                targetSlot.setTarget(scanEntry.entity);
-                clientActionPacket.setEntity(scanEntry.entity);
-                ChaosNetworkManager.sendToServer(clientActionPacket);
+                targetSlot.setTarget(new ChaosTarget(scanEntry.entity));
 
-            }else  if(scanEntry.blockPos != null){
+                //clientActionPacket.setEntity(scanEntry.entity);
+                //ChaosNetworkManager.sendToServer(clientActionPacket);
 
-                clientActionPacket.setBlockPos(scanEntry.blockPos);
-                targetSlot.setTarget(scanEntry.blockPos);
-                ChaosNetworkManager.sendToServer(clientActionPacket);
+            }else if(scanEntry.blockPos != null){
+                targetSlot.setTarget(new ChaosTarget(scanEntry.blockPos));
+
+                //clientActionPacket.setBlockPos(scanEntry.blockPos);
+                //ChaosNetworkManager.sendToServer(clientActionPacket);
 
             }else{
                 throw new ChaosNetException("Invalid ScanEntry: No blockPos nor Entity");
             }
 
-
+            float currScore = scanEntry.getScore(targetSlotId);
+            if(currScore > highestATSScore){
+                if(targetSlot instanceof  ActionTargetSlot){
+                    ActionTargetSlot actionTargetSlot = (ActionTargetSlot) targetSlot;
+                    highestATSScore = currScore;
+                    highestActionTargetSlot = actionTargetSlot;
+                }
+            }
 
         }
+        //Add an action locally
+
+
+
+        this.clientOrgManager.getActionBuffer().addAction(
+            highestActionTargetSlot.createAction()
+        );
+
         scanState = ScanState.Finished;
         return scanState;
 

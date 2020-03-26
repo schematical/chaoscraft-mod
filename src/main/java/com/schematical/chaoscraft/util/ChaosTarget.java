@@ -8,6 +8,16 @@ import net.minecraft.util.math.*;
 public class ChaosTarget {
     private Entity targetEntity;
     private BlockPos blockPos;
+    public ChaosTarget() {
+    }
+
+    public ChaosTarget(Entity entity) {
+        targetEntity = entity;
+    }
+    public ChaosTarget(BlockPos blockPos) {
+        this.blockPos = blockPos;
+    }
+
     public void setTarget(Entity entity){
         this.blockPos = null;
         this.targetEntity = entity;

@@ -1,6 +1,7 @@
 package com.schematical.chaoscraft;
 
 import com.schematical.chaoscraft.ai.NeuralNet;
+import com.schematical.chaoscraft.ai.action.ActionBuffer;
 import com.schematical.chaoscraft.ai.biology.BiologyBase;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.tickables.OrgPositionManager;
@@ -14,12 +15,14 @@ public abstract class BaseOrgManager {
     protected Organism organism;
     protected OrgEntity orgEntity;
     private ArrayList<iChaosOrgTickable> tickables = new ArrayList<iChaosOrgTickable>();
+    private ActionBuffer actionBuffer;
 
     public void attachOrganism(Organism organism){
         this.organism = organism;
     }
     public void attachOrgEntity(OrgEntity orgEntity){
         this.orgEntity = orgEntity;
+        this.actionBuffer = new ActionBuffer();
 
     }
 
@@ -64,5 +67,9 @@ public abstract class BaseOrgManager {
     public BiologyBase getBiology(String biologyId){
 
         return getEntity().getNNet().getBiology(biologyId);
+    }
+
+    public ActionBuffer getActionBuffer(){
+        return actionBuffer;
     }
 }
