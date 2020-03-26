@@ -1,5 +1,6 @@
 package com.schematical.chaoscraft.ai.action;
 
+import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.util.ChaosTarget;
 
 public class MeleeAttackAction extends NavigateToAction{
@@ -25,7 +26,7 @@ public class MeleeAttackAction extends NavigateToAction{
     }
 
 
-    public static boolean validateTarget(ChaosTarget chaosTarget) {
+    public static boolean validateTarget(OrgEntity orgEntity, ChaosTarget chaosTarget) {
         return chaosTarget.getTargetEntity() != null;
     }
 }

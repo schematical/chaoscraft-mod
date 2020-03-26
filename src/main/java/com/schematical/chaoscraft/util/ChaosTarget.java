@@ -2,6 +2,8 @@ package com.schematical.chaoscraft.util;
 
 import com.schematical.chaoscraft.ai.CCObserviableAttributeCollection;
 import com.schematical.chaoscraft.entities.OrgEntity;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.*;
 
@@ -147,5 +149,20 @@ public class ChaosTarget {
         }
 
         return true;
+    }
+    public String toString(){
+
+        String message = "";
+        if(getTargetEntity() != null){
+            message += getTargetEntity().getType().getRegistryName().toString();
+        }else if(getTargetBlockPos() != null){
+
+            BlockState blockState = Minecraft.getInstance().world.getBlockState(getTargetBlockPos());
+            message += blockState.getBlock().getRegistryName().toString();
+        }else{
+            message += "null";
+        }
+
+        return message;
     }
 }

@@ -22,7 +22,7 @@ public abstract class BaseOrgManager {
     }
     public void attachOrgEntity(OrgEntity orgEntity){
         this.orgEntity = orgEntity;
-        this.actionBuffer = new ActionBuffer();
+        this.actionBuffer = new ActionBuffer(this);
 
     }
 

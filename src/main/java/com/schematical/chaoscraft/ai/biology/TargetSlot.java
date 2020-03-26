@@ -84,12 +84,8 @@ public class TargetSlot extends BiologyBase implements iTargetable {
     public String toString(){
 
         String message = id + ": ";
-        if(chaosTarget.getTargetEntity() != null){
-            message += chaosTarget.getTargetEntity().getType().getRegistryName().toString();
-        }else if(chaosTarget.getTargetBlockPos() != null){
-
-            BlockState blockState = Minecraft.getInstance().world.getBlockState(chaosTarget.getTargetBlockPos());
-            message += blockState.getBlock().getRegistryName().toString();
+        if(chaosTarget != null) {
+            message += chaosTarget.toString();
         }else{
             message += " xnull";
         }
@@ -101,42 +97,11 @@ public class TargetSlot extends BiologyBase implements iTargetable {
        return chaosTarget.hasTarget();
     }
 
-   /* public void populateDebug() {
-        int maxDistance = 50;
-        AxisAlignedBB grownBox = getEntity().getBoundingBox().grow(maxDistance, maxDistance, maxDistance);
-        List<Entity> entities =  getEntity().world.getEntitiesWithinAABB(LivingEntity.class,  grownBox);
-        entities.addAll(getEntity().world.getEntitiesWithinAABB(ItemEntity.class,  grownBox));
-        for (Entity target : entities) {
 
-            //if(!target.equals(getEntity())) {
-
-
-            CCObserviableAttributeCollection attributeCollection = getEntity().observableAttributeManager.Observe(target);
-            if (attributeCollection != null) {
-                //ChaosCraft.logger.info(entity.getCCNamespace() + " can see " + attributeCollection.resourceId);
-                if(attributeCollection.resourceId.equals("minecraft:bee")){
-                    setTarget(target);
-                    CCClientActionPacket clientActionPacket = new CCClientActionPacket(getEntity().getCCNamespace(), CCClientActionPacket.Action.SET_TARGET);
-                    clientActionPacket.setBiology(this);
-
-                    clientActionPacket.setEntity(target);
-                    ChaosNetworkManager.sendToServer(clientActionPacket);
-                    return;
-                }
-            }
-
-            //}
-        }
-
-    }*/
     public String toShortString(){
         String message = toAbreviation() + ": ";
-        if(chaosTarget.getTargetEntity() != null){
-            message += chaosTarget.getTargetEntity().getType().getRegistryName().toString();
-        }else if(chaosTarget.getTargetBlockPos() != null){
-
-            BlockState blockState = Minecraft.getInstance().world.getBlockState(chaosTarget.getTargetBlockPos());
-            message += blockState.getBlock().getRegistryName().toString();
+        if(chaosTarget != null) {
+            message += chaosTarget.toString();
         }else{
             message += " xnull";
         }

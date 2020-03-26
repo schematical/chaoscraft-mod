@@ -169,8 +169,10 @@ public class ScanManager {
             if(currScore > highestATSScore){
                 if(targetSlot instanceof  ActionTargetSlot){
                     ActionTargetSlot actionTargetSlot = (ActionTargetSlot) targetSlot;
-                    highestATSScore = currScore;
-                    highestActionTargetSlot = actionTargetSlot;
+                    if(actionTargetSlot.isValid()) {
+                        highestATSScore = currScore;
+                        highestActionTargetSlot = actionTargetSlot;
+                    }
                 }
             }
 

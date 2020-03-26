@@ -48,6 +48,7 @@ public class ActionBuffer {
         if(currAction != null){
           throw new ChaosNetException("We already have a currAction.... interrupt or something");
         }
+        action.setActionBuffer(this);
         currAction = action;
         sync();
     }

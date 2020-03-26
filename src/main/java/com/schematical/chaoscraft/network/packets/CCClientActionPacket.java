@@ -7,6 +7,7 @@ import com.schematical.chaoscraft.ai.biology.TargetSlot;
 import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.server.ServerOrgManager;
+import com.schematical.chaoscraft.util.ChaosTarget;
 import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -172,10 +173,10 @@ public class CCClientActionPacket {
                         throw new ChaosNetException("No `TargetSlot` found.");
                     }
                     if(message.entity != null) {
-                        targetSlot.setTarget(message.entity);
+                        targetSlot.setTarget(new ChaosTarget(message.entity));
                         worldEvent.entity = message.entity;
                     }else if (message.blockPos != null){
-                        targetSlot.setTarget(message.blockPos);
+                        targetSlot.setTarget(new ChaosTarget(message.blockPos));
                         BlockState blockState =ChaosCraft.getServer().server.getWorld(DimensionType.OVERWORLD).getBlockState(message.blockPos);
                         worldEvent.block = blockState.getBlock();
 
