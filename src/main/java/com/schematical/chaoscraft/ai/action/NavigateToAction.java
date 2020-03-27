@@ -22,11 +22,14 @@ public abstract class NavigateToAction extends ActionBase{
         this.getOrgEntity().setDesiredYaw(this.getOrgEntity().rotationYaw + deltaYaw);
 
     }
-    public void tickLook(){
+    public void stopWalking(){
         getOrgEntity().getMoveHelper().strafe(0, 0);
+    }
+    public void tickLook(){
+
         Vec3d pos = getTarget().getTargetPositionCenter();
 
-        this.getOrgEntity().setDesiredLookPosition(pos);
+        this.getOrgEntity(). setDesiredLookPosition(pos);
 
 
         //!!!NOT SURE IF ANYTHING BELOW THIS WORKS

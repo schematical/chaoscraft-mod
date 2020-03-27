@@ -109,28 +109,21 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
         for (BiologyBase biologyBase : this.clientOrgManager.getNNet().biology.values()) {
             if(biologyBase instanceof  TargetSlot) {
 
-               /* LookAtTargetOutput lookAtTargetOutput = null;
-                for (NeuronBase neuronBase : this.clientOrgManager.getNNet().neurons.values()) {
-                    if(neuronBase instanceof  LookAtTargetOutput){
-                        lookAtTargetOutput = (LookAtTargetOutput) neuronBase;
+
+
+                TargetSlot targetSlot = (TargetSlot) biologyBase;
+                if (targetSlot != null) {
+                    s = targetSlot.toShortString();
+
+                    s += " EP:" + Math.round(clientOrgManager.getEntity().rotationPitch);
+                    if (targetSlot.hasTarget()) {
+                        s += " YD:" + Math.round(targetSlot.getYawDelta());
+                        s += " PD:" + Math.round(targetSlot.getPitchDelta());
+                        s += " DD:" + Math.round(targetSlot.getDist());
                     }
+                   list.add(s);
                 }
-                if(lookAtTargetOutput != null) {
 
-
-                    TargetSlot targetSlot = (TargetSlot) biologyBase;
-                    if (targetSlot != null) {
-                        s = targetSlot.toShortString();
-                       *//* s += " LATO:" + lookAtTargetOutput.getPrettyCurrValue();
-                        s += " EP:" + Math.round(clientOrgManager.getEntity().rotationPitch);
-                        if (targetSlot.hasTarget()) {
-                            s += " YD:" + Math.round(targetSlot.getYawDelta());
-                            s += " PD:" + Math.round(targetSlot.getPitchDelta());
-                            s += " DD:" + Math.round(targetSlot.getDist());
-                        }*//*
-                       list.add(s);
-                    }
-                }*/
             }
         }
         s = "Held Item: " + clientOrgManager.getEntity().getHeldItem(Hand.MAIN_HAND).toString();

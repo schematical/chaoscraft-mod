@@ -141,7 +141,7 @@ public class ChaosTarget {
     }
 
 
-    public boolean isEntityLookingAt(OrgEntity orgEntity) {
+    public boolean isVisiblyBlocked(OrgEntity orgEntity) {
         Vec3d vec3d = orgEntity.getPositionVec();
         Vec3d vec3d1 = getTargetPosition();
         boolean canBeSeen = orgEntity.world.rayTraceBlocks(new RayTraceContext(vec3d, vec3d1, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, orgEntity)).getType() == RayTraceResult.Type.MISS;
@@ -201,6 +201,35 @@ public class ChaosTarget {
                 throw new ChaosNetException("Invalid TargetType: " + parts[0]);
         }
        return chaosTarget;
+
+    }
+
+    public boolean isEntityLookingAt(OrgEntity orgEntity) {
+        if(blockPos != null) {
+            BlockRayTraceResult rayTraceResult = orgEntity.rayTraceBlocks(orgEntity.REACH_DISTANCE);
+            if (rayTraceResult == null) {
+                return false;
+            }
+            if(!rayTraceResult.getPos().equals(blockPos)){
+                return false;
+            }
+            return true;
+        }else if(targetEntity != null){
+            Vec3d vec3d = orgEntity.getEyePosition(1);
+            Vec3d vec3d1 = orgEntity.getLook(1);
+            Vec3d vec3d2 = vec3d.add(
+                    new Vec3d(
+                            vec3d1.x * orgEntity.REACH_DISTANCE,
+                            vec3d1.y * orgEntity.REACH_DISTANCE,
+                            vec3d1.z * orgEntity.REACH_DISTANCE
+                    )
+            );
+
+            return targetEntity.getBoundingBox().rayTrace(vec3d, vec3d2).isPresent();
+        }else{
+            throw new ChaosNetException("No available targets");
+            //return false;
+        }
 
     }
 }

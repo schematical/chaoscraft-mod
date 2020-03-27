@@ -363,10 +363,8 @@ public class OrgEntity extends MobEntity {
     public BlockRayTraceResult rayTraceBlocks(double blockReachDistance) {
         Vec3d vec3d = this.getEyePosition( 1.0F);
         //Vec3d vec3d1 = this.getLook(1);
-       // if(desiredLookVec == null){
-            desiredLookVec = this.getLook( 1.0F);
-        //}
-        Vec3d vec3d1 = desiredLookVec.scale(25);
+
+        Vec3d vec3d1 = this.getLook( 1.0F).scale(25);
         Vec3d vec3d2 = vec3d.add(
             vec3d1
         );
@@ -384,7 +382,7 @@ public class OrgEntity extends MobEntity {
             !withInDist
         ) {
             resetMining();
-            return ActionResultType.PASS;
+            return ActionResultType.FAIL;
         }
 
         if (!lastMinePos.equals(pos)) {
@@ -399,11 +397,11 @@ public class OrgEntity extends MobEntity {
 
         Material material = state.getMaterial();
         if(
-            material == Material.WATER ||
-            material == Material.AIR ||
-            material == Material.LAVA
+                material == Material.WATER ||
+                material == Material.AIR ||
+                material == Material.LAVA
         ){
-            return ActionResultType.PASS;
+            return ActionResultType.FAIL;
         }
 
         this.world.sendBlockBreakProgress(this.getEntityId(), pos, (int) (state.getPlayerRelativeBlockHardness(this.getPlayerWrapper(), world, pos) * miningTicks * 10.0F) - 1);
