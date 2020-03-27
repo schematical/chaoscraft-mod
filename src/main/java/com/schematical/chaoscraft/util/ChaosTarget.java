@@ -45,11 +45,12 @@ public class ChaosTarget {
     }
     public Vec3d getTargetPositionCenter(){
         if(targetEntity != null){
-            Vec3d vec3d = targetEntity.getPositionVector();
+            //Vec3d vec3d = targetEntity.getPositionVector();
             AxisAlignedBB box = targetEntity.getBoundingBox();
-            return vec3d.add(
+            return box.getCenter();
+            /*return vec3d.add(
                     box.getCenter()
-            );
+            );*/
         }
         if(blockPos != null) {
             return new Vec3d(
@@ -82,7 +83,11 @@ public class ChaosTarget {
     }
     public boolean canEntityTouch(OrgEntity orgEntity){
         Vec3d myPos = orgEntity.getPositionVector();
-        double distTo = getTargetPositionCenter().distanceTo(myPos);
+        Vec3d targetPosCenter = getTargetPositionCenter();
+        if(targetPosCenter == null){
+            return false;
+        }
+        double distTo = targetPosCenter.distanceTo(myPos);
         boolean withInDist = distTo < OrgEntity.REACH_DISTANCE - 1;
         if (
             // !this.world.getWorldBorder().contains(pos) ||

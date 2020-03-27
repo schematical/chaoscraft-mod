@@ -31,17 +31,6 @@ public abstract class NavigateToAction extends ActionBase{
 
         this.getOrgEntity(). setDesiredLookPosition(pos);
 
-
-        //!!!NOT SURE IF ANYTHING BELOW THIS WORKS
-        Double deltaPitch = getTarget().getPitchDelta(getOrgEntity());
-
-        if(deltaPitch > 5d){
-            deltaPitch = 5d;
-        }else if(deltaPitch < -5d){
-            deltaPitch = -5d;
-        }
-
-        getOrgEntity().setDesiredPitch(getOrgEntity().rotationPitch + deltaPitch);
     }
 
 }
