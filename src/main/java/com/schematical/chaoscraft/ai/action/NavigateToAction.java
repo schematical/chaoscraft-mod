@@ -12,6 +12,7 @@ public abstract class NavigateToAction extends ActionBase{
         getOrgEntity().getMoveHelper().strafe(2, 0);
         Double deltaYaw = getTarget().getYawDelta(getOrgEntity());
         if(deltaYaw == null){
+            markFailed();
             return;
         }
         if(deltaYaw > 30){

@@ -504,6 +504,14 @@ public class ChaosCraftClient {
 
     }
 
+    public void attachActionStateChange(CCActionStateChangeEventPacket message) {
+        if(!myOrganisms.containsKey(message.orgNamespace)){
+            ChaosCraft.LOGGER.error("attatchScoreEventToEntity - Cannot find orgNamespace: " + message.orgNamespace);
+            return;
+        }
+        myOrganisms.get(message.orgNamespace).getActionBuffer().applyStateChange(message);
+    }
+
     public enum State{
         Uninitiated,
         AuthSent,

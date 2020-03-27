@@ -36,7 +36,7 @@ public abstract class ActionBase {
         this.target = target;
     }
 
-    private void markRunning() {
+    void markRunning() {
         if(!this.actionBuffer.isServer()){
             throw new ChaosNetException("Client should not be changing `actionBuffer` state");
         }
@@ -64,6 +64,7 @@ public abstract class ActionBase {
     }
     private void setState(ActionState state){
         this.state = state;
+        this.actionBuffer.sync();
     }
     public OrgEntity getOrgEntity(){
         return actionBuffer.getOrgManager().getEntity();

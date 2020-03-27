@@ -872,6 +872,8 @@ public class OrgEntity extends MobEntity {
                 }
                 //Check to see if there is a reward prediction
             }
+
+            this.clientOrgManager.getActionBuffer().tickClient();
         }
     }
     public ItemStackHandler getItemHandler(){

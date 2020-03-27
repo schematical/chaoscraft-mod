@@ -49,6 +49,12 @@ public class ScanManager {
         scanState = ScanState.Ticking;
 
     }
+    public int getIndex(){
+        return index;
+    }
+    public int getMaxRangeIndex(){
+        return MAX_RANGE_INDEX;
+    }
     public ScanState tickScan(){
         if(!scanState.equals(ScanState.Ticking)){
             throw new ChaosNetException("Invalid `scanState`: " + scanState.toString());

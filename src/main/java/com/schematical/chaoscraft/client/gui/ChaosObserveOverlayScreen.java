@@ -10,6 +10,7 @@ import com.schematical.chaoscraft.ai.biology.TargetSlot;
 import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.network.packets.CCServerObserverOrgChangeEventPacket;
 import com.schematical.chaoscraft.network.packets.CCServerScoreEventPacket;
+import com.schematical.chaoscraft.services.targetnet.ScanManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.AbstractGui;
@@ -104,6 +105,9 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
         }else {
             s += actionBase.toString();
         }
+        list.add(s);
+        ScanManager scanManager = clientOrgManager.getScanManager();
+        s = scanManager.getState().toString() + " R:" + scanManager.getRange() + " - " + scanManager.getIndex() + "/" + scanManager.getMaxRangeIndex();
         list.add(s);
 
         for (BiologyBase biologyBase : this.clientOrgManager.getNNet().biology.values()) {
