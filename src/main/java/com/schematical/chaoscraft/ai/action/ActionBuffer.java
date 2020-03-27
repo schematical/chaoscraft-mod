@@ -98,6 +98,8 @@ public class ActionBuffer {
             currAction.markRunning();
         }else if(message.actionState.equals(ActionBase.ActionState.Completed)){
            currAction.markCompleted();
+        }else if(message.actionState.equals(ActionBase.ActionState.Failed)){
+            currAction.markFailed();
         }else if(message.actionState.equals(ActionBase.ActionState.Interrupted)){
             currAction.markInterrupted();
         }else{

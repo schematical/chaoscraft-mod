@@ -37,9 +37,7 @@ public abstract class ActionBase {
     }
 
     void markRunning() {
-        if(!this.actionBuffer.isServer()){
-            throw new ChaosNetException("Client should not be changing `actionBuffer` state");
-        }
+
         if(!this.state.equals(ActionState.Pending)){
             throw new ChaosNetException("Invalid `ActionBase.state`: " + this.state);
         }
@@ -54,9 +52,9 @@ public abstract class ActionBase {
     }
 
     public void markInterrupted() {
-        if(!this.actionBuffer.isServer()){
+  /*      if(!this.actionBuffer.isServer()){
             throw new ChaosNetException("Client should not be changing `actionBuffer` state");
-        }
+        }*/
         if(!this.state.equals(ActionState.Running)){
             throw new ChaosNetException("Invalid `ActionBase.state`: " + this.state);
         }
@@ -64,15 +62,17 @@ public abstract class ActionBase {
     }
     private void setState(ActionState state){
         this.state = state;
-        this.actionBuffer.sync();
+        if(this.actionBuffer.isServer()) {
+            this.actionBuffer.sync();
+        }
     }
     public OrgEntity getOrgEntity(){
         return actionBuffer.getOrgManager().getEntity();
     }
     public void markCompleted(){
-        if(!this.actionBuffer.isServer()){
+        /*if(!this.actionBuffer.isServer()){
             throw new ChaosNetException("Client should not be changing `actionBuffer` state");
-        }
+        }*/
         if(!this.state.equals(ActionState.Running)){
             throw new ChaosNetException("Invalid `ActionBase.state`: " + this.state);
         }
@@ -80,9 +80,9 @@ public abstract class ActionBase {
     }
 
     public void markFailed(){
-        if(!this.actionBuffer.isServer()){
+     /*   if(!this.actionBuffer.isServer()){
             throw new ChaosNetException("Client should not be changing `actionBuffer` state");
-        }
+        }*/
         if(!this.state.equals(ActionState.Running)){
             throw new ChaosNetException("Invalid `ActionBase.state`: " + this.state);
         }
