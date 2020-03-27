@@ -232,8 +232,8 @@ public class ChaosTarget {
 
             return targetEntity.getBoundingBox().rayTrace(vec3d, vec3d2).isPresent();
         }else{
-            throw new ChaosNetException("No available targets");
-            //return false;
+            //throw new ChaosNetException("No available targets");
+            return false;
         }
 
     }
