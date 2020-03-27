@@ -2,9 +2,12 @@ package com.schematical.chaoscraft.ai.action;
 
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.util.ChaosTarget;
+import com.schematical.chaosnet.model.ChaosNetException;
+import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 
 public class PlaceBlockAction extends NavigateToAction{
@@ -26,10 +29,16 @@ public class PlaceBlockAction extends NavigateToAction{
             markFailed();
             return;
         }
+        ItemStack itemStack = getOrgEntity().getHeldItem(Hand.MAIN_HAND);
         //When looking at stuff do stuff.
         getOrgEntity().rightClick(rayTraceResult);
-        if(!getTarget().getTargetEntity().isAlive()){
+        BlockPos placedBlockPos = rayTraceResult.getPos().offset(rayTraceResult.getFace());
+        BlockState blockState = getOrgEntity().world.getBlockState(placedBlockPos);
+        if(blockState.isSolid()){
             markCompleted();
+        }else{
+            markFailed();//TODO: figure out how this is possible
+            //throw new ChaosNetException("Something went wrong. The placed block area is empty. Was trying to place: " + itemStack.getItem().getRegistryName().toString());
         }
     }
 

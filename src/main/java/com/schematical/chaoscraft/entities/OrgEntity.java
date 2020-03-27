@@ -6,7 +6,6 @@ import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
 import com.schematical.chaoscraft.ai.CCObserviableAttributeCollection;
 import com.schematical.chaoscraft.ai.NeuralNet;
 import com.schematical.chaoscraft.ai.OutputNeuron;
-import com.schematical.chaoscraft.ai.action.ActionTargetSlot;
 import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.events.OrgEvent;

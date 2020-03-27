@@ -1,20 +1,14 @@
 package com.schematical.chaoscraft.services.targetnet;
 
-import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.CCObserviableAttributeCollection;
 import com.schematical.chaoscraft.ai.NeuralNet;
 import com.schematical.chaoscraft.ai.OutputNeuron;
-import com.schematical.chaoscraft.ai.action.ActionTargetSlot;
+import com.schematical.chaoscraft.ai.biology.ActionTargetSlot;
 import com.schematical.chaoscraft.ai.biology.TargetSlot;
 import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.entities.OrgEntity;
-import com.schematical.chaoscraft.events.CCWorldEvent;
-import com.schematical.chaoscraft.network.ChaosNetworkManager;
-import com.schematical.chaoscraft.network.packets.CCClientActionPacket;
-import com.schematical.chaoscraft.network.packets.CCClientOutputNeuronActionPacket;
 import com.schematical.chaoscraft.util.ChaosTarget;
 import com.schematical.chaosnet.model.ChaosNetException;
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
@@ -180,10 +174,11 @@ public class ScanManager {
         //Add an action locally
 
 
-
-        this.clientOrgManager.getActionBuffer().addAction(
-            highestActionTargetSlot.createAction()
-        );
+        if(highestActionTargetSlot != null) {
+            this.clientOrgManager.getActionBuffer().addAction(
+                    highestActionTargetSlot.createAction()
+            ).sync();
+        }
 
         scanState = ScanState.Finished;
         return scanState;

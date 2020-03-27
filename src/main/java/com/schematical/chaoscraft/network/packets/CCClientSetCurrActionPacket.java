@@ -40,15 +40,15 @@ public class CCClientSetCurrActionPacket {
     public static CCClientSetCurrActionPacket decode(PacketBuffer buf)
     {
         try {
-            String orgNamespace = buf.readString();
+            String orgNamespace = buf.readString(32767);
             Class cls = null;
-            cls = Class.forName(buf.readString());
+            cls = Class.forName(buf.readString(32767));
 
             ActionBase actionBase = (ActionBase)cls.newInstance();
             actionBase.setTarget(
                 ChaosTarget.deserializeTarget(
                     ChaosCraft.getServer().server.getWorld(DimensionType.OVERWORLD),
-                    buf.readString()
+                    buf.readString(32767)
                 )
             );
             return new CCClientSetCurrActionPacket(

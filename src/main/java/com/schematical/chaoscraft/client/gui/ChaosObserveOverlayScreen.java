@@ -4,6 +4,7 @@ import com.google.common.base.Strings;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.schematical.chaoscraft.ai.NeuralNet;
 import com.schematical.chaoscraft.ai.NeuronBase;
+import com.schematical.chaoscraft.ai.action.ActionBase;
 import com.schematical.chaoscraft.ai.biology.BiologyBase;
 import com.schematical.chaoscraft.ai.biology.TargetSlot;
 import com.schematical.chaoscraft.client.ClientOrgManager;
@@ -96,13 +97,19 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
             Vec3d eyePos = clientOrgManager.getEntity().getEyePosition(1f);
             list.add(rayTraceResult.getPos().getX() + ","  + rayTraceResult.getPos().getY() + "," + rayTraceResult.getPos().getZ() + "   " + Math.round(eyePos.getX()) + ", "+ Math.round(eyePos.getY()) + ", " + Math.round(eyePos.getZ()));
         }
-
-
+        s = "";
+        ActionBase actionBase = clientOrgManager.getActionBuffer().getCurrAction();
+        if(actionBase == null){
+            s += "NO ACTION";//TODO Add scanning progress
+        }else {
+            s += actionBase.toString();
+        }
+        list.add(s);
 
         for (BiologyBase biologyBase : this.clientOrgManager.getNNet().biology.values()) {
             if(biologyBase instanceof  TargetSlot) {
 
-                LookAtTargetOutput lookAtTargetOutput = null;
+               /* LookAtTargetOutput lookAtTargetOutput = null;
                 for (NeuronBase neuronBase : this.clientOrgManager.getNNet().neurons.values()) {
                     if(neuronBase instanceof  LookAtTargetOutput){
                         lookAtTargetOutput = (LookAtTargetOutput) neuronBase;
@@ -114,16 +121,16 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
                     TargetSlot targetSlot = (TargetSlot) biologyBase;
                     if (targetSlot != null) {
                         s = targetSlot.toShortString();
-                       /* s += " LATO:" + lookAtTargetOutput.getPrettyCurrValue();
+                       *//* s += " LATO:" + lookAtTargetOutput.getPrettyCurrValue();
                         s += " EP:" + Math.round(clientOrgManager.getEntity().rotationPitch);
                         if (targetSlot.hasTarget()) {
                             s += " YD:" + Math.round(targetSlot.getYawDelta());
                             s += " PD:" + Math.round(targetSlot.getPitchDelta());
                             s += " DD:" + Math.round(targetSlot.getDist());
-                        }*/
+                        }*//*
                        list.add(s);
                     }
-                }
+                }*/
             }
         }
         s = "Held Item: " + clientOrgManager.getEntity().getHeldItem(Hand.MAIN_HAND).toString();

@@ -5,7 +5,7 @@ import com.schematical.chaoscraft.ai.NeuralNet;
 import com.schematical.chaoscraft.services.targetnet.ScanManager;
 
 public class TargetNNetManager implements iChaosOrgTickable {
-    private final int MAX = 20 * 10;
+    private final int MAX = 20 * 5;
     private final ScanManager scanManager;
     private  int ticksSinceLastScan = 0;
     public TargetNNetManager(ScanManager scanManager) {

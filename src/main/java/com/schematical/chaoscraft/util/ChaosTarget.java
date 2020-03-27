@@ -81,9 +81,9 @@ public class ChaosTarget {
         return blockPos;
     }
     public boolean canEntityTouch(OrgEntity orgEntity){
-        BlockPos myPos = orgEntity.getPosition();
-        double distTo = blockPos.distanceSq(myPos);
-        boolean withInDist = distTo < OrgEntity.REACH_DISTANCE;
+        Vec3d myPos = orgEntity.getPositionVector();
+        double distTo = getTargetPositionCenter().distanceTo(myPos);
+        boolean withInDist = distTo < OrgEntity.REACH_DISTANCE - 1;
         if (
             // !this.world.getWorldBorder().contains(pos) ||
             !withInDist
@@ -174,7 +174,7 @@ public class ChaosTarget {
         }else if(getTargetBlockPos() != null){
 
             BlockPos blockPos = getTargetBlockPos();
-            return "blockpos:" +blockPos.getX() + ","+ blockPos.getY() + "," +blockPos.getZ();
+            return "blockpos:" + blockPos.getX() + "," + blockPos.getY() + "," + blockPos.getZ();
         }else{
             return "null";
         }
@@ -188,7 +188,7 @@ public class ChaosTarget {
                 chaosTarget.targetEntity = world.getEntityByID(Integer.parseInt(parts[1]));
                 break;
             case("blockpos"):
-                String[] parts2 = payload.split(",");
+                String[] parts2 = parts[1].split(",");
                 chaosTarget.blockPos = new BlockPos(
                     Integer.parseInt(parts2[0]),
                     Integer.parseInt(parts2[1]),

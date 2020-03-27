@@ -10,7 +10,7 @@ public abstract class NavigateToAction extends ActionBase{
 
     public void tickNavigate(){
         getOrgEntity().getMoveHelper().strafe(2, 0);
-        Double deltaYaw = target.getYawDelta(getOrgEntity());
+        Double deltaYaw = getTarget().getYawDelta(getOrgEntity());
         if(deltaYaw == null){
             return;
         }
@@ -24,13 +24,13 @@ public abstract class NavigateToAction extends ActionBase{
     }
     public void tickLook(){
         getOrgEntity().getMoveHelper().strafe(0, 0);
-        Vec3d pos = target.getTargetPositionCenter();
+        Vec3d pos = getTarget().getTargetPositionCenter();
 
         this.getOrgEntity().setDesiredLookPosition(pos);
 
 
         //!!!NOT SURE IF ANYTHING BELOW THIS WORKS
-        Double deltaPitch = target.getPitchDelta(getOrgEntity());
+        Double deltaPitch = getTarget().getPitchDelta(getOrgEntity());
 
         if(deltaPitch > 5d){
             deltaPitch = 5d;

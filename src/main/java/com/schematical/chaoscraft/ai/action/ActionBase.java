@@ -92,6 +92,12 @@ public abstract class ActionBase {
         return target;
     }
 
+    public String toString(){
+        String s = this.getClass().getSimpleName();
+        s += ": " + target.toString();
+        return s;
+    }
+
     public enum ActionState{
         Pending,
         Running,

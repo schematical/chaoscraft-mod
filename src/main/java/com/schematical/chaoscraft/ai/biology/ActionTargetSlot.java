@@ -1,11 +1,11 @@
-package com.schematical.chaoscraft.ai.action;
+package com.schematical.chaoscraft.ai.biology;
 
 import com.schematical.chaoscraft.ai.NeuralNet;
-import com.schematical.chaoscraft.ai.biology.BiologyBase;
-import com.schematical.chaoscraft.ai.biology.TargetSlot;
+import com.schematical.chaoscraft.ai.action.*;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.util.ChaosTarget;
 import com.schematical.chaosnet.model.ChaosNetException;
+import org.json.simple.JSONObject;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -49,14 +49,25 @@ public class ActionTargetSlot extends TargetSlot {
         return actionBase;
 
     }
+    @Override
+    public void parseData(JSONObject jsonObject){
+        super.parseData(jsonObject);
+        String fullClassName = "com.schematical.chaoscraft.ai.action." + jsonObject.get("action").toString();
+        //ChaosCraft.logger.info("Full Class name: " + fullClassName);
+        try {
+            actionBaseClass = Class.forName(fullClassName);
+        } catch (ClassNotFoundException e) {
+            throw new ChaosNetException(e.getMessage());
+        }
 
+    }
     public boolean isValid() {
 
 
         try {
            Method m = actionBaseClass.getMethod("validateTarget", OrgEntity.class, ChaosTarget.class);
 
-            return (boolean)m.invoke(null, getEntity(), getTarget());
+           return (boolean)m.invoke(null, getEntity(), getTarget());
         } catch (NoSuchMethodException e) {
            throw new ChaosNetException(e.getMessage());
         } catch (IllegalAccessException e) {

@@ -5,6 +5,7 @@ import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.CCClientActionPacket;
+import com.schematical.chaoscraft.network.packets.CCClientSetCurrActionPacket;
 import com.schematical.chaoscraft.server.ServerOrgManager;
 import com.schematical.chaosnet.model.ChaosNetException;
 
@@ -30,34 +31,38 @@ public class ActionBuffer {
         if(currAction == null){
             return;
         }
+
         if(!currAction.getActionState().equals(ActionBase.ActionState.Running)){
-            //clean it up
-            if(
-                currAction.getActionState().equals(ActionBase.ActionState.Running) ||
+            if( currAction.getActionState().equals(ActionBase.ActionState.Pending)){
+                //Do nothng
+            }else if(
+                currAction.getActionState().equals(ActionBase.ActionState.Completed) ||
                 currAction.getActionState().equals(ActionBase.ActionState.Failed)
             ){
                 recentActions.add(currAction);//Prob remove this. This should happen client side
                 currAction = null;
+                return;
             }else{
                 throw new ChaosNetException("Invalid ActionState at this point: " + currAction.getActionState().toString());
             }
         }
         currAction.tick();
     }
-    public void addAction(ActionBase action){
-        if(currAction != null){
+    public ActionBuffer addAction(ActionBase action){
+       /* if(currAction != null){
           throw new ChaosNetException("We already have a currAction.... interrupt or something");
-        }
+        }*/
         action.setActionBuffer(this);
         currAction = action;
-        sync();
+        return this;
+
     }
     public void sync(){
         //Send a packet to queue up the action
         if(isClient()) {
-            CCClientActionPacket clientActionPacket = new CCClientActionPacket(orgManager.getCCNamespace(), CCClientActionPacket.Action.SET_TARGET);
+            CCClientSetCurrActionPacket pkt = new CCClientSetCurrActionPacket(orgManager.getCCNamespace(), currAction);
             //clientActionPacket.setBiology(targetSlot);
-            ChaosNetworkManager.sendToServer(clientActionPacket);
+            ChaosNetworkManager.sendToServer(pkt);
         }else{
             throw new ChaosNetException("Todo: Write me");
         }
@@ -71,5 +76,9 @@ public class ActionBuffer {
 
     public BaseOrgManager getOrgManager() {
         return orgManager;
+    }
+
+    public ActionBase getCurrAction() {
+        return currAction;
     }
 }
