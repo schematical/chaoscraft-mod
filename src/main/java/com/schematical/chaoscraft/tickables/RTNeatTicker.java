@@ -42,7 +42,7 @@ public class RTNeatTicker implements iChaosOrgTickable {
 
                         neuronBase.attributeId = newAttribute.getAttributeId();
                         neuronBase.attributeValue = newAttribute.getAttributeValue();
-
+                        newNeurons.add(neuronBase);
 
 
 

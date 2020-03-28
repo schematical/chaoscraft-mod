@@ -1,7 +1,7 @@
 package com.schematical.chaoscraft.ai;
 
 
-import com.schematical.chaoscraft.ai.activators.iActivator;
+import com.schematical.chaoscraft.ai.activators.*;
 import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.entity.LivingEntity;
 import org.json.simple.JSONArray;
@@ -203,4 +203,22 @@ public abstract class NeuronBase extends InnovationBase {
         return hasBeenEvaluated;
     }
 
+    public void randomPopulateActivator() {
+        if(activator != null){
+            throw new ChaosNetException("Activator already populated");
+        }
+        ArrayList<Class> activators = new ArrayList();
+        activators.add(BinaryStepActivator.class);
+        activators.add(GaussianActivator.class);
+        activators.add(ReluActivator.class);
+        activators.add(SigmoidActivator.class);
+        int index = (int)Math.floor(activators.size() * Math.random());
+        try {
+            activator = (iActivator)activators.get(index).newInstance();
+        } catch (InstantiationException e) {
+           throw new ChaosNetException(e.getMessage());
+        } catch (IllegalAccessException e) {
+            throw new ChaosNetException(e.getMessage());
+        }
+    }
 }

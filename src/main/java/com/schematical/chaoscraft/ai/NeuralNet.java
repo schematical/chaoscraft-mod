@@ -196,11 +196,15 @@ public class NeuralNet {
 
             NeuronBase neuronBase = iterator2.next();
             neuronBase.id = "rtneat-" + neurons.size();
+            neuronBase.randomPopulateActivator();
             neurons.put(neuronBase.id, neuronBase);
             attachRandom(neuronBase);
         }
     }
-    public void attachRandom(NeuronBase neuronBase){
+    private void attachRandom(NeuronBase neuronBase){
+        if(neuronBase.id == null){
+            throw new ChaosNetException("`Neuron.id` cannot be `null`");
+        }
         NeuronBase depNeuron = null;
         NeuronBase mainNeuron = null;
         switch(neuronBase._base_type()){
@@ -230,6 +234,7 @@ public class NeuralNet {
         }
         NeuronDep neuronDep = new NeuronDep();
         neuronDep.depNeuron = depNeuron;
+        neuronDep.depNeuronId = depNeuron.id;
         neuronDep.weight = (float)(2 * Math.random()) - 1;
         mainNeuron.dependencies.add(neuronDep);
 
