@@ -148,7 +148,7 @@ public class ChaosTarget {
 
     public boolean isVisiblyBlocked(OrgEntity orgEntity) {
         Vec3d vec3d = orgEntity.getPositionVec();
-        Vec3d vec3d1 = getTargetPosition();
+        Vec3d vec3d1 = getTargetPositionCenter();
         boolean canBeSeen = orgEntity.world.rayTraceBlocks(new RayTraceContext(vec3d, vec3d1, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, orgEntity)).getType() == RayTraceResult.Type.MISS;
 
         if(!canBeSeen) {

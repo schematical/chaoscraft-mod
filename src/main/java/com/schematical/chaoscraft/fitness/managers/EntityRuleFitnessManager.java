@@ -1,17 +1,16 @@
-package com.schematical.chaoscraft.fitness;
+package com.schematical.chaoscraft.fitness.managers;
 
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.events.EntityFitnessScoreEvent;
 import com.schematical.chaoscraft.events.OrgEvent;
-import com.schematical.chaoscraft.events.OrgPredictionEvent;
+import com.schematical.chaoscraft.fitness.FitnessRun;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.CCServerScoreEventPacket;
 import com.schematical.chaoscraft.server.ServerOrgManager;
 import com.schematical.chaosnet.model.ChaosNetException;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -19,24 +18,19 @@ import java.util.List;
 /**
  * Created by user1a on 1/4/19.
  */
-public class EntityFitnessManager {
-    protected int currRunIndex = -1;
-    protected HashMap<Integer, FitnessRun> fitnessRuns = new HashMap<Integer, FitnessRun>();
+public class EntityRuleFitnessManager extends FitnessManagerBase {
+
     protected HashMap<String, Integer> occurences = new HashMap<String, Integer>();
-    public OrgEntity orgEntity;
-   // public List<EntityFitnessScoreEvent> scoreEvents = new ArrayList<EntityFitnessScoreEvent>();
 
-    public EntityFitnessManager(OrgEntity orgEntity) {
-        this.orgEntity = orgEntity;
+    public EntityRuleFitnessManager(OrgEntity orgEntity) {
+        super(orgEntity);
     }
 
-    public FitnessRun getCurrFitnessRun(){
-        return fitnessRuns.get(currRunIndex);
-    }
-    public FitnessRun addNewRun(){
-        currRunIndex += 1;
-        return fitnessRuns.put(currRunIndex, new FitnessRun());
-    }
+    // public List<EntityFitnessScoreEvent> scoreEvents = new ArrayList<EntityFitnessScoreEvent>();
+
+
+
+
     public void test(CCWorldEvent event){
 
 
@@ -110,28 +104,5 @@ public class EntityFitnessManager {
         }
     }
 
-    private void addScoreEvent(EntityFitnessScoreEvent scoreEvent) {
-        getCurrFitnessRun().scoreEvents.add(scoreEvent);
-        ServerOrgManager serverOrgManager = orgEntity.getServerOrgManager();
-        //Send score event
-        CCServerScoreEventPacket serverScoreEventPacket = new CCServerScoreEventPacket(
-                serverOrgManager.getCCNamespace(),
-                scoreEvent.score,
-                scoreEvent.life,
-                scoreEvent.fitnessRule.id,
-                scoreEvent.multiplier,
-                (int) (orgEntity.world.getGameTime() + ((orgEntity.getServerOrgManager().getMaxLife() - orgEntity.getServerOrgManager().getAgeSeconds()) * 20)),
-                currRunIndex
-        );
-        ChaosNetworkManager.sendTo(serverScoreEventPacket, serverOrgManager.getServerPlayerEntity());
 
-    }
-
-/*    public Double totalScore() {
-        Double total = 0d;
-        for (EntityFitnessScoreEvent scoreEvent: scoreEvents) {
-            total += scoreEvent.getAdjustedScore();
-        }
-        return total;
-    }*/
 }

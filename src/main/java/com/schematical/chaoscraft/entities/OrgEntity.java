@@ -1,5 +1,6 @@
 package com.schematical.chaoscraft.entities;
 
+import com.google.common.collect.Maps;
 import com.mojang.authlib.GameProfile;
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
@@ -9,7 +10,7 @@ import com.schematical.chaoscraft.ai.OutputNeuron;
 import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.events.OrgEvent;
-import com.schematical.chaoscraft.fitness.EntityFitnessManager;
+import com.schematical.chaoscraft.fitness.managers.FitnessManagerBase;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.CCClientOutputNeuronActionPacket;
 import com.schematical.chaoscraft.network.packets.CCInventoryChangeEventPacket;
@@ -21,6 +22,9 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CraftingTableBlock;
 import net.minecraft.block.material.Material;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.*;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -28,6 +32,7 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
+import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.RecipeItemHelper;
@@ -39,9 +44,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.registries.ObjectHolder;
 import org.json.simple.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class OrgEntity extends MobEntity {
 
@@ -50,7 +53,7 @@ public class OrgEntity extends MobEntity {
     public static final double REACH_DISTANCE = 5.0D;
 
     //public final NonNullList<ItemStack> orgInventory = NonNullList.withSize(36, ItemStack.EMPTY);
-    public EntityFitnessManager entityFitnessManager;
+    public FitnessManagerBase entityFitnessManager;
 
     protected CCPlayerEntityWrapper playerWrapper;
     public CCObservableAttributeManager observableAttributeManager;
@@ -94,7 +97,18 @@ public class OrgEntity extends MobEntity {
     public OrgEntity(EntityType<? extends MobEntity> type, World world) {
         super((EntityType<? extends MobEntity>) type, world);
         //setHealth(1);
-        //itemHandler.setStackInSlot(3, new ItemStack(Items.OAK_PLANKS, 12));
+        setHeldItem(Hand.MAIN_HAND, new ItemStack(Items.BOW));
+        ItemStack bowItemStack =  new ItemStack(Items.BOW, 1);
+        ItemStack itemStack = new ItemStack(Items.ARROW, 64);
+        Map<Enchantment, Integer> map = Maps.newHashMap();
+        map.put(Enchantments.FLAME, 10);
+        EnchantmentHelper.setEnchantments(map, itemStack);
+        EnchantmentHelper.setEnchantments(map, bowItemStack);
+        itemHandler.setStackInSlot(0, bowItemStack);
+        //EnchantmentHelper.addRandomEnchantment(new Random(), itemStack, 10, true);
+        itemHandler.setStackInSlot(1, itemStack);
+
+
     }
     public void setSpawnHash(int _spawnHash) {
         this.spawnHash = _spawnHash;
@@ -237,6 +251,9 @@ public class OrgEntity extends MobEntity {
         playerWrapper.setPosition(getPositionVec().x, getPositionVec().y, getPositionVec().z);
         playerWrapper.onGround = this.onGround;
         playerWrapper.setHeldItem(Hand.MAIN_HAND, getHeldItemMainhand());
+        for(int i = 0; i < this.itemHandler.getSlots(); i++) {
+            playerWrapper.inventory.setInventorySlotContents(i,  this.itemHandler.getStackInSlot(i));
+        }
         return playerWrapper;
     }
 
@@ -375,7 +392,7 @@ public class OrgEntity extends MobEntity {
 
     public ActionResultType dig(BlockPos pos) {
         BlockPos myPos = getPosition();
-        this.swingArm(Hand.MAIN_HAND);
+        this.func_226292_a_(Hand.MAIN_HAND, true);//swingArm(Hand.MAIN_HAND);
         boolean withInDist = pos.withinDistance(myPos, REACH_DISTANCE);
         if (
            // !this.world.getWorldBorder().contains(pos) ||

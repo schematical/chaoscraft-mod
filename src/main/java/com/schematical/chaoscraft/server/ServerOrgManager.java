@@ -5,7 +5,7 @@ import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
 import com.schematical.chaoscraft.ai.OutputNeuron;
 import com.schematical.chaoscraft.entities.OrgEntity;
-import com.schematical.chaoscraft.fitness.EntityFitnessManager;
+import com.schematical.chaoscraft.fitness.managers.EntityDiscoveryFitnessManager;
 import com.schematical.chaoscraft.network.packets.CCClientOutputNeuronActionPacket;
 import com.schematical.chaoscraft.tickables.OrgPositionManager;
 import com.schematical.chaosnet.model.ChaosNetException;
@@ -57,8 +57,8 @@ public class ServerOrgManager extends BaseOrgManager {
         this.orgEntity.attachSeverOrgManager(this);
         this.orgEntity.attachNNetRaw(this.organism.getNNetRaw());
         //this.orgEntity.setHeldItem(Hand.MAIN_HAND, new ItemStack(Items.LADDER));
-        orgEntity.entityFitnessManager = new EntityFitnessManager(orgEntity);
-        orgEntity.entityFitnessManager.addNewRun();
+        orgEntity.entityFitnessManager = new EntityDiscoveryFitnessManager(orgEntity);
+
         orgEntity.observableAttributeManager = new CCObservableAttributeManager(organism);
         orgEntity.setCustomName(new TranslationTextComponent(getCCNamespace()));
         orgEntity.setSpawnHash(ChaosCraft.getServer().spawnHash);

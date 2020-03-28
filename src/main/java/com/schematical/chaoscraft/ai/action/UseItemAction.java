@@ -2,11 +2,9 @@ package com.schematical.chaoscraft.ai.action;
 
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.entities.OrgEntity;
+import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.util.ChaosTarget;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
+import net.minecraft.item.*;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
@@ -14,10 +12,28 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 
 public class UseItemAction extends NavigateToAction{
-
+    private int heldCount = -1;
     @Override
     protected void _tick() {
+        ItemStack itemStack = getOrgEntity().getHeldItem(Hand.MAIN_HAND);
+        Item heldItem = itemStack.getItem();
         tickLook();
+
+
+
+        if(heldItem instanceof ShootableItem){
+            if(
+                getTarget().isEntityLookingAt(getOrgEntity())
+            ) {
+
+                tickShootItem();
+                return;
+            }
+            tickNavigate();
+            return;
+        }
+
+
         if(
             !getTarget().canEntityTouch(getOrgEntity()) &&
             !getTarget().isEntityLookingAt(getOrgEntity())
@@ -26,8 +42,7 @@ public class UseItemAction extends NavigateToAction{
             return;
         }
 
-        ItemStack itemStack = getOrgEntity().getHeldItem(Hand.MAIN_HAND);
-        Item heldItem = itemStack.getItem();
+
         ActionResult<ItemStack> rcResult = heldItem.onItemRightClick(
                 getOrgEntity().world,
                 getOrgEntity().getPlayerWrapper(),
@@ -69,11 +84,41 @@ public class UseItemAction extends NavigateToAction{
         }
     }
 
+    private void tickShootItem() {
+        ItemStack itemStack = getOrgEntity().getHeldItem(Hand.MAIN_HAND);
+        Item heldItem = itemStack.getItem();
+        if(heldCount == -1) {
+            ActionResult<ItemStack> rcResult = heldItem.onItemRightClick(
+                    getOrgEntity().world,
+                    getOrgEntity().getPlayerWrapper(),
+                    Hand.MAIN_HAND
+            );
+            if (rcResult.getType().equals(ActionResultType.SUCCESS)) {
+                ChaosCraft.LOGGER.debug(getOrgEntity().getCCNamespace() + " successfully rightClicked " + heldItem.getRegistryName().getNamespace());
+            } else if (rcResult.getType().equals(ActionResultType.SUCCESS)) {
+                ChaosCraft.LOGGER.debug(getOrgEntity().getCCNamespace() + " failed to rightClick " + heldItem.getRegistryName().getNamespace());
+            }
+        }
+        heldCount += 1;
+        if(heldCount > 20) {
+            itemStack.onPlayerStoppedUsing(
+                getOrgEntity().world,
+                getOrgEntity().getPlayerWrapper(),
+                heldCount
+            );
+            heldCount = -1;
+            this.markCompleted();
+            CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.ITEM_USED);
+            worldEvent.item = heldItem;
+            getOrgEntity().entityFitnessManager.test(worldEvent);
+        }
+    }
+
 
     public static boolean validateTarget(OrgEntity orgEntity, ChaosTarget chaosTarget) {
-        if(chaosTarget.getTargetBlockPos() == null){
+        /*if(chaosTarget.getTargetBlockPos() == null){
             return false;
-        }
+        }*/
         ItemStack itemStack = orgEntity.getHeldItem(Hand.MAIN_HAND);
         if(itemStack.isEmpty()){
             return false;
