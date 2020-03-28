@@ -26,7 +26,7 @@ run
 forge*changelog.txt
 /run/
 /run/*
-/run/world/
-/run/world/*
+/run/old_world/
+/run/old_world/*
 /run/saves/
 /run/saves/*
