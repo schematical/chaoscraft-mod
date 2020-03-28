@@ -52,8 +52,7 @@ public class OrgEntity extends MobEntity {
     public static final EntityType<OrgEntity> ORGANISM_TYPE = null;
     public static final double REACH_DISTANCE = 5.0D;
 
-    //public final NonNullList<ItemStack> orgInventory = NonNullList.withSize(36, ItemStack.EMPTY);
-    public FitnessManagerBase entityFitnessManager;
+
 
     protected CCPlayerEntityWrapper playerWrapper;
     public CCObservableAttributeManager observableAttributeManager;
@@ -126,7 +125,7 @@ public class OrgEntity extends MobEntity {
         if(flag) {
             CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.ATTACK_SUCCESS);
             worldEvent.entity = entityIn;
-            entityFitnessManager.test(worldEvent);
+            serverOrgManager.test(worldEvent);
         }
         return flag;
 
@@ -456,7 +455,7 @@ public class OrgEntity extends MobEntity {
                 state.getBlock().harvestBlock(world, this.getPlayerWrapper(), pos, state, world.getTileEntity(pos), stack);
                 CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.BLOCK_MINED);
                 worldEvent.block = state.getBlock();
-                entityFitnessManager.test(worldEvent);
+                serverOrgManager.test(worldEvent);
                 return ActionResultType.SUCCESS;
             }
 
@@ -563,7 +562,7 @@ public class OrgEntity extends MobEntity {
                     BlockState newBlockState = this.world.getBlockState(blockpos.offset(result.getFace()));
                     CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.BLOCK_PLACED);
                     worldEvent.block = newBlockState.getBlock();
-                    entityFitnessManager.test(worldEvent);
+                    serverOrgManager.test(worldEvent);
                     return actionResultType;
                 }
             }
@@ -793,7 +792,7 @@ public class OrgEntity extends MobEntity {
             if (this.spawnPos != null) {
                 if (this.spawnPos.distanceTo(this.getPositionVector()) > 5) {
                     CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.HAS_TRAVELED);
-                    entityFitnessManager.test(worldEvent);
+                    serverOrgManager.test(worldEvent);
                 }
             } else {
                 this.spawnPos = this.getPositionVector();
@@ -930,7 +929,7 @@ public class OrgEntity extends MobEntity {
         }
         CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.ITEM_COLLECTED);
         worldEvent.item = worldEventItem;
-        entityFitnessManager.test(worldEvent);
+        serverOrgManager.test(worldEvent);
 
         if(observableAttributeManager != null) {
             observableAttributeManager.Observe(worldEventItem);
@@ -1002,13 +1001,13 @@ public class OrgEntity extends MobEntity {
     public boolean attackEntityFrom(DamageSource source, float amount)
     {
         if(!world.isRemote){
-            if(entityFitnessManager != null) {//TODO:Delete me
-                CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.HEALTH_CHANGE);
-                worldEvent.entity = this;
-                worldEvent.amount = -1 * (amount / this.getMaxHealth());
-                entityFitnessManager.test(worldEvent);
-                events.add(new OrgEvent(worldEvent, OrgEvent.DEFAULT_TTL));
-            }
+
+            CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.HEALTH_CHANGE);
+            worldEvent.entity = this;
+            worldEvent.amount = -1 * (amount / this.getMaxHealth());
+            serverOrgManager.test(worldEvent);
+            events.add(new OrgEvent(worldEvent, OrgEvent.DEFAULT_TTL));
+
         }
         return super.attackEntityFrom(source, amount);
     }

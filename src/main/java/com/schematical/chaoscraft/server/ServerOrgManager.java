@@ -5,7 +5,9 @@ import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
 import com.schematical.chaoscraft.ai.OutputNeuron;
 import com.schematical.chaoscraft.entities.OrgEntity;
+import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.fitness.managers.EntityDiscoveryFitnessManager;
+import com.schematical.chaoscraft.fitness.managers.FitnessManagerBase;
 import com.schematical.chaoscraft.network.packets.CCClientOutputNeuronActionPacket;
 import com.schematical.chaoscraft.tickables.OrgPositionManager;
 import com.schematical.chaosnet.model.ChaosNetException;
@@ -27,7 +29,7 @@ public class ServerOrgManager extends BaseOrgManager {
     private float maxLifeSeconds = 15;
     private int respawnCount = 0;
     private int longTicksSinceStateChange = 0;
-
+    private FitnessManagerBase entityFitnessManager;
     public ServerOrgManager(){
 
         this.attatchTickable(new OrgPositionManager());
@@ -57,7 +59,7 @@ public class ServerOrgManager extends BaseOrgManager {
         this.orgEntity.attachSeverOrgManager(this);
         this.orgEntity.attachNNetRaw(this.organism.getNNetRaw());
         //this.orgEntity.setHeldItem(Hand.MAIN_HAND, new ItemStack(Items.LADDER));
-        orgEntity.entityFitnessManager = new EntityDiscoveryFitnessManager(orgEntity);
+        entityFitnessManager = new EntityDiscoveryFitnessManager(orgEntity);
 
         orgEntity.observableAttributeManager = new CCObservableAttributeManager(organism);
         orgEntity.setCustomName(new TranslationTextComponent(getCCNamespace()));
@@ -197,6 +199,14 @@ public class ServerOrgManager extends BaseOrgManager {
 
     public void setDebugState(DebugState debugState) {
         this.debugState = debugState;
+    }
+
+    public void test(CCWorldEvent worldEvent) {
+        this.entityFitnessManager.test(worldEvent);
+    }
+
+    public FitnessManagerBase getEntityFitnessManager() {
+        return entityFitnessManager;
     }
 
 

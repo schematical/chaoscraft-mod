@@ -485,7 +485,7 @@ public class ChaosCraftServer {
         Double highScore = -99999d;
         List<ServerOrgManager> orgs = getOrgsWithState(ServerOrgManager.State.Ticking);
         for (ServerOrgManager org : orgs) {
-            Double orgTotalScore = org.getEntity().entityFitnessManager.getCurrFitnessRun().totalScore();
+            Double orgTotalScore = org.getEntityFitnessManager().getCurrFitnessRun().totalScore();
             if(orgTotalScore > highScore){
                 highScore = orgTotalScore;
                 highScoringServerOrgManager = org;
@@ -500,7 +500,7 @@ public class ChaosCraftServer {
 
             CCServerObserverOrgChangeEventPacket packet = new CCServerObserverOrgChangeEventPacket(
                     highScoringServerOrgManager.getCCNamespace(),
-                    (int) Math.round(highScoringServerOrgManager.getEntity().entityFitnessManager.getCurrFitnessRun().totalScore()),
+                    (int) Math.round(highScoringServerOrgManager.getEntityFitnessManager().getCurrFitnessRun().totalScore()),
                     (int) (highScoringServerOrgManager.getEntity().world.getGameTime() + ((highScoringServerOrgManager.getMaxLife() - highScoringServerOrgManager.getAgeSeconds()) * 20))
             );
             ChaosNetworkManager.sendTo(packet, observingPlayer.getServerPlayerEntity());

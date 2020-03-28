@@ -26,6 +26,7 @@ public class OrgPositionManager implements iChaosOrgTickable {
     public int ticksWhileLookingAtTarget = 0;
     public boolean isLookingAtTarget = false;
     public float lookAtScore = 0;
+
     @Override
     public void Tick(BaseOrgManager orgManager) {
         boolean isServer = orgManager instanceof ServerOrgManager;
@@ -68,7 +69,7 @@ public class OrgPositionManager implements iChaosOrgTickable {
                     CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.TRAVEL_ALONG_AXIS);
                     worldEvent.amount = 1;
                     worldEvent.axis = CCWorldEvent.Axis.X;
-                    orgManager.getEntity().entityFitnessManager.test(worldEvent);
+                    ((ServerOrgManager)orgManager).test(worldEvent);
                 }
             }
             if(Math.round(Math.abs(diffVec.getY())) > this.maxDist.y){
@@ -81,7 +82,7 @@ public class OrgPositionManager implements iChaosOrgTickable {
                     CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.TRAVEL_ALONG_AXIS);
                     worldEvent.amount = 1;
                     worldEvent.axis = CCWorldEvent.Axis.Y;
-                    orgManager.getEntity().entityFitnessManager.test(worldEvent);
+                    ((ServerOrgManager)orgManager).test(worldEvent);
                 }
             }
             if(Math.round(Math.abs(diffVec.getZ())) > this.maxDist.z){
@@ -94,7 +95,7 @@ public class OrgPositionManager implements iChaosOrgTickable {
                     CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.TRAVEL_ALONG_AXIS);
                     worldEvent.amount = 1;
                     worldEvent.axis = CCWorldEvent.Axis.Z;
-                    orgManager.getEntity().entityFitnessManager.test(worldEvent);
+                    ((ServerOrgManager)orgManager).test(worldEvent);
                 }
             }
 
@@ -105,7 +106,7 @@ public class OrgPositionManager implements iChaosOrgTickable {
                 worldEvent.amount = 1;
                 worldEvent.position = this.lastCheckPos;
                 worldEvent.blockTouchedState = hasTouchedBlock ? CCWorldEvent.BlockTouchedState.HAS_TOUCHED : CCWorldEvent.BlockTouchedState.HAS_NOT_TOUCHED;
-                orgManager.getEntity().entityFitnessManager.test(worldEvent);
+                ((ServerOrgManager)orgManager).test(worldEvent);
             }
             if(!hasTouchedBlock){
                 touchedBlocks.add(this.lastCheckPos);
@@ -169,7 +170,7 @@ public class OrgPositionManager implements iChaosOrgTickable {
                                 if(target.getTargetBlockPos() != null){
                                     worldEvent.block = orgManager.getEntity().world.getBlockState(target.getTargetBlockPos()).getBlock();
                                 }
-                                orgManager.getEntity().entityFitnessManager.test(worldEvent);
+                                ((ServerOrgManager)orgManager).test(worldEvent);
                             }
                             isLookingAtTarget = false;
                         }
@@ -187,7 +188,7 @@ public class OrgPositionManager implements iChaosOrgTickable {
             ticksSinceLastMove % (20 * 5) == 0
         ){
             CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.HAS_NOT_TRAVELED);
-            orgManager.getEntity().entityFitnessManager.test(worldEvent);
+            ((ServerOrgManager)orgManager).test(worldEvent);
         }
     }
 

@@ -66,7 +66,7 @@ public class EquipOutput extends OutputNeuron {
 
         CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.EQUIP);
         worldEvent.item = itemStack.getItem();
-        nNet.entity.entityFitnessManager.test(worldEvent);
+        nNet.entity.getServerOrgManager().test(worldEvent);
         String message = nNet.entity.getCCNamespace() +" Equipped " + this.toLongString();
 
         if(itemStack.getItem().getRegistryName().toString().equals("minecraft:crafting_table")){

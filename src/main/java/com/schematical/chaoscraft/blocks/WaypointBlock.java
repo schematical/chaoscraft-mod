@@ -71,7 +71,7 @@ public class WaypointBlock extends Block implements ITileEntityProvider {
         }else {
             CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.BLOCK_PLACED_TOUCHING_WAYPOINT);
             worldEvent.block = facingState.getBlock();
-            serverOrgManager.getEntity().entityFitnessManager.test(worldEvent);
+            serverOrgManager.test(worldEvent);
         }
 
         worldIn.setBlockState(facingPos, Blocks.AIR.getDefaultState(), 1);

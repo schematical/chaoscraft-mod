@@ -3,6 +3,7 @@ package com.schematical.chaoscraft.ai.action;
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.events.CCWorldEvent;
+import com.schematical.chaoscraft.server.ServerOrgManager;
 import com.schematical.chaoscraft.util.ChaosTarget;
 import net.minecraft.item.*;
 import net.minecraft.util.ActionResult;
@@ -110,7 +111,7 @@ public class UseItemAction extends NavigateToAction{
             this.markCompleted();
             CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.ITEM_USED);
             worldEvent.item = heldItem;
-            getOrgEntity().entityFitnessManager.test(worldEvent);
+            ((ServerOrgManager)getActionBuffer().getOrgManager()).test(worldEvent);
         }
     }
 

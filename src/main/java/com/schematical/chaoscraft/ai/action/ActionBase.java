@@ -19,6 +19,9 @@ public abstract class ActionBase {
     public void setActionBuffer(ActionBuffer actionBuffer){
         this.actionBuffer = actionBuffer;
     }
+    public ActionBuffer getActionBuffer(){
+        return actionBuffer;
+    }
     protected abstract void _tick();
     public void tick(){
         if(!this.actionBuffer.isServer()){
