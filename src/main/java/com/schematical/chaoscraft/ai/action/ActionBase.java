@@ -1,8 +1,11 @@
 package com.schematical.chaoscraft.ai.action;
 
 import com.schematical.chaoscraft.entities.OrgEntity;
+import com.schematical.chaoscraft.network.packets.CCServerScoreEventPacket;
 import com.schematical.chaoscraft.util.ChaosTarget;
 import com.schematical.chaosnet.model.ChaosNetException;
+
+import java.util.ArrayList;
 
 public abstract class ActionBase {
     private ActionBuffer actionBuffer;
@@ -10,6 +13,7 @@ public abstract class ActionBase {
     private int actionAgeTicks = 0;
     private ActionState state = ActionState.Pending;
     private ChaosTarget target;
+    public ArrayList<CCServerScoreEventPacket> scoreEvents = new ArrayList<CCServerScoreEventPacket>();
 
     //TODO: Track score events that happened when this action was happening
 
@@ -91,7 +95,9 @@ public abstract class ActionBase {
         }
         this.setState(ActionState.Failed);
     }
-
+    public void attachScoreEvent(CCServerScoreEventPacket scoreEventPacket){
+        scoreEvents.add(scoreEventPacket);
+    }
     public ChaosTarget getTarget() {
         return target;
     }

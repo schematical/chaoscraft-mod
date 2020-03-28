@@ -96,7 +96,7 @@ public class OrgEntity extends MobEntity {
     public OrgEntity(EntityType<? extends MobEntity> type, World world) {
         super((EntityType<? extends MobEntity>) type, world);
         //setHealth(1);
-        setHeldItem(Hand.MAIN_HAND, new ItemStack(Items.BOW));
+/*        setHeldItem(Hand.MAIN_HAND, new ItemStack(Items.BOW));
         ItemStack bowItemStack =  new ItemStack(Items.BOW, 1);
         ItemStack itemStack = new ItemStack(Items.ARROW, 64);
         Map<Enchantment, Integer> map = Maps.newHashMap();
@@ -105,7 +105,7 @@ public class OrgEntity extends MobEntity {
         EnchantmentHelper.setEnchantments(map, bowItemStack);
         itemHandler.setStackInSlot(0, bowItemStack);
         //EnchantmentHelper.addRandomEnchantment(new Random(), itemStack, 10, true);
-        itemHandler.setStackInSlot(1, itemStack);
+        itemHandler.setStackInSlot(1, itemStack);*/
 
 
     }

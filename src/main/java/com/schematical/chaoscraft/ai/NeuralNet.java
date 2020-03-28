@@ -1,5 +1,6 @@
 package com.schematical.chaoscraft.ai;
 
+import com.schematical.chaoscraft.Enum;
 import com.schematical.chaoscraft.ai.biology.BiologyBase;
 
 import com.schematical.chaoscraft.entities.OrgEntity;
@@ -171,6 +172,7 @@ public class NeuralNet {
         }
         return biologies;
     }
+
     private class OutputGroupResult{
         public float highScore;
         public OutputNeuron highNeuron;
@@ -178,5 +180,82 @@ public class NeuralNet {
     public enum EvalGroup{
         DEFAULT,
         TARGET
+    }
+
+
+
+
+
+
+
+
+    public void randomAddNewNeurons( ArrayList<NeuronBase> newNeurons){
+        Iterator<NeuronBase> iterator2 = newNeurons.iterator();
+
+        while (iterator2.hasNext()){
+
+            NeuronBase neuronBase = iterator2.next();
+            neuronBase.id = "rtneat-" + neurons.size();
+            neurons.put(neuronBase.id, neuronBase);
+            attachRandom(neuronBase);
+        }
+    }
+    public void attachRandom(NeuronBase neuronBase){
+        NeuronBase depNeuron = null;
+        NeuronBase mainNeuron = null;
+        switch(neuronBase._base_type()){
+            case(com.schematical.chaoscraft.Enum.INPUT):
+                depNeuron = neuronBase;
+                mainNeuron = getRandomNeuronByType(
+                        new ArrayList<String>(
+                                Arrays.asList(
+                                        com.schematical.chaoscraft.Enum.OUTPUT,
+                                        com.schematical.chaoscraft.Enum.MIDDLE
+                                )
+                        )
+                );
+                break;
+            case(com.schematical.chaoscraft.Enum.OUTPUT):
+                mainNeuron = neuronBase;
+                depNeuron = getRandomNeuronByType(
+                       com.schematical.chaoscraft.Enum.INPUT
+                );
+                break;
+            case(com.schematical.chaoscraft.Enum.MIDDLE):
+                depNeuron = neuronBase;
+                mainNeuron = getRandomNeuronByType(
+                        com.schematical.chaoscraft.Enum.OUTPUT
+                );
+                break;
+        }
+        NeuronDep neuronDep = new NeuronDep();
+        neuronDep.depNeuron = depNeuron;
+        neuronDep.weight = (float)(2 * Math.random()) - 1;
+        mainNeuron.dependencies.add(neuronDep);
+
+
+    }
+    public NeuronBase getRandomNeuronByType(String type){
+        return getRandomNeuronByType(new ArrayList<String>(Arrays.asList(type)));
+    }
+    public NeuronBase getRandomNeuronByType(ArrayList<String> types){
+        ArrayList<NeuronBase> possibleNeurons = getNeuronsByType(
+                types
+        );
+        int index = (int)Math.floor(possibleNeurons.size() * Math.random());
+        return possibleNeurons.get(index);
+    }
+    public ArrayList<NeuronBase> getNeuronsByType(String type){
+
+        return getNeuronsByType(new ArrayList<String>(Arrays.asList(type)));
+    }
+    public ArrayList<NeuronBase> getNeuronsByType(ArrayList<String> types){
+        ArrayList<NeuronBase> neuronBases = new ArrayList<>();
+        for (NeuronBase neuronBase : neurons.values()) {
+            if(types.contains(neuronBase._base_type())){
+                    neuronBases.add(neuronBase);
+            }
+        }
+        return neuronBases;
     }
 }
