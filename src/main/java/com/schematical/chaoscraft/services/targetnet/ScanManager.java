@@ -208,6 +208,11 @@ public class ScanManager {
     public ScanState getState(){
         return scanState;
     }
+
+    public void forceEndScan() {
+       index = MAX_RANGE_INDEX;
+    }
+
     public enum ScanState{
         //Reset,
         Ticking,
