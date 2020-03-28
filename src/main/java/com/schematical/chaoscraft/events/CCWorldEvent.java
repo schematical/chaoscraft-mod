@@ -88,7 +88,7 @@ public class CCWorldEvent {
             if(response != null){
                 throw new ChaosNetException("Response is already propigate, this has two or more possible unique keys");
             }
-            response = Enum.ENTITY_ID + ":" + item.getRegistryName();
+            response = Enum.ENTITY_ID + ":" + entity.getType().getRegistryName();
         }
         return response;
     }

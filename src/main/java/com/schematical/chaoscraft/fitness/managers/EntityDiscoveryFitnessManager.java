@@ -27,6 +27,7 @@ public class EntityDiscoveryFitnessManager extends FitnessManagerBase {
         int score = (int)Math.round(3/eventHolder.count);
         EntityFitnessScoreEvent scoreEvent  = new EntityFitnessScoreEvent(event, score, null);
         scoreEvent.life = score * 5;
+        addScoreEvent(scoreEvent);
     }
     public class EventHolder{
         public int count = 0;

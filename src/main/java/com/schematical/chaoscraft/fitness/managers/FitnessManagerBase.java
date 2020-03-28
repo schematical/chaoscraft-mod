@@ -17,6 +17,7 @@ public abstract class FitnessManagerBase {
        public abstract void test(CCWorldEvent event);
        public FitnessManagerBase(OrgEntity orgEntity) {
               this.orgEntity = orgEntity;
+              addNewRun();
        }
        public FitnessRun getCurrFitnessRun(){
               return fitnessRuns.get(currRunIndex);
