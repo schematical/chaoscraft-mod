@@ -18,9 +18,9 @@ public class EntityFitnessScoreEvent {
         worldEvent = event;
         score = _score;
         fitnessRule = _fitnessRule;
-        /*if(fitnessRule == null){
+        if(fitnessRule == null){
             throw new ChaosNetException("Missing `fitnessRule`");
-        }*/
+        }
     }
     public float getAdjustedScore(){
         return Math.round(score * multiplier);
@@ -32,4 +32,6 @@ public class EntityFitnessScoreEvent {
         }
         return worldEvent.toString() + " = " + getAdjustedScore() + "(" + score + "*" + _multiplier + ")";
     }
+
+
 }

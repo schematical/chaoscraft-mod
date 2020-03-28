@@ -58,8 +58,8 @@ public class ServerOrgManager extends BaseOrgManager {
         super.attachOrgEntity(orgEntity);
         this.orgEntity.attachSeverOrgManager(this);
         this.orgEntity.attachNNetRaw(this.organism.getNNetRaw());
-        //this.orgEntity.setHeldItem(Hand.MAIN_HAND, new ItemStack(Items.LADDER));
-        entityFitnessManager = new EntityDiscoveryFitnessManager(orgEntity);
+
+        entityFitnessManager = new EntityDiscoveryFitnessManager(this);
 
         orgEntity.observableAttributeManager = new CCObservableAttributeManager(organism);
         orgEntity.setCustomName(new TranslationTextComponent(getCCNamespace()));

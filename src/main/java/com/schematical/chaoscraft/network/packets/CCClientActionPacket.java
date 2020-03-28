@@ -184,7 +184,7 @@ public class CCClientActionPacket {
                         throw new ChaosNetException("No valid target in message");
                     }
                     ServerOrgManager serverOrgManager = ChaosCraft.getServer().getOrgByNamespace(message.orgNamespace);
-                    serverOrgManager.getEntity().entityFitnessManager.test(worldEvent);
+                    serverOrgManager.test(worldEvent);
                 }
 
             });

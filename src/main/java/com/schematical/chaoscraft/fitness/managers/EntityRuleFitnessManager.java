@@ -21,9 +21,8 @@ import java.util.List;
 public class EntityRuleFitnessManager extends FitnessManagerBase {
 
     protected HashMap<String, Integer> occurences = new HashMap<String, Integer>();
-
-    public EntityRuleFitnessManager(OrgEntity orgEntity) {
-        super(orgEntity);
+    public EntityRuleFitnessManager(ServerOrgManager serverOrgManager) {
+        super(serverOrgManager);
     }
 
     // public List<EntityFitnessScoreEvent> scoreEvents = new ArrayList<EntityFitnessScoreEvent>();
@@ -34,7 +33,7 @@ public class EntityRuleFitnessManager extends FitnessManagerBase {
     public void test(CCWorldEvent event){
 
 
-        List<EntityFitnessScoreEvent> _scoreEvents = ChaosCraft.getServer().fitnessManager.testEntityFitnessEvent(this.orgEntity, event);
+        List<EntityFitnessScoreEvent> _scoreEvents = ChaosCraft.getServer().fitnessManager.testEntityFitnessEvent(this.serverOrgManager.getEntity(), event);
         Iterator<EntityFitnessScoreEvent> iterator =_scoreEvents.iterator();
         while(iterator.hasNext()){
             EntityFitnessScoreEvent scoreEvent = iterator.next();
@@ -94,10 +93,10 @@ public class EntityRuleFitnessManager extends FitnessManagerBase {
 
                     }
                 }*/
-                orgEntity.addOrgEvent(new OrgEvent(scoreEvent));
+                this.serverOrgManager.getEntity().addOrgEvent(new OrgEvent(scoreEvent));
                 occurences.put(scoreEvent.fitnessRule.id, numOfOccurences);
                 if (scoreEvent.life != 0) {
-                    orgEntity.getServerOrgManager().adjustMaxLife(scoreEvent.life);
+                    this.serverOrgManager.getEntity().getServerOrgManager().adjustMaxLife(scoreEvent.life);
                 }
             }
 

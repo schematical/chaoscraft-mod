@@ -13,10 +13,10 @@ import java.util.HashMap;
 public abstract class FitnessManagerBase {
        protected int currRunIndex = -1;
        protected HashMap<Integer, FitnessRun> fitnessRuns = new HashMap<Integer, FitnessRun>();
-       public OrgEntity orgEntity;
+       public ServerOrgManager serverOrgManager;
        public abstract void test(CCWorldEvent event);
-       public FitnessManagerBase(OrgEntity orgEntity) {
-              this.orgEntity = orgEntity;
+       public FitnessManagerBase(ServerOrgManager serverOrgManager) {
+              this.serverOrgManager = serverOrgManager;
               addNewRun();
        }
        public FitnessRun getCurrFitnessRun(){
@@ -28,15 +28,16 @@ public abstract class FitnessManagerBase {
        }
        protected void addScoreEvent(EntityFitnessScoreEvent scoreEvent) {
               getCurrFitnessRun().scoreEvents.add(scoreEvent);
-              ServerOrgManager serverOrgManager = orgEntity.getServerOrgManager();
+              String orgCCNamespace = serverOrgManager.getCCNamespace();
+              OrgEntity orgEntity = serverOrgManager.getEntity();
               //Send score event
               CCServerScoreEventPacket serverScoreEventPacket = new CCServerScoreEventPacket(
-                      serverOrgManager.getCCNamespace(),
+                      orgCCNamespace,
                       scoreEvent.score,
                       scoreEvent.life,
                       scoreEvent.fitnessRule.id,
                       scoreEvent.multiplier,
-                      (int) (orgEntity.world.getGameTime() + ((orgEntity.getServerOrgManager().getMaxLife() - orgEntity.getServerOrgManager().getAgeSeconds()) * 20)),
+                      (int) (orgEntity.world.getGameTime() + ((serverOrgManager.getMaxLife() - serverOrgManager.getAgeSeconds()) * 20)),
                       currRunIndex
               );
               ChaosNetworkManager.sendTo(serverScoreEventPacket, serverOrgManager.getServerPlayerEntity());
