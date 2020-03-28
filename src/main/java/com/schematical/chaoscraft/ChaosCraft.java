@@ -29,6 +29,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -95,6 +96,7 @@ public class ChaosCraft
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onClientStarting);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onKeyInputEvent);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onEntitySpawn);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::chunkEnterEvent);
         if(FMLEnvironment.dist.equals(Dist.CLIENT)) {
             FMLJavaModLoadingContext.get().getModEventBus().addListener(this::renderOverlayEvent);
         }
@@ -339,6 +341,12 @@ public class ChaosCraft
             monsterEntity.targetSelector.addGoal(2, new NearestAttackableTargetGoal(monsterEntity, OrgEntity.class, true));
         }
 
+    }
+    @SubscribeEvent
+    public void chunkEnterEvent(EntityEvent.EnteringChunk event) {
+        if(server != null){
+            server.chunkEnterEvent(event);
+        }
     }
 
 }

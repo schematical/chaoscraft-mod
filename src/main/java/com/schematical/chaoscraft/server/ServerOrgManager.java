@@ -13,6 +13,8 @@ import com.schematical.chaoscraft.tickables.OrgPositionManager;
 import com.schematical.chaosnet.model.ChaosNetException;
 import com.schematical.chaosnet.model.Organism;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.ArrayList;
@@ -30,6 +32,7 @@ public class ServerOrgManager extends BaseOrgManager {
     private int respawnCount = 0;
     private int longTicksSinceStateChange = 0;
     private FitnessManagerBase entityFitnessManager;
+    public ChunkPos currChunkPos;
     public ServerOrgManager(){
 
         this.attatchTickable(new OrgPositionManager());
@@ -104,8 +107,29 @@ public class ServerOrgManager extends BaseOrgManager {
         if(longTicksSinceStateChange > 2){
 
         }
+        //checkChunk();
     }
+    public void checkChunk(){
+        if(orgEntity == null){
+            return;
+        }
+        BlockPos orgPos = orgEntity.getPosition();
 
+     /*   Vec3i newChunk = new Vec3i(
+                (int)Math.floor(orgPos.getX()/ 16),
+                (int)Math.floor(orgPos.getY()/ 16),
+                (int)Math.floor(orgPos.getZ()/ 16)
+        );*/
+        ChunkPos newChunkPos = new ChunkPos(orgPos);
+        if(
+            currChunkPos == null ||
+            currChunkPos.equals(newChunkPos)
+        ){
+            ChaosCraft.getServer().forceLoadChunk(currChunkPos, newChunkPos);
+            currChunkPos = newChunkPos;
+
+        }
+    }
     public void tickOrg(){
         if( this.orgEntity.getBoundingBox() == null){
             return;
@@ -119,7 +143,7 @@ public class ServerOrgManager extends BaseOrgManager {
         }
 
 
-
+       // checkChunk();
 
         if(this.neuronActions.size() > 0){
             //Iterate through and find output neurons

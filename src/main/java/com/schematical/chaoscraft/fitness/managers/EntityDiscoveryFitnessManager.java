@@ -43,7 +43,7 @@ public class EntityDiscoveryFitnessManager extends FitnessManagerBase {
             EntityFitnessRule entityFitnessRule = new EntityFitnessRule();
             entityFitnessRule.id = event.eventType.toString() + ":" + event.toSimpleId();
             EntityFitnessScoreEvent scoreEvent = new EntityFitnessScoreEvent(event, score, entityFitnessRule);
-            scoreEvent.life = score * 10;
+            scoreEvent.life = score * 4;
             addScoreEvent(scoreEvent);
         }
     }

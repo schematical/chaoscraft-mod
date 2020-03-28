@@ -13,14 +13,18 @@ import com.schematical.chaoscraft.server.spawnproviders.iServerSpawnProvider;
 import com.schematical.chaosnet.ChaosNet;
 import com.schematical.chaosnet.auth.ChaosnetCognitoUserPool;
 import com.schematical.chaosnet.model.*;
+import it.unimi.dsi.fastutil.longs.LongSet;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.GameType;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.event.entity.EntityEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -44,6 +48,7 @@ public class ChaosCraftServer {
     public int longTickCount = 0;
     public int ticksSinceLastThread = -1;
     public iServerSpawnProvider spawnProvider = new SpawnBlockPosProvider();//PlayerSpawnPosProvider();
+    static HashMap<ChunkPos, Integer> chunkLoadCount = new HashMap<>();
 
     public ChaosCraftServer(MinecraftServer server) {
 
@@ -519,5 +524,52 @@ public class ChaosCraftServer {
             }
         }
         return null;
+    }
+
+    public void forceLoadChunk(ChunkPos currChunkPos, ChunkPos newChunkPos){
+        DimensionType dimensiontype = DimensionType.OVERWORLD;//server.getWorld().getDimension().getType();
+        ServerWorld serverworld = server.getWorld(dimensiontype);
+        LongSet longset = serverworld.getForcedChunks();
+        longset.forEach((long p_212720_1_) -> {
+            serverworld.forceChunk(ChunkPos.getX(p_212720_1_), ChunkPos.getZ(p_212720_1_), false);
+        });
+    }
+
+
+
+    public void chunkEnterEvent(EntityEvent.EnteringChunk event) {
+        if(event.getEntity() instanceof OrgEntity && event.getEntity().world instanceof ServerWorld) {
+            ServerWorld world = (ServerWorld) event.getEntity().world;
+
+            ChunkPos oldPos = new ChunkPos(event.getOldChunkX(), event.getOldChunkZ());
+            ChunkPos newPos = new ChunkPos(event.getNewChunkX(), event.getNewChunkZ());
+
+            //This should technically always be true, but you never know
+            if(chunkLoadCount.containsKey(oldPos)) {
+                //Get the old amount of bots in a chunk and distract one because this one just left
+                int newCount = chunkLoadCount.get(oldPos) - 1;
+
+                //If there are now less than 0 bots in it we don't need the chunks anymore so unload it
+                if(newCount <= 0) {
+                    chunkLoadCount.remove(oldPos); //I remove it here to make sure we don't get negative values or something strange
+
+                    world.forceChunk(oldPos.x, oldPos.z, false);
+                } else {
+                    //If there are more than 0 zero bots in this chunk it still needs to be loaded
+                    chunkLoadCount.put(oldPos, newCount);
+                }
+            }
+
+            //New count is _at least_ 1
+            int newCount = 1;
+
+            if(chunkLoadCount.containsKey(newPos)) {
+                //We have a count saved, so add that
+                newCount += chunkLoadCount.get(newPos);
+            }
+
+            //Write it!
+            chunkLoadCount.put(newPos, newCount);
+        }
     }
 }

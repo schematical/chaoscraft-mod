@@ -61,6 +61,7 @@ public class EntityRuleFitnessManager extends FitnessManagerBase {
                 if (scoreEvent.worldEvent.extraMultiplier != 0) {
                     scoreEvent.multiplier = scoreEvent.worldEvent.extraMultiplier;
                 }
+                occurences.put(scoreEvent.fitnessRule.id, numOfOccurences);
                 addScoreEvent(scoreEvent);
                 /*Iterator<OrgEvent> eventIterator = orgEntity.getOrgEvents().iterator();
 
@@ -93,11 +94,7 @@ public class EntityRuleFitnessManager extends FitnessManagerBase {
 
                     }
                 }*/
-                this.serverOrgManager.getEntity().addOrgEvent(new OrgEvent(scoreEvent));
-                occurences.put(scoreEvent.fitnessRule.id, numOfOccurences);
-                if (scoreEvent.life != 0) {
-                    this.serverOrgManager.getEntity().getServerOrgManager().adjustMaxLife(scoreEvent.life);
-                }
+
             }
 
         }
