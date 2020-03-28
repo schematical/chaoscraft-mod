@@ -12,7 +12,7 @@ import org.json.simple.JSONObject;
  */
 
 public class StopScanOutput extends OutputNeuron {
-    private String targetSlotId;
+
 
     @Override
     public void execute() {
@@ -29,6 +29,6 @@ public class StopScanOutput extends OutputNeuron {
     public void parseData(JSONObject jsonObject){
         executeSide = ExecuteSide.Client;
         super.parseData(jsonObject);
-        targetSlotId = jsonObject.get("targetSlotId").toString();
+
     }
 }

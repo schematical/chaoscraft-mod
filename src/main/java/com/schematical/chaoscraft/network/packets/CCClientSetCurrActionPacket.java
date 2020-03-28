@@ -67,15 +67,14 @@ public class CCClientSetCurrActionPacket {
     public static class Handler
     {
         public static void handle(final CCClientSetCurrActionPacket message, Supplier<NetworkEvent.Context> ctx) {
-            //ChaosCraft.LOGGER.info("recived `CCServerScoreEventPacket` 1 ");
+
             ctx.get().enqueueWork(() -> {
-                //ChaosCraft.LOGGER.info("recived `CCServerScoreEventPacket` 2: " + message.orgNamespace);
-                //Pretty sure the server should get this
 
                 //Load the NNet into memory
                 ServerOrgManager serverOrgManager = ChaosCraft.getServer().getOrgByNamespace(message.orgNamespace);
                 if(serverOrgManager == null){
-                    throw new ChaosNetException("Cannot find Org: " + message.orgNamespace);
+                   /* throw new ChaosNetException*/ChaosCraft.LOGGER.error("Cannot find Org: " + message.orgNamespace);
+                    return;
                 }
                 serverOrgManager.getActionBuffer().addAction(message.actionBase);
 
