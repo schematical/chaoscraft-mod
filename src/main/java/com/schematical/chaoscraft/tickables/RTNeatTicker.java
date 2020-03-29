@@ -2,7 +2,10 @@ package com.schematical.chaoscraft.tickables;
 
 import com.schematical.chaoscraft.BaseOrgManager;
 import com.schematical.chaoscraft.ai.*;
+import com.schematical.chaoscraft.ai.inputs.HasInInventoryInput;
 import com.schematical.chaoscraft.ai.inputs.TargetCandidateTypeInput;
+import com.schematical.chaoscraft.ai.outputs.CraftOutput;
+import com.schematical.chaoscraft.ai.outputs.EquipOutput;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaosnet.model.ObservedAttributesElement;
 
@@ -48,9 +51,30 @@ public class RTNeatTicker implements iChaosOrgTickable {
 
                         break;
                     case(CCAttributeId.ITEM_ID):
+                        EquipOutput equipOutput = new EquipOutput();
+                        equipOutput.attachNNet(neuralNet);
+
+                        equipOutput.attributeId = newAttribute.getAttributeId();
+                        equipOutput.attributeValue = newAttribute.getAttributeValue();
+                        newNeurons.add(equipOutput);
+
+                        HasInInventoryInput hasInInventoryInput = new HasInInventoryInput();
+                        hasInInventoryInput.attachNNet(neuralNet);
+
+                        hasInInventoryInput.attributeId = newAttribute.getAttributeId();
+                        hasInInventoryInput.attributeValue = newAttribute.getAttributeValue();
+                        newNeurons.add(hasInInventoryInput);
+
 
                         break;
                     case(CCAttributeId.RECIPE_ID):
+                        //TODO: Add craft output
+                        CraftOutput craftOutput = new CraftOutput();
+                        craftOutput.attachNNet(neuralNet);
+
+                        //craftOutput.recipeId = newAttribute.getAttributeId();
+                        craftOutput.recipeId = newAttribute.getAttributeValue();
+                        newNeurons.add(craftOutput);
 
                         break;
                 }

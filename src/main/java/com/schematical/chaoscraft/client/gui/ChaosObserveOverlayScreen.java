@@ -11,17 +11,24 @@ import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.network.packets.CCServerObserverOrgChangeEventPacket;
 import com.schematical.chaoscraft.network.packets.CCServerScoreEventPacket;
 import com.schematical.chaoscraft.services.targetnet.ScanManager;
+import com.schematical.chaoscraft.util.ChaosTarget;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.items.ItemStackHandler;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -114,7 +121,6 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
             if(biologyBase instanceof  TargetSlot) {
 
 
-
                 TargetSlot targetSlot = (TargetSlot) biologyBase;
                 if (targetSlot != null) {
                     s = targetSlot.toShortString();
@@ -124,6 +130,9 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
                         s += " YD:" + Math.round(targetSlot.getYawDelta());
                         s += " PD:" + Math.round(targetSlot.getPitchDelta());
                         s += " DD:" + Math.round(targetSlot.getDist());
+
+
+
                     }
                    list.add(s);
                 }
@@ -158,5 +167,81 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
     public void setObservedEntity(CCServerObserverOrgChangeEventPacket message, ClientOrgManager clientOrgManager) {
         this.message = message;
         this.clientOrgManager = clientOrgManager;
+    }
+
+    public ClientOrgManager getObservedEntity() {
+        return  this.clientOrgManager;
+    }
+
+    public void onRenderWorldLastEvent(RenderWorldLastEvent event) {
+        if(this.clientOrgManager == null){
+            return;
+        }
+        ActionBase actionBase = this.clientOrgManager.getActionBuffer().getCurrAction();
+        if(actionBase != null){
+            ChaosTarget chaosTarget = actionBase.getTarget();
+            if(chaosTarget == null){
+                AxisAlignedBB toDraw = chaosTarget.getTargetBoundingBox(getObservedEntity().getEntity().world);
+                if(toDraw != null) {
+                    toDraw = toDraw.offset(chaosTarget.getTargetBlockPos());
+                    DrawHelper.glColor(Color.GREEN, 1f);
+                    DrawHelper.drawAABB(
+                            event.getMatrixStack(),
+                            toDraw,
+                            clientOrgManager.getEntity().getEyePosition(1),
+                            .002D
+                    );
+                }
+
+            }
+        }
+        AxisAlignedBB toDraw2 = clientOrgManager.getEntity().getBoundingBox();
+        BlockPos blockPos2 = clientOrgManager.getEntity().getPosition();
+        if(
+                toDraw2 != null &&
+                blockPos2 != null
+        ) {
+            DrawHelper.glColor(Color.RED, 1f);
+            toDraw2 = toDraw2.offset(blockPos2);
+            DrawHelper.drawAABB(
+                    event.getMatrixStack(),
+                    toDraw2,
+                    clientOrgManager.getEntity().getEyePosition(1),
+                    .002D
+            );
+        }
+        for (BiologyBase biologyBase : this.clientOrgManager.getNNet().biology.values()) {
+            if(biologyBase instanceof  TargetSlot) {
+
+
+                TargetSlot targetSlot = (TargetSlot) biologyBase;
+                if (targetSlot != null) {
+
+                    if (targetSlot.hasTarget()) {
+                        ChaosTarget chaosTarget = targetSlot.getTarget();
+
+
+                        AxisAlignedBB toDraw = chaosTarget.getTargetBoundingBox(getObservedEntity().getEntity().world);
+                        BlockPos blockPos = chaosTarget.getTargetBlockPos();
+                        if(
+                            toDraw != null &&
+                            blockPos != null
+                        ) {
+                            DrawHelper.glColor(Color.WHITE, 1f);
+                            toDraw = toDraw.offset(blockPos);
+                            DrawHelper.drawAABB(
+                                    event.getMatrixStack(),
+                                    toDraw,
+                                    clientOrgManager.getEntity().getEyePosition(1),
+                                    .002D
+                            );
+                        }
+
+                    }
+
+                }
+
+            }
+        }
     }
 }

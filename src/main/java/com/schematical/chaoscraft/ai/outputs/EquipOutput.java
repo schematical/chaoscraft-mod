@@ -17,8 +17,8 @@ import org.json.simple.JSONObject;
  */
 public class EquipOutput extends OutputNeuron {
 
-    protected String attributeId;
-    protected String attributeValue;
+    public String attributeId;
+    public String attributeValue;
     @Override
     public float evaluate(){
         if(getHasBeenEvaluated()){

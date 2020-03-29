@@ -32,6 +32,10 @@ public abstract class ActionBase {
             throw new ChaosNetException("Client should not be ticking `actionBuffer` state");
         }
         actionAgeTicks += 1;
+        if(actionAgeTicks > 15 * 20){
+            markFailed();
+            return;
+        }
         if(state.equals(ActionState.Pending)){
             markRunning();
         }

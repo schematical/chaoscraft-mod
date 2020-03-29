@@ -26,6 +26,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.TickEvent;
@@ -97,6 +98,7 @@ public class ChaosCraft
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onKeyInputEvent);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onEntitySpawn);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::chunkEnterEvent);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onRenderWorldLastEvent);
         if(FMLEnvironment.dist.equals(Dist.CLIENT)) {
             FMLJavaModLoadingContext.get().getModEventBus().addListener(this::renderOverlayEvent);
         }
@@ -346,6 +348,12 @@ public class ChaosCraft
     public void chunkEnterEvent(EntityEvent.EnteringChunk event) {
         if(server != null){
             server.chunkEnterEvent(event);
+        }
+    }
+    @SubscribeEvent
+    public void onRenderWorldLastEvent(RenderWorldLastEvent event) {
+        if(client != null){
+            client.onRenderWorldLastEvent(event);
         }
     }
 

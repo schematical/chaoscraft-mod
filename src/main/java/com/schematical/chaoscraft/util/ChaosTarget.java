@@ -6,8 +6,13 @@ import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.*;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.World;
+
+import java.util.ArrayList;
 
 public class ChaosTarget {
     private Entity targetEntity;
@@ -157,6 +162,35 @@ public class ChaosTarget {
 
         return true;
     }
+    public boolean isSurroundedBySolid(World world) {
+       if(targetEntity != null){
+           return false;//Unlikely
+       }
+       if(blockPos == null){
+           throw new ChaosNetException("`blockPos` should not be null if `targetEntity` is null");
+       }
+
+       boolean foundNotSolid = true;
+        ArrayList<BlockState> blockStates = getSurroundingBlockStates(world);
+        for (BlockState blockState : blockStates) {
+            if(!blockState.isSolid()){
+                foundNotSolid = false;
+            }
+        }
+        return foundNotSolid;
+    }
+    public ArrayList<BlockState> getSurroundingBlockStates(World world){
+        ArrayList<BlockState> blockStates = new ArrayList();
+        BlockPos testBlockPos = getTargetBlockPos();
+        blockStates.add(world.getBlockState(blockPos));
+        blockStates.add(world.getBlockState(blockPos.offset(Direction.DOWN)));
+        blockStates.add(world.getBlockState(blockPos.offset(Direction.UP)));
+        blockStates.add(world.getBlockState(blockPos.offset(Direction.WEST)));
+        blockStates.add(world.getBlockState(blockPos.offset(Direction.EAST)));
+        blockStates.add(world.getBlockState(blockPos.offset(Direction.NORTH)));
+        blockStates.add(world.getBlockState(blockPos.offset(Direction.SOUTH)));
+        return blockStates;
+    }
     public String toString(){
 
         String message = "";
@@ -236,5 +270,17 @@ public class ChaosTarget {
             return false;
         }
 
+    }
+
+    public AxisAlignedBB getTargetBoundingBox(World world) {
+        if(targetEntity != null){
+            return targetEntity.getBoundingBox();
+        }
+        if(blockPos != null){
+            BlockState state = world.getBlockState(blockPos);
+            VoxelShape shape = state.getShape(world, blockPos);
+           return shape.isEmpty() ? VoxelShapes.fullCube().getBoundingBox() : shape.getBoundingBox();
+        }
+        throw new ChaosNetException("missing `targetEntity` and `blockPos`");
     }
 }

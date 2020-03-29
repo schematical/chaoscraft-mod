@@ -14,11 +14,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
-import net.minecraft.item.Items;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.GameType;
 import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 
@@ -495,6 +493,7 @@ public class ChaosCraftClient {
         if(chaosPlayerNeuronTestScreen != null){
             chaosPlayerNeuronTestScreen.setObservedEntity(message, clientOrgManager);
         }
+
     }
 
     public void stir() {
@@ -510,6 +509,13 @@ public class ChaosCraftClient {
             return;
         }
         myOrganisms.get(message.orgNamespace).getActionBuffer().applyStateChange(message);
+    }
+
+    public void onRenderWorldLastEvent(RenderWorldLastEvent event) {
+        if(chaosObserveOverlayScreen == null){
+            return;
+        }
+        chaosObserveOverlayScreen.onRenderWorldLastEvent(event);
     }
 
     public enum State{
