@@ -2,6 +2,7 @@ package com.schematical.chaoscraft.client.gui;
 
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.NeuronBase;
+import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.CCClientObserveStateChangePacket;
@@ -78,6 +79,20 @@ public class ChaosInGameMenuOverlayGui extends Screen {
             ChaosCraft.getClient().showPlayerNeuronTestScreen();
         }));
         y += 20;
+        if (!ChaosCraft.getClient().getObservationState().equals(ChaosCraftServerPlayerInfo.State.None)) {
+            this.addButton(new Button(this.width / 2 - 100, y, 200, 20, I18n.format("chaoscraft.gui.mainmenu.observation-options"), (p_214266_1_) -> {
+                Minecraft.getInstance().displayGuiScreen(new ChaosObserverMenuOverlayGui());
+
+            }));
+            y += 20;
+            ClientOrgManager clientOrgManager = ChaosCraft.getClient().getObservedOrganism();
+            if(clientOrgManager != null) {
+                this.addButton(new Button(this.width / 2 - 100, y, 200, 20, I18n.format("chaoscraft.gui.mainmenu.org-details"), (p_214266_1_) -> {
+                    ChaosCraft.getClient().showOrdDetailOverlay(clientOrgManager);
+                }));
+                y += 20;
+            }
+        }
     }
     private String getObserverBtnText(){
         String text = "chaoscraft.gui.mainmenu.observer-mode-start";

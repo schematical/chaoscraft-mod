@@ -80,9 +80,9 @@ public class ChaosCraftClient {
     }
     public void render() {
 
-        if(chaosPlayerNeuronTestScreen != null){
+        /*if(chaosPlayerNeuronTestScreen != null){
             chaosPlayerNeuronTestScreen.render();
-        }
+        }*/
         if(!observationState.equals(ChaosCraftServerPlayerInfo.State.None)){
             chaosObserveOverlayScreen.render();
         }
@@ -516,6 +516,17 @@ public class ChaosCraftClient {
             return;
         }
         chaosObserveOverlayScreen.onRenderWorldLastEvent(event);
+    }
+
+    public ChaosObserveOverlayScreen getObserveOverlayScreen() {
+        return chaosObserveOverlayScreen;
+    }
+
+    public ClientOrgManager getObservedOrganism() {
+        if(chaosObserveOverlayScreen == null){
+            return null;
+        }
+        return chaosObserveOverlayScreen.getObservedEntity();
     }
 
     public enum State{

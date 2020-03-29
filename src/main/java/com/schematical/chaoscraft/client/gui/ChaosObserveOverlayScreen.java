@@ -2,6 +2,7 @@ package com.schematical.chaoscraft.client.gui;
 
 import com.google.common.base.Strings;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.NeuralNet;
 import com.schematical.chaoscraft.ai.NeuronBase;
 import com.schematical.chaoscraft.ai.action.ActionBase;
@@ -37,6 +38,11 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
     private final FontRenderer fontRenderer;
     private CCServerObserverOrgChangeEventPacket message;
     private ClientOrgManager clientOrgManager;
+    private boolean displayScore = false;
+    private boolean displayTarget = false;
+    private boolean drawTargetLines = true;
+    private boolean displayInventory = false;
+
     public ChaosObserveOverlayScreen(Minecraft mc) {
         this.mc = mc;
         this.fontRenderer = mc.fontRenderer;
@@ -66,13 +72,15 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
             list.add("Expected Life End: " + secondsToLive);
             ArrayList<CCServerScoreEventPacket> scoreEvents = (ArrayList<CCServerScoreEventPacket>)clientOrgManager.getServerScoreEvents().clone();
             Collections.reverse(scoreEvents);
-            for (CCServerScoreEventPacket serverScoreEventPacket : scoreEvents) {
-                String message = serverScoreEventPacket.fitnessRuleId +
-                        " S:" + serverScoreEventPacket.score +
-                        " L:" + serverScoreEventPacket.life +
-                        " M:" + Math.round(serverScoreEventPacket.multiplier * 100) / 100f +
-                        " T: " + serverScoreEventPacket.getAdjustedScore();
-                list.add(message);
+            if(displayScore) {
+                for (CCServerScoreEventPacket serverScoreEventPacket : scoreEvents) {
+                    String message = serverScoreEventPacket.fitnessRuleId +
+                            " S:" + serverScoreEventPacket.score +
+                            " L:" + serverScoreEventPacket.life +
+                            " M:" + Math.round(serverScoreEventPacket.multiplier * 100) / 100f +
+                            " T: " + serverScoreEventPacket.getAdjustedScore();
+                    list.add(message);
+                }
             }
 
         }
@@ -116,40 +124,41 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
         ScanManager scanManager = clientOrgManager.getScanManager();
         s = scanManager.getState().toString() + " R:" + scanManager.getRange() + " - " + scanManager.getIndex() + "/" + scanManager.getMaxRangeIndex();
         list.add(s);
-
-        for (BiologyBase biologyBase : this.clientOrgManager.getNNet().biology.values()) {
-            if(biologyBase instanceof  TargetSlot) {
-
-
-                TargetSlot targetSlot = (TargetSlot) biologyBase;
-                if (targetSlot != null) {
-                    s = targetSlot.toShortString();
-
-                    s += " EP:" + Math.round(clientOrgManager.getEntity().rotationPitch);
-                    if (targetSlot.hasTarget()) {
-                        s += " YD:" + Math.round(targetSlot.getYawDelta());
-                        s += " PD:" + Math.round(targetSlot.getPitchDelta());
-                        s += " DD:" + Math.round(targetSlot.getDist());
+        if(displayTarget) {
+            for (BiologyBase biologyBase : this.clientOrgManager.getNNet().biology.values()) {
+                if (biologyBase instanceof TargetSlot) {
 
 
+                    TargetSlot targetSlot = (TargetSlot) biologyBase;
+                    if (targetSlot != null) {
+                        s = targetSlot.toShortString();
 
+                        s += " EP:" + Math.round(clientOrgManager.getEntity().rotationPitch);
+                        if (targetSlot.hasTarget()) {
+                            s += " YD:" + Math.round(targetSlot.getYawDelta());
+                            s += " PD:" + Math.round(targetSlot.getPitchDelta());
+                            s += " DD:" + Math.round(targetSlot.getDist());
+
+
+                        }
+                        list.add(s);
                     }
-                   list.add(s);
+
                 }
-
             }
         }
-        s = "Held Item: " + clientOrgManager.getEntity().getHeldItem(Hand.MAIN_HAND).toString();
-        list.add(s);
-        ItemStackHandler itemStackHandler = clientOrgManager.getEntity().getItemHandler();
-        for(int i = 0; i < itemStackHandler.getSlots(); i++){
-            ItemStack itemStack = itemStackHandler.getStackInSlot(i);
-            if(!itemStack.isEmpty()){
-                s = "Inv:" + i + " " + itemStack.getItem().getRegistryName().toString() + " x " + itemStack.getCount();
-                list.add(s);
+        if(displayInventory) {
+            s = "Held Item: " + clientOrgManager.getEntity().getHeldItem(Hand.MAIN_HAND).toString();
+            list.add(s);
+            ItemStackHandler itemStackHandler = clientOrgManager.getEntity().getItemHandler();
+            for (int i = 0; i < itemStackHandler.getSlots(); i++) {
+                ItemStack itemStack = itemStackHandler.getStackInSlot(i);
+                if (!itemStack.isEmpty()) {
+                    s = "Inv:" + i + " " + itemStack.getItem().getRegistryName().toString() + " x " + itemStack.getCount();
+                    list.add(s);
+                }
             }
         }
-
         int i = 1;
         for (String _s : list) {
             int j = 9;
@@ -177,37 +186,24 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
         if(this.clientOrgManager == null){
             return;
         }
-        ActionBase actionBase = this.clientOrgManager.getActionBuffer().getCurrAction();
-        if(actionBase != null){
-            ChaosTarget chaosTarget = actionBase.getTarget();
-            if(chaosTarget == null){
-                AxisAlignedBB toDraw = chaosTarget.getTargetBoundingBox(getObservedEntity().getEntity().world);
-                if(toDraw != null) {
-                    toDraw = toDraw.offset(chaosTarget.getTargetBlockPos());
-                    DrawHelper.glColor(Color.GREEN, 1f);
-                    DrawHelper.drawAABB(
-                            event.getMatrixStack(),
-                            toDraw,
-                            clientOrgManager.getEntity().getEyePosition(1),
-                            .002D
-                    );
-                }
-
-            }
+        if(!displayTarget){
+            return;
         }
         AxisAlignedBB toDraw2 = clientOrgManager.getEntity().getBoundingBox();
         BlockPos blockPos2 = clientOrgManager.getEntity().getPosition();
         if(
-                toDraw2 != null &&
-                blockPos2 != null
+            toDraw2 != null &&
+            blockPos2 != null
         ) {
-            DrawHelper.glColor(Color.RED, 1f);
-            toDraw2 = toDraw2.offset(blockPos2);
-            DrawHelper.drawAABB(
+
+            //toDraw2 = toDraw2.offset(blockPos2);
+            CCGUIHelper.drawAABB(
                     event.getMatrixStack(),
                     toDraw2,
-                    clientOrgManager.getEntity().getEyePosition(1),
-                    .002D
+                    Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getProjectedView(),
+                    .2D,
+                    Color.RED,
+                    1f
             );
         }
         for (BiologyBase biologyBase : this.clientOrgManager.getNNet().biology.values()) {
@@ -227,13 +223,15 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
                             toDraw != null &&
                             blockPos != null
                         ) {
-                            DrawHelper.glColor(Color.WHITE, 1f);
+
                             toDraw = toDraw.offset(blockPos);
-                            DrawHelper.drawAABB(
+                            CCGUIHelper.drawAABB(
                                     event.getMatrixStack(),
                                     toDraw,
-                                    clientOrgManager.getEntity().getEyePosition(1),
-                                    .002D
+                                     Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getProjectedView(),
+                                    .002D,
+                                    Color.WHITE,
+                                    1f
                             );
                         }
 
@@ -243,5 +241,33 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
 
             }
         }
+
+        ActionBase actionBase = this.clientOrgManager.getActionBuffer().getCurrAction();
+        if(actionBase != null){
+            ChaosTarget chaosTarget = actionBase.getTarget();
+            if(chaosTarget == null){
+                AxisAlignedBB toDraw = chaosTarget.getTargetBoundingBox(getObservedEntity().getEntity().world);
+                if(toDraw != null) {
+                    toDraw = toDraw.offset(chaosTarget.getTargetBlockPos());
+
+                    CCGUIHelper.drawAABB(
+                            event.getMatrixStack(),
+                            toDraw,
+                            Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getProjectedView(),
+                            .002D,
+                            Color.GREEN,
+                            1f
+                    );
+                }
+
+            }
+        }
+    }
+
+    public void setDisplaySettings(boolean displayScore, boolean displayTarget, boolean displayInventory, boolean drawTargetLines) {
+        this.displayScore = displayScore;
+        this.displayTarget = displayTarget;
+        this.drawTargetLines = drawTargetLines;
+        this.displayInventory = displayInventory;
     }
 }

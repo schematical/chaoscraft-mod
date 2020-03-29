@@ -95,4 +95,6 @@ public class ChaosPlayerNeuronTestScreen extends AbstractGui {
             debugNeuron.setDebugEntity(clientOrgManager.getEntity());
         }
     }
+
+
 }
