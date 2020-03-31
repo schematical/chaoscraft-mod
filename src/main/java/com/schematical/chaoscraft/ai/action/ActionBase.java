@@ -112,6 +112,14 @@ public abstract class ActionBase {
         return s;
     }
 
+    public int getScoreTotal() {
+        int score = 0;
+        for (CCServerScoreEventPacket scoreEvent : scoreEvents) {
+            score += scoreEvent.score;
+        }
+        return score;
+    }
+
     public enum ActionState{
         Pending,
         Running,

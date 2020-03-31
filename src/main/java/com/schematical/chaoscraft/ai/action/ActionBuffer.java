@@ -2,16 +2,15 @@ package com.schematical.chaoscraft.ai.action;
 
 import com.schematical.chaoscraft.BaseOrgManager;
 import com.schematical.chaoscraft.client.ClientOrgManager;
-import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.CCActionStateChangeEventPacket;
-import com.schematical.chaoscraft.network.packets.CCClientActionPacket;
 import com.schematical.chaoscraft.network.packets.CCClientSetCurrActionPacket;
 import com.schematical.chaoscraft.server.ServerOrgManager;
 import com.schematical.chaoscraft.services.targetnet.ScanManager;
 import com.schematical.chaosnet.model.ChaosNetException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ActionBuffer {
     private BaseOrgManager orgManager;
@@ -24,6 +23,7 @@ public class ActionBuffer {
     public boolean isClient(){
         return (orgManager instanceof ClientOrgManager);
     }
+    private HashMap<String, SimpleActionStats> simpleActonTracker = new HashMap<>();
     private ArrayList<ActionBase> recentActions = new ArrayList<ActionBase>();
     private ActionBase currAction = null;
     public void execute(){
@@ -94,18 +94,42 @@ public class ActionBuffer {
         if(currAction == null){
             throw new ChaosNetException("The action is null. This should not be possible.");
         }
+
+        SimpleActionStats simpleActionStats = getSimpleActionStats();
+
         if(message.actionState.equals(ActionBase.ActionState.Running)){
             currAction.markRunning();
         }else if(message.actionState.equals(ActionBase.ActionState.Completed)){
-           currAction.markCompleted();
+            currAction.markCompleted();
+            simpleActionStats.numCompleted += 1;
+            simpleActionStats.lastExecutedWorldTime = getOrgManager().getEntity().world.getGameTime();
+            simpleActionStats.numTimesExecuted += 1;
+            simpleActionStats.score += currAction.getScoreTotal();
         }else if(message.actionState.equals(ActionBase.ActionState.Failed)){
             currAction.markFailed();
+            simpleActionStats.numFails += 1;
+            simpleActionStats.lastExecutedWorldTime = getOrgManager().getEntity().world.getGameTime();
+            simpleActionStats.numTimesExecuted += 1;
+            simpleActionStats.score += currAction.getScoreTotal();
         }else if(message.actionState.equals(ActionBase.ActionState.Interrupted)){
             currAction.markInterrupted();
         }else{
             throw new ChaosNetException("Invalid state: " + message.actionState);
         }
 
+
+    }
+
+    private SimpleActionStats getSimpleActionStats() {
+        String key = currAction.getClass().getSimpleName() + "-" + currAction.getTarget().getSerializedString();
+        SimpleActionStats simpleActionStats = null;
+        if(simpleActonTracker.containsKey(key)){
+            simpleActionStats = simpleActonTracker.get(key);
+        }else{
+            simpleActionStats = new SimpleActionStats();
+            simpleActonTracker.put(key, simpleActionStats);
+        }
+        return simpleActionStats;
     }
 
     public void tickClient() {
@@ -135,5 +159,16 @@ public class ActionBuffer {
                 }
             }
         }
+    }
+
+
+    public class SimpleActionStats{
+        public int score = 0;
+        public int numTimesExecuted = 0;
+        public long lastExecutedWorldTime = 0;
+        public int numFails = 0;
+        public int numCompleted = 0;
+        //TODO: Track other stat changes... health, etc
+
     }
 }
