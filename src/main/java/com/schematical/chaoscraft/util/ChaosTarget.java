@@ -206,7 +206,18 @@ public class ChaosTarget {
 
         return message;
     }
+    public String getActionStatString(World world) {
+        if(getTargetEntity() != null){
+            return getTargetEntity().getEntity().getType().getRegistryName().toString();
+        }else if(getTargetBlockPos() != null){
 
+            BlockPos blockPos = getTargetBlockPos();
+            return world.getBlockState(blockPos).getBlock().getRegistryName().toString();
+        }else{
+            return "null";
+        }
+
+    }
     public String getSerializedString() {
         if(getTargetEntity() != null){
             return "entity:" + getTargetEntity().getEntityId();

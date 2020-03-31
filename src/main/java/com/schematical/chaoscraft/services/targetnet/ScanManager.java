@@ -264,6 +264,10 @@ public class ScanManager {
        index = MAX_RANGE_INDEX;
     }
 
+    public ActionTargetSlot getFocusedAction() {
+        return focusedAction;
+    }
+
     public enum ScanState{
         //Reset,
         Ticking,

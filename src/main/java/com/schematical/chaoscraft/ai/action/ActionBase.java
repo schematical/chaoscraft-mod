@@ -120,6 +120,11 @@ public abstract class ActionBase {
         return score;
     }
 
+    public String getSimpleActionStatsKey() {
+        return getClass().getSimpleName() + "-" + getTarget().getActionStatString(getActionBuffer().getOrgManager().getEntity().world);
+    }
+
+
     public enum ActionState{
         Pending,
         Running,

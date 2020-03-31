@@ -119,9 +119,15 @@ public class ActionBuffer {
 
 
     }
-
     private SimpleActionStats getSimpleActionStats() {
-        String key = currAction.getClass().getSimpleName() + "-" + currAction.getTarget().getSerializedString();
+        return getSimpleActionStats(currAction);
+    }
+    private SimpleActionStats getSimpleActionStats(ActionBase actionBase) {
+        String key = actionBase.getSimpleActionStatsKey();
+        return getSimpleActionStats(key);
+    }
+    public SimpleActionStats getSimpleActionStats(String key) {
+
         SimpleActionStats simpleActionStats = null;
         if(simpleActonTracker.containsKey(key)){
             simpleActionStats = simpleActonTracker.get(key);

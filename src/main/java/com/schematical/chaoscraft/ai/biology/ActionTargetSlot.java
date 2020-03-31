@@ -76,4 +76,8 @@ public class ActionTargetSlot extends TargetSlot {
             throw new ChaosNetException(e.getMessage());
         }
     }
+
+    public String getSimpleActionStatsKey() {
+        return getClass().getSimpleName() + "-" + getTarget().getActionStatString(getTargetEntity().world);
+    }
 }
