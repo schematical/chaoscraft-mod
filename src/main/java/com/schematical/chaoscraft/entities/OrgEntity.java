@@ -77,7 +77,7 @@ public class OrgEntity extends MobEntity {
 
     private int miningTicks = 0;
 
-    public List<AlteredBlockInfo> alteredBlocks = new ArrayList<AlteredBlockInfo>();
+
 
 
 
@@ -437,12 +437,7 @@ public class OrgEntity extends MobEntity {
             world.playEvent(2001, pos, Block.getStateId(state));
 
 
-            alteredBlocks.add(
-                new AlteredBlockInfo(
-                        pos,
-                        state
-                )
-            );
+            ChaosCraft.getServer().markBlockAltered(pos, state, this.serverOrgManager);
             boolean bool = world.setBlockState(pos, Blocks.AIR.getDefaultState(), world.isRemote ? 11 : 3);
             if (bool) {
                 state.getBlock().onPlayerDestroy(world, pos, state);
@@ -475,7 +470,7 @@ public class OrgEntity extends MobEntity {
         super.onRemovedFromWorld();
 
         if(!world.isRemote) {
-            replaceAlteredBlocks();
+            ChaosCraft.getServer().replaceAlteredBlocks(serverOrgManager);
            /* if (chunkTicket != null) {
                 ForgeChunkManager.releaseTicket(chunkTicket);
                 chunkTicket = null;
@@ -483,19 +478,7 @@ public class OrgEntity extends MobEntity {
 
         }
     }
-    public void replaceAlteredBlocks(){
-        //ChaosCraft.LOGGER.info(this.getCCNamespace() + " - Trying to replace blocks - Count: " + alteredBlocks.size());
-        for (AlteredBlockInfo alteredBlock : alteredBlocks) {
-            boolean bool = world.setBlockState(alteredBlock.blockPos, alteredBlock.state, world.isRemote ? 11 : 3);
-            /*String debugText = this.getCCNamespace() + " - Replacing: " + alteredBlock.state.getBlock().getRegistryName();
-            if (bool) {
-                ChaosCraft.LOGGER.info(debugText + " - Success");
-            }else{
-                ChaosCraft.LOGGER.info(debugText + " - Fail");
-            }*/
-        }
-        alteredBlocks.clear();
-    }
+
     public ItemStack equip(String resourceId) {
 
         ItemStackHandler itemStackHandler = getItemStackHandeler();
@@ -625,10 +608,12 @@ public class OrgEntity extends MobEntity {
                 return ActionResultType.PASS;
             } else {
                 BlockPos targetPos = blockRayTraceResult.getPos().offset(blockRayTraceResult.getFace());
-                AlteredBlockInfo alteredBlockInfo =   new AlteredBlockInfo(
+                ChaosCraft.getServer().markBlockAltered(
                         targetPos,
-                        world.getBlockState(targetPos)
+                        world.getBlockState(targetPos),
+                        serverOrgManager
                 );
+
                 ItemUseContext itemUseContext1 = new ItemUseContext(
                         this.getPlayerWrapper(),
                         hand,
@@ -639,9 +624,7 @@ public class OrgEntity extends MobEntity {
 
 
 
-                    alteredBlocks.add(
-                        alteredBlockInfo
-                    );
+
 
 
 
