@@ -78,6 +78,6 @@ public class ActionTargetSlot extends TargetSlot {
     }
 
     public String getSimpleActionStatsKey() {
-        return getClass().getSimpleName() + "-" + getTarget().getActionStatString(getTargetEntity().world);
+        return getClass().getSimpleName() + "-" + getTarget().getActionStatString(getEntity().world);
     }
 }
