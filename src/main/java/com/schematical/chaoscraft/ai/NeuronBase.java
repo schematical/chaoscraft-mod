@@ -123,7 +123,7 @@ public abstract class NeuronBase extends InnovationBase {
                 throw new ChaosNetException("Missing `neuronDep.depNeuron` : " + orgNamespace + " " + neuronDep.depNeuronId);
             }
             NeuralNet.EvalGroup targetEvalGroup = nNet.getCurrentTargetEvalGroup();
-            if(!targetEvalGroup.equals(NeuralNet.EvalGroup.DEFAULT)){
+            if(targetEvalGroup.equals(NeuralNet.EvalGroup.DEFAULT)){
                 neuronDep.evaluate();//Defaults need to get evaluated
             }else if(targetEvalGroup.equals(neuronDep.depNeuron.getEvalGroup())){
                 neuronDep.evaluate();//

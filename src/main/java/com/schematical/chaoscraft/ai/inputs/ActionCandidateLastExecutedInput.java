@@ -22,7 +22,9 @@ public class ActionCandidateLastExecutedInput extends InputNeuron {
         ClientOrgManager clientOrgManager = ((OrgEntity)this.getEntity()).getClientOrgManager();
         ScanManager scanManager = clientOrgManager.getScanManager();
         ActionTargetSlot actionTargetSlot = scanManager.getFocusedAction();
-        ActionBuffer.SimpleActionStats simpleActionStats = clientOrgManager.getActionBuffer().getSimpleActionStats(actionTargetSlot.getSimpleActionStatsKey());
+        ActionBuffer actionBuffer = clientOrgManager.getActionBuffer();
+        String key = actionTargetSlot.getSimpleActionStatsKey();
+        ActionBuffer.SimpleActionStats simpleActionStats = actionBuffer.getSimpleActionStats(key);
         long diff = simpleActionStats.lastExecutedWorldTime - getEntity().world.getGameTime();
         setCurrentValue(diff/1000);
 

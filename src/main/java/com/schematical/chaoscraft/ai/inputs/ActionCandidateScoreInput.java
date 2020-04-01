@@ -10,7 +10,7 @@ import com.schematical.chaoscraft.services.targetnet.ScanManager;
 /**
  * Created by user1a on 12/8/18.
  */
-public class ActionCandidateScoreCountInput extends InputNeuron {
+public class ActionCandidateScoreInput extends InputNeuron {
 
 
 
@@ -19,7 +19,9 @@ public class ActionCandidateScoreCountInput extends InputNeuron {
         ClientOrgManager clientOrgManager = ((OrgEntity)this.getEntity()).getClientOrgManager();
         ScanManager scanManager = clientOrgManager.getScanManager();
         ActionTargetSlot actionTargetSlot = scanManager.getFocusedAction();
-        ActionBuffer.SimpleActionStats simpleActionStats = clientOrgManager.getActionBuffer().getSimpleActionStats(actionTargetSlot.getSimpleActionStatsKey());
+        ActionBuffer actionBuffer = clientOrgManager.getActionBuffer();
+        String key = actionTargetSlot.getSimpleActionStatsKey();
+        ActionBuffer.SimpleActionStats simpleActionStats = actionBuffer.getSimpleActionStats(key);
         setCurrentValue(simpleActionStats.score);
 
         return getCurrentValue();

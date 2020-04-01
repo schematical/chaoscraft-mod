@@ -136,7 +136,7 @@ public class ScanManager {
             for (String targetSlotId : scores.keySet()) {
                 if(!highestResults.containsKey(targetSlotId)){
                     BiologyBase biologyBase = getNNet().biology.get(targetSlotId);
-                    highestResults.put(targetSlotId, new ScanResult(targetSlotId, (biologyBase instanceof  ActionTargetSlot)));
+                    highestResults.put(targetSlotId, new ScanResult(targetSlotId, !(biologyBase instanceof  ActionTargetSlot)));
                 }
                 ScanResult scanResult = highestResults.get(targetSlotId);
                 scanResult.test(entry);
@@ -199,8 +199,8 @@ public class ScanManager {
 
                 }
             }else{
-                if(scanResult.getTopEntities().size() > 0){
-                    throw new ChaosNetException("`scanResult.getTopEntities().size()` should be zero in this scenerio");
+                if(scanResult.getTopEntities().size() > 1){
+                    throw new ChaosNetException("`scanResult.getTopEntities().size()` should be zero in this scenario: " + scanResult.getTopEntities().size());
                 }
                 ScanEntry scanEntry = scanResult.getTopEntities().get(0);
                 float currScore = scanEntry.getScore(targetSlotId);

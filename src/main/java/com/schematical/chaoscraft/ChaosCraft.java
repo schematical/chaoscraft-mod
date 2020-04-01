@@ -98,8 +98,9 @@ public class ChaosCraft
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onKeyInputEvent);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onEntitySpawn);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::chunkEnterEvent);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onRenderWorldLastEvent);
+
         if(FMLEnvironment.dist.equals(Dist.CLIENT)) {
+            FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onRenderWorldLastEvent);
             FMLJavaModLoadingContext.get().getModEventBus().addListener(this::renderOverlayEvent);
         }
         FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(EntityType.class, this::onEntityRegistry);
@@ -351,6 +352,7 @@ public class ChaosCraft
         }
     }
     @SubscribeEvent
+    @OnlyIn(Dist.CLIENT)
     public void onRenderWorldLastEvent(RenderWorldLastEvent event) {
         if(client != null){
             client.onRenderWorldLastEvent(event);

@@ -19,7 +19,9 @@ public class ActionCandidateCompletedCountInput extends InputNeuron {
         ClientOrgManager clientOrgManager = ((OrgEntity)this.getEntity()).getClientOrgManager();
         ScanManager scanManager = clientOrgManager.getScanManager();
         ActionTargetSlot actionTargetSlot = scanManager.getFocusedAction();
-        ActionBuffer.SimpleActionStats simpleActionStats = clientOrgManager.getActionBuffer().getSimpleActionStats(actionTargetSlot.getSimpleActionStatsKey());
+        ActionBuffer actionBuffer = clientOrgManager.getActionBuffer();
+        String key = actionTargetSlot.getSimpleActionStatsKey();
+        ActionBuffer.SimpleActionStats simpleActionStats = actionBuffer.getSimpleActionStats(key);
         setCurrentValue(simpleActionStats.numCompleted);
 
         return getCurrentValue();

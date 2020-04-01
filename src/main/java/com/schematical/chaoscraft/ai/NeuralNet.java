@@ -32,7 +32,7 @@ public class NeuralNet {
     }
     public List<OutputNeuron> evaluate(EvalGroup targetEvalGroup){
         if(currentTargetEvalGroup != null){
-            throw new ChaosNetException("Dobule eval - Two processes are calling eval at once or you forgot to set `currentTargetEvalGroup` to null when you are done");
+            throw new ChaosNetException("Double eval - Two processes are calling eval at once or you forgot to set `currentTargetEvalGroup` to null when you are done");
         }
         currentTargetEvalGroup = targetEvalGroup;
         HashMap<String, OutputGroupResult> outputGroupResults = new HashMap<String, OutputGroupResult>();
