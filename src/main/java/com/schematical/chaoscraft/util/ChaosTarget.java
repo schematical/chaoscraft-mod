@@ -157,10 +157,10 @@ public class ChaosTarget {
         boolean canBeSeen = orgEntity.world.rayTraceBlocks(new RayTraceContext(vec3d, vec3d1, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, orgEntity)).getType() == RayTraceResult.Type.MISS;
 
         if(!canBeSeen) {
-            return false;
+            return true;
         }
 
-        return true;
+        return false;
     }
     public boolean isSurroundedBySolid(World world) {
        if(targetEntity != null){

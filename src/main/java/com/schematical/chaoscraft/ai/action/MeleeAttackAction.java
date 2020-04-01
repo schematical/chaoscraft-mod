@@ -27,6 +27,12 @@ public class MeleeAttackAction extends NavigateToAction{
 
 
     public static boolean validateTarget(OrgEntity orgEntity, ChaosTarget chaosTarget) {
-        return chaosTarget.getTargetEntity() != null;
+        if(chaosTarget.getTargetEntity() == null){
+            return false;
+        }
+        if(chaosTarget.isVisiblyBlocked(orgEntity)){
+            return false;
+        }
+        return true;
     }
 }

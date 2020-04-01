@@ -6,6 +6,8 @@ import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.NeuralNet;
 import com.schematical.chaoscraft.ai.NeuronBase;
 import com.schematical.chaoscraft.ai.action.ActionBase;
+import com.schematical.chaoscraft.ai.action.ActionBuffer;
+import com.schematical.chaoscraft.ai.biology.ActionTargetSlot;
 import com.schematical.chaoscraft.ai.biology.BiologyBase;
 import com.schematical.chaoscraft.ai.biology.TargetSlot;
 import com.schematical.chaoscraft.client.ClientOrgManager;
@@ -118,7 +120,11 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
         if(actionBase == null){
             s += "NO ACTION";//TODO Add scanning progress
         }else {
-            s += actionBase.toString();
+
+            ActionBuffer.SimpleActionStats simpleActionStats = clientOrgManager.getActionBuffer().getSimpleActionStats(actionBase.getSimpleActionStatsKey());
+
+            s += actionBase.toString() + " " + simpleActionStats.toString(clientOrgManager.getEntity().world);
+
         }
         list.add(s);
         ScanManager scanManager = clientOrgManager.getScanManager();
@@ -143,6 +149,7 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
                         }
                         list.add(s);
                     }
+
 
                 }
             }

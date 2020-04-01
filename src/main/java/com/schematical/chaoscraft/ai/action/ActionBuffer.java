@@ -8,6 +8,7 @@ import com.schematical.chaoscraft.network.packets.CCClientSetCurrActionPacket;
 import com.schematical.chaoscraft.server.ServerOrgManager;
 import com.schematical.chaoscraft.services.targetnet.ScanManager;
 import com.schematical.chaosnet.model.ChaosNetException;
+import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -175,6 +176,13 @@ public class ActionBuffer {
         public int numFails = 0;
         public int numCompleted = 0;
         //TODO: Track other stat changes... health, etc
-
+        public String toString(World world) {
+            String s = "S:" + score + " ";
+            s += "#E:" + numTimesExecuted + " ";
+            s += "#C:" + numCompleted + " ";
+            s += "#F:" + numFails + " ";
+            s += "T:" + Math.round((lastExecutedWorldTime - world.getGameTime())/1000)/* + " "*/;
+            return s;
+        }
     }
 }

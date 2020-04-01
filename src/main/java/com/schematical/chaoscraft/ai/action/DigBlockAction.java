@@ -49,6 +49,9 @@ public class DigBlockAction extends NavigateToAction{
         if(chaosTarget.isSurroundedBySolid(orgEntity.world)){
             return false;
         }
+        if(chaosTarget.isVisiblyBlocked(orgEntity)){
+            return false;
+        }
         return true;
     }
 }

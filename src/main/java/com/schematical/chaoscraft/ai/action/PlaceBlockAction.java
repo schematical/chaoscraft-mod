@@ -52,7 +52,10 @@ public class PlaceBlockAction extends NavigateToAction{
         if(!(itemStack.getItem() instanceof BlockItem)){
             return false;
         }
-        if(chaosTarget.isSurroundedBySolid(orgEntity.world)){
+        /*if(chaosTarget.isSurroundedBySolid(orgEntity.world)){
+            return false;
+        }*/
+        if(chaosTarget.isVisiblyBlocked(orgEntity)){
             return false;
         }
         return true;

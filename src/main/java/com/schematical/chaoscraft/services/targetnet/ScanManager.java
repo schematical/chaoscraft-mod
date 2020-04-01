@@ -317,7 +317,7 @@ public class ScanManager {
         }
     }
     public class ScanResult{
-        private int max = 5;
+        private int max = 10;
         private String targetSlotId;
         private float lowestScore = 99999;
         private ArrayList<ScanEntry> scanEntries = new ArrayList<>();

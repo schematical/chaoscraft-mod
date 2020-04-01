@@ -88,7 +88,7 @@ public class ClientOrgManager extends BaseOrgManager {
         this.orgEntity.attachNNetRaw(organism.getNNetRaw());
         orgEntity.attachClientOrgEntity(this);
         //this.attatchTickable(new TargetNNetManager(this.scanManager));
-        //this.attatchTickable(new RTNeatTicker(this.orgEntity));
+        this.attatchTickable(new RTNeatTicker(this.orgEntity));
         spawnCount += 1;
         state = State.EntityAttached;
     }

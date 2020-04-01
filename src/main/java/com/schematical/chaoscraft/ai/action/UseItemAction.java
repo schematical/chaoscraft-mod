@@ -130,6 +130,9 @@ public class UseItemAction extends NavigateToAction{
        /* if(!(itemStack.getItem() instanceof BlockItem)){
             return false;
         }*/
+        if(chaosTarget.isVisiblyBlocked(orgEntity)){
+            return false;
+        }
         return true;
     }
 }

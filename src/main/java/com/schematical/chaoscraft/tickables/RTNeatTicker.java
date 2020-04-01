@@ -41,6 +41,7 @@ public class RTNeatTicker implements iChaosOrgTickable {
                     case(CCAttributeId.ENTITY_ID):
                     case(CCAttributeId.BLOCK_ID):
                         TargetCandidateTypeInput neuronBase = new TargetCandidateTypeInput();
+                        neuronBase.setEvalGroup(NeuralNet.EvalGroup.TARGET);
                         neuronBase.attachNNet(neuralNet);
 
                         neuronBase.attributeId = newAttribute.getAttributeId();

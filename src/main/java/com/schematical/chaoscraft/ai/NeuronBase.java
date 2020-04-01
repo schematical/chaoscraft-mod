@@ -123,7 +123,9 @@ public abstract class NeuronBase extends InnovationBase {
                 throw new ChaosNetException("Missing `neuronDep.depNeuron` : " + orgNamespace + " " + neuronDep.depNeuronId);
             }
             NeuralNet.EvalGroup targetEvalGroup = nNet.getCurrentTargetEvalGroup();
-            if(targetEvalGroup.equals(NeuralNet.EvalGroup.DEFAULT)){
+            if(
+                NeuralNet.EvalGroup.DEFAULT.equals(neuronDep.depNeuron.getEvalGroup())
+            ){
                 neuronDep.evaluate();//Defaults need to get evaluated
             }else if(targetEvalGroup.equals(neuronDep.depNeuron.getEvalGroup())){
                 neuronDep.evaluate();//
@@ -138,6 +140,9 @@ public abstract class NeuronBase extends InnovationBase {
         return getCurrentValue();
 
     }
+
+
+
     public NeuralNet.EvalGroup getEvalGroup(){
         return evalGroup;
     }
@@ -220,5 +225,12 @@ public abstract class NeuronBase extends InnovationBase {
         } catch (IllegalAccessException e) {
             throw new ChaosNetException(e.getMessage());
         }
+    }
+
+    public void setEvalGroup(NeuralNet.EvalGroup evalGroup) {
+        if(this.evalGroup != null){
+            throw new ChaosNetException("`evalGroup` is set and we are trying to set that. This should not happen");
+        }
+        this.evalGroup = evalGroup;
     }
 }
