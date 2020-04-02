@@ -124,12 +124,10 @@ public class UseItemAction extends NavigateToAction{
         if(itemStack.isEmpty()){
             return false;
         }
-        if(chaosTarget.isSurroundedBySolid(orgEntity.world)){
+
+        if(!(itemStack.getItem() instanceof BlockItem)){
             return false;
         }
-       /* if(!(itemStack.getItem() instanceof BlockItem)){
-            return false;
-        }*/
         if(chaosTarget.isVisiblyBlocked(orgEntity)){
             return false;
         }

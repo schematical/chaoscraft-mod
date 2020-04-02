@@ -26,7 +26,7 @@ public class ActionCandidateLastExecutedInput extends InputNeuron {
         String key = actionTargetSlot.getSimpleActionStatsKey();
         ActionBuffer.SimpleActionStats simpleActionStats = actionBuffer.getSimpleActionStats(key);
         long diff = simpleActionStats.lastExecutedWorldTime - getEntity().world.getGameTime();
-        setCurrentValue(diff/1000);
+        setCurrentValue(diff/(1000 * 10));
 
         return getCurrentValue();
     }

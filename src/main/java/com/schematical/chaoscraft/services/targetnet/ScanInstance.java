@@ -15,8 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 
 public class ScanInstance {
-    private int maxLayerRange = 15;
-    private int batchSize = 500;
+    private int maxLayerRange = 10;
+    private int batchSize = 100;
     private ScanEdgeNode startNode;
     private ScanState scanState = ScanState.Finished;
     private int index = 0;

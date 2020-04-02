@@ -1,5 +1,6 @@
 package com.schematical.chaoscraft.services.targetnet;
 
+import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.NeuralNet;
 import com.schematical.chaoscraft.ai.OutputNeuron;
 import com.schematical.chaoscraft.ai.biology.ActionTargetSlot;
@@ -26,9 +27,7 @@ public class ScanManager {
     public void setFocusedActionScore(float score){
         focusedActionScore = score;
     }
-    private NeuralNet getNNet(){
-        return clientOrgManager.getEntity().getNNet();//TODO: Maybe get this from some type of NNet Collection
-    }
+
     public ScanManager(ClientOrgManager clientOrgManager){
         this.clientOrgManager = clientOrgManager;
         //TODO: get range from biology
@@ -50,27 +49,40 @@ public class ScanManager {
 
         //HashMap<String, ScanEntry> highestResults = new HashMap<String, ScanEntry>();
 
-        for (ScanEntry entry : newEntries) {
-            focusedScanEntry = entry;
+        for (ScanEntry scanEntry : newEntries) {
 
 
-            List<OutputNeuron> outputs = getNNet().evaluate(NeuralNet.EvalGroup.TARGET);//Ideally the output neurons will set the score
+            List<OutputNeuron> outputs = orgEntity.getNNet().evaluate(NeuralNet.EvalGroup.TARGET);//Ideally the output neurons will set the score
 
             Iterator<OutputNeuron> iterator = outputs.iterator();
+            focusedScanEntry = scanEntry;
 
             while (iterator.hasNext()) {
                 OutputNeuron outputNeuron = iterator.next();
                 outputNeuron.execute();
             }
+            focusedScanEntry = null;
             //Sort them each by the score of their output neurons
-            HashMap<String, Float> scores = focusedScanEntry.getScores();
+            HashMap<String, Float> scores = scanEntry.getScores();
             for (String targetSlotId : scores.keySet()) {
+                BiologyBase biologyBase = orgEntity.getNNet().biology.get(targetSlotId);
                 if(!highestResults.containsKey(targetSlotId)){
-                    BiologyBase biologyBase = getNNet().biology.get(targetSlotId);
+                    //BiologyBase biologyBase = getNNet().biology.get(targetSlotId);
+
                     highestResults.put(targetSlotId, new ScanResult(targetSlotId, !(biologyBase instanceof  ActionTargetSlot)));
                 }
+                if(biologyBase instanceof ActionTargetSlot){
+                    ActionTargetSlot actionTargetSlot = (ActionTargetSlot) biologyBase;
+                    float currScore = scanEntry.getScore(actionTargetSlot.id);
+                    if(
+                        currScore != -1f &&
+                        !actionTargetSlot.validatePotentialTarget(orgEntity, scanEntry.getChaosTarget())
+                    ) {
+                        throw new ChaosNetException("Invalid `topEntity` made it to the top with score of: " + currScore + " - ActionTargetSlot: " + actionTargetSlot.id);
+                    }
+                }
                 ScanResult scanResult = highestResults.get(targetSlotId);
-                scanResult.test(entry);
+                scanResult.test(scanEntry);
 
             }
         }
@@ -81,7 +93,9 @@ public class ScanManager {
         //TODO: Iterate through the biology of the main NNet and set the targets
         float highestATSScore = -1000;
         ActionTargetSlot highestActionTargetSlot = null;
+        ScanEntry highestActionScanEntry = null;
         for (String targetSlotId : highestResults.keySet()) {
+
             TargetSlot targetSlot = (TargetSlot )orgEntity.getNNet().getBiology(targetSlotId);
             ScanResult scanResult = highestResults.get(targetSlotId);
 
@@ -90,19 +104,16 @@ public class ScanManager {
 
                 for (ScanEntry topEntity : scanResult.getTopEntities()) {
 
-                    if(topEntity.entity != null) {
-                        targetSlot.setTarget(new ChaosTarget(topEntity.entity));
 
-                    }else if(topEntity.blockPos != null){
-                        targetSlot.setTarget(new ChaosTarget(topEntity.blockPos));
 
-                    }else{
-                        throw new ChaosNetException("Invalid ScanEntry: No blockPos nor Entity");
-                    }
-                    if(actionTargetSlot.isValid()) {
+
+                    if(!actionTargetSlot.validatePotentialTarget(orgEntity, topEntity.getChaosTarget())) {
+                        /*throw new ChaosNetException*/
+                        ChaosCraft.LOGGER.error(orgEntity.getCCNamespace() + " - Invalid `topEntity` made it to the top with score of: " + topEntity.getScore(actionTargetSlot.id) + " - ActionTargetSlot: " + actionTargetSlot.id);
+                    }else {
                         focusedActionScore = -9999;
                         focusedAction = actionTargetSlot;
-                        List<OutputNeuron> outputs = getNNet().evaluate(NeuralNet.EvalGroup.ACTION);//Ideally the output neurons will set the score
+                        List<OutputNeuron> outputs = orgEntity.getNNet().evaluate(NeuralNet.EvalGroup.ACTION);//Ideally the output neurons will set the score
 
                         Iterator<OutputNeuron> iterator = outputs.iterator();
 
@@ -111,35 +122,26 @@ public class ScanManager {
                             outputNeuron.execute();
                         }
 
-                        if(focusedActionScore > highestATSScore) {
+                        if (focusedActionScore > highestATSScore) {
                             highestATSScore = focusedActionScore;
                             highestActionTargetSlot = actionTargetSlot;
+                            highestActionScanEntry = topEntity;
                         }
                     }
+
 
                 }
             }else{
                 if(scanResult.getTopEntities().size() > 1){
                     throw new ChaosNetException("`scanResult.getTopEntities().size()` should be zero in this scenario: " + scanResult.getTopEntities().size());
-                }
-                ScanEntry scanEntry = scanResult.getTopEntities().get(0);
-                float currScore = scanEntry.getScore(targetSlotId);
-                targetSlot.setTargetScore(currScore);
-                if(scanEntry.entity != null) {
+                } else if (scanResult.getTopEntities().size() == 1) {
 
-                    targetSlot.setTarget(new ChaosTarget(scanEntry.entity));
-
-                    //clientActionPacket.setEntity(scanEntry.entity);
-                    //ChaosNetworkManager.sendToServer(clientActionPacket);
-
-                }else if(scanEntry.blockPos != null){
-                    targetSlot.setTarget(new ChaosTarget(scanEntry.blockPos));
-
-                    //clientActionPacket.setBlockPos(scanEntry.blockPos);
-                    //ChaosNetworkManager.sendToServer(clientActionPacket);
-
+                    ScanEntry scanEntry = scanResult.getTopEntities().get(0);
+                    float currScore = scanEntry.getScore(targetSlotId);
+                    targetSlot.setTargetScore(currScore);
+                    targetSlot.setTarget(scanEntry.getChaosTarget());
                 }else{
-                    throw new ChaosNetException("Invalid ScanEntry: No blockPos nor Entity");
+                    //No valid targets were found
                 }
 
             }
@@ -152,6 +154,10 @@ public class ScanManager {
 
 
         if(highestActionTargetSlot != null) {
+            highestActionTargetSlot.setTarget(highestActionScanEntry.getChaosTarget());
+            if(!highestActionTargetSlot.isValid()){
+                throw new ChaosNetException("Something went really really wrong. Is `highestActionScanEntry` being modified in the wrong spot");
+            }
             this.clientOrgManager.getActionBuffer().addAction(
                     highestActionTargetSlot.createAction()
             ).sync();
@@ -188,7 +194,7 @@ public class ScanManager {
     }
 
     public class ScanResult{
-        private int max = 10;
+        private int max = 5;
         private String targetSlotId;
         private float lowestScore = 99999;
         private ArrayList<ScanEntry> scanEntries = new ArrayList<>();
@@ -203,7 +209,9 @@ public class ScanManager {
             }
         }
         public void test(ScanEntry scanEntry){
-
+            if(scanEntry.getScore(targetSlotId) < 0){
+                return;
+            }
 
             if(scanEntries.size() < max){
                 scanEntries.add(scanEntry);

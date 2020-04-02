@@ -145,7 +145,10 @@ public class ActionBuffer {
             //we should be scanning...
             ClientOrgManager clientOrgManager = (ClientOrgManager) getOrgManager();
             ScanManager scanManager = clientOrgManager.getScanManager();
-            if(!scanManager.getScanInstance().getScanState().equals(ScanInstance.ScanState.Ticking)){
+            if(
+                scanManager.getScanInstance() == null ||
+                !scanManager.getScanInstance().getScanState().equals(ScanInstance.ScanState.Ticking)
+            ){
                 //Start scanning again?
                 scanManager.resetScan();
             }else{

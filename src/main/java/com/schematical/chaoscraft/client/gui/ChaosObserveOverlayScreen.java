@@ -286,15 +286,11 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
 
     private void debugScanInstance(RenderWorldLastEvent event) {
 
-        if(
-            debugScanInstance == null ||
-            !debugScanInstance.getClientOrgManager().getCCNamespace().equals(this.clientOrgManager.getCCNamespace())
-        ) {
-            debugScanInstance = new ScanInstance(this.clientOrgManager, this.clientOrgManager.getEntity().getPosition());
-        }
-        if(debugScanInstance.getScanState().equals(ScanInstance.ScanState.Ticking)) {
-            debugScanInstance.tick();
-        }else{
+
+        debugScanInstance = clientOrgManager.getScanManager().getScanInstance();
+
+        if(debugScanInstance.getScanState().equals(ScanInstance.ScanState.Finished)) {
+
             for (BlockPos edgePosition : debugScanInstance.getEdgePositions()) {
 
 
@@ -308,7 +304,7 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
                         Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getProjectedView(),
                         .002D,
                         Color.GREEN,
-                        1f
+                        .5f
                 );
             }
 

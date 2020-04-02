@@ -61,20 +61,24 @@ public class ActionTargetSlot extends TargetSlot {
         }
 
     }
-    public boolean isValid() {
-
+    public boolean validatePotentialTarget(OrgEntity orgEntity, ChaosTarget chaosTarget) {
 
         try {
-           Method m = actionBaseClass.getMethod("validateTarget", OrgEntity.class, ChaosTarget.class);
+            Method m = actionBaseClass.getMethod("validateTarget", OrgEntity.class, ChaosTarget.class);
 
-           return (boolean)m.invoke(null, getEntity(), getTarget());
+            return (boolean)m.invoke(null, orgEntity, chaosTarget);
         } catch (NoSuchMethodException e) {
-           throw new ChaosNetException(e.getMessage());
+            throw new ChaosNetException(e.getMessage());
         } catch (IllegalAccessException e) {
             throw new ChaosNetException(e.getMessage());
         } catch (InvocationTargetException e) {
             throw new ChaosNetException(e.getMessage());
         }
+    }
+    public boolean isValid() {
+        return validatePotentialTarget(getEntity(), getTarget());
+
+
     }
 
     public String getSimpleActionStatsKey() {
