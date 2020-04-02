@@ -3,6 +3,7 @@ package com.schematical.chaoscraft.ai.inputs;
 import com.schematical.chaoscraft.ai.CCAttributeId;
 import com.schematical.chaoscraft.ai.InputNeuron;
 import com.schematical.chaoscraft.entities.OrgEntity;
+import com.schematical.chaoscraft.services.targetnet.ScanEntry;
 import com.schematical.chaoscraft.services.targetnet.ScanManager;
 import com.schematical.chaosnet.model.ChaosNetException;
 import org.json.simple.JSONObject;
@@ -18,7 +19,7 @@ public class TargetCandidateTypeInput extends InputNeuron {
     @Override
     public float evaluate(){
         ScanManager scanManager =  ((OrgEntity)this.getEntity()).getClientOrgManager().getScanManager();
-        ScanManager.ScanEntry scanEntry = scanManager.getFocusedScanEntry();
+        ScanEntry scanEntry = scanManager.getFocusedScanEntry();
         if(scanEntry == null){
             return getCurrentValue();//throw new ChaosNetException("scanEntity = null");
         }

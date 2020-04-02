@@ -1,6 +1,7 @@
 package com.schematical.chaoscraft.ai.inputs;
 
 import com.schematical.chaoscraft.entities.OrgEntity;
+import com.schematical.chaoscraft.services.targetnet.ScanEntry;
 import com.schematical.chaoscraft.services.targetnet.ScanManager;
 import com.schematical.chaoscraft.util.TargetHelper;
 
@@ -14,7 +15,7 @@ public class TargetCandidateDistToTargetSlotInput extends BaseTargetInputNeuron 
     @Override
     public float evaluate(){
         ScanManager scanManager =  ((OrgEntity)this.getEntity()).getClientOrgManager().getScanManager();
-        ScanManager.ScanEntry scanEntry = scanManager.getFocusedScanEntry();
+        ScanEntry scanEntry = scanManager.getFocusedScanEntry();
         if(!targetSlot.hasTarget()){
             return getCurrentValue();
         }
@@ -23,7 +24,7 @@ public class TargetCandidateDistToTargetSlotInput extends BaseTargetInputNeuron 
         }
         Double dist = TargetHelper.getDistDelta(scanEntry.getPosition(),  getTarget().getTargetPositionCenter());
         if(dist != null) {
-            setCurrentValue( dist.floatValue() / scanManager.getRange());//This can go out of bounds(over 100%)
+            setCurrentValue( dist.floatValue() / scanManager.getScanInstance().getRange());//This can go out of bounds(over 100%)
         }
 
 

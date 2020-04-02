@@ -20,7 +20,7 @@ public class TargetDistanceInput extends BaseTargetInputNeuron {
 
         Double distanceTo = getTarget().getDist();
         if(distanceTo != null) {
-            setCurrentValue(1 -(distanceTo.floatValue()/ ScanManager.range));//TODO: Make this a real distance
+            setCurrentValue(1 -(distanceTo.floatValue()/10));//TODO: Make this a real distance
         }
 
         return getCurrentValue();

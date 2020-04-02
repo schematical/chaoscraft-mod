@@ -3,11 +3,16 @@ package com.schematical.chaoscraft.services.targetnet;
 import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaosnet.model.ChaosNetException;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class ScanInstance {
     private int maxLayerRange = 15;
@@ -16,7 +21,7 @@ public class ScanInstance {
     private ScanState scanState = ScanState.Finished;
     private int index = 0;
     private int layer = 0;
-    private ArrayList<ScanManager.ScanEntry> entries = new ArrayList<ScanManager.ScanEntry>();
+
     private HashMap<String, Integer> counts = new HashMap<>();
     private ArrayList<ScanEdgeNode> previousLayer = new ArrayList<>();
     private ArrayList<ScanEdgeNode> currentLayer = new ArrayList<>();
@@ -34,13 +39,18 @@ public class ScanInstance {
         this.scanState = ScanState.Ticking;
 
     }
+
     public ScanState getScanState(){
         return scanState;
     }
-    public void tick(){
+    public int getRange(){
+        return maxLayerRange;
+    }
+    public  ArrayList<ScanEntry> tick(){
         if(!scanState.equals(ScanState.Ticking)){
             throw new ChaosNetException("Invalid `scanState`: " + scanState.toString());
         }
+        ArrayList<ScanEntry> entries = new ArrayList<ScanEntry>();
         OrgEntity orgEntity = this.clientOrgManager.getEntity();
         BlockPos entityPosition = orgEntity.getPosition();
         int batchCount = 0;
@@ -53,12 +63,13 @@ public class ScanInstance {
                 //change layers
                 this.iterateLayer();
                 if(scanState.equals(ScanState.Finished)){
-                    return;
+                    entries.addAll(scanEntities());
+                    return entries;
                 }
             }
 
             ScanEdgeNode scanEdgeNode = this.currentLayer.get(index);
-            ScanManager.ScanEntry scanEntry = new ScanManager.ScanEntry();
+            ScanEntry scanEntry = new ScanEntry();
             //BlockState blockState = orgEntity.getBlockState();
             //int light = orgEntity.world.getNeighborAwareLightSubtracted(blockPos, 0);
             //if(light > 0) {
@@ -74,14 +85,37 @@ public class ScanInstance {
             batchCount += 1;
 
         }
+        return entries;
     }
+    private ArrayList<ScanEntry> scanEntities(){
+        ArrayList<ScanEntry> entries = new ArrayList<ScanEntry>();
+        AxisAlignedBB startBox = new AxisAlignedBB(startNode.blockPos);
+        int range = (int)Math.round(maxLayerRange/2);
+        AxisAlignedBB grownBox = startBox.grow(range, range, range);
+        List<Entity> entities = getClientOrgManager().getEntity().world.getEntitiesWithinAABB(LivingEntity.class,  grownBox);
+        entities.addAll(getClientOrgManager().getEntity().world.getEntitiesWithinAABB(ItemEntity.class,  grownBox));
 
+        for (Entity entity : entities) {
+
+            ScanEntry scanEntry = new ScanEntry();
+            scanEntry.entity = entity;
+            scanEntry.atts = getClientOrgManager().getEntity().observableAttributeManager.Observe(entity);
+            if(!counts.containsKey(scanEntry.atts.resourceId)){
+                counts.put(scanEntry.atts.resourceId, 0);
+            }
+            counts.put(scanEntry.atts.resourceId, counts.get(scanEntry.atts.resourceId) + 1);
+            entries.add(scanEntry);
+
+        }
+        return entries;
+    }
     private void iterateLayer() {
         this.layer += 1;
         if(this.layer >= maxLayerRange){
             for (ScanEdgeNode scanEdgeNode : this.currentLayer) {
                 edgePositions.add(scanEdgeNode.blockPos);
             }
+
             scanState = ScanState.Finished;
             return;
         }
@@ -126,15 +160,22 @@ public class ScanInstance {
         return clientOrgManager;
     }
 
+    public int getCount(String resourceId) {
+        return counts.get(resourceId);
+    }
+
+    public void forceScanInterrupt() {
+        scanState = ScanState.Finished;//TODO: Interupt?
+    }
+
     public class ScanEdgeNode{
-        //protected ArrayList<Direction> directions;// = new ArrayList<>();
+
         protected BlockPos blockPos;
         private Direction direction;
 
-        public ScanEdgeNode(BlockPos blockPos, Direction direction/*ArrayList<Direction> directions*/) {
+        public ScanEdgeNode(BlockPos blockPos, Direction direction) {
             this.blockPos = blockPos;
             this.direction = direction;
-            //this.directions = directions;
         }
 
         public ArrayList<ScanEdgeNode> expand(){

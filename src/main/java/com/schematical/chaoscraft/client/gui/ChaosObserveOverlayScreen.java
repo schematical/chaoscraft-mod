@@ -130,8 +130,8 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
         }
         list.add(s);
         ScanManager scanManager = clientOrgManager.getScanManager();
-        s = scanManager.getState().toString() + " R:" + scanManager.getRange() + " - " + scanManager.getIndex() + "/" + scanManager.getMaxRangeIndex();
-        list.add(s);
+        /*s = scanManager.getState().toString() + " R:" + scanManager.getRange() + " - " + scanManager.getIndex() + "/" + scanManager.getMaxRangeIndex();
+        list.add(s);*/
         if(displayTarget) {
             for (BiologyBase biologyBase : this.clientOrgManager.getNNet().biology.values()) {
                 if (biologyBase instanceof TargetSlot) {

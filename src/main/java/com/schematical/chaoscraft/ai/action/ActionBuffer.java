@@ -6,6 +6,7 @@ import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.CCActionStateChangeEventPacket;
 import com.schematical.chaoscraft.network.packets.CCClientSetCurrActionPacket;
 import com.schematical.chaoscraft.server.ServerOrgManager;
+import com.schematical.chaoscraft.services.targetnet.ScanInstance;
 import com.schematical.chaoscraft.services.targetnet.ScanManager;
 import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.world.World;
@@ -144,7 +145,7 @@ public class ActionBuffer {
             //we should be scanning...
             ClientOrgManager clientOrgManager = (ClientOrgManager) getOrgManager();
             ScanManager scanManager = clientOrgManager.getScanManager();
-            if(!scanManager.getState().equals(ScanManager.ScanState.Ticking)){
+            if(!scanManager.getScanInstance().getScanState().equals(ScanInstance.ScanState.Ticking)){
                 //Start scanning again?
                 scanManager.resetScan();
             }else{
