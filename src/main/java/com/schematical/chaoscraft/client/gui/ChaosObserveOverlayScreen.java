@@ -13,6 +13,7 @@ import com.schematical.chaoscraft.ai.biology.TargetSlot;
 import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.network.packets.CCServerObserverOrgChangeEventPacket;
 import com.schematical.chaoscraft.network.packets.CCServerScoreEventPacket;
+import com.schematical.chaoscraft.services.targetnet.ScanInstance;
 import com.schematical.chaoscraft.services.targetnet.ScanManager;
 import com.schematical.chaoscraft.util.ChaosTarget;
 import net.minecraft.block.BlockState;
@@ -44,6 +45,7 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
     private boolean displayTarget = false;
     private boolean drawTargetLines = true;
     private boolean displayInventory = false;
+    private ScanInstance debugScanInstance;
 
     public ChaosObserveOverlayScreen(Minecraft mc) {
         this.mc = mc;
@@ -183,6 +185,7 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
     public void setObservedEntity(CCServerObserverOrgChangeEventPacket message, ClientOrgManager clientOrgManager) {
         this.message = message;
         this.clientOrgManager = clientOrgManager;
+
     }
 
     public ClientOrgManager getObservedEntity() {
@@ -193,6 +196,16 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
         if(this.clientOrgManager == null){
             return;
         }
+        
+        
+        debugScanInstance(event);
+        
+        
+        
+        
+        
+        
+        
         if(!displayTarget){
             return;
         }
@@ -268,6 +281,37 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
                 }
 
             }
+        }
+    }
+
+    private void debugScanInstance(RenderWorldLastEvent event) {
+
+        if(
+            debugScanInstance == null ||
+            !debugScanInstance.getClientOrgManager().getCCNamespace().equals(this.clientOrgManager.getCCNamespace())
+        ) {
+            debugScanInstance = new ScanInstance(this.clientOrgManager, this.clientOrgManager.getEntity().getPosition());
+        }
+        if(debugScanInstance.getScanState().equals(ScanInstance.ScanState.Ticking)) {
+            debugScanInstance.tick();
+        }else{
+            for (BlockPos edgePosition : debugScanInstance.getEdgePositions()) {
+
+
+                AxisAlignedBB toDraw = new AxisAlignedBB(edgePosition);
+
+               // toDraw = toDraw.offset(edgePosition);
+
+                CCGUIHelper.drawAABB(
+                        event.getMatrixStack(),
+                        toDraw,
+                        Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getProjectedView(),
+                        .002D,
+                        Color.GREEN,
+                        1f
+                );
+            }
+
         }
     }
 

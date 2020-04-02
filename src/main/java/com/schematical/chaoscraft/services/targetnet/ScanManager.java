@@ -274,7 +274,7 @@ public class ScanManager {
         Finished
     }
 
-    public class ScanEntry {
+    public static class ScanEntry {
         public Entity entity;
         public BlockPos blockPos;
         public CCObserviableAttributeCollection atts;
