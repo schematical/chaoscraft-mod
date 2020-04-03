@@ -30,23 +30,24 @@ public class ChaosObserverMenuOverlayGui extends Screen {
     @Override
     protected void init() {
         super.init();
+        ChaosObserveOverlayScreen observeOverlayScreen = ChaosCraft.getClient().getObserveOverlayScreen();
         int y = 0;
-        this.displayScoreCheckbox = new CheckboxButton(this.width / 2 - 155 + 80, 76 + y, 150, 20,  I18n.format("chaoscraft.gui.observer-menu.display-scores"), false);
+        this.displayScoreCheckbox = new CheckboxButton(this.width / 2 - 155 + 80, 76 + y, 150, 20,  I18n.format("chaoscraft.gui.observer-menu.display-scores"), observeOverlayScreen.displayScore);
 
         this.addButton(this.displayScoreCheckbox);
         y += 20;
-        this.displayTargetSlots = new CheckboxButton(this.width / 2 - 155 + 80, 76 + y, 150, 20,  I18n.format("chaoscraft.gui.observer-menu.display-target-slots"), false);
+        this.displayTargetSlots = new CheckboxButton(this.width / 2 - 155 + 80, 76 + y, 150, 20,  I18n.format("chaoscraft.gui.observer-menu.display-target-slots"), observeOverlayScreen.displayScore);
 
         this.addButton(this.displayTargetSlots);
         y += 20;
-        this.displayInventory = new CheckboxButton(this.width / 2 - 155 + 80, 76 + y, 150, 20,  I18n.format("chaoscraft.gui.observer-menu.display-inventory"), false);
+        this.displayInventory = new CheckboxButton(this.width / 2 - 155 + 80, 76 + y, 150, 20,  I18n.format("chaoscraft.gui.observer-menu.display-inventory"), observeOverlayScreen.displayTarget);
 
         this.addButton(this.displayInventory);
 
 
 
         y += 20;
-        this.drawTargetLines = new CheckboxButton(this.width / 2 - 155 + 80, 76 + y, 150, 20,  I18n.format("chaoscraft.gui.observer-menu.draw-target-lines"), false);
+        this.drawTargetLines = new CheckboxButton(this.width / 2 - 155 + 80, 76 + y, 150, 20,  I18n.format("chaoscraft.gui.observer-menu.draw-target-lines"), observeOverlayScreen.drawTargetLines);
 
         this.addButton(this.drawTargetLines);
 

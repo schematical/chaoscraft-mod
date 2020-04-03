@@ -470,7 +470,9 @@ public class OrgEntity extends MobEntity {
         super.onRemovedFromWorld();
 
         if(!world.isRemote) {
-            ChaosCraft.getServer().replaceAlteredBlocks(serverOrgManager);
+            if(serverOrgManager != null) {
+                ChaosCraft.getServer().replaceAlteredBlocks(serverOrgManager);
+            }
            /* if (chunkTicket != null) {
                 ForgeChunkManager.releaseTicket(chunkTicket);
                 chunkTicket = null;
@@ -984,12 +986,13 @@ public class OrgEntity extends MobEntity {
     public boolean attackEntityFrom(DamageSource source, float amount)
     {
         if(!world.isRemote){
-
-            CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.HEALTH_CHANGE);
-            worldEvent.entity = this;
-            worldEvent.amount = -1 * (amount / this.getMaxHealth());
-            serverOrgManager.test(worldEvent);
-            events.add(new OrgEvent(worldEvent, OrgEvent.DEFAULT_TTL));
+            if(serverOrgManager != null) {
+                CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.HEALTH_CHANGE);
+                worldEvent.entity = this;
+                worldEvent.amount = -1 * (amount / this.getMaxHealth());
+                serverOrgManager.test(worldEvent);
+                events.add(new OrgEvent(worldEvent, OrgEvent.DEFAULT_TTL));
+            }
 
         }
         return super.attackEntityFrom(source, amount);

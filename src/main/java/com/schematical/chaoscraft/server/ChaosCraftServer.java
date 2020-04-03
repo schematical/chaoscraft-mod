@@ -575,6 +575,10 @@ public class ChaosCraftServer {
     }
 
     public void markBlockAltered(BlockPos pos, BlockState state, ServerOrgManager serverOrgManager) {
+        if(serverOrgManager == null){
+            ChaosCraft.LOGGER.error("serverOrgManager is null");
+            return;
+        }
         if(alteredBlocks.containsKey(pos)){
             alteredBlocks.get(pos).serverOrgManager = serverOrgManager;
         }

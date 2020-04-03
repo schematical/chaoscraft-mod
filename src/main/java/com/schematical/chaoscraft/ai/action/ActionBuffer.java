@@ -43,7 +43,7 @@ public class ActionBuffer {
                 currAction.getActionState().equals(ActionBase.ActionState.Completed) ||
                 currAction.getActionState().equals(ActionBase.ActionState.Failed)
             ){
-                recentActions.add(currAction);//Prob remove this. This should happen client side
+                //recentActions.add(currAction);//Prob remove this. This should happen client side
                 currAction = null;
                 return;
             }else{
@@ -162,7 +162,7 @@ public class ActionBuffer {
                     currAction.getActionState().equals(ActionBase.ActionState.Completed) ||
                     currAction.getActionState().equals(ActionBase.ActionState.Failed)
                 ) {
-                    recentActions.add(currAction);//Prob remove this. This should happen client side
+                    recentActions.add(currAction);
                     currAction = null;
                     return;
                 } else {
@@ -172,6 +172,31 @@ public class ActionBuffer {
         }
     }
 
+    public ArrayList<ActionBase> matchExecutedRecently(ActionBase actionBase, Integer withInLastActions){
+        ArrayList<ActionBase> actionBases = new ArrayList<>();
+        int startIndex = 0;
+        if(withInLastActions != null) {
+            startIndex = recentActions.size() - withInLastActions;
+            if (startIndex < 0) {
+                startIndex = 0;
+            }
+        }
+
+        for (int i = startIndex; i < recentActions.size(); i++) {
+            ActionBase testActionBase = recentActions.get(i);
+            if(testActionBase.match(actionBase)){
+                actionBases.add(actionBase);
+            }
+        }
+        return actionBases;
+    }
+    public boolean hasExecutedRecently(ActionBase actionBase, Integer withInLastActions){
+        return matchExecutedRecently(actionBase,withInLastActions).size() > 0;
+    }
+
+    public ArrayList<ActionBase> getRecentActions() {
+        return recentActions;
+    }
 
     public class SimpleActionStats{
         public int score = 0;

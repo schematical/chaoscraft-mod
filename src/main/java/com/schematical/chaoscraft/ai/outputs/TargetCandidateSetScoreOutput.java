@@ -48,6 +48,7 @@ public class TargetCandidateSetScoreOutput extends OutputNeuron {
                 scanEntry.setScore(targetSlotId, -1);
                 return;
             }
+
         }
         scanEntry.setScore(targetSlotId, this.getCurrentValue());
 

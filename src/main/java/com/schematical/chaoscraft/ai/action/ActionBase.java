@@ -123,8 +123,15 @@ public abstract class ActionBase {
     public String getSimpleActionStatsKey() {
         return getClass().getSimpleName() + "-" + getTarget().getActionStatString(getActionBuffer().getOrgManager().getEntity().world);
     }
-
-
+    public boolean match(ActionBase actionBase){
+        if(!actionBase.getClass().equals(this.getClass())){
+            return false;
+        }
+        if(!actionBase.getTarget().equals(actionBase.getTarget())){
+            return false;
+        }
+        return true;
+    }
     public enum ActionState{
         Pending,
         Running,

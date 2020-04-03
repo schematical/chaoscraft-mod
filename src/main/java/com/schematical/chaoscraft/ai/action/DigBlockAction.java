@@ -3,6 +3,7 @@ package com.schematical.chaoscraft.ai.action;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.util.ChaosTarget;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResultType;
@@ -15,8 +16,8 @@ public class DigBlockAction extends NavigateToAction{
     protected void _tick() {
         tickLook();
         if(
-                !getTarget().canEntityTouch(getOrgEntity()) &&
-                !getTarget().isEntityLookingAt(getOrgEntity())
+            !getTarget().canEntityTouch(getOrgEntity()) &&
+            !getTarget().isEntityLookingAt(getOrgEntity())
         ){
             tickNavigate();
             return;
@@ -26,7 +27,7 @@ public class DigBlockAction extends NavigateToAction{
         if(rayTraceResult == null){
             return;
         }
-        ActionResultType actionResultType = getOrgEntity().dig(rayTraceResult.getPos());
+        ActionResultType actionResultType = getOrgEntity().dig(getTarget().getTargetBlockPos());//rayTraceResult.getPos());
         if(actionResultType.equals(ActionResultType.FAIL)){
             markFailed();
             return;
@@ -43,13 +44,22 @@ public class DigBlockAction extends NavigateToAction{
             return false;
         }
         BlockState blockState = orgEntity.world.getBlockState(chaosTarget.getTargetBlockPos());
-        if(blockState.isAir(orgEntity.world, chaosTarget.getTargetBlockPos())){
+       /* if(blockState.isAir(orgEntity.world, chaosTarget.getTargetBlockPos())){
             return false;
-        }
+        }*/
        /* if(chaosTarget.isSurroundedBySolid(orgEntity.world)){
             return false;
         }*/
-        if(chaosTarget.isVisiblyBlocked(orgEntity)){
+        /*if(chaosTarget.isVisiblyBlocked(orgEntity)){
+            return false;
+        }*/
+
+        Material material = blockState.getMaterial();
+        if(
+            material == Material.WATER ||
+            material == Material.AIR ||
+            material == Material.LAVA
+        ){
             return false;
         }
         return true;

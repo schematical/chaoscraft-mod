@@ -41,6 +41,11 @@ public class ChaosOrgDetailOverlayGui extends Screen {
             ChaosOrgScoreEventListOverlayGui screen = new ChaosOrgScoreEventListOverlayGui(clientOrgManager);
             Minecraft.getInstance().displayGuiScreen(screen);
         }));
+        y += 20;
+        this.addButton(new Button(this.width / 2 - 100, y, 200, 20, I18n.format("chaoscraft.gui.orgdetail.actionbuffer"), (p_214266_1_) -> {
+            ChaosOrgActionBufferListOverlayGui screen = new ChaosOrgActionBufferListOverlayGui(clientOrgManager);
+            Minecraft.getInstance().displayGuiScreen(screen);
+        }));
 
 
 

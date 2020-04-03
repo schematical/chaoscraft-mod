@@ -41,10 +41,10 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
     private final FontRenderer fontRenderer;
     private CCServerObserverOrgChangeEventPacket message;
     private ClientOrgManager clientOrgManager;
-    private boolean displayScore = false;
-    private boolean displayTarget = false;
-    private boolean drawTargetLines = true;
-    private boolean displayInventory = false;
+    public boolean displayScore = false;
+    public boolean displayTarget = false;
+    public boolean drawTargetLines = true;
+    public boolean displayInventory = false;
     private ScanInstance debugScanInstance;
 
     public ChaosObserveOverlayScreen(Minecraft mc) {
@@ -199,33 +199,26 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
         
         
         debugScanInstance(event);
-        
-        
-        
-        
-        
-        
-        
-        if(!displayTarget){
-            return;
-        }
-        AxisAlignedBB toDraw2 = clientOrgManager.getEntity().getBoundingBox();
-        BlockPos blockPos2 = clientOrgManager.getEntity().getPosition();
-        if(
-            toDraw2 != null &&
-            blockPos2 != null
-        ) {
 
-            //toDraw2 = toDraw2.offset(blockPos2);
+
+
+
+
+        ActionBase actionBase = clientOrgManager.getActionBuffer().getCurrAction();
+        if(actionBase != null){
+            AxisAlignedBB target = actionBase.getTarget().getBoundingBox();
             CCGUIHelper.drawAABB(
                     event.getMatrixStack(),
-                    toDraw2,
+                    target,
                     Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getProjectedView(),
-                    .2D,
+                    .001D,
                     Color.RED,
                     1f
             );
         }
+        
+
+
         for (BiologyBase biologyBase : this.clientOrgManager.getNNet().biology.values()) {
             if(biologyBase instanceof  TargetSlot) {
 
@@ -262,7 +255,7 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
             }
         }
 
-        ActionBase actionBase = this.clientOrgManager.getActionBuffer().getCurrAction();
+       /* ActionBase actionBase = this.clientOrgManager.getActionBuffer().getCurrAction();
         if(actionBase != null){
             ChaosTarget chaosTarget = actionBase.getTarget();
             if(chaosTarget == null){
@@ -281,7 +274,7 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
                 }
 
             }
-        }
+        }*/
     }
 
     private void debugScanInstance(RenderWorldLastEvent event) {

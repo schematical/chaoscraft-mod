@@ -35,6 +35,15 @@ public class ChaosTarget {
         this.targetEntity = null;
         this.blockPos = blockPos;
     }
+    public BlockPos getPosition(){
+        if(targetEntity != null){
+            return targetEntity.getPosition();
+        }
+        if(blockPos != null){
+            return blockPos;
+        }
+        return null;
+    }
     public Vec3d getTargetPosition(){
         if(targetEntity != null){
             return targetEntity.getPositionVector();
@@ -86,21 +95,18 @@ public class ChaosTarget {
     public BlockPos getTargetBlockPos() {
         return blockPos;
     }
+
     public boolean canEntityTouch(OrgEntity orgEntity){
-        Vec3d myPos = orgEntity.getPositionVector();
-        Vec3d targetPosCenter = getTargetPositionCenter();
-        if(targetPosCenter == null){
+
+        BlockPos myPos = orgEntity.getPosition();
+        BlockPos targetBlockPos = getPosition();
+        if(targetBlockPos == null){
             return false;
         }
-        double distTo = targetPosCenter.distanceTo(myPos);
-        boolean withInDist = distTo < OrgEntity.REACH_DISTANCE - 1;
-        if (
-            // !this.world.getWorldBorder().contains(pos) ||
-            !withInDist
-        ) {
-            return false;
+        if( targetBlockPos.withinDistance(myPos, orgEntity.REACH_DISTANCE - 1)){
+            return true;
         }
-        return true;
+        return false;
     }
 
 
@@ -253,7 +259,15 @@ public class ChaosTarget {
        return chaosTarget;
 
     }
-
+    public AxisAlignedBB getBoundingBox(){
+        if(targetEntity != null) {
+            return targetEntity.getBoundingBox();
+        }
+        if(blockPos != null){
+            return new AxisAlignedBB(blockPos);
+        }
+        return null;
+    }
     public boolean isEntityLookingAt(OrgEntity orgEntity) {
         if(blockPos != null) {
             BlockRayTraceResult rayTraceResult = orgEntity.rayTraceBlocks(orgEntity.REACH_DISTANCE);
@@ -293,5 +307,27 @@ public class ChaosTarget {
            return shape.isEmpty() ? VoxelShapes.fullCube().getBoundingBox() : shape.getBoundingBox();
         }
         throw new ChaosNetException("missing `targetEntity` and `blockPos`");
+    }
+    public boolean equals(Object target){
+        if(!(target instanceof  ChaosTarget)){
+            return false;
+        }
+        ChaosTarget chaosTarget = (ChaosTarget)target;
+        if(
+            this.targetEntity != null &&
+            chaosTarget.getTargetEntity() != null
+        ) {
+            if (this.targetEntity.equals(chaosTarget)) {
+                return true;
+            }
+        }else if(
+            this.blockPos != null &&
+            chaosTarget.getTargetBlockPos() != null
+        ) {
+            if (this.blockPos.equals(chaosTarget.getTargetBlockPos())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

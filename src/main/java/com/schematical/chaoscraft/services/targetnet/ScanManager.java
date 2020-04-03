@@ -19,7 +19,7 @@ import java.util.List;
 public class ScanManager {
 
     private ScanEntry focusedScanEntry;
-    private ActionTargetSlot focusedAction;
+    private ActionTargetSlot focusedActionTargetSlot;
     private float focusedActionScore = -9999;
     private ClientOrgManager clientOrgManager;
     private HashMap<String, ScanResult> highestResults = new HashMap<>();
@@ -101,7 +101,7 @@ public class ScanManager {
 
             if(targetSlot instanceof  ActionTargetSlot){
                 ActionTargetSlot actionTargetSlot = (ActionTargetSlot) targetSlot;
-
+                ChaosTarget originalTarget = actionTargetSlot.getTarget();
                 for (ScanEntry topEntity : scanResult.getTopEntities()) {
 
 
@@ -112,25 +112,30 @@ public class ScanManager {
                         ChaosCraft.LOGGER.error(orgEntity.getCCNamespace() + " - Invalid `topEntity` made it to the top with score of: " + topEntity.getScore(actionTargetSlot.id) + " - ActionTargetSlot: " + actionTargetSlot.id);
                     }else {
                         focusedActionScore = -9999;
-                        focusedAction = actionTargetSlot;
-                        List<OutputNeuron> outputs = orgEntity.getNNet().evaluate(NeuralNet.EvalGroup.ACTION);//Ideally the output neurons will set the score
+                        this.focusedActionTargetSlot = actionTargetSlot;
+                        this.focusedActionTargetSlot.setTarget(topEntity.getChaosTarget());
+                        if(!clientOrgManager.getActionBuffer().hasExecutedRecently(this.focusedActionTargetSlot.createAction(), 5)) {
 
-                        Iterator<OutputNeuron> iterator = outputs.iterator();
+                            List<OutputNeuron> outputs = orgEntity.getNNet().evaluate(NeuralNet.EvalGroup.ACTION);//Ideally the output neurons will set the score
 
-                        while (iterator.hasNext()) {
-                            OutputNeuron outputNeuron = iterator.next();
-                            outputNeuron.execute();
-                        }
+                            Iterator<OutputNeuron> iterator = outputs.iterator();
 
-                        if (focusedActionScore > highestATSScore) {
-                            highestATSScore = focusedActionScore;
-                            highestActionTargetSlot = actionTargetSlot;
-                            highestActionScanEntry = topEntity;
+                            while (iterator.hasNext()) {
+                                OutputNeuron outputNeuron = iterator.next();
+                                outputNeuron.execute();
+                            }
+
+                            if (focusedActionScore > highestATSScore) {
+                                highestATSScore = focusedActionScore;
+                                highestActionTargetSlot = actionTargetSlot;
+                                highestActionScanEntry = topEntity;
+                            }
                         }
                     }
 
 
                 }
+                actionTargetSlot.setTarget(originalTarget);
             }else{
                 if(scanResult.getTopEntities().size() > 1){
                     throw new ChaosNetException("`scanResult.getTopEntities().size()` should be zero in this scenario: " + scanResult.getTopEntities().size());
@@ -185,8 +190,8 @@ public class ScanManager {
         scanInstance.forceScanInterrupt();
     }
 
-    public ActionTargetSlot getFocusedAction() {
-        return focusedAction;
+    public ActionTargetSlot getFocusedActionTargetSlot() {
+        return focusedActionTargetSlot;
     }
 
     public ScanInstance getScanInstance() {

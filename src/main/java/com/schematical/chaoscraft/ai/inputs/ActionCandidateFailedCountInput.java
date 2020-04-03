@@ -18,7 +18,7 @@ public class ActionCandidateFailedCountInput extends InputNeuron {
     public float evaluate(){
         ClientOrgManager clientOrgManager = ((OrgEntity)this.getEntity()).getClientOrgManager();
         ScanManager scanManager = clientOrgManager.getScanManager();
-        ActionTargetSlot actionTargetSlot = scanManager.getFocusedAction();
+        ActionTargetSlot actionTargetSlot = scanManager.getFocusedActionTargetSlot();
         ActionBuffer actionBuffer = clientOrgManager.getActionBuffer();
         String key = actionTargetSlot.getSimpleActionStatsKey();
         ActionBuffer.SimpleActionStats simpleActionStats = actionBuffer.getSimpleActionStats(key);
