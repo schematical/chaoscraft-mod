@@ -28,11 +28,17 @@ public class ActionBuffer {
     private HashMap<String, SimpleActionStats> simpleActonTracker = new HashMap<>();
     private ArrayList<ActionBase> recentActions = new ArrayList<ActionBase>();
     private ActionBase currAction = null;
+    private WonderAction wonderAction = null;
     public void execute(){
         if(isClient()) {
             throw new ChaosNetException("This should not get called Client side");
         }
         if(currAction == null){
+            if(wonderAction == null){
+                wonderAction = new WonderAction();
+                wonderAction.setActionBuffer(this);
+            }
+            wonderAction.tick();
             return;
         }
 
@@ -52,6 +58,8 @@ public class ActionBuffer {
         }
         currAction.tick();
     }
+
+
     public ActionBuffer addAction(ActionBase action){
        /* if(currAction != null){
           throw new ChaosNetException("We already have a currAction.... interrupt or something");
@@ -63,12 +71,18 @@ public class ActionBuffer {
     }
     public void sync(){
         //Send a packet to queue up the action
+        if(currAction == null){
+            throw new ChaosNetException("No current action to sync");
+        }
         if(isClient()) {
             CCClientSetCurrActionPacket pkt = new CCClientSetCurrActionPacket(orgManager.getCCNamespace(), currAction);
             //clientActionPacket.setBiology(targetSlot);
             ChaosNetworkManager.sendToServer(pkt);
         }else{
-            CCActionStateChangeEventPacket pkt = new CCActionStateChangeEventPacket(orgManager.getCCNamespace(), currAction.getActionState());
+            CCActionStateChangeEventPacket pkt = new CCActionStateChangeEventPacket(
+                    orgManager.getCCNamespace(),
+                    currAction.getActionState()
+            );
             //clientActionPacket.setBiology(targetSlot);
             ServerOrgManager serverOrgManager = (ServerOrgManager)getOrgManager();
             ChaosNetworkManager.sendTo(pkt, serverOrgManager.getServerPlayerEntity());

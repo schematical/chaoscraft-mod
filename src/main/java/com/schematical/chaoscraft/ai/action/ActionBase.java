@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public abstract class ActionBase {
     private ActionBuffer actionBuffer;
     private float actionScore = 0;
-    private int actionAgeTicks = 0;
+    protected int actionAgeTicks = 0;
     private ActionState state = ActionState.Pending;
     private ChaosTarget target;
     public ArrayList<CCServerScoreEventPacket> scoreEvents = new ArrayList<CCServerScoreEventPacket>();
@@ -32,7 +32,7 @@ public abstract class ActionBase {
             throw new ChaosNetException("Client should not be ticking `actionBuffer` state");
         }
         actionAgeTicks += 1;
-        if(actionAgeTicks > 15 * 20){
+        if(actionAgeTicks > 7 * 20){
             markFailed();
             return;
         }

@@ -96,15 +96,17 @@ public class ScanInstance {
         entities.addAll(getClientOrgManager().getEntity().world.getEntitiesWithinAABB(ItemEntity.class,  grownBox));
 
         for (Entity entity : entities) {
+            if(!entity.equals(this.getClientOrgManager().getEntity())) {
+                ScanEntry scanEntry = new ScanEntry();
 
-            ScanEntry scanEntry = new ScanEntry();
-            scanEntry.entity = entity;
-            scanEntry.atts = getClientOrgManager().getEntity().observableAttributeManager.Observe(entity);
-            if(!counts.containsKey(scanEntry.atts.resourceId)){
-                counts.put(scanEntry.atts.resourceId, 0);
+                scanEntry.entity = entity;
+                scanEntry.atts = getClientOrgManager().getEntity().observableAttributeManager.Observe(entity);
+                if (!counts.containsKey(scanEntry.atts.resourceId)) {
+                    counts.put(scanEntry.atts.resourceId, 0);
+                }
+                counts.put(scanEntry.atts.resourceId, counts.get(scanEntry.atts.resourceId) + 1);
+                entries.add(scanEntry);
             }
-            counts.put(scanEntry.atts.resourceId, counts.get(scanEntry.atts.resourceId) + 1);
-            entries.add(scanEntry);
 
         }
         return entries;

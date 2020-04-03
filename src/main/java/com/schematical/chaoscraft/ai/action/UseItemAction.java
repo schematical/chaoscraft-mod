@@ -42,7 +42,7 @@ public class UseItemAction extends NavigateToAction{
             tickNavigate();
             return;
         }
-
+        tickArrived();
 
         ActionResult<ItemStack> rcResult = heldItem.onItemRightClick(
                 getOrgEntity().world,

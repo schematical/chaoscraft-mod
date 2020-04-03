@@ -17,6 +17,7 @@ public class MeleeAttackAction extends NavigateToAction{
             return;
         }
         stopWalking();
+        tickArrived();
         //When looking at stuff do stuff.
         getOrgEntity().func_226292_a_(Hand.MAIN_HAND, true);
         getOrgEntity().attackEntityAsMob(getTarget().getTargetEntity());

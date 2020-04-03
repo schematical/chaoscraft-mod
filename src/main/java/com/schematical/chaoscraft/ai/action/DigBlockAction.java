@@ -22,7 +22,7 @@ public class DigBlockAction extends NavigateToAction{
             tickNavigate();
             return;
         }
-
+        tickArrived();
         BlockRayTraceResult rayTraceResult = getOrgEntity().rayTraceBlocks(getOrgEntity().REACH_DISTANCE);
         if(rayTraceResult == null){
             return;
