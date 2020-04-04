@@ -54,6 +54,13 @@ public class ScanRecipeInstance {
             ){
                 highScoreRecipe = focusedRecipe;
                 highScore = focusedRecipeScore;
+            }else if(
+                focusedRecipeScore == highScore
+            ){
+                if(Math.random() > 0.5f) {
+                    highScoreRecipe = focusedRecipe;
+                    highScore = focusedRecipeScore;
+                }
             }
         }
         state = State.Finished;
