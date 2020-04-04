@@ -372,6 +372,16 @@ public class OrgEntity extends MobEntity {
 
         return outputStack;
     }
+    public ArrayList<IRecipe> getAllCraftableRecipes(){
+        ArrayList<IRecipe> craftable = new ArrayList<>();
+        for (IRecipe irecipe : getServer().getRecipeManager().getRecipes())
+        {
+            if(canCraft(irecipe)){
+                craftable.add(irecipe);
+            }
+        }
+        return craftable;
+    }
     public ItemStack getStackInSlot( EquipmentSlotType slotIn) throws Exception {
         return this.itemHandler.getStackInSlot(slotIn.getSlotIndex());
     }

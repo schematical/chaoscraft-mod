@@ -1,9 +1,12 @@
 package com.schematical.chaoscraft.ai.action;
 
+import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.network.packets.CCServerScoreEventPacket;
 import com.schematical.chaoscraft.util.ChaosTarget;
 import com.schematical.chaosnet.model.ChaosNetException;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.world.dimension.DimensionType;
 
 import java.util.ArrayList;
 
@@ -32,7 +35,7 @@ public abstract class ActionBase {
             throw new ChaosNetException("Client should not be ticking `actionBuffer` state");
         }
         actionAgeTicks += 1;
-        if(actionAgeTicks > 7 * 20){
+        if(actionAgeTicks > 15 * 20){
             markFailed();
             return;
         }
@@ -141,6 +144,20 @@ public abstract class ActionBase {
             return false;
         }
         return true;
+    }
+
+    public void encode(PacketBuffer buf){
+
+        buf.writeString(getTarget().getSerializedString());
+    }
+
+    public void decode(PacketBuffer buf){
+        setTarget(
+                ChaosTarget.deserializeTarget(
+                        ChaosCraft.getServer().server.getWorld(DimensionType.OVERWORLD),
+                        buf.readString(32767)
+                )
+        );
     }
 
     public enum ActionState{

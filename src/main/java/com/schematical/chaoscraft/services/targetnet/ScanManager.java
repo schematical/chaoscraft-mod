@@ -10,6 +10,7 @@ import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.util.ChaosTarget;
 import com.schematical.chaosnet.model.ChaosNetException;
+import net.minecraft.item.crafting.IRecipe;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +25,7 @@ public class ScanManager {
     private ClientOrgManager clientOrgManager;
     private HashMap<String, ScanResult> highestResults = new HashMap<>();
     private ScanInstance scanInstance = null;
+    private  ScanRecipeInstance scanRecipeInstance = null;
     public void setFocusedActionScore(float score){
         focusedActionScore = score;
     }
@@ -34,7 +36,8 @@ public class ScanManager {
 
     }
     public void resetScan() {
-      scanInstance = new ScanInstance(clientOrgManager, clientOrgManager.getEntity().getPosition());
+        scanRecipeInstance = new ScanRecipeInstance(clientOrgManager);
+        scanInstance = new ScanInstance(clientOrgManager, clientOrgManager.getEntity().getPosition());
         highestResults.clear();
     }
 
@@ -87,6 +90,7 @@ public class ScanManager {
         if(scanInstance.getScanState().equals(ScanInstance.ScanState.Ticking)){
             return scanInstance.getScanState();
         }
+        scanRecipeInstance.tickScanRecipes();
 
         //TODO: Iterate through the biology of the main NNet and set the targets
         float highestATSScore = -1000;
@@ -196,6 +200,11 @@ public class ScanManager {
         return scanInstance;
     }
 
+    public ScanRecipeInstance getRecipeScanInstance() {
+        return scanRecipeInstance;
+    }
+
+
     public class ScanResult{
         private int max = 20;
         private String targetSlotId;
@@ -254,5 +263,6 @@ public class ScanManager {
             return scanEntries;
         }
     }
+
 
 }

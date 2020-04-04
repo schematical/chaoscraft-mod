@@ -34,7 +34,7 @@ public class CCClientSetCurrActionPacket {
     {
         buf.writeString(pkt.orgNamespace);
         buf.writeString(pkt.actionBase.getClass().getName());
-        buf.writeString(pkt.actionBase.getTarget().getSerializedString());
+        pkt.actionBase.encode(buf);
     }
 
     public static CCClientSetCurrActionPacket decode(PacketBuffer buf)
@@ -45,12 +45,7 @@ public class CCClientSetCurrActionPacket {
             cls = Class.forName(buf.readString(32767));
 
             ActionBase actionBase = (ActionBase)cls.newInstance();
-            actionBase.setTarget(
-                ChaosTarget.deserializeTarget(
-                    ChaosCraft.getServer().server.getWorld(DimensionType.OVERWORLD),
-                    buf.readString(32767)
-                )
-            );
+            actionBase.decode(buf);
             return new CCClientSetCurrActionPacket(
                     orgNamespace,
                     actionBase
