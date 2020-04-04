@@ -5,6 +5,7 @@ import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.server.ServerOrgManager;
 import com.schematical.chaoscraft.util.ChaosTarget;
+import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.item.*;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
@@ -57,19 +58,16 @@ public class UseItemAction extends NavigateToAction{
 
         BlockRayTraceResult rayTraceResult = getOrgEntity().rayTraceBlocks(getOrgEntity().REACH_DISTANCE);
         if(
-                rayTraceResult == null
+            rayTraceResult == null
         ){
             markFailed();
             return;
         }
 
 
-        //Vec3i vec3i = rayTraceResult.sideHit.getDirectionVec();
-        BlockPos destBlockPos = new BlockPos(rayTraceResult.getHitVec());//.add(vec3i);
-
-        /*if(!(heldItem instanceof ItemBlock)){
-            return;
-        }*/
+        if(!(heldItem instanceof BlockItem)){
+            throw new ChaosNetException("Invalid action. `heldItem` !instanceof `BlockItem`");
+        }
         ItemUseContext context = new ItemUseContext(
                 getOrgEntity().getPlayerWrapper(),
                 Hand.MAIN_HAND,
@@ -126,6 +124,10 @@ public class UseItemAction extends NavigateToAction{
         }
 
         if(!(itemStack.getItem() instanceof BlockItem)){
+            return false;
+        }
+
+        if((itemStack.getItem() instanceof BlockItem)){
             return false;
         }
         if(chaosTarget.isVisiblyBlocked(orgEntity)){

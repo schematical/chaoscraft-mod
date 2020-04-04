@@ -21,9 +21,7 @@ public class TargetCandidateCanSeeInput extends InputNeuron {
     public float evaluate(){
         ScanManager scanManager =  ((OrgEntity)this.getEntity()).getClientOrgManager().getScanManager();
         ScanEntry scanEntry = scanManager.getFocusedScanEntry();
-        if(scanEntry == null){
-            return getCurrentValue();
-        }
+
 
         Vec3d vec3d = this.getEntity().getPositionVec();
         Vec3d vec3d1 = scanEntry.getPosition();

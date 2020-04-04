@@ -45,17 +45,15 @@ public class ScanManager {
         ArrayList<ScanEntry> newEntries = scanInstance.tick();
         OrgEntity orgEntity = this.clientOrgManager.getEntity();
 
-        //Iterate through all blocks in bounds
 
-        //HashMap<String, ScanEntry> highestResults = new HashMap<String, ScanEntry>();
 
         for (ScanEntry scanEntry : newEntries) {
-
+            focusedScanEntry = scanEntry;
 
             List<OutputNeuron> outputs = orgEntity.getNNet().evaluate(NeuralNet.EvalGroup.TARGET);//Ideally the output neurons will set the score
 
             Iterator<OutputNeuron> iterator = outputs.iterator();
-            focusedScanEntry = scanEntry;
+
 
             while (iterator.hasNext()) {
                 OutputNeuron outputNeuron = iterator.next();
@@ -199,7 +197,7 @@ public class ScanManager {
     }
 
     public class ScanResult{
-        private int max = 5;
+        private int max = 20;
         private String targetSlotId;
         private float lowestScore = 99999;
         private ArrayList<ScanEntry> scanEntries = new ArrayList<>();

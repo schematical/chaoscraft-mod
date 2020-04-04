@@ -20,9 +20,7 @@ public class TargetCandidateTypeInput extends InputNeuron {
     public float evaluate(){
         ScanManager scanManager =  ((OrgEntity)this.getEntity()).getClientOrgManager().getScanManager();
         ScanEntry scanEntry = scanManager.getFocusedScanEntry();
-        if(scanEntry == null){
-            return getCurrentValue();//throw new ChaosNetException("scanEntity = null");
-        }
+
         switch(attributeId) {
             case (CCAttributeId.BLOCK_ID):
                 if (

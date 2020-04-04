@@ -19,9 +19,7 @@ public class TargetCandidateYawToTargetSlotInput extends BaseTargetInputNeuron {
         if(!targetSlot.hasTarget()){
             return getCurrentValue();
         }
-        if(scanEntry == null){
-            return getCurrentValue();
-        }
+
         Double degrees = TargetHelper.getYawDelta(
                 scanEntry.getPosition(),
                 this.getEntity().getPositionVec(),

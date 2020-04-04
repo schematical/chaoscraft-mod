@@ -8,6 +8,7 @@ import com.schematical.chaoscraft.network.packets.CCClientSetCurrActionPacket;
 import com.schematical.chaoscraft.server.ServerOrgManager;
 import com.schematical.chaoscraft.services.targetnet.ScanInstance;
 import com.schematical.chaoscraft.services.targetnet.ScanManager;
+import com.schematical.chaoscraft.util.ChaosTarget;
 import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.world.World;
 
@@ -185,7 +186,24 @@ public class ActionBuffer {
             }
         }
     }
+    public ArrayList<ActionBase> matchExecutedRecently(Class<ActionBase> actionBaseClass, ChaosTarget chaosTarget, Integer withInLastActions){
+        ArrayList<ActionBase> actionBases = new ArrayList<>();
+        int startIndex = 0;
+        if(withInLastActions != null) {
+            startIndex = recentActions.size() - withInLastActions;
+            if (startIndex < 0) {
+                startIndex = 0;
+            }
+        }
 
+        for (int i = startIndex; i < recentActions.size(); i++) {
+            ActionBase testActionBase = recentActions.get(i);
+            if(testActionBase.match(actionBaseClass, chaosTarget)){
+                actionBases.add(testActionBase);
+            }
+        }
+        return actionBases;
+    }
     public ArrayList<ActionBase> matchExecutedRecently(ActionBase actionBase, Integer withInLastActions){
         ArrayList<ActionBase> actionBases = new ArrayList<>();
         int startIndex = 0;
@@ -199,7 +217,7 @@ public class ActionBuffer {
         for (int i = startIndex; i < recentActions.size(); i++) {
             ActionBase testActionBase = recentActions.get(i);
             if(testActionBase.match(actionBase)){
-                actionBases.add(actionBase);
+                actionBases.add(testActionBase);
             }
         }
         return actionBases;
@@ -207,7 +225,9 @@ public class ActionBuffer {
     public boolean hasExecutedRecently(ActionBase actionBase, Integer withInLastActions){
         return matchExecutedRecently(actionBase,withInLastActions).size() > 0;
     }
-
+    public boolean hasExecutedRecently(Class<ActionBase> actionBaseClass, ChaosTarget chaosTarget, Integer withInLastActions){
+        return matchExecutedRecently(actionBaseClass, chaosTarget, withInLastActions).size() > 0;
+    }
     public ArrayList<ActionBase> getRecentActions() {
         return recentActions;
     }

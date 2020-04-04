@@ -19,9 +19,7 @@ public class TargetCandidateLightInput extends InputNeuron {
     public float evaluate(){
         ScanManager scanManager =  ((OrgEntity)this.getEntity()).getClientOrgManager().getScanManager();
         ScanEntry scanEntry = scanManager.getFocusedScanEntry();
-        if(scanEntry == null){
-            return getCurrentValue();
-        }
+
 
         int light = nNet.entity.world.getLight(scanEntry.getTargetBlockPos());
         setCurrentValue(((float) light)/ 15f);

@@ -19,9 +19,7 @@ public class TargetCandidateDistToTargetSlotInput extends BaseTargetInputNeuron 
         if(!targetSlot.hasTarget()){
             return getCurrentValue();
         }
-        if(scanEntry == null){
-            return getCurrentValue();
-        }
+
         Double dist = TargetHelper.getDistDelta(scanEntry.getPosition(),  getTarget().getTargetPositionCenter());
         if(dist != null) {
             setCurrentValue( dist.floatValue() / scanManager.getScanInstance().getRange());//This can go out of bounds(over 100%)

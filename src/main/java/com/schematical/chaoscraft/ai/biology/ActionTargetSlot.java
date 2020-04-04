@@ -18,6 +18,7 @@ public class ActionTargetSlot extends TargetSlot {
     BiologyBase biologyBase = (BiologyBase) cls.newInstance();
 
      */
+
     public static void init(NeuralNet neuralNet){
         ArrayList<Class> classes = new ArrayList<Class>();
 
@@ -34,7 +35,9 @@ public class ActionTargetSlot extends TargetSlot {
             neuralNet.biology.put(actionTargetSlot.id, actionTargetSlot);
         }
     }
-
+    public Class getActionBaseClass(){
+        return actionBaseClass;
+    }
 
     public ActionBase createAction() {
         ActionBase actionBase = null;

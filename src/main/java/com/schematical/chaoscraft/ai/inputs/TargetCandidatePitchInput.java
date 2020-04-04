@@ -17,9 +17,7 @@ public class TargetCandidatePitchInput extends InputNeuron {
     public float evaluate(){
         ScanManager scanManager =  ((OrgEntity)this.getEntity()).getClientOrgManager().getScanManager();
         ScanEntry scanEntry = scanManager.getFocusedScanEntry();
-        if(scanEntry == null){
-            return getCurrentValue();
-        }
+
         Double degrees = TargetHelper.getPitchDelta(
                 scanEntry.getPosition(),
                 this.getEntity().getPositionVec(),

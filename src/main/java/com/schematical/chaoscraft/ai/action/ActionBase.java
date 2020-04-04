@@ -127,11 +127,22 @@ public abstract class ActionBase {
         if(!actionBase.getClass().equals(this.getClass())){
             return false;
         }
-        if(!actionBase.getTarget().equals(actionBase.getTarget())){
+        if(!actionBase.getTarget().equals(getTarget())){
             return false;
         }
         return true;
     }
+
+    public boolean match(Class<ActionBase> actionBaseClass, ChaosTarget chaosTarget) {
+        if(!actionBaseClass.equals(this.getClass())){
+            return false;
+        }
+        if(!chaosTarget.equals(getTarget())){
+            return false;
+        }
+        return true;
+    }
+
     public enum ActionState{
         Pending,
         Running,

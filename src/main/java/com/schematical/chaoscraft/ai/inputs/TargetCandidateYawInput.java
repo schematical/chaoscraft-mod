@@ -17,9 +17,7 @@ public class TargetCandidateYawInput extends InputNeuron {
     public float evaluate(){
         ScanManager scanManager =  ((OrgEntity)this.getEntity()).getClientOrgManager().getScanManager();
         ScanEntry scanEntry = scanManager.getFocusedScanEntry();
-        if(scanEntry == null){
-            return getCurrentValue();
-        }
+
         Double degrees = TargetHelper.getYawDelta(scanEntry.getPosition(), this.getEntity().getPositionVec(), this.getEntity().rotationYaw);
         if(degrees != null) {
             setCurrentValue( degrees.floatValue() / YAW_DEGREES);

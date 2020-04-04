@@ -15,9 +15,6 @@ public class TargetCanSeeInput extends BaseTargetInputNeuron {
     public float evaluate(){
 
 
-        if(getTarget() == null) {
-            return getCurrentValue();
-        }
 
         Vec3d vec3d = this.getEntity().getEyePosition(1);
         Vec3d vec3d1 = this.getTarget().getTargetPosition();

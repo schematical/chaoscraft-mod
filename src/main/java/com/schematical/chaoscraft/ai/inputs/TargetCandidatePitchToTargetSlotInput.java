@@ -20,9 +20,7 @@ public class TargetCandidatePitchToTargetSlotInput extends BaseTargetInputNeuron
         if(!targetSlot.hasTarget()){
             return getCurrentValue();
         }
-        if(scanEntry == null){
-            return getCurrentValue();
-        }
+
         Double degrees = TargetHelper.getPitchDelta(
                 scanEntry.getPosition(),
                 this.getEntity().getPositionVec(),
