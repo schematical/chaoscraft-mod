@@ -33,9 +33,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.Items;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.RecipeItemHelper;
+import net.minecraft.item.crafting.*;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
@@ -107,7 +106,7 @@ public class OrgEntity extends MobEntity {
         //EnchantmentHelper.addRandomEnchantment(new Random(), itemStack, 10, true);
         itemHandler.setStackInSlot(1, itemStack);*/
 
-
+        itemHandler.setStackInSlot(1,  new ItemStack(Items.OAK_LOG, 4));
     }
     public void setSpawnHash(int _spawnHash) {
         this.spawnHash = _spawnHash;
@@ -257,31 +256,53 @@ public class OrgEntity extends MobEntity {
     }
 
     public boolean canCraft(IRecipe recipe) {
+        return  canCraft(recipe, IRecipeType.CRAFTING);
+    }
+    public boolean canCraft(IRecipe recipe, IRecipeType recipeType) {
+       CanCraftResults canCraftResults = canCraftReturnDetail(recipe,recipeType);
+        if(canCraftResults.equals(CanCraftResults.Success)){
+            return true;
+        }
+        return false;
+
+    }
+
+    public CanCraftResults canCraftReturnDetail(IRecipe recipe, IRecipeType iRecipeType) {
         //Check to see if they have the items in inventory for that
 
 
         NonNullList<Ingredient> ingredients = recipe.getIngredients();
         if(ingredients.size() == 0){
-            return false;
+            return CanCraftResults.Fail_ZeroIngredients;
         }
+        if(!recipe.getType().equals(iRecipeType)){
+            return CanCraftResults.Fail_CraftingTypeDoesNotMatch;
+        }
+       /* if(!(recipe instanceof ICraftingRecipe)){
+            return CanCraftResults.Fail_NotCraftable;
+        }
+        ICraftingRecipe craftingRecipe = (ICraftingRecipe)recipe;
+        if(!craftingRecipe.getType().)*/
         RecipeItemHelper recipeItemHelper = getRecipeItemHelper();
         boolean isUsingCraftingTable = false;
         BlockRayTraceResult rayTraceResult = nNet.entity.rayTraceBlocks(nNet.entity.REACH_DISTANCE);
         if(world.getBlockState(rayTraceResult.getPos()).getBlock() instanceof CraftingTableBlock){
-             isUsingCraftingTable = true;
+            isUsingCraftingTable = true;
         }
         if(!isUsingCraftingTable) {
             if (!recipe.canFit(2, 2)) {
-                return false;
+                return CanCraftResults.Fail_2X2;
             }
         }else{
             if (!recipe.canFit(3, 3)) {
-                return false;
+                return CanCraftResults.Fail_3X3;
             }
         }
         boolean result = recipeItemHelper.canCraft(recipe, null);
-
-        return result;
+        if(!result){
+            return CanCraftResults.Fail_RecipeHelper;
+        }
+        return CanCraftResults.Success;
 
     }
     public RecipeItemHelper getRecipeItemHelper(){
@@ -303,8 +324,9 @@ public class OrgEntity extends MobEntity {
 
 
     public ItemStack craft(IRecipe recipe) {
-        if(!nNet.entity.canCraft(recipe)){
-            throw new ChaosNetException("Cannot craft " + recipe.getId().toString());
+        OrgEntity.CanCraftResults canCraftResults = nNet.entity.canCraftReturnDetail(recipe,IRecipeType.CRAFTING);//TODO: Make this for real
+        if(!canCraftResults.equals(CanCraftResults.Success)){
+            throw new ChaosNetException("Cannot craft " + recipe.getId().toString() + " - " + canCraftResults.toString());
         }
         NonNullList<Ingredient> recipeItems = null;
 
@@ -349,7 +371,7 @@ public class OrgEntity extends MobEntity {
         }
 
         ItemStack outputStack = recipe.getRecipeOutput().copy();
-        //ChaosCraft.logger.info(this.getCCNamespace() + " - Crafted: " + outputStack.getDisplayName());
+        ChaosCraft.LOGGER.info(this.getCCNamespace() + " - Crafted: " + outputStack.getDisplayName());
         if(emptySlotIndex != -1) {
             itemHandler.setStackInSlot(emptySlotIndex,outputStack);//        orgInventory.add(emptySlotIndex, outputStack);
             if(getHeldItem(Hand.MAIN_HAND).isEmpty()){
@@ -374,8 +396,11 @@ public class OrgEntity extends MobEntity {
     }
     public ArrayList<IRecipe> getAllCraftableRecipes(){
         ArrayList<IRecipe> craftable = new ArrayList<>();
-        for (IRecipe irecipe : getServer().getRecipeManager().getRecipes())
+
+        RecipeManager recipeManager = world.getRecipeManager();
+        for (IRecipe irecipe : recipeManager.getRecipes())
         {
+
             if(canCraft(irecipe)){
                 craftable.add(irecipe);
             }
@@ -1059,5 +1084,15 @@ public class OrgEntity extends MobEntity {
     public void updateInventory(int index, ItemStack itemStack, int selectedItemIndex) {
         this.itemHandler.setStackInSlot(index, itemStack);
         this.selectedItemIndex = selectedItemIndex;
+    }
+    public enum CanCraftResults{
+        Success,
+        Fail_2X2,
+        Fail_3X3,
+        Fail_RecipeHelper,
+        Fail_MissingIngredients,
+        Fail_ZeroIngredients,
+        Fail_NotCraftable,
+        Fail_CraftingTypeDoesNotMatch
     }
 }

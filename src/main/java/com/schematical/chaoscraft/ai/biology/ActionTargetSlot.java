@@ -44,6 +44,7 @@ public class ActionTargetSlot extends TargetSlot {
         try {
             actionBase = (ActionBase) actionBaseClass.newInstance();
             actionBase.setTarget(getTarget());
+
         } catch (InstantiationException e) {
            throw new ChaosNetException(e.getMessage());
         } catch (IllegalAccessException e) {

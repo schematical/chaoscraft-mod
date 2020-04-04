@@ -3,6 +3,8 @@ package com.schematical.chaoscraft.services.targetnet;
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.NeuralNet;
 import com.schematical.chaoscraft.ai.OutputNeuron;
+import com.schematical.chaoscraft.ai.action.ActionBase;
+import com.schematical.chaoscraft.ai.action.CraftAction;
 import com.schematical.chaoscraft.ai.biology.ActionTargetSlot;
 import com.schematical.chaoscraft.ai.biology.BiologyBase;
 import com.schematical.chaoscraft.ai.biology.TargetSlot;
@@ -42,8 +44,12 @@ public class ScanManager {
     }
 
     public ScanInstance.ScanState tickScan(){
+
         if(!scanInstance.getScanState().equals(ScanInstance.ScanState.Ticking)){
             throw new ChaosNetException("Invalid `scanState`: " + scanInstance.getScanState().toString());
+        }
+        if(scanRecipeInstance.getState().equals(ScanRecipeInstance.State.Pending)){
+            scanRecipeInstance.tickScanRecipes();
         }
         ArrayList<ScanEntry> newEntries = scanInstance.tick();
         OrgEntity orgEntity = this.clientOrgManager.getEntity();
@@ -90,7 +96,7 @@ public class ScanManager {
         if(scanInstance.getScanState().equals(ScanInstance.ScanState.Ticking)){
             return scanInstance.getScanState();
         }
-        scanRecipeInstance.tickScanRecipes();
+
 
         //TODO: Iterate through the biology of the main NNet and set the targets
         float highestATSScore = -1000;
@@ -116,6 +122,7 @@ public class ScanManager {
                         focusedActionScore = -9999;
                         this.focusedActionTargetSlot = actionTargetSlot;
                         this.focusedActionTargetSlot.setTarget(topEntity.getChaosTarget());
+
                         if(!clientOrgManager.getActionBuffer().hasExecutedRecently(this.focusedActionTargetSlot.createAction(), 5)) {
 
                             List<OutputNeuron> outputs = orgEntity.getNNet().evaluate(NeuralNet.EvalGroup.ACTION);//Ideally the output neurons will set the score
@@ -165,8 +172,12 @@ public class ScanManager {
             if(!highestActionTargetSlot.isValid()){
                 throw new ChaosNetException("Something went really really wrong. Is `highestActionScanEntry` being modified in the wrong spot");
             }
+            ActionBase actionBase = highestActionTargetSlot.createAction();
+            if(actionBase instanceof CraftAction){
+                ((CraftAction) actionBase).setRecipe(scanRecipeInstance.getHighScoreRecipe());
+            }
             this.clientOrgManager.getActionBuffer().addAction(
-                    highestActionTargetSlot.createAction()
+                    actionBase
             ).sync();
         }
 

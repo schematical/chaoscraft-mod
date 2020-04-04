@@ -14,7 +14,8 @@ public class TossEquippedStackOutput extends OutputNeuron {
 
     @Override
     public void execute() {
-        if(this.getCurrentValue() <= .5){
+        return;//
+/*        if(this.getCurrentValue() <= .5){
             return;
         }
 
@@ -29,7 +30,7 @@ public class TossEquippedStackOutput extends OutputNeuron {
 
         CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.TOSSED_EQUIPPED_STACK);
         worldEvent.item = itemStack.getItem();
-        nNet.entity.getServerOrgManager().test(worldEvent);
+        nNet.entity.getServerOrgManager().test(worldEvent);*/
 
     }
 
