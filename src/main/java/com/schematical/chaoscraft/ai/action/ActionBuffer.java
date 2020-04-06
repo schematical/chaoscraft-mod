@@ -9,6 +9,7 @@ import com.schematical.chaoscraft.server.ServerOrgManager;
 import com.schematical.chaoscraft.services.targetnet.ScanInstance;
 import com.schematical.chaoscraft.services.targetnet.ScanManager;
 import com.schematical.chaoscraft.util.ChaosTarget;
+import com.schematical.chaoscraft.util.ChaosTargetItem;
 import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.world.World;
 
@@ -186,7 +187,7 @@ public class ActionBuffer {
             }
         }
     }
-    public ArrayList<ActionBase> matchExecutedRecently(Class<ActionBase> actionBaseClass, ChaosTarget chaosTarget, Integer withInLastActions){
+    public ArrayList<ActionBase> matchExecutedRecently(Class<ActionBase> actionBaseClass, ChaosTarget chaosTarget, ChaosTargetItem chaosTargetItem, Integer withInLastActions){
         ArrayList<ActionBase> actionBases = new ArrayList<>();
         int startIndex = 0;
         if(withInLastActions != null) {
@@ -198,7 +199,7 @@ public class ActionBuffer {
 
         for (int i = startIndex; i < recentActions.size(); i++) {
             ActionBase testActionBase = recentActions.get(i);
-            if(testActionBase.match(actionBaseClass, chaosTarget)){
+            if(testActionBase.match(actionBaseClass, chaosTarget, chaosTargetItem)){
                 actionBases.add(testActionBase);
             }
         }
@@ -225,8 +226,8 @@ public class ActionBuffer {
     public boolean hasExecutedRecently(ActionBase actionBase, Integer withInLastActions){
         return matchExecutedRecently(actionBase,withInLastActions).size() > 0;
     }
-    public boolean hasExecutedRecently(Class<ActionBase> actionBaseClass, ChaosTarget chaosTarget, Integer withInLastActions){
-        return matchExecutedRecently(actionBaseClass, chaosTarget, withInLastActions).size() > 0;
+    public boolean hasExecutedRecently(Class<ActionBase> actionBaseClass, ChaosTarget chaosTarget, ChaosTargetItem chaosTargetItem, Integer withInLastActions){
+        return matchExecutedRecently(actionBaseClass, chaosTarget, chaosTargetItem, withInLastActions).size() > 0;
     }
     public ArrayList<ActionBase> getRecentActions() {
         return recentActions;

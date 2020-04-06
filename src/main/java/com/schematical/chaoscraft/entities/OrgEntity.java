@@ -546,6 +546,26 @@ public class OrgEntity extends MobEntity {
         return null;
     }
 
+    public ItemStack equipSlot(int i) {
+
+        ItemStackHandler itemStackHandler = getItemStackHandeler();
+        ItemStack itemStack = itemStackHandler.getStackInSlot(i);
+
+
+        this.setHeldItem(Hand.MAIN_HAND, itemStack);
+        selectedItemIndex = i;
+
+        CCInventoryChangeEventPacket pkt = new CCInventoryChangeEventPacket(
+                getCCNamespace(),
+                selectedItemIndex,
+                selectedItemIndex,
+                itemHandler.getStackInSlot(selectedItemIndex)
+        );
+        ChaosNetworkManager.sendTo(pkt, getServerOrgManager().getServerPlayerEntity());
+
+        return itemStack;
+    }
+
     public int hasInInventory(String itemId/*Item item*/){
         //Check if it is in their inventory
         ItemStack stack = null;

@@ -5,6 +5,7 @@ import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.server.ServerOrgManager;
 import com.schematical.chaoscraft.util.ChaosTarget;
+import com.schematical.chaoscraft.util.ChaosTargetItem;
 import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.item.*;
 import net.minecraft.util.ActionResult;
@@ -114,12 +115,13 @@ public class UseItemAction extends NavigateToAction{
     }
 
 
-    public static boolean validateTarget(OrgEntity orgEntity, ChaosTarget chaosTarget) {
-        /*if(chaosTarget.getTargetBlockPos() == null){
-            return false;
-        }*/
-        ItemStack itemStack = orgEntity.getHeldItem(Hand.MAIN_HAND);
-        if(itemStack.isEmpty()){
+    public static boolean validateTarget(OrgEntity orgEntity, ChaosTarget chaosTarget, ChaosTargetItem chaosTargetItem) {
+
+        ItemStack itemStack = orgEntity.getItemStackHandeler().getStackInSlot(chaosTargetItem.getInventorySlot());
+        if(
+            itemStack == null ||
+            itemStack.isEmpty()
+        ){
             return false;
         }
 

@@ -181,6 +181,7 @@ public class NeuralNet {
         DEFAULT,
         TARGET,
         CRAFT,
+        EQUIP,
         ACTION;
     }
 

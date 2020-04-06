@@ -2,6 +2,7 @@ package com.schematical.chaoscraft.ai.action;
 
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.util.ChaosTarget;
+import com.schematical.chaoscraft.util.ChaosTargetItem;
 import net.minecraft.util.Hand;
 
 public class MeleeAttackAction extends NavigateToAction{
@@ -27,7 +28,7 @@ public class MeleeAttackAction extends NavigateToAction{
     }
 
 
-    public static boolean validateTarget(OrgEntity orgEntity, ChaosTarget chaosTarget) {
+    public static boolean validateTarget(OrgEntity orgEntity, ChaosTarget chaosTarget, ChaosTargetItem chaosTargetItem) {
         if(chaosTarget.getTargetEntity() == null){
             return false;
         }

@@ -28,6 +28,8 @@ public class ScanManager {
     private HashMap<String, ScanResult> highestResults = new HashMap<>();
     private ScanInstance scanInstance = null;
     private  ScanRecipeInstance scanRecipeInstance = null;
+    private ScanItemInstance scanItemInstance;
+
     public void setFocusedActionScore(float score){
         focusedActionScore = score;
     }
@@ -38,6 +40,7 @@ public class ScanManager {
 
     }
     public void resetScan() {
+        scanItemInstance = new ScanItemInstance(clientOrgManager);
         scanRecipeInstance = new ScanRecipeInstance(clientOrgManager);
         scanInstance = new ScanInstance(clientOrgManager, clientOrgManager.getEntity().getPosition());
         highestResults.clear();
@@ -50,6 +53,9 @@ public class ScanManager {
         }
         if(scanRecipeInstance.getState().equals(ScanRecipeInstance.State.Pending)){
             scanRecipeInstance.tickScanRecipes();
+        }
+        if(scanItemInstance.getState().equals(ScanRecipeInstance.State.Pending)){
+            scanItemInstance.tickScanItems();
         }
         ArrayList<ScanEntry> newEntries = scanInstance.tick();
         OrgEntity orgEntity = this.clientOrgManager.getEntity();
@@ -85,7 +91,7 @@ public class ScanManager {
                         currScore != -1f &&
                         !actionTargetSlot.validatePotentialTarget(orgEntity, scanEntry.getChaosTarget())
                     ) {
-                        throw new ChaosNetException("Invalid `topEntity` made it to the top with score of: " + currScore + " - ActionTargetSlot: " + actionTargetSlot.id);
+                        throw new ChaosNetException("Invalid `scanEntry` made it to the top with score of: " + currScore + " - ActionTargetSlot: " + actionTargetSlot.id);
                     }
                 }
                 ScanResult scanResult = highestResults.get(targetSlotId);
@@ -104,24 +110,24 @@ public class ScanManager {
         ScanEntry highestActionScanEntry = null;
         for (String targetSlotId : highestResults.keySet()) {
 
-            TargetSlot targetSlot = (TargetSlot )orgEntity.getNNet().getBiology(targetSlotId);
+            TargetSlot targetSlot = (TargetSlot)orgEntity.getNNet().getBiology(targetSlotId);
             ScanResult scanResult = highestResults.get(targetSlotId);
 
             if(targetSlot instanceof  ActionTargetSlot){
                 ActionTargetSlot actionTargetSlot = (ActionTargetSlot) targetSlot;
                 ChaosTarget originalTarget = actionTargetSlot.getTarget();
-                for (ScanEntry topEntity : scanResult.getTopEntities()) {
+                for (ScanEntry topScanEntity : scanResult.getTopEntities()) {
 
 
 
 
-                    if(!actionTargetSlot.validatePotentialTarget(orgEntity, topEntity.getChaosTarget())) {
+                    if(!actionTargetSlot.validatePotentialTarget(orgEntity, topScanEntity.getChaosTarget())) {
                         /*throw new ChaosNetException*/
-                        ChaosCraft.LOGGER.error(orgEntity.getCCNamespace() + " - Invalid `topEntity` made it to the top with score of: " + topEntity.getScore(actionTargetSlot.id) + " - ActionTargetSlot: " + actionTargetSlot.id);
+                        ChaosCraft.LOGGER.error(orgEntity.getCCNamespace() + " - Invalid `topScanEntity` made it to the top with score of: " + topScanEntity.getScore(actionTargetSlot.id) + " - ActionTargetSlot: " + actionTargetSlot.id);
                     }else {
                         focusedActionScore = -9999;
                         this.focusedActionTargetSlot = actionTargetSlot;
-                        this.focusedActionTargetSlot.setTarget(topEntity.getChaosTarget());
+                        this.focusedActionTargetSlot.setTarget(topScanEntity.getChaosTarget());
 
                         if(!clientOrgManager.getActionBuffer().hasExecutedRecently(this.focusedActionTargetSlot.createAction(), 5)) {
 
@@ -137,7 +143,7 @@ public class ScanManager {
                             if (focusedActionScore > highestATSScore) {
                                 highestATSScore = focusedActionScore;
                                 highestActionTargetSlot = actionTargetSlot;
-                                highestActionScanEntry = topEntity;
+                                highestActionScanEntry = topScanEntity;
                             }
                         }
                     }
@@ -217,7 +223,7 @@ public class ScanManager {
 
 
     public class ScanResult{
-        private int max = 20;
+        private int max = 5;
         private String targetSlotId;
         private float lowestScore = 99999;
         private ArrayList<ScanEntry> scanEntries = new ArrayList<>();

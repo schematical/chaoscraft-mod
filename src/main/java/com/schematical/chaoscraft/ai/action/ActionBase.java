@@ -4,6 +4,7 @@ import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.network.packets.CCServerScoreEventPacket;
 import com.schematical.chaoscraft.util.ChaosTarget;
+import com.schematical.chaoscraft.util.ChaosTargetItem;
 import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.dimension.DimensionType;
@@ -16,11 +17,12 @@ public abstract class ActionBase {
     protected int actionAgeTicks = 0;
     private ActionState state = ActionState.Pending;
     private ChaosTarget target;
+    private ChaosTargetItem targetItem;
     public ArrayList<CCServerScoreEventPacket> scoreEvents = new ArrayList<CCServerScoreEventPacket>();
 
     //TODO: Track score events that happened when this action was happening
 
-    public static boolean validateTarget(OrgEntity orgEntity, ChaosTarget chaosTarget){
+    public static boolean validateTarget(OrgEntity orgEntity, ChaosTarget chaosTarget, ChaosTargetItem chaosTargetItem){
         return true;
     }
     public void setActionBuffer(ActionBuffer actionBuffer){
@@ -48,6 +50,9 @@ public abstract class ActionBase {
     public void setTarget(ChaosTarget target){
 
         this.target = target;
+    }
+    public void setTargetItem(ChaosTargetItem item){
+        targetItem = item;
     }
 
     void markRunning() {
@@ -133,27 +138,44 @@ public abstract class ActionBase {
         if(!actionBase.getTarget().equals(getTarget())){
             return false;
         }
+        if(!actionBase.getTargetItem().equals(getTargetItem())){
+            return false;
+        }
         return true;
     }
 
-    public boolean match(Class<ActionBase> actionBaseClass, ChaosTarget chaosTarget) {
+    public boolean match(Class<ActionBase> actionBaseClass, ChaosTarget chaosTarget, ChaosTargetItem chaosTargetItem) {
         if(!actionBaseClass.equals(this.getClass())){
             return false;
         }
         if(!chaosTarget.equals(getTarget())){
             return false;
         }
+        if(!chaosTargetItem.equals(getTargetItem())){
+            return false;
+        }
         return true;
+    }
+
+    public ChaosTargetItem getTargetItem() {
+        return targetItem;
     }
 
     public void encode(PacketBuffer buf){
 
         buf.writeString(getTarget().getSerializedString());
+        buf.writeString(targetItem.getSerializedString());
     }
 
     public void decode(PacketBuffer buf){
         setTarget(
                 ChaosTarget.deserializeTarget(
+                        ChaosCraft.getServer().server.getWorld(DimensionType.OVERWORLD),
+                        buf.readString(32767)
+                )
+        );
+        setTargetItem(
+                ChaosTargetItem.deserialize(
                         ChaosCraft.getServer().server.getWorld(DimensionType.OVERWORLD),
                         buf.readString(32767)
                 )

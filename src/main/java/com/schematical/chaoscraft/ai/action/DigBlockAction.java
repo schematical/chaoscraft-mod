@@ -2,6 +2,7 @@ package com.schematical.chaoscraft.ai.action;
 
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.util.ChaosTarget;
+import com.schematical.chaoscraft.util.ChaosTargetItem;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItem;
@@ -39,20 +40,12 @@ public class DigBlockAction extends NavigateToAction{
     }
 
 
-    public static boolean validateTarget(OrgEntity orgEntity, ChaosTarget chaosTarget) {
+    public static boolean validateTarget(OrgEntity orgEntity, ChaosTarget chaosTarget, ChaosTargetItem chaosTargetItem) {
         if(chaosTarget.getTargetBlockPos() == null){
             return false;
         }
         BlockState blockState = orgEntity.world.getBlockState(chaosTarget.getTargetBlockPos());
-       /* if(blockState.isAir(orgEntity.world, chaosTarget.getTargetBlockPos())){
-            return false;
-        }*/
-       /* if(chaosTarget.isSurroundedBySolid(orgEntity.world)){
-            return false;
-        }*/
-        /*if(chaosTarget.isVisiblyBlocked(orgEntity)){
-            return false;
-        }*/
+
 
         Material material = blockState.getMaterial();
         if(

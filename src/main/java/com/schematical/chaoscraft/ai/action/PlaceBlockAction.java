@@ -2,6 +2,7 @@ package com.schematical.chaoscraft.ai.action;
 
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.util.ChaosTarget;
+import com.schematical.chaoscraft.util.ChaosTargetItem;
 import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItem;
@@ -42,14 +43,18 @@ public class PlaceBlockAction extends NavigateToAction{
     }
 
 
-    public static boolean validateTarget(OrgEntity orgEntity, ChaosTarget chaosTarget) {
+    public static boolean validateTarget(OrgEntity orgEntity, ChaosTarget chaosTarget, ChaosTargetItem chaosTargetItem) {
         if(chaosTarget.getTargetBlockPos() == null){
             return false;
         }
-        ItemStack itemStack = orgEntity.getHeldItem(Hand.MAIN_HAND);
-        if(itemStack.isEmpty()){
+        ItemStack itemStack = orgEntity.getItemStackHandeler().getStackInSlot(chaosTargetItem.getInventorySlot());
+        if(
+            itemStack == null ||
+            itemStack.isEmpty()
+        ){
             return false;
         }
+
         if(!(itemStack.getItem() instanceof BlockItem)){
             return false;
         }

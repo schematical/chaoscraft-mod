@@ -7,6 +7,7 @@ import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.services.targetnet.ScanManager;
 import com.schematical.chaoscraft.services.targetnet.ScanRecipeInstance;
 import com.schematical.chaoscraft.util.ChaosTarget;
+import com.schematical.chaoscraft.util.ChaosTargetItem;
 import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.block.CraftingTableBlock;
 import net.minecraft.item.ItemStack;
@@ -21,9 +22,9 @@ import net.minecraftforge.common.Tags;
 
 public class CraftAction extends NavigateToAction{
 
-    protected String recipeId;
+
     public void setRecipe(IRecipe recipe){
-        this.recipeId = recipe.getId().toString();
+        this.setTargetItem(new ChaosTargetItem(recipe));
     }
     @Override
     protected void _tick() {
@@ -40,6 +41,7 @@ public class CraftAction extends NavigateToAction{
         //When looking at stuff do stuff.
         RecipeManager recipeManager = this.getActionBuffer().getOrgManager().getEntity().world.getRecipeManager();;
         IRecipe recipe = null;
+        String recipeId = getTargetItem().getRecipe().getId().toString();
         for (IRecipe irecipe : recipeManager.getRecipes())
         {
 
@@ -70,7 +72,7 @@ public class CraftAction extends NavigateToAction{
         markCompleted();
 
     }
-    public void encode(PacketBuffer buf){
+  /*  public void encode(PacketBuffer buf){
         super.encode(buf);
 
         buf.writeString(recipeId);
@@ -90,17 +92,24 @@ public class CraftAction extends NavigateToAction{
             return false;
         }
         return true;
-    }
+    }*/
 
 
-    public static boolean validateTarget(OrgEntity orgEntity, ChaosTarget chaosTarget) {
+    public static boolean validateTarget(OrgEntity orgEntity, ChaosTarget chaosTarget, ChaosTargetItem chaosTargetItem) {
 
+      /*  ItemStack itemStack = orgEntity.getItemStackHandeler().getStackInSlot(chaosTargetItem.getRecipe());
+        if(
+            itemStack == null ||
+            itemStack.isEmpty()
+        ){
+            return false;
+        }
         ClientOrgManager clientOrgManager = orgEntity.getClientOrgManager();
         ScanManager scanManager = clientOrgManager.getScanManager();
         ScanRecipeInstance scanRecipeInstance =  scanManager.getRecipeScanInstance();
 
-        IRecipe recipe = scanRecipeInstance.getHighScoreRecipe();
-
+        IRecipe recipe = scanRecipeInstance.getHighScoreRecipe();*/
+        IRecipe recipe = chaosTargetItem.getRecipe();
         if(recipe == null){
             return false;
         }
