@@ -59,8 +59,8 @@ public class PlaceBlockAction extends NavigateToAction{
         }
         ItemStack itemStack = orgEntity.getItemStackHandeler().getStackInSlot(chaosTargetItem.getInventorySlot());
         if(
-                itemStack == null ||
-                itemStack.isEmpty()
+            itemStack == null ||
+            itemStack.isEmpty()
         ){
             return false;
         }

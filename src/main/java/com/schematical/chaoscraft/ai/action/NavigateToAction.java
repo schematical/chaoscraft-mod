@@ -1,5 +1,7 @@
 package com.schematical.chaoscraft.ai.action;
 
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
@@ -14,6 +16,7 @@ public abstract class NavigateToAction extends ActionBase{
     protected boolean isStuck(){
         return stuckTicks > stuckThreshold;
     }
+
     public void tickNavigate(){
         getOrgEntity().getMoveHelper().strafe(2, strafe);
         Double deltaYaw = getTarget().getYawDelta(getOrgEntity());
@@ -73,6 +76,7 @@ public abstract class NavigateToAction extends ActionBase{
         }
     }
     public void tickArrived(){
+
         tickStuckCheck();
     }
     public enum MixItUpAction{

@@ -12,6 +12,7 @@ import com.schematical.chaoscraft.util.ChaosTarget;
 import com.schematical.chaoscraft.util.ChaosTargetItem;
 import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.world.World;
+import org.apache.logging.log4j.core.jmx.Server;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,8 +41,15 @@ public class ActionBuffer {
                 wonderAction = new WonderAction();
                 wonderAction.setActionBuffer(this);
             }
+
             wonderAction.tick();
             return;
+        }else{
+            ServerOrgManager serverOrgManager = ((ServerOrgManager) orgManager);
+            if(serverOrgManager.getState().equals(ServerOrgManager.State.Spawned)){
+                serverOrgManager.markTicking();
+
+            }
         }
 
         if(!currAction.getActionState().equals(ActionBase.ActionState.Running)){

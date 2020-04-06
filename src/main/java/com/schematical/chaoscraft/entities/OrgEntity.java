@@ -108,6 +108,9 @@ public class OrgEntity extends MobEntity {
 
         itemHandler.setStackInSlot(1,  new ItemStack(Items.OAK_LOG, 4));
     }
+    public int getSelectedItemIndex(){
+        return selectedItemIndex;
+    }
     public void setSpawnHash(int _spawnHash) {
         this.spawnHash = _spawnHash;
     }

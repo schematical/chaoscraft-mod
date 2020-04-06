@@ -1,4 +1,4 @@
-package com.schematical.chaoscraft.ai.outputs;
+package com.schematical.chaoscraft.ai.outputs.rawnav;
 
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.CCAttributeId;

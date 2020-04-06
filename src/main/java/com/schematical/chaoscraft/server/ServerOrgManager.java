@@ -167,10 +167,7 @@ public class ServerOrgManager extends BaseOrgManager {
                 outputNeuron.execute();
             }
             this.neuronActions.clear();
-            if(this.state.equals(State.Spawned)){
-                this.markTicking();
 
-            }
             fireTickables();
         }
         this.getActionBuffer().execute();

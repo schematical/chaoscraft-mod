@@ -4,13 +4,12 @@ import com.schematical.chaoscraft.BaseOrgManager;
 import com.schematical.chaoscraft.ai.*;
 import com.schematical.chaoscraft.ai.inputs.HasInInventoryInput;
 import com.schematical.chaoscraft.ai.inputs.TargetCandidateTypeInput;
-import com.schematical.chaoscraft.ai.outputs.CraftOutput;
-import com.schematical.chaoscraft.ai.outputs.EquipOutput;
+import com.schematical.chaoscraft.ai.outputs.rawnav.CraftOutput;
+import com.schematical.chaoscraft.ai.outputs.rawnav.EquipOutput;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaosnet.model.ObservedAttributesElement;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class RTNeatTicker implements iChaosOrgTickable {

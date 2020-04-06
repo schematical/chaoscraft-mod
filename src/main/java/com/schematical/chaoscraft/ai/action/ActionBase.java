@@ -6,7 +6,9 @@ import com.schematical.chaoscraft.network.packets.CCServerScoreEventPacket;
 import com.schematical.chaoscraft.util.ChaosTarget;
 import com.schematical.chaoscraft.util.ChaosTargetItem;
 import com.schematical.chaosnet.model.ChaosNetException;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.Hand;
 import net.minecraft.world.dimension.DimensionType;
 
 import java.util.ArrayList;
@@ -56,9 +58,20 @@ public abstract class ActionBase {
         }
         if(state.equals(ActionState.Pending)){
             markRunning();
+            tickFirst();
         }
         _tick();
 
+    }
+    public void tickFirst(){
+        if(this.getTargetItem() != null) {
+            if (this.getTargetItem().getInventorySlot() != null) {
+                if (this.getOrgEntity().getSelectedItemIndex() != this.getTargetItem().getInventorySlot()) {
+                    ItemStack itemStack = this.getOrgEntity().getItemStackHandeler().getStackInSlot(this.getOrgEntity().getSelectedItemIndex());
+                    this.getOrgEntity().setHeldItem(Hand.MAIN_HAND, itemStack);
+                }
+            }
+        }
     }
     public void setTarget(ChaosTarget target){
 

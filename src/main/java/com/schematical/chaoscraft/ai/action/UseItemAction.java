@@ -66,8 +66,8 @@ public class UseItemAction extends NavigateToAction{
         }
 
 
-        if(!(heldItem instanceof BlockItem)){
-            throw new ChaosNetException("Invalid action. `heldItem` !instanceof `BlockItem`");
+        if((heldItem instanceof BlockItem)){
+            /*throw new ChaosNetException*/ChaosCraft.LOGGER.error("Invalid action. `heldItem` instanceof `BlockItem`: " + heldItem.getRegistryName().toString());
         }
         ItemUseContext context = new ItemUseContext(
                 getOrgEntity().getPlayerWrapper(),
@@ -122,18 +122,15 @@ public class UseItemAction extends NavigateToAction{
         }
         ItemStack itemStack = orgEntity.getItemStackHandeler().getStackInSlot(chaosTargetItem.getInventorySlot());
         if(
-                itemStack == null ||
-                itemStack.isEmpty()
+            itemStack == null ||
+            itemStack.isEmpty()
         ){
             return false;
         }
 
-        if(!(itemStack.getItem() instanceof BlockItem)){
+        if((itemStack.getItem() instanceof BlockItem)){
             return false;
         }
-
-
-
         return true;
     }
 }
