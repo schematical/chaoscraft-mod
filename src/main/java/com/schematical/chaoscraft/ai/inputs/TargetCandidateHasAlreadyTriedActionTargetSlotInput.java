@@ -31,6 +31,7 @@ public class TargetCandidateHasAlreadyTriedActionTargetSlotInput extends BaseTar
         boolean hasExecutedRecently = actionBuffer.hasExecutedRecently(
                 actionTargetSlot.getActionBaseClass(),
                 scanEntry.getChaosTarget(),
+                null,
                 10
         );
         if(hasExecutedRecently){

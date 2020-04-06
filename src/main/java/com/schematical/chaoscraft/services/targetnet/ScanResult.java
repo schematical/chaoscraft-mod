@@ -59,7 +59,7 @@ public class ScanResult{
         }
     }
 
-    public ArrayList<ScanEntry> getTopEntities() {
+    public ArrayList<ScanEntry> getTopEntries() {
         return scanEntries;
     }
 }

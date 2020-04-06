@@ -33,7 +33,7 @@ public class ScanItemInstance {
 
 
 
-    public void tickScanItems(){
+    public void scan(){
         if(!state.equals(State.Pending)){
             throw new ChaosNetException("Invalid State: " + state);
         }
@@ -59,12 +59,39 @@ public class ScanItemInstance {
            }
 
         }
+
+
+
+        ArrayList<IRecipe> recipes = clientOrgManager.getEntity().getAllCraftableRecipes();
+        for (IRecipe recipe : recipes) {
+            focusedScanEntity = new ScanEntry();
+            focusedScanEntity.recipe = recipe;
+            List<OutputNeuron> outputs = clientOrgManager.getNNet().evaluate(NeuralNet.EvalGroup.CRAFT);//Ideally the output neurons will set the score
+
+            Iterator<OutputNeuron> iterator = outputs.iterator();
+
+            while (iterator.hasNext()) {
+                OutputNeuron outputNeuron = iterator.next();
+                outputNeuron.execute();
+            }
+            HashMap<String, Float> scores = focusedScanEntity.getScores();
+            for (String targetSlotId : scores.keySet()) {
+                if (!highestResults.containsKey(targetSlotId)) {
+                    highestResults.put(targetSlotId, new ScanResult(targetSlotId));
+                }
+                ScanResult scanResult = highestResults.get(targetSlotId);
+                scanResult.test(focusedScanEntity);
+            }
+        }
         state = State.Finished;
 
     }
-
     public ScanEntry getFocusedScanEntry() {
         return focusedScanEntity;
+    }
+
+    public  HashMap<String, ScanResult> getScanResults() {
+        return highestResults;
     }
 
 

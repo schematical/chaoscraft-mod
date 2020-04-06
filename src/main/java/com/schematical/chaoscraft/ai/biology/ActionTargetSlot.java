@@ -4,6 +4,7 @@ import com.schematical.chaoscraft.ai.NeuralNet;
 import com.schematical.chaoscraft.ai.action.*;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.util.ChaosTarget;
+import com.schematical.chaoscraft.util.ChaosTargetItem;
 import com.schematical.chaosnet.model.ChaosNetException;
 import org.json.simple.JSONObject;
 
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 
 public class ActionTargetSlot extends TargetSlot {
     private Class actionBaseClass;
+    private ChaosTargetItem chaosTargetItem;
     /*
     Class cls = Class.forName(fullClassName);
     BiologyBase biologyBase = (BiologyBase) cls.newInstance();
@@ -44,7 +46,7 @@ public class ActionTargetSlot extends TargetSlot {
         try {
             actionBase = (ActionBase) actionBaseClass.newInstance();
             actionBase.setTarget(getTarget());
-
+            actionBase.setTargetItem(getTargetItem());
         } catch (InstantiationException e) {
            throw new ChaosNetException(e.getMessage());
         } catch (IllegalAccessException e) {
@@ -53,6 +55,11 @@ public class ActionTargetSlot extends TargetSlot {
         return actionBase;
 
     }
+
+    private ChaosTargetItem getTargetItem() {
+        return chaosTargetItem;
+    }
+
     @Override
     public void parseData(JSONObject jsonObject){
         super.parseData(jsonObject);
@@ -79,13 +86,44 @@ public class ActionTargetSlot extends TargetSlot {
             throw new ChaosNetException(e.getMessage());
         }
     }
+
+    public boolean validatePotentialTargetItem(OrgEntity orgEntity, ChaosTargetItem chaosTargetItem) {
+
+        try {
+            Method m = actionBaseClass.getMethod("validatePotentialTargetItem", OrgEntity.class, ChaosTargetItem.class);
+
+            return (boolean)m.invoke(null, orgEntity, chaosTargetItem);
+        } catch (NoSuchMethodException e) {
+            throw new ChaosNetException(e.getMessage());
+        } catch (IllegalAccessException e) {
+            throw new ChaosNetException(e.getMessage());
+        } catch (InvocationTargetException e) {
+            throw new ChaosNetException(e.getMessage());
+        }
+    }
+    public boolean validatePotentialTargetAndItem(OrgEntity orgEntity, ChaosTarget chaosTarget, ChaosTargetItem chaosTargetItem) {
+        try {
+            Method m = actionBaseClass.getMethod("validatePotentialTargetItem", OrgEntity.class, ChaosTarget.class, ChaosTargetItem.class);
+
+            return (boolean)m.invoke(null, orgEntity, chaosTarget, chaosTargetItem);
+        } catch (NoSuchMethodException e) {
+            throw new ChaosNetException(e.getMessage());
+        } catch (IllegalAccessException e) {
+            throw new ChaosNetException(e.getMessage());
+        } catch (InvocationTargetException e) {
+            throw new ChaosNetException(e.getMessage());
+        }
+
+    }
     public boolean isValid() {
-        return validatePotentialTarget(getEntity(), getTarget());
-
-
+        return validatePotentialTargetAndItem(getEntity(), getTarget(), getTargetItem());
     }
 
     public String getSimpleActionStatsKey() {
         return getClass().getSimpleName() + "-" + getTarget().getActionStatString(getEntity().world);
+    }
+
+    public void setTargetItem(ChaosTargetItem chaosTargetItem) {
+        this.chaosTargetItem = chaosTargetItem;
     }
 }

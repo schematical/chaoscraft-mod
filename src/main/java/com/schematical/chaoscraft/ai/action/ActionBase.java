@@ -22,7 +22,20 @@ public abstract class ActionBase {
 
     //TODO: Track score events that happened when this action was happening
 
-    public static boolean validateTarget(OrgEntity orgEntity, ChaosTarget chaosTarget, ChaosTargetItem chaosTargetItem){
+    public static boolean validateTargetAndItem(OrgEntity orgEntity, ChaosTarget chaosTarget, ChaosTargetItem chaosTargetItem){
+        if(
+            validateTarget( orgEntity, chaosTarget) &&
+            validateTargetItem( orgEntity, chaosTargetItem)
+        ) {
+            return true;
+        }else{
+            return false;
+        }
+    }
+    public static boolean validateTarget(OrgEntity orgEntity, ChaosTarget chaosTarget){
+        return true;
+    }
+    public static boolean validateTargetItem(OrgEntity orgEntity, ChaosTargetItem chaosTargetItem){
         return true;
     }
     public void setActionBuffer(ActionBuffer actionBuffer){

@@ -7,6 +7,7 @@ import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.services.targetnet.ScanEntry;
 import com.schematical.chaoscraft.services.targetnet.ScanManager;
+import com.schematical.chaoscraft.util.ChaosTargetItem;
 import com.schematical.chaosnet.model.ChaosNetException;
 import org.json.simple.JSONObject;
 
@@ -16,11 +17,36 @@ import org.json.simple.JSONObject;
  */
 
 public class ICSetScoreOutput extends OutputNeuron {
+
     private String targetSlotId;
     private ActionTargetSlot actionTargetSlot;
     private boolean loaded = false;
     @Override
     public void execute() {
+
+
+        OrgEntity orgEntity =  ((OrgEntity)this.getEntity());
+        ClientOrgManager clientOrgManager = orgEntity.getClientOrgManager();
+        ScanManager scanManager = clientOrgManager.getScanManager();
+
+        ScanEntry scanEntry = scanManager.getScanItemInstance().getFocusedScanEntry();
+
+        if(scanEntry == null) {
+            throw new ChaosNetException("ScanEntity should not be null if this is firing");
+        }
+        if(actionTargetSlot != null){
+            boolean isValid = actionTargetSlot.validatePotentialTargetItem(orgEntity, new ChaosTargetItem(scanEntry.targetSlot));
+            if(!isValid){
+                scanEntry.setScore(targetSlotId, -1);
+                return;
+            }
+
+        }
+        scanEntry.setScore(targetSlotId, this.getCurrentValue());
+
+    }
+    @Override
+    public float evaluate(){
         if(!loaded) {
             BiologyBase biologyBase = this.nNet.getBiology(targetSlotId);
             if (biologyBase instanceof ActionTargetSlot) {
@@ -31,26 +57,26 @@ public class ICSetScoreOutput extends OutputNeuron {
             }
             loaded = true;
         }
-
-
+        if(getHasBeenEvaluated()){
+            return getCurrentValue();
+        }
         OrgEntity orgEntity =  ((OrgEntity)this.getEntity());
         ClientOrgManager clientOrgManager = orgEntity.getClientOrgManager();
         ScanManager scanManager = clientOrgManager.getScanManager();
-        ScanEntry scanEntry = scanManager.getScanItemInstance().getFocusedScanEntry();
 
+        ScanEntry scanEntry = scanManager.getScanItemInstance().getFocusedScanEntry();
         if(scanEntry == null) {
             throw new ChaosNetException("ScanEntity should not be null if this is firing");
         }
-        if(actionTargetSlot != null){
-            boolean isValid = actionTargetSlot.validatePotentialTarget(orgEntity, scanEntry.getChaosTarget());
-            if(!isValid){
-                scanEntry.setScore(targetSlotId, -1);
-                return;
-            }
 
+        boolean isValid = actionTargetSlot.validatePotentialTargetItem((OrgEntity)getEntity(), new ChaosTargetItem(scanEntry.targetSlot));
+        if(!isValid){
+            scanEntry.setScore(targetSlotId, this.getCurrentValue());
+            return getCurrentValue();
         }
-        scanEntry.setScore(targetSlotId, this.getCurrentValue());
 
+
+        return super.evaluate();
     }
     @Override
     public void parseData(JSONObject jsonObject){

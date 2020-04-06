@@ -115,12 +115,13 @@ public class UseItemAction extends NavigateToAction{
     }
 
 
-    public static boolean validateTarget(OrgEntity orgEntity, ChaosTarget chaosTarget, ChaosTargetItem chaosTargetItem) {
+
+    public static boolean validateTargetItem(OrgEntity orgEntity, ChaosTargetItem chaosTargetItem) {
 
         ItemStack itemStack = orgEntity.getItemStackHandeler().getStackInSlot(chaosTargetItem.getInventorySlot());
         if(
-            itemStack == null ||
-            itemStack.isEmpty()
+                itemStack == null ||
+                        itemStack.isEmpty()
         ){
             return false;
         }
@@ -132,9 +133,7 @@ public class UseItemAction extends NavigateToAction{
         if((itemStack.getItem() instanceof BlockItem)){
             return false;
         }
-        if(chaosTarget.isVisiblyBlocked(orgEntity)){
-            return false;
-        }
+
         return true;
     }
 }

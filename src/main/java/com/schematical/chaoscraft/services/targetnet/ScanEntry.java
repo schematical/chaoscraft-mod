@@ -2,14 +2,17 @@ package com.schematical.chaoscraft.services.targetnet;
 
 import com.schematical.chaoscraft.ai.CCObserviableAttributeCollection;
 import com.schematical.chaoscraft.util.ChaosTarget;
+import com.schematical.chaoscraft.util.ChaosTargetItem;
 import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.HashMap;
 
 public class ScanEntry {
+    public IRecipe recipe;
     public Entity entity;
     public BlockPos blockPos;
     public Integer targetSlot;
@@ -56,6 +59,16 @@ public class ScanEntry {
           return new ChaosTarget(entity);
         }else if(blockPos != null){
             return new ChaosTarget(blockPos);
+        }else{
+            throw new ChaosNetException("Invalid ScanEntry: No blockPos nor Entity");
+        }
+    }
+
+    public ChaosTargetItem getChaosTargetItem() {
+        if(recipe != null) {
+            return new ChaosTargetItem(recipe);
+        }else if(targetSlot != null){
+            return new ChaosTargetItem(targetSlot);
         }else{
             throw new ChaosNetException("Invalid ScanEntry: No blockPos nor Entity");
         }

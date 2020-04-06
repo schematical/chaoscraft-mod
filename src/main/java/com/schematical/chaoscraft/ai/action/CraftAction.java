@@ -95,20 +95,9 @@ public class CraftAction extends NavigateToAction{
     }*/
 
 
-    public static boolean validateTarget(OrgEntity orgEntity, ChaosTarget chaosTarget, ChaosTargetItem chaosTargetItem) {
+    public static boolean validateTargetAndItem(OrgEntity orgEntity, ChaosTarget chaosTarget, ChaosTargetItem chaosTargetItem) {
 
-      /*  ItemStack itemStack = orgEntity.getItemStackHandeler().getStackInSlot(chaosTargetItem.getRecipe());
-        if(
-            itemStack == null ||
-            itemStack.isEmpty()
-        ){
-            return false;
-        }
-        ClientOrgManager clientOrgManager = orgEntity.getClientOrgManager();
-        ScanManager scanManager = clientOrgManager.getScanManager();
-        ScanRecipeInstance scanRecipeInstance =  scanManager.getRecipeScanInstance();
 
-        IRecipe recipe = scanRecipeInstance.getHighScoreRecipe();*/
         IRecipe recipe = chaosTargetItem.getRecipe();
         if(recipe == null){
             return false;
@@ -125,6 +114,26 @@ public class CraftAction extends NavigateToAction{
             }
         }else{
             throw new ChaosNetException("TODO: Matt - write this");
+        }
+        return true;
+
+    }
+
+    public static boolean validateTarget(OrgEntity orgEntity, ChaosTarget chaosTarget, ChaosTargetItem chaosTargetItem) {
+
+
+        return true;
+
+    }
+    public static boolean validateTargetItem(OrgEntity orgEntity, ChaosTargetItem chaosTargetItem) {
+
+        if(chaosTargetItem.getRecipe()== null){
+            throw new ChaosNetException("Didn't know this was possible. Might be able to just return false");
+            //return false;
+        }
+        if(!orgEntity.canCraft(chaosTargetItem.getRecipe())){
+            throw new ChaosNetException("This should not be possible. Might be able to just return false");
+            //return false;
         }
         return true;
 
