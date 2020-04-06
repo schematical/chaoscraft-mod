@@ -12,6 +12,7 @@ import java.util.HashMap;
 public class ScanEntry {
     public Entity entity;
     public BlockPos blockPos;
+    public Integer targetSlot;
     public CCObserviableAttributeCollection atts;
     private HashMap<String, Float> scores = new HashMap<String, Float>();
     public void setScore(String targetSlotId, float score){

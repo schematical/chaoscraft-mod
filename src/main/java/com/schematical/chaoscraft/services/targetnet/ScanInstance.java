@@ -52,7 +52,7 @@ public class ScanInstance {
         }
         ArrayList<ScanEntry> entries = new ArrayList<ScanEntry>();
         OrgEntity orgEntity = this.clientOrgManager.getEntity();
-        BlockPos entityPosition = orgEntity.getPosition();
+
         int batchCount = 0;
         while(
             layer < maxLayerRange  &&
