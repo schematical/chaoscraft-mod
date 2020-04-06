@@ -28,7 +28,7 @@ public class MeleeAttackAction extends NavigateToAction{
     }
 
 
-    public static boolean validateTarget(OrgEntity orgEntity, ChaosTarget chaosTarget, ChaosTargetItem chaosTargetItem) {
+    public static boolean validateTarget(OrgEntity orgEntity, ChaosTarget chaosTarget) {
         if(chaosTarget.getTargetEntity() == null){
             return false;
         }

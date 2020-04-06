@@ -34,14 +34,7 @@ public class ICSetScoreOutput extends OutputNeuron {
         if(scanEntry == null) {
             throw new ChaosNetException("ScanEntity should not be null if this is firing");
         }
-        if(actionTargetSlot != null){
-            boolean isValid = actionTargetSlot.validatePotentialTargetItem(orgEntity, new ChaosTargetItem(scanEntry.targetSlot));
-            if(!isValid){
-                scanEntry.setScore(targetSlotId, -1);
-                return;
-            }
 
-        }
         scanEntry.setScore(targetSlotId, this.getCurrentValue());
 
     }
@@ -60,6 +53,7 @@ public class ICSetScoreOutput extends OutputNeuron {
         if(getHasBeenEvaluated()){
             return getCurrentValue();
         }
+
         OrgEntity orgEntity =  ((OrgEntity)this.getEntity());
         ClientOrgManager clientOrgManager = orgEntity.getClientOrgManager();
         ScanManager scanManager = clientOrgManager.getScanManager();
@@ -69,7 +63,7 @@ public class ICSetScoreOutput extends OutputNeuron {
             throw new ChaosNetException("ScanEntity should not be null if this is firing");
         }
 
-        boolean isValid = actionTargetSlot.validatePotentialTargetItem((OrgEntity)getEntity(), new ChaosTargetItem(scanEntry.targetSlot));
+        boolean isValid = actionTargetSlot.validateTargetItem((OrgEntity)getEntity(), new ChaosTargetItem(scanEntry.targetSlot));
         if(!isValid){
             scanEntry.setScore(targetSlotId, this.getCurrentValue());
             return getCurrentValue();

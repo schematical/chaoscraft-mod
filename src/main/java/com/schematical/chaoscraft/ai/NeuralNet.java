@@ -180,8 +180,7 @@ public class NeuralNet {
     public enum EvalGroup{
         DEFAULT,
         TARGET,
-        CRAFT,
-        EQUIP,
+        ITEM,
         ACTION;
     }
 

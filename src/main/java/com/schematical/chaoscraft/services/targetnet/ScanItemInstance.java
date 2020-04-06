@@ -41,7 +41,7 @@ public class ScanItemInstance {
        for(int i = 0; i < itemStackHandler.getSlots(); i++){
            focusedScanEntity = new ScanEntry();
            focusedScanEntity.targetSlot = i;
-            List<OutputNeuron> outputs = clientOrgManager.getNNet().evaluate(NeuralNet.EvalGroup.EQUIP);
+            List<OutputNeuron> outputs = clientOrgManager.getNNet().evaluate(NeuralNet.EvalGroup.ITEM);
 
             Iterator<OutputNeuron> iterator = outputs.iterator();
 
@@ -66,7 +66,7 @@ public class ScanItemInstance {
         for (IRecipe recipe : recipes) {
             focusedScanEntity = new ScanEntry();
             focusedScanEntity.recipe = recipe;
-            List<OutputNeuron> outputs = clientOrgManager.getNNet().evaluate(NeuralNet.EvalGroup.CRAFT);//Ideally the output neurons will set the score
+            List<OutputNeuron> outputs = clientOrgManager.getNNet().evaluate(NeuralNet.EvalGroup.ITEM);//Ideally the output neurons will set the score
 
             Iterator<OutputNeuron> iterator = outputs.iterator();
 

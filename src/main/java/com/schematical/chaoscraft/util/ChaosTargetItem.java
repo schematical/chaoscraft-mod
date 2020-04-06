@@ -1,6 +1,9 @@
 package com.schematical.chaoscraft.util;
 
+import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaosnet.model.ChaosNetException;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -85,5 +88,31 @@ public class ChaosTargetItem {
 
     public Integer getInventorySlot() {
         return this.inventorySlot;
+    }
+    public String toString(){
+
+        String message = "";
+        if(getInventorySlot() != null){
+            message += getInventorySlot();
+        }else if(getRecipe() != null){
+            message += getRecipe().getId().toString();
+        }else{
+            message += "null";
+        }
+
+        return message;
+    }
+    public String toString(OrgEntity orgEntity){
+
+        String message = "";
+        if(getInventorySlot() != null){
+            message += getInventorySlot() + " - "  + orgEntity.getItemHandler().getStackInSlot(getInventorySlot()).getItem().getRegistryName().toString();
+        }else if(getRecipe() != null){
+            message += getRecipe().getId().toString();
+        }else{
+            message += "null";
+        }
+
+        return message;
     }
 }

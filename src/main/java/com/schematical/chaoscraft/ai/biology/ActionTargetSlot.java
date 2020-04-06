@@ -72,7 +72,7 @@ public class ActionTargetSlot extends TargetSlot {
         }
 
     }
-    public boolean validatePotentialTarget(OrgEntity orgEntity, ChaosTarget chaosTarget) {
+    public boolean validateTarget(OrgEntity orgEntity, ChaosTarget chaosTarget) {
 
         try {
             Method m = actionBaseClass.getMethod("validateTarget", OrgEntity.class, ChaosTarget.class);
@@ -87,10 +87,10 @@ public class ActionTargetSlot extends TargetSlot {
         }
     }
 
-    public boolean validatePotentialTargetItem(OrgEntity orgEntity, ChaosTargetItem chaosTargetItem) {
+    public boolean validateTargetItem(OrgEntity orgEntity, ChaosTargetItem chaosTargetItem) {
 
         try {
-            Method m = actionBaseClass.getMethod("validatePotentialTargetItem", OrgEntity.class, ChaosTargetItem.class);
+            Method m = actionBaseClass.getMethod("validateTargetItem", OrgEntity.class, ChaosTargetItem.class);
 
             return (boolean)m.invoke(null, orgEntity, chaosTargetItem);
         } catch (NoSuchMethodException e) {
@@ -101,9 +101,9 @@ public class ActionTargetSlot extends TargetSlot {
             throw new ChaosNetException(e.getMessage());
         }
     }
-    public boolean validatePotentialTargetAndItem(OrgEntity orgEntity, ChaosTarget chaosTarget, ChaosTargetItem chaosTargetItem) {
+    public boolean validateTargetAndItem(OrgEntity orgEntity, ChaosTarget chaosTarget, ChaosTargetItem chaosTargetItem) {
         try {
-            Method m = actionBaseClass.getMethod("validatePotentialTargetItem", OrgEntity.class, ChaosTarget.class, ChaosTargetItem.class);
+            Method m = actionBaseClass.getMethod("validateTargetAndItem", OrgEntity.class, ChaosTarget.class, ChaosTargetItem.class);
 
             return (boolean)m.invoke(null, orgEntity, chaosTarget, chaosTargetItem);
         } catch (NoSuchMethodException e) {
@@ -116,7 +116,7 @@ public class ActionTargetSlot extends TargetSlot {
 
     }
     public boolean isValid() {
-        return validatePotentialTargetAndItem(getEntity(), getTarget(), getTargetItem());
+        return validateTargetAndItem(getEntity(), getTarget(), getTargetItem());
     }
 
     public String getSimpleActionStatsKey() {

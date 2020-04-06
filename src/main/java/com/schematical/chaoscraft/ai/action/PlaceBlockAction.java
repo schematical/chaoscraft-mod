@@ -43,14 +43,24 @@ public class PlaceBlockAction extends NavigateToAction{
     }
 
 
-    public static boolean validateTarget(OrgEntity orgEntity, ChaosTarget chaosTarget, ChaosTargetItem chaosTargetItem) {
+    public static boolean validateTarget(OrgEntity orgEntity, ChaosTarget chaosTarget) {
         if(chaosTarget.getTargetBlockPos() == null){
+            return false;
+        }
+
+        if(chaosTarget.isVisiblyBlocked(orgEntity)){
+            return false;
+        }
+        return true;
+    }
+    public static boolean validateTargetItem(OrgEntity orgEntity,  ChaosTargetItem chaosTargetItem) {
+        if(chaosTargetItem.getInventorySlot() == null){
             return false;
         }
         ItemStack itemStack = orgEntity.getItemStackHandeler().getStackInSlot(chaosTargetItem.getInventorySlot());
         if(
-            itemStack == null ||
-            itemStack.isEmpty()
+                itemStack == null ||
+                itemStack.isEmpty()
         ){
             return false;
         }
@@ -58,12 +68,7 @@ public class PlaceBlockAction extends NavigateToAction{
         if(!(itemStack.getItem() instanceof BlockItem)){
             return false;
         }
-        /*if(chaosTarget.isSurroundedBySolid(orgEntity.world)){
-            return false;
-        }*/
-        if(chaosTarget.isVisiblyBlocked(orgEntity)){
-            return false;
-        }
+
         return true;
     }
 }

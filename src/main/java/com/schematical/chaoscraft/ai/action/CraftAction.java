@@ -126,12 +126,12 @@ public class CraftAction extends NavigateToAction{
 
     }
     public static boolean validateTargetItem(OrgEntity orgEntity, ChaosTargetItem chaosTargetItem) {
-
-        if(chaosTargetItem.getRecipe()== null){
-            throw new ChaosNetException("Didn't know this was possible. Might be able to just return false");
-            //return false;
+        IRecipe recipe = chaosTargetItem.getRecipe();
+        if(recipe == null){
+            return false;
         }
-        if(!orgEntity.canCraft(chaosTargetItem.getRecipe())){
+
+        if(!orgEntity.canCraft(recipe)){
             throw new ChaosNetException("This should not be possible. Might be able to just return false");
             //return false;
         }

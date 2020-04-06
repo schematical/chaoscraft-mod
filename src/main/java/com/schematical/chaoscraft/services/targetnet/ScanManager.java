@@ -50,7 +50,7 @@ public class ScanManager {
             throw new ChaosNetException("Invalid `scanState`: " + scanInstance.getScanState().toString());
         }
 
-        if(scanItemInstance.getState().equals(ScanRecipeInstance.State.Pending)){
+        if(scanItemInstance.getState().equals(ScanItemInstance.State.Pending)){
             scanItemInstance.scan();
         }
         ArrayList<ScanEntry> newEntries = scanInstance.tick();
@@ -85,7 +85,7 @@ public class ScanManager {
                     float currScore = scanEntry.getScore(actionTargetSlot.id);
                     if(
                         currScore != -1f &&
-                        !actionTargetSlot.validatePotentialTarget(orgEntity, scanEntry.getChaosTarget())
+                        !actionTargetSlot.validateTarget(orgEntity, scanEntry.getChaosTarget())
                     ) {
                         throw new ChaosNetException("Invalid `scanEntry` made it to the top with score of: " + currScore + " - ActionTargetSlot: " + actionTargetSlot.id);
                     }
@@ -119,7 +119,7 @@ public class ScanManager {
                     for (String itemTargetSlotId : scanItemInstance.getScanResults().keySet()) {
                         ScanResult itemScanResult = scanItemInstance.getScanResults().get(itemTargetSlotId);
                         for (ScanEntry topItemScanEntry : itemScanResult.getTopEntries()) {
-                            if (actionTargetSlot.validatePotentialTargetAndItem(orgEntity, topScanEntry.getChaosTarget(), topItemScanEntry.getChaosTargetItem())) {
+                            if (actionTargetSlot.validateTargetAndItem(orgEntity, topScanEntry.getChaosTarget(), topItemScanEntry.getChaosTargetItem())) {
 
                                 focusedActionScore = -9999;
                                 this.focusedActionTargetSlot = actionTargetSlot;
@@ -140,6 +140,7 @@ public class ScanManager {
                                         highestATSScore = focusedActionScore;
                                         highestActionTargetSlot = actionTargetSlot;
                                         highestActionScanEntry = topScanEntry;
+                                        highestItemScanEntry = topItemScanEntry;
                                     }
                                 }
                             }
@@ -149,6 +150,7 @@ public class ScanManager {
 
                 }
                 actionTargetSlot.setTarget(originalTarget);
+
             }else{
                 if(scanResult.getTopEntries().size() > 1){
                     throw new ChaosNetException("`scanResult.getTopEntities().size()` should be zero in this scenario: " + scanResult.getTopEntries().size());
@@ -173,7 +175,7 @@ public class ScanManager {
 
         if(highestActionTargetSlot != null) {
             highestActionTargetSlot.setTarget(highestActionScanEntry.getChaosTarget());
-            highestActionTargetSlot.setTargetItem(highestActionScanEntry.getChaosTargetItem());
+            highestActionTargetSlot.setTargetItem(highestItemScanEntry.getChaosTargetItem());
             if(!highestActionTargetSlot.isValid()){
                 throw new ChaosNetException("Something went really really wrong. Is `highestActionScanEntry` being modified in the wrong spot");
             }

@@ -3,13 +3,10 @@ package com.schematical.chaoscraft.ai.outputs;
 import com.schematical.chaoscraft.ai.OutputNeuron;
 import com.schematical.chaoscraft.ai.biology.ActionTargetSlot;
 import com.schematical.chaoscraft.ai.biology.BiologyBase;
-import com.schematical.chaoscraft.ai.biology.TargetSlot;
 import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.services.targetnet.ScanEntry;
 import com.schematical.chaoscraft.services.targetnet.ScanManager;
-import com.schematical.chaoscraft.util.ChaosTarget;
-import com.schematical.chaoscraft.util.ChaosTargetItem;
 import com.schematical.chaosnet.model.ChaosNetException;
 import org.json.simple.JSONObject;
 
@@ -34,7 +31,7 @@ public class TargetCandidateSetScoreOutput extends OutputNeuron {
             throw new ChaosNetException("ScanEntity should not be null if this is firing");
         }
         if(actionTargetSlot != null){
-            boolean isValid = actionTargetSlot.validatePotentialTarget(orgEntity, scanEntry.getChaosTarget());
+            boolean isValid = actionTargetSlot.validateTarget(orgEntity, scanEntry.getChaosTarget());
             if(!isValid){
                 scanEntry.setScore(targetSlotId, -1);
                 return;
@@ -64,12 +61,12 @@ public class TargetCandidateSetScoreOutput extends OutputNeuron {
         ClientOrgManager clientOrgManager = orgEntity.getClientOrgManager();
         ScanManager scanManager = clientOrgManager.getScanManager();
 
-        ScanEntry scanEntry = scanManager.getScanItemInstance().getFocusedScanEntry();
+        ScanEntry scanEntry = scanManager.getFocusedScanEntry();
         if(scanEntry == null) {
             throw new ChaosNetException("ScanEntity should not be null if this is firing");
         }
         if(actionTargetSlot != null){
-            boolean isValid = actionTargetSlot.validatePotentialTarget((OrgEntity)getEntity(), scanEntry.getChaosTarget());
+            boolean isValid = actionTargetSlot.validateTarget((OrgEntity)getEntity(), scanEntry.getChaosTarget());
             if(!isValid){
                 scanEntry.setScore(targetSlotId, this.getCurrentValue());
                 return getCurrentValue();

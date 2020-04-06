@@ -40,7 +40,7 @@ public class DigBlockAction extends NavigateToAction{
     }
 
 
-    public static boolean validateTarget(OrgEntity orgEntity, ChaosTarget chaosTarget, ChaosTargetItem chaosTargetItem) {
+    public static boolean validateTarget(OrgEntity orgEntity, ChaosTarget chaosTarget) {
         if(chaosTarget.getTargetBlockPos() == null){
             return false;
         }
@@ -57,5 +57,6 @@ public class DigBlockAction extends NavigateToAction{
         }
         return true;
     }
+
 
 }

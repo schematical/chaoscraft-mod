@@ -36,7 +36,7 @@ public class ScanRecipeInstance {
     public IRecipe getFocusedRecipe(){
         return focusedRecipe;
     }
-    public void tickScanRecipes(){
+   /* public void tickScanRecipes(){
         if(!state.equals(State.Pending)){
             throw new ChaosNetException("Invalid State: " + state);
         }
@@ -69,7 +69,7 @@ public class ScanRecipeInstance {
         }
         state = State.Finished;
 
-    }
+    }*/
 
 
     public IRecipe getHighScoreRecipe() {
