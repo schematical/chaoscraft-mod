@@ -1,11 +1,8 @@
 package com.schematical.chaoscraft.ai.action;
 
 import com.schematical.chaoscraft.ChaosCraft;
-import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.events.CCWorldEvent;
-import com.schematical.chaoscraft.services.targetnet.ScanManager;
-import com.schematical.chaoscraft.services.targetnet.ScanRecipeInstance;
 import com.schematical.chaoscraft.util.ChaosTarget;
 import com.schematical.chaoscraft.util.ChaosTargetItem;
 import com.schematical.chaosnet.model.ChaosNetException;
@@ -14,11 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.RecipeManager;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.dimension.DimensionType;
-import net.minecraftforge.common.Tags;
 
 public class CraftAction extends NavigateToAction{
 
@@ -36,7 +29,7 @@ public class CraftAction extends NavigateToAction{
             tickNavigate();
             return;
         }
-        stopWalking();
+
         tickArrived();
         //When looking at stuff do stuff.
         RecipeManager recipeManager = this.getActionBuffer().getOrgManager().getEntity().world.getRecipeManager();;
@@ -63,14 +56,14 @@ public class CraftAction extends NavigateToAction{
         }
 
         if(outputStack == null){
-            throw new ChaosNetException("Something went wrong crafting: " + recipe.getType().toString() + " this should not be possible with the `evaluate` check above");
+           // throw new ChaosNetException("Something went wrong crafting: " + recipe.getType().toString() + " this should not be possible with the `evaluate` check above");
+        }else {
+
+            CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.ITEM_CRAFTED);
+            worldEvent.item = outputStack.getItem();
+            getOrgEntity().getServerOrgManager().test(worldEvent);
+            markCompleted();
         }
-
-        CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.ITEM_CRAFTED);
-        worldEvent.item = outputStack.getItem();
-        getOrgEntity().getServerOrgManager().test(worldEvent);
-        markCompleted();
-
     }
   /*  public void encode(PacketBuffer buf){
         super.encode(buf);
@@ -138,4 +131,5 @@ public class CraftAction extends NavigateToAction{
         return true;
 
     }
+
 }

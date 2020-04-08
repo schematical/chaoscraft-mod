@@ -37,29 +37,6 @@ public class ScanItemInstance {
         if(!state.equals(State.Pending)){
             throw new ChaosNetException("Invalid State: " + state);
         }
-        ItemStackHandler itemStackHandler = clientOrgManager.getEntity().getItemHandler();
-
-       for(int i = 0; i < itemStackHandler.getSlots(); i++){
-           focusedScanEntity = new ScanEntry();
-           focusedScanEntity.targetSlot = i;
-            List<OutputNeuron> outputs = clientOrgManager.getNNet().evaluate(NeuralNet.EvalGroup.ITEM);
-
-            Iterator<OutputNeuron> iterator = outputs.iterator();
-
-            while (iterator.hasNext()) {
-                OutputNeuron outputNeuron = iterator.next();
-                outputNeuron.execute();
-            }
-           HashMap<String, Float> scores = focusedScanEntity.getScores();
-           for (String targetSlotId : scores.keySet()) {
-               if (!highestResults.containsKey(targetSlotId)) {
-                   highestResults.put(targetSlotId, new ScanResult(targetSlotId));
-               }
-               ScanResult scanResult = highestResults.get(targetSlotId);
-               scanResult.test(focusedScanEntity);
-           }
-
-        }
 
 
 
@@ -84,6 +61,43 @@ public class ScanItemInstance {
                 scanResult.test(focusedScanEntity);
             }
         }
+
+
+        ItemStackHandler itemStackHandler = clientOrgManager.getEntity().getItemHandler();
+
+        boolean hasSearchedEmpty = false;
+
+        for(int i = 0; i < itemStackHandler.getSlots(); i++){
+            focusedScanEntity = new ScanEntry();
+            focusedScanEntity.targetSlot = i;
+            ItemStack itemStack = itemStackHandler.getStackInSlot(focusedScanEntity.targetSlot);
+            if(
+                !itemStack.isEmpty() ||
+                !hasSearchedEmpty
+            ) {
+                List<OutputNeuron> outputs = clientOrgManager.getNNet().evaluate(NeuralNet.EvalGroup.ITEM);
+
+                Iterator<OutputNeuron> iterator = outputs.iterator();
+
+                while (iterator.hasNext()) {
+                    OutputNeuron outputNeuron = iterator.next();
+                    outputNeuron.execute();
+                }
+                HashMap<String, Float> scores = focusedScanEntity.getScores();
+                for (String targetSlotId : scores.keySet()) {
+                    if (!highestResults.containsKey(targetSlotId)) {
+                        highestResults.put(targetSlotId, new ScanResult(targetSlotId));
+                    }
+                    ScanResult scanResult = highestResults.get(targetSlotId);
+                    scanResult.test(focusedScanEntity);
+                }
+                if(itemStack.isEmpty()){
+                    hasSearchedEmpty = true;
+                }
+            }
+
+        }
+
         state = State.Finished;
 
     }

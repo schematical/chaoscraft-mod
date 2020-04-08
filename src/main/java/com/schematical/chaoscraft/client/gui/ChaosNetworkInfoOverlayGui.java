@@ -5,6 +5,7 @@ import com.schematical.chaoscraft.client.ChaosCraftClient;
 import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.CCClientServerPingRequestPacket;
+import com.schematical.chaoscraft.services.targetnet.ScanState;
 import com.schematical.chaosnet.model.Stats;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
@@ -76,6 +77,12 @@ public class ChaosNetworkInfoOverlayGui extends Screen {
             message += "Orgs Spawned So Far: " + stats.getOrgsSpawnedSoFar() + "\n";
             message += "Total Orgs Per Gen: " + stats.getTotalOrgsPerGen() + "\n";
         }
+        message += "\n";
+        HashMap<ScanState, Integer> states = chaosCraftClient.getScanStateCounts();
+        for ( ScanState state : states.keySet() ) {
+            message += " - " + state + ": " + states.get(state) + "\n";
+        }
+
         return message;
     }
 

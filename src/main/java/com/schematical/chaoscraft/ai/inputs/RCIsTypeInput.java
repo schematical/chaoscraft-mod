@@ -24,11 +24,14 @@ public class RCIsTypeInput extends InputNeuron {
     @Override
     public float evaluate(){
         ScanManager scanManager =  ((OrgEntity)this.getEntity()).getClientOrgManager().getScanManager();
-        IRecipe focusedRecipe = scanManager.getRecipeScanInstance().getFocusedRecipe();
+        ScanEntry scanEntry = scanManager.getScanItemInstance().getFocusedScanEntry();
 
 
 
-        if(focusedRecipe.equals(recipe)) {
+        if(
+            scanEntry.recipe != null &&
+            scanEntry.recipe.equals(recipe)
+        ) {
             setCurrentValue(1);
         }
 

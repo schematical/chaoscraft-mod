@@ -62,8 +62,15 @@ public class ICSetScoreOutput extends OutputNeuron {
         if(scanEntry == null) {
             throw new ChaosNetException("ScanEntity should not be null if this is firing");
         }
-
-        boolean isValid = actionTargetSlot.validateTargetItem((OrgEntity)getEntity(), new ChaosTargetItem(scanEntry.targetSlot));
+        ChaosTargetItem chaosTargetItem = null;
+        if(scanEntry.recipe != null){
+            chaosTargetItem = new ChaosTargetItem(scanEntry.recipe);
+        }else if(scanEntry.targetSlot != null){
+            chaosTargetItem = new ChaosTargetItem(scanEntry.targetSlot);
+        }else{
+            throw new ChaosNetException("Invalid `scanEntry` for item scan");
+        }
+        boolean isValid = actionTargetSlot.validateTargetItem((OrgEntity)getEntity(),chaosTargetItem);
         if(!isValid){
             scanEntry.setScore(targetSlotId, this.getCurrentValue());
             return getCurrentValue();

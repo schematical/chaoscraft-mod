@@ -45,7 +45,9 @@ public class UseItemAction extends NavigateToAction{
             return;
         }
         tickArrived();
-
+        if(!validateTargetItem(getOrgEntity(),  new ChaosTargetItem(getOrgEntity().getSelectedItemIndex()))){
+            throw new ChaosNetException("Invalid Target");
+        }
         ActionResult<ItemStack> rcResult = heldItem.onItemRightClick(
                 getOrgEntity().world,
                 getOrgEntity().getPlayerWrapper(),
@@ -132,5 +134,15 @@ public class UseItemAction extends NavigateToAction{
             return false;
         }
         return true;
+    }
+    public static boolean validateTargetAndItem(OrgEntity orgEntity, ChaosTarget chaosTarget, ChaosTargetItem chaosTargetItem){
+        if(
+                validateTarget( orgEntity, chaosTarget) &&
+                        validateTargetItem( orgEntity, chaosTargetItem)
+        ) {
+            return true;
+        }else{
+            return false;
+        }
     }
 }

@@ -4,10 +4,7 @@ import com.amazonaws.opensdk.config.ConnectionConfiguration;
 import com.amazonaws.opensdk.config.TimeoutConfiguration;
 import com.schematical.chaoscraft.blocks.ChaosBlocks;
 import com.schematical.chaoscraft.client.*;
-import com.schematical.chaoscraft.commands.CCAuthCommand;
-import com.schematical.chaoscraft.commands.CCHardResetCommand;
-import com.schematical.chaoscraft.commands.CCSummonCommand;
-import com.schematical.chaoscraft.commands.CCTestCommand;
+import com.schematical.chaoscraft.commands.*;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.entities.OrgEntityRenderer;
 import com.schematical.chaoscraft.items.ChaosItems;
@@ -219,7 +216,7 @@ public class ChaosCraft
         CCAuthCommand.register(event.getCommandDispatcher());
         CCTestCommand.register(event.getCommandDispatcher());
         CCHardResetCommand.register(event.getCommandDispatcher());
-
+        CCBlockResetCommand.register(event.getCommandDispatcher());
         server.loadFitnessFunctions();
     }
 

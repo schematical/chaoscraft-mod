@@ -17,7 +17,7 @@ public class MeleeAttackAction extends NavigateToAction{
             tickNavigate();
             return;
         }
-        stopWalking();
+
         tickArrived();
         //When looking at stuff do stuff.
         getOrgEntity().func_226292_a_(Hand.MAIN_HAND, true);
@@ -32,9 +32,17 @@ public class MeleeAttackAction extends NavigateToAction{
         if(chaosTarget.getTargetEntity() == null){
             return false;
         }
-        if(chaosTarget.isVisiblyBlocked(orgEntity)){
+
+        return true;
+    }
+    public static boolean validateTargetAndItem(OrgEntity orgEntity, ChaosTarget chaosTarget, ChaosTargetItem chaosTargetItem){
+        if(
+                validateTarget( orgEntity, chaosTarget) &&
+                        validateTargetItem( orgEntity, chaosTargetItem)
+        ) {
+            return true;
+        }else{
             return false;
         }
-        return true;
     }
 }

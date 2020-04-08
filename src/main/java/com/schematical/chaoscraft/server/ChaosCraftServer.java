@@ -21,6 +21,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.stats.Stat;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -30,6 +31,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.entity.EntityEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
@@ -409,6 +411,57 @@ public class ChaosCraftServer {
                 iterator.remove();
             }
         }
+        Iterator<AlteredBlockInfo> iterator2 = alteredBlocks.values().iterator();
+        while (iterator2.hasNext()) {
+            AlteredBlockInfo alteredBlockInfo = iterator2.next();
+            if(!alteredBlockInfo.serverOrgManager.getState().equals(ServerOrgManager.State.Ticking)) {
+                boolean result = replaceAlteredBlock(alteredBlockInfo);
+                if(result) {
+                    iterator2.remove();
+                }
+            }
+        }
+
+
+    }
+    public boolean replaceAlteredBlock(AlteredBlockInfo alteredBlockInfo) {
+        return replaceAlteredBlock(alteredBlockInfo,  false);
+    }
+    public boolean replaceAlteredBlock(AlteredBlockInfo alteredBlockInfo, boolean force){
+        World world = server.getWorld(DimensionType.OVERWORLD);
+        if(!force) {
+            List<OrgEntity> orgEntites = world.getEntitiesWithinAABB(
+                    OrgEntity.class,
+                    new AxisAlignedBB(
+                            alteredBlockInfo.blockPos
+                    )
+            );
+            if (orgEntites.size() > 0) {
+                OrgEntity orgEntity = orgEntites.get(0);
+
+                if (
+                        orgEntity.isAlive() &&
+                                !orgEntity.getCCNamespace().equals(alteredBlockInfo.serverOrgManager.getCCNamespace())
+                ) {
+                    alteredBlockInfo.serverOrgManager = orgEntity.getServerOrgManager();
+                }
+                return false;
+            }
+        }
+        List<ItemEntity> items = world.getEntitiesWithinAABB(
+                ItemEntity.class,
+                new AxisAlignedBB(
+                        alteredBlockInfo.blockPos
+                )
+        );
+        for (ItemEntity itemEntity : items) {
+            itemEntity.detach();
+            itemEntity.remove();
+        }
+        return world.setBlockState(alteredBlockInfo.blockPos, alteredBlockInfo.state, world.isRemote ? 11 : 3);
+
+
+
     }
     public void repair(){
         //TODO: Remove this server cannot repair
@@ -593,42 +646,32 @@ public class ChaosCraftServer {
     }
 
     public void replaceAlteredBlocks(ServerOrgManager serverOrgManager) {
-            World world = server.getWorld(DimensionType.OVERWORLD);
+
             Iterator<AlteredBlockInfo> iterator = alteredBlocks.values().iterator();
             while (iterator.hasNext()) {
                 AlteredBlockInfo alteredBlockInfo = iterator.next();
                 if(alteredBlockInfo.serverOrgManager.getCCNamespace().equals(serverOrgManager.getCCNamespace())) {
-                    List<OrgEntity> orgEntites = world.getEntitiesWithinAABB(
-                            OrgEntity.class,
-                            new AxisAlignedBB(
-                                    alteredBlockInfo.blockPos
-                            )
-                    );
-                    if(orgEntites.size() > 0){
-                        OrgEntity orgEntity = orgEntites.get(0);
-                        orgEntity.isAlive();
-                        alteredBlockInfo.serverOrgManager = orgEntity.getServerOrgManager();
-                    }else {
-                        List<ItemEntity> items = world.getEntitiesWithinAABB(
-                            ItemEntity.class,
-                            new AxisAlignedBB(
-                                    alteredBlockInfo.blockPos
-                            )
-                        );
-                        for (ItemEntity itemEntity : items) {
-                            itemEntity.detach();
-                            itemEntity.remove();
-                        }
-                        boolean bool = world.setBlockState(alteredBlockInfo.blockPos, alteredBlockInfo.state, world.isRemote ? 11 : 3);
+
+                    boolean result = replaceAlteredBlock(alteredBlockInfo);
+                    if(result) {
                         iterator.remove();
-                        if(!bool){
-                            ChaosCraft.LOGGER.error("Set block state failed");
-                        }
                     }
                 }
 
             }
-            //alteredBlocks.clear();
 
+    }
+
+    public void replaceAllAlteredBlocks() {
+        Iterator<AlteredBlockInfo> iterator = alteredBlocks.values().iterator();
+        while (iterator.hasNext()) {
+            AlteredBlockInfo alteredBlockInfo = iterator.next();
+            boolean result = replaceAlteredBlock(alteredBlockInfo, true);
+            if(result) {
+                iterator.remove();
+            }
+
+
+        }
     }
 }

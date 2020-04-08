@@ -21,9 +21,9 @@ public class ChaosTargetItem {
 
     public String getSerializedString() {
         if(inventorySlot != null){
-            return "inventorySlot:" + inventorySlot;
+            return "inventorySlot@" + inventorySlot;
         }else if(recipe != null){
-            return "recipe:" + recipe.getId().toString();
+            return "recipe@" + recipe.getId().toString();
         }else{
             return "null";
         }
@@ -31,7 +31,7 @@ public class ChaosTargetItem {
     }
     public static ChaosTargetItem deserialize(World world, String payload) {
         ChaosTargetItem chaosTargetItem = null;
-        String[] parts = payload.split(":");
+        String[] parts = payload.split("@");
         switch(parts[0]){
             case("inventorySlot"):
                 chaosTargetItem =  new ChaosTargetItem(
@@ -49,6 +49,9 @@ public class ChaosTargetItem {
                                 irecipe
                         );
                     }
+                }
+                if(chaosTargetItem == null){
+                    throw new ChaosNetException("Could not `deserialize` Invalid Recipe `" + parts[1] + "`");
                 }
                 break;
             case("null"):

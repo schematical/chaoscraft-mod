@@ -29,6 +29,9 @@ public class PlaceBlockAction extends NavigateToAction{
             markFailed();
             return;
         }
+    /*    if(!validateTargetItem(getOrgEntity(),  new ChaosTargetItem(getOrgEntity().getSelectedItemIndex()))){
+            throw new ChaosNetException("Invalid Target");
+        }*/
         ItemStack itemStack = getOrgEntity().getHeldItem(Hand.MAIN_HAND);
         //When looking at stuff do stuff.
         getOrgEntity().rightClick(rayTraceResult);
@@ -48,9 +51,9 @@ public class PlaceBlockAction extends NavigateToAction{
             return false;
         }
 
-        if(chaosTarget.isVisiblyBlocked(orgEntity)){
+        /*if(chaosTarget.isVisiblyBlocked(orgEntity)){
             return false;
-        }
+        }*/
         return true;
     }
     public static boolean validateTargetItem(OrgEntity orgEntity,  ChaosTargetItem chaosTargetItem) {
@@ -70,5 +73,15 @@ public class PlaceBlockAction extends NavigateToAction{
         }
 
         return true;
+    }
+    public static boolean validateTargetAndItem(OrgEntity orgEntity, ChaosTarget chaosTarget, ChaosTargetItem chaosTargetItem){
+        if(
+                validateTarget( orgEntity, chaosTarget) &&
+                validateTargetItem( orgEntity, chaosTargetItem)
+        ) {
+            return true;
+        }else{
+            return false;
+        }
     }
 }

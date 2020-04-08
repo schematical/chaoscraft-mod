@@ -6,6 +6,8 @@ import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.*;
 import com.schematical.chaoscraft.server.ChaosCraftServerPlayerInfo;
+import com.schematical.chaoscraft.services.targetnet.ScanManager;
+import com.schematical.chaoscraft.services.targetnet.ScanState;
 import com.schematical.chaoscraft.tileentity.FactoryTileEntity;
 import com.schematical.chaoscraft.tileentity.SpawnBlockTileEntity;
 import com.schematical.chaosnet.model.*;
@@ -103,6 +105,20 @@ public class ChaosCraftClient {
             Minecraft.getInstance().displayGuiScreen((Screen)null);
         }
         startTrainingSession();
+    }
+    public HashMap<ScanState, Integer> getScanStateCounts(){
+        HashMap<ScanState, Integer> states = new HashMap<>();
+        for (ClientOrgManager clientOrgManager : myOrganisms.values()) {
+            ScanManager scanManager = clientOrgManager.getScanManager();
+            if(scanManager != null) {
+                ScanState scanState = scanManager.getState();
+                if (!states.containsKey(scanState)) {
+                    states.put(scanState, 0);
+                }
+                states.put(scanState, states.get(scanState) + 1);
+            }
+        }
+        return states;
     }
     public void startTrainingSession(){
 

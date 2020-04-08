@@ -26,8 +26,9 @@ public class ScanManager {
     private ClientOrgManager clientOrgManager;
     private HashMap<String, ScanResult> highestResults = new HashMap<>();
     private ScanInstance scanInstance = null;
-    private  ScanRecipeInstance scanRecipeInstance = null;
+
     private ScanItemInstance scanItemInstance;
+    private ScanState scanState = ScanState.Pending;
 
     public void setFocusedActionScore(float score){
         focusedActionScore = score;
@@ -40,7 +41,7 @@ public class ScanManager {
     }
     public void resetScan() {
         scanItemInstance = new ScanItemInstance(clientOrgManager);
-        scanRecipeInstance = new ScanRecipeInstance(clientOrgManager);
+
         scanInstance = new ScanInstance(clientOrgManager, clientOrgManager.getEntity().getPosition());
         highestResults.clear();
     }
@@ -53,6 +54,7 @@ public class ScanManager {
 
         if(scanItemInstance.getState().equals(ScanItemInstance.State.Pending)){
             scanItemInstance.scan();
+            scanState = ScanState.ScanningItem;
             return scanInstance.getScanState();
         }
         ArrayList<ScanEntry> newEntries = scanInstance.tick();
@@ -98,9 +100,10 @@ public class ScanManager {
             }
         }
         if(scanInstance.getScanState().equals(ScanInstance.ScanState.Ticking)){
+            scanState = ScanState.ScanningTarget;
             return scanInstance.getScanState();
         }
-
+        scanState = ScanState.ScanningAction;
 
         //TODO: Iterate through the biology of the main NNet and set the targets
         float highestATSScore = -1000;
@@ -108,7 +111,7 @@ public class ScanManager {
         ScanEntry highestActionScanEntry = null;
         ScanEntry highestItemScanEntry = null;
         int tickCombos = 0;
-      
+
         for (String targetSlotId : highestResults.keySet()) {
 
             TargetSlot targetSlot = (TargetSlot)orgEntity.getNNet().getBiology(targetSlotId);
@@ -130,7 +133,7 @@ public class ScanManager {
                             this.focusedActionTargetSlot = actionTargetSlot;
                             this.focusedActionTargetSlot.setTarget(topScanEntry.getChaosTarget());
                             this.focusedActionTargetSlot.setTargetItem(topItemScanEntry.getChaosTargetItem());
-                            //if (!clientOrgManager.getActionBuffer().hasExecutedRecently(this.focusedActionTargetSlot.createAction(), 5)) {
+                            if (!clientOrgManager.getActionBuffer().hasExecutedRecently(this.focusedActionTargetSlot.createAction(), 5)) {
 
                                 List<OutputNeuron> outputs = orgEntity.getNNet().evaluate(NeuralNet.EvalGroup.ACTION);//Ideally the output neurons will set the score
 
@@ -147,7 +150,7 @@ public class ScanManager {
                                     highestActionScanEntry = topScanEntry;
                                     highestItemScanEntry = topItemScanEntry;
                                 }
-                            //}
+                            }
                         }
 
                     }
@@ -183,14 +186,12 @@ public class ScanManager {
                 throw new ChaosNetException("Something went really really wrong. Is `highestActionScanEntry` being modified in the wrong spot");
             }
             ActionBase actionBase = highestActionTargetSlot.createAction();
-            if(actionBase instanceof CraftAction){
-                ((CraftAction) actionBase).setRecipe(scanRecipeInstance.getHighScoreRecipe());
-            }
+
             this.clientOrgManager.getActionBuffer().addAction(
                     actionBase
             ).sync();
         }
-
+        scanState = ScanState.Finished;
 
         return scanInstance.getScanState();
 
@@ -221,16 +222,14 @@ public class ScanManager {
         return scanInstance;
     }
 
-    public ScanRecipeInstance getRecipeScanInstance() {
-        return scanRecipeInstance;
-    }
+
 
     public ScanItemInstance getScanItemInstance() {
         return scanItemInstance;
     }
 
 
-
-
-
+    public ScanState getState() {
+        return scanState;
+    }
 }

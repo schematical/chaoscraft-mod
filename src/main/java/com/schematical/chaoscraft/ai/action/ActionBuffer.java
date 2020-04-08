@@ -1,7 +1,9 @@
 package com.schematical.chaoscraft.ai.action;
 
 import com.schematical.chaoscraft.BaseOrgManager;
+import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.client.ClientOrgManager;
+import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.CCActionStateChangeEventPacket;
 import com.schematical.chaoscraft.network.packets.CCClientSetCurrActionPacket;
@@ -12,8 +14,11 @@ import com.schematical.chaoscraft.util.ChaosTarget;
 import com.schematical.chaoscraft.util.ChaosTargetItem;
 import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.world.World;
+import net.minecraftforge.items.ItemStackHandler;
 import org.apache.logging.log4j.core.jmx.Server;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -76,6 +81,49 @@ public class ActionBuffer {
         }*/
         action.setActionBuffer(this);
         currAction = action;
+        try {
+            Method m = currAction.getClass().getMethod("validateTargetAndItem", OrgEntity.class, ChaosTarget.class, ChaosTargetItem.class);
+
+            boolean results = (boolean)m.invoke(null, getOrgManager().getEntity(), currAction.getTarget(), currAction.getTargetItem());
+            if(!results){
+                String message = "Invalid Action: " + currAction.getClass().getSimpleName() + " ";
+                ChaosTarget target = currAction.getTarget();
+                if(target.getTargetBlockPos() != null){
+                    message += target.getTargetBlockPos().toString()+ " ";
+                    message += getOrgManager().getEntity().world.getBlockState(target.getTargetBlockPos()).getBlock().getRegistryName().toString() + " ";
+                }else if(target.getTargetEntity() != null){
+                    message += target.getTargetEntity().getType().getRegistryName().toString()+ " ";
+                }else{
+                    message += "TARGET IS NULL  ";
+                }
+                ItemStackHandler itemStackHandler = getOrgManager().getEntity().getItemHandler();
+                ChaosTargetItem chaosTargetItem = currAction.getTargetItem();
+                if(chaosTargetItem.getRecipe() != null){
+                    message +=chaosTargetItem.getRecipe().getId().toString()+ " ";
+                }else if(chaosTargetItem.getInventorySlot() != null){
+                    message += itemStackHandler.getStackInSlot(chaosTargetItem.getInventorySlot()).getItem().getRegistryName().toString() + " x " + itemStackHandler.getStackInSlot(chaosTargetItem.getInventorySlot()).getCount()+ " ";
+                }else{
+                    message += "T_ITEM IS NULL  ";
+                }
+                message += "\n\n";
+
+                for(int i = 0; i < itemStackHandler.getSlots(); i++){
+                    if(!itemStackHandler.getStackInSlot(i).isEmpty()) {
+                        message += i + " " + itemStackHandler.getStackInSlot(i).getItem().getRegistryName().toString() + " x " + itemStackHandler.getStackInSlot(i).getCount() + "\n";
+                    }
+                }
+                /*throw new ChaosNetException*/
+                ChaosCraft.LOGGER.error(message);
+            }
+        } catch (NoSuchMethodException e) {
+            throw new ChaosNetException(e.getMessage());
+        } catch (IllegalAccessException e) {
+            throw new ChaosNetException(e.getMessage());
+        } catch (InvocationTargetException e) {
+            throw new ChaosNetException(e.getMessage());
+        }
+
+
         return this;
 
     }

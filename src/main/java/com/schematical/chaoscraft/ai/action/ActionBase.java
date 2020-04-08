@@ -60,15 +60,18 @@ public abstract class ActionBase {
             markRunning();
             tickFirst();
         }
+        enforceItemEquip();
         _tick();
 
     }
     public void tickFirst(){
+        enforceItemEquip();
+    }
+    public void enforceItemEquip(){
         if(this.getTargetItem() != null) {
             if (this.getTargetItem().getInventorySlot() != null) {
                 if (this.getOrgEntity().getSelectedItemIndex() != this.getTargetItem().getInventorySlot()) {
-                    ItemStack itemStack = this.getOrgEntity().getItemStackHandeler().getStackInSlot(this.getOrgEntity().getSelectedItemIndex());
-                    this.getOrgEntity().setHeldItem(Hand.MAIN_HAND, itemStack);
+                    this.getOrgEntity().equipSlot(this.getTargetItem().getInventorySlot());
                 }
             }
         }
@@ -190,7 +193,7 @@ public abstract class ActionBase {
 
     public void encode(PacketBuffer buf){
 
-        buf.writeString(getTarget().getSerializedString());
+        buf.writeString(target.getSerializedString());
         buf.writeString(targetItem.getSerializedString());
     }
 

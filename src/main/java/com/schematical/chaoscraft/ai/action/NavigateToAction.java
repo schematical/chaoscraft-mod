@@ -60,6 +60,7 @@ public abstract class NavigateToAction extends ActionBase{
             stuckTicks = 0;
         }
         if(currMixItUpAction == null){
+            stopWalking();
             return;
         }
         if(currMixItUpAction.equals(MixItUpAction.Jump)){

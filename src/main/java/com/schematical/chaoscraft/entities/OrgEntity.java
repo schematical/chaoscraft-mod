@@ -89,7 +89,7 @@ public class OrgEntity extends MobEntity {
 
     private int spawnHash;
     private Vec3d desiredLookVec = null;
-    private int rightClickDelay;
+
 
 
     public OrgEntity(EntityType<? extends MobEntity> type, World world) {
@@ -106,7 +106,7 @@ public class OrgEntity extends MobEntity {
         //EnchantmentHelper.addRandomEnchantment(new Random(), itemStack, 10, true);
         itemHandler.setStackInSlot(1, itemStack);*/
 
-        itemHandler.setStackInSlot(1,  new ItemStack(Items.OAK_LOG, 4));
+        //itemHandler.setStackInSlot(1,  new ItemStack(Items.OAK_LOG, 4));
     }
     public int getSelectedItemIndex(){
         return selectedItemIndex;
@@ -251,7 +251,7 @@ public class OrgEntity extends MobEntity {
         playerWrapper.prevPosZ  = this.prevPosZ;
         playerWrapper.setPosition(getPositionVec().x, getPositionVec().y, getPositionVec().z);
         playerWrapper.onGround = this.onGround;
-        playerWrapper.setHeldItem(Hand.MAIN_HAND, getHeldItemMainhand());
+        //playerWrapper.setHeldItem(Hand.MAIN_HAND, getHeldItemMainhand());
         for(int i = 0; i < this.itemHandler.getSlots(); i++) {
             playerWrapper.inventory.setInventorySlotContents(i,  this.itemHandler.getStackInSlot(i));
         }
@@ -337,66 +337,88 @@ public class OrgEntity extends MobEntity {
         //Check to see if they have the items in inventory for that
 
         int slots = itemHandler.getSlots();
-        int emptySlotIndex = -1;
+        int newItemSlot = -1;
+        for (int i = 0; i < slots && newItemSlot == -1; i++) {
+            ItemStack itemStack = itemHandler.getStackInSlot(i);
+            if (
+                    itemStack.isEmpty() ||
+                    (
+                        itemStack.getItem().equals(recipe.getRecipeOutput().getItem()) &&
+                        itemStack.getCount() + recipe.getRecipeOutput().getCount() <= itemStack.getMaxStackSize()
+                    )
+            ) {
+                newItemSlot = i;
+            }
+        }
+        if(newItemSlot == -1){
+            return null;//TODO: Make it drop stuff
+        }
 
-
-        for(Ingredient ingredient: recipeItems) {
-
-            for (int i = 0; i < slots; i++) {
+        /*ArrayList<ItemStack> itemStacks = (ArrayList<ItemStack>)Arrays.asList(matchingStacks);*/
+        HashMap<Integer, ItemStack> newItemStacks = new HashMap<>();
+        for (Ingredient recipeItem : recipeItems) {
+            boolean hasMatched = false;
+            for(int i = 0; i < slots; i++) {
                 ItemStack itemStack = itemHandler.getStackInSlot(i);
-                if(itemStack.isEmpty()) {
-                    emptySlotIndex = i;
-                }else{
-                    int packedItem = RecipeItemHelper.pack(itemStack);
-                    IntList ingredientItemIds = ingredient.getValidItemStacksPacked();
-                    if (ingredientItemIds.contains(packedItem)) {
+                if(!itemStack.isEmpty()) {
+                    ItemStack[] matchingStacks = recipeItem.getMatchingStacks();
 
-                        if (itemHandler.getStackInSlot(i).getCount() < 1) {
-                            throw new ChaosNetException("Cannot get any more of these");
+                    for (int ii = 0; ii < matchingStacks.length && !hasMatched; ii++) {
+                        ItemStack matchingStack = matchingStacks[ii];
+                        if (
+                            matchingStack.getCount() > 0 &&
+                            itemStack.getItem().equals(matchingStack.getItem())
+                        ) {
+                            int amountToSubtract = matchingStack.getCount();
+                            if(itemStack.getCount() < amountToSubtract){
+                                //amountToSubtract = itemStack.getCount();
+                            }else {
+                                //matchingStack.setCount(matchingStack.getCount() - amountToSubtract);
+                                ItemStack newItemStack = itemStack.copy();
+                                newItemStacks.put(i, newItemStack);
+                                hasMatched = true;
+                            }
                         }
-                        itemHandler.setStackInSlot(i, ItemStack.EMPTY);
-                        if(i == selectedItemIndex){
-                            setHeldItem(Hand.MAIN_HAND, ItemStack.EMPTY);
-                        }
-                        CCInventoryChangeEventPacket pkt = new CCInventoryChangeEventPacket(
-                                getCCNamespace(),
-                                selectedItemIndex,
-                                i,
-                                itemHandler.getStackInSlot(i)
-                        );
-                        ChaosNetworkManager.sendTo(pkt, getServerOrgManager().getServerPlayerEntity());
                     }
                 }
 
-
             }
+            if(!hasMatched){
+                throw new ChaosNetException("Missing ingreedient for recipe: " + recipe.getId().toString());
+            }
+        }
 
+        for (Integer i : newItemStacks.keySet()) {
+            itemHandler.getStackInSlot(i).setCount(newItemStacks.get(i).getCount());
+            syncSlot(i);
         }
 
         ItemStack outputStack = recipe.getRecipeOutput().copy();
-        ChaosCraft.LOGGER.info(this.getCCNamespace() + " - Crafted: " + outputStack.getDisplayName());
-        if(emptySlotIndex != -1) {
-            itemHandler.setStackInSlot(emptySlotIndex,outputStack);//        orgInventory.add(emptySlotIndex, outputStack);
-            if(getHeldItem(Hand.MAIN_HAND).isEmpty()){
-                emptySlotIndex = selectedItemIndex;
-                setHeldItem(Hand.MAIN_HAND, outputStack);
-            }
-            CCInventoryChangeEventPacket pkt = new CCInventoryChangeEventPacket(
-                    getCCNamespace(),
-                    selectedItemIndex,
-                    emptySlotIndex,
-                    itemHandler.getStackInSlot(emptySlotIndex)
-            );
-            ChaosNetworkManager.sendTo(pkt, getServerOrgManager().getServerPlayerEntity());
+        //ChaosCraft.LOGGER.info(this.getCCNamespace() + " - Crafted: " + outputStack.getDisplayName());
+        //if(newItemSlot != -1) {
+            itemHandler.setStackInSlot(newItemSlot,outputStack);//        orgInventory.add(emptySlotIndex, outputStack);
+
+           syncSlot(newItemSlot);
             observableAttributeManager.ObserveCraftableRecipes(this);
-        }else{
+       /* }else{
 
             entityDropItem(outputStack.getItem(), outputStack.getCount());
             outputStack.setCount(0);
-        }
+        }*/
 
         return outputStack;
     }
+
+    private void syncSlot(int i) {
+        CCInventoryChangeEventPacket pkt = new CCInventoryChangeEventPacket(
+                getCCNamespace(),
+                selectedItemIndex,
+                i,
+                itemHandler.getStackInSlot(i)
+        );
+        ChaosNetworkManager.sendTo(pkt, getServerOrgManager().getServerPlayerEntity());
+    }
+
     public ArrayList<IRecipe> getAllCraftableRecipes(){
         ArrayList<IRecipe> craftable = new ArrayList<>();
 
@@ -534,13 +556,7 @@ public class OrgEntity extends MobEntity {
                     this.setHeldItem(Hand.MAIN_HAND, itemStack);
                     selectedItemIndex = i;
 
-                    CCInventoryChangeEventPacket pkt = new CCInventoryChangeEventPacket(
-                            getCCNamespace(),
-                            selectedItemIndex,
-                            selectedItemIndex,
-                            itemHandler.getStackInSlot(selectedItemIndex)
-                    );
-                    ChaosNetworkManager.sendTo(pkt, getServerOrgManager().getServerPlayerEntity());
+                   syncSlot(i);
 
                     return itemStack;
                 }
@@ -558,13 +574,7 @@ public class OrgEntity extends MobEntity {
         this.setHeldItem(Hand.MAIN_HAND, itemStack);
         selectedItemIndex = i;
 
-        CCInventoryChangeEventPacket pkt = new CCInventoryChangeEventPacket(
-                getCCNamespace(),
-                selectedItemIndex,
-                selectedItemIndex,
-                itemHandler.getStackInSlot(selectedItemIndex)
-        );
-        ChaosNetworkManager.sendTo(pkt, getServerOrgManager().getServerPlayerEntity());
+        syncSlot(i);
 
         return itemStack;
     }
@@ -629,9 +639,7 @@ public class OrgEntity extends MobEntity {
 
         if (itemstack.isEmpty()) return ActionResultType.PASS;
 
-        /*float f = (float) (blockRayTraceResult.getHitVec().x - (double) pos.getX());
-        float f1 = (float) (blockRayTraceResult.getHitVec().y - (double) pos.getY());
-        float f2 = (float) (blockRayTraceResult.getHitVec().z - (double) pos.getZ());*/
+
         boolean flag = false;
 
         if (!world.getWorldBorder().contains(pos)) {
@@ -710,8 +718,8 @@ public class OrgEntity extends MobEntity {
             ItemStack itemstack1 = actionresult.getResult();
 
             if (itemstack1 != itemstack || itemstack1.getCount() != i) {
-                this.setHeldItem(hand, itemstack1);
 
+                this.pickupItem(itemstack1);
 
                 if (itemstack1.isEmpty()) {
                     net.minecraftforge.event.ForgeEventFactory.onPlayerDestroyItem(this.getPlayerWrapper(), itemstack, hand);
@@ -758,13 +766,7 @@ public class OrgEntity extends MobEntity {
         world.getServer().getWorld(DimensionType.OVERWORLD).summonEntity(entityItem);
 
 
-        CCInventoryChangeEventPacket pkt = new CCInventoryChangeEventPacket(
-                getCCNamespace(),
-                selectedItemIndex,
-                selectedItemIndex,
-                itemHandler.getStackInSlot(selectedItemIndex)
-        );
-        ChaosNetworkManager.sendTo(pkt, getServerOrgManager().getServerPlayerEntity());
+        syncSlot(selectedItemIndex);
 
 
         ChaosCraft.LOGGER.info(this.getCCNamespace() + " - Tossed item: " + itemStack.getItem().getItem().getRegistryName() + " now holding " + itemStackCheck.getItem().getRegistryName());
@@ -942,43 +944,45 @@ public class OrgEntity extends MobEntity {
         if (item.cannotPickup()) return;
         //ChaosCraft.LOGGER.info(this.getCCNamespace() + " - Picked up: " + item.getItem().getItem().getRegistryName());
         ItemStack stack = item.getItem();
+        boolean result = pickupItem(stack);
+        if(result) {
+            item.detach();
+            //PacketHandler.INSTANCE.sendToAllTracking(new SyncHandsMessage(this.itemHandler.getStackInSlot(i), getEntityId(), i, selectedItemIndex), this);
+           item.remove();
 
+
+        }
+    }
+    public boolean pickupItem(ItemStack stack) {
         Item worldEventItem = stack.getItem();
         //inventory.addItemStackToInventory(stack);
-        for (int i = 0; i < this.itemHandler.getSlots() && !stack.isEmpty(); i++) {
-            if(getHeldItemMainhand().getItem() == Item.getItemById(0)) {
-                this.setHeldItem(Hand.MAIN_HAND, stack);
-                selectedItemIndex = i;
+        for (int i = 0; i < this.itemHandler.getSlots(); i++) {
+
+            if(
+                this.itemHandler.getStackInSlot(i).isEmpty() ||
+                this.itemHandler.getStackInSlot(i).getItem().equals(stack.getItem()) &&
+                this.itemHandler.getStackInSlot(i).getCount() + stack.getCount() < stack.getMaxStackSize()
+            ) {
+                this.itemHandler.insertItem(i, stack, false);
+                CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.ITEM_COLLECTED);
+                worldEvent.item = worldEventItem;
+                serverOrgManager.test(worldEvent);
+
+                if (observableAttributeManager != null) {
+                    observableAttributeManager.Observe(worldEventItem);
+                    //TODO: Recheck what you can craft
+                    observableAttributeManager.ObserveCraftableRecipes(this);
+                }
+                syncSlot(i);
+                return true;
             }
 
-            stack = this.itemHandler.insertItem(i, stack, false);
 
-
-
-            CCInventoryChangeEventPacket pkt = new CCInventoryChangeEventPacket(
-                    getCCNamespace(),
-                    i,
-                    selectedItemIndex,
-                    this.itemHandler.getStackInSlot(i)
-            );
-            ChaosNetworkManager.sendTo(pkt, getServerOrgManager().getServerPlayerEntity());
-
-            //PacketHandler.INSTANCE.sendToAllTracking(new SyncHandsMessage(this.itemHandler.getStackInSlot(i), getEntityId(), i, selectedItemIndex), this);
-        }
-        item.detach();
-        if (stack.isEmpty()) {
-            item.remove();
 
         }
-        CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.ITEM_COLLECTED);
-        worldEvent.item = worldEventItem;
-        serverOrgManager.test(worldEvent);
+        return false;
 
-        if(observableAttributeManager != null) {
-            observableAttributeManager.Observe(worldEventItem);
-            //TODO: Recheck what you can craft
-            observableAttributeManager.ObserveCraftableRecipes(this);
-        }
+
 
 
     }
