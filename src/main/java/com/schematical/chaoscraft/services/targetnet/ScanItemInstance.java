@@ -38,6 +38,7 @@ public class ScanItemInstance {
             throw new ChaosNetException("Invalid State: " + state);
         }
         ItemStackHandler itemStackHandler = clientOrgManager.getEntity().getItemHandler();
+
        for(int i = 0; i < itemStackHandler.getSlots(); i++){
            focusedScanEntity = new ScanEntry();
            focusedScanEntity.targetSlot = i;

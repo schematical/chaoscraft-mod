@@ -1,5 +1,6 @@
 package com.schematical.chaoscraft.services.targetnet;
 
+import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.NeuralNet;
 import com.schematical.chaoscraft.ai.OutputNeuron;
 import com.schematical.chaoscraft.ai.action.ActionBase;
@@ -52,6 +53,7 @@ public class ScanManager {
 
         if(scanItemInstance.getState().equals(ScanItemInstance.State.Pending)){
             scanItemInstance.scan();
+            return scanInstance.getScanState();
         }
         ArrayList<ScanEntry> newEntries = scanInstance.tick();
         OrgEntity orgEntity = this.clientOrgManager.getEntity();
@@ -76,7 +78,7 @@ public class ScanManager {
             for (String targetSlotId : scores.keySet()) {
                 BiologyBase biologyBase = orgEntity.getNNet().biology.get(targetSlotId);
                 if(!highestResults.containsKey(targetSlotId)){
-                    //BiologyBase biologyBase = getNNet().biology.get(targetSlotId);
+
 
                     highestResults.put(targetSlotId, new ScanResult(targetSlotId, !(biologyBase instanceof  ActionTargetSlot)));
                 }
@@ -105,6 +107,8 @@ public class ScanManager {
         ActionTargetSlot highestActionTargetSlot = null;
         ScanEntry highestActionScanEntry = null;
         ScanEntry highestItemScanEntry = null;
+        int tickCombos = 0;
+      
         for (String targetSlotId : highestResults.keySet()) {
 
             TargetSlot targetSlot = (TargetSlot)orgEntity.getNNet().getBiology(targetSlotId);
@@ -114,40 +118,39 @@ public class ScanManager {
                 ActionTargetSlot actionTargetSlot = (ActionTargetSlot) targetSlot;
                 ChaosTarget originalTarget = actionTargetSlot.getTarget();
                 for (ScanEntry topScanEntry : scanResult.getTopEntries()) {
-
-
-                    for (String itemTargetSlotId : scanItemInstance.getScanResults().keySet()) {
-                        ScanResult itemScanResult = scanItemInstance.getScanResults().get(itemTargetSlotId);
-                        for (ScanEntry topItemScanEntry : itemScanResult.getTopEntries()) {
-                            if (actionTargetSlot.validateTargetAndItem(orgEntity, topScanEntry.getChaosTarget(), topItemScanEntry.getChaosTargetItem())) {
-
-                                focusedActionScore = -9999;
-                                this.focusedActionTargetSlot = actionTargetSlot;
-                                this.focusedActionTargetSlot.setTarget(topScanEntry.getChaosTarget());
-                                this.focusedActionTargetSlot.setTargetItem(topItemScanEntry.getChaosTargetItem());
-                                if (!clientOrgManager.getActionBuffer().hasExecutedRecently(this.focusedActionTargetSlot.createAction(), 5)) {
-
-                                    List<OutputNeuron> outputs = orgEntity.getNNet().evaluate(NeuralNet.EvalGroup.ACTION);//Ideally the output neurons will set the score
-
-                                    Iterator<OutputNeuron> iterator = outputs.iterator();
-
-                                    while (iterator.hasNext()) {
-                                        OutputNeuron outputNeuron = iterator.next();
-                                        outputNeuron.execute();
-                                    }
-
-                                    if (focusedActionScore > highestATSScore) {
-                                        highestATSScore = focusedActionScore;
-                                        highestActionTargetSlot = actionTargetSlot;
-                                        highestActionScanEntry = topScanEntry;
-                                        highestItemScanEntry = topItemScanEntry;
-                                    }
-                                }
-                            }
-                        }
+                    ScanResult itemScanResult = scanItemInstance.getScanResults().get(targetSlotId);
+                    if(itemScanResult == null) {
+                        throw new ChaosNetException("Missing `itemScanResult` for " + targetSlotId);
                     }
+                    for (ScanEntry topItemScanEntry : itemScanResult.getTopEntries()) {
+                        tickCombos +=1;
+                        if (actionTargetSlot.validateTargetAndItem(orgEntity, topScanEntry.getChaosTarget(), topItemScanEntry.getChaosTargetItem())) {
 
+                            focusedActionScore = -9999;
+                            this.focusedActionTargetSlot = actionTargetSlot;
+                            this.focusedActionTargetSlot.setTarget(topScanEntry.getChaosTarget());
+                            this.focusedActionTargetSlot.setTargetItem(topItemScanEntry.getChaosTargetItem());
+                            //if (!clientOrgManager.getActionBuffer().hasExecutedRecently(this.focusedActionTargetSlot.createAction(), 5)) {
 
+                                List<OutputNeuron> outputs = orgEntity.getNNet().evaluate(NeuralNet.EvalGroup.ACTION);//Ideally the output neurons will set the score
+
+                                Iterator<OutputNeuron> iterator = outputs.iterator();
+
+                                while (iterator.hasNext()) {
+                                    OutputNeuron outputNeuron = iterator.next();
+                                    outputNeuron.execute();
+                                }
+
+                                if (focusedActionScore > highestATSScore) {
+                                    highestATSScore = focusedActionScore;
+                                    highestActionTargetSlot = actionTargetSlot;
+                                    highestActionScanEntry = topScanEntry;
+                                    highestItemScanEntry = topItemScanEntry;
+                                }
+                            //}
+                        }
+
+                    }
                 }
                 actionTargetSlot.setTarget(originalTarget);
 
@@ -170,7 +173,7 @@ public class ScanManager {
         //Add an action locally
 
 
-
+        ChaosCraft.LOGGER.info("tickCombos: " + tickCombos + " " + ((highestActionTargetSlot != null) ? highestActionTargetSlot.getActionBaseClass().getSimpleName() : " null"));
 
 
         if(highestActionTargetSlot != null) {
