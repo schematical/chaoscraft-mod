@@ -12,7 +12,7 @@ import com.schematical.chaosnet.model.ObservedAttributesElement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RTNeatTicker implements iChaosOrgTickable {
+public class RTNeatTicker extends BaseChaosEventListener {
     private final int MAX = 20 * 5;
     private CCObservableAttributeManager observableAttributeManager;
     private  int ticksSinceLastMutation = 0;
@@ -24,8 +24,8 @@ public class RTNeatTicker implements iChaosOrgTickable {
         ticksSinceLastMutation = (int)  (Math.round(Math.random() * MAX /2));
     }
 
-    @Override
-    public void Tick(BaseOrgManager serverOrgManager) {
+
+    public void onTick(BaseOrgManager serverOrgManager) {
         if( this.observableAttributeManager.newAttributes.size() != newAttributesLength){
             List<ObservedAttributesElement> newAttributes = new ArrayList<ObservedAttributesElement>();
             for(int i = newAttributesLength; i < this.observableAttributeManager.newAttributes.size(); i++){

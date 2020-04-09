@@ -55,9 +55,11 @@ public class ChaosCraftClient {
 
 
 
+
     public ChaosCraftClient(Minecraft minecraft) {
         this.minecraft = minecraft;
         chaosObserveOverlayScreen = new ChaosObserveOverlayScreen(this.minecraft);
+
     }
 
     public ChaosCraftServerPlayerInfo.State getObservationState(){
@@ -291,12 +293,12 @@ public class ChaosCraftClient {
                 (liveOrgCount) < ChaosCraft.config.maxBotCount
             )
         ) {
-
+           fireOnReport(orgsReadyToReport);
             if(thread == null) {
                 if(newOrganisms.size() > 0){
                     cleanUp();
                     Iterator<String> iterator = newOrganisms.keySet().iterator();
-                   while(iterator.hasNext()){
+                    while(iterator.hasNext()){
                         String namespace = iterator.next();
                         myOrganisms.put(namespace, newOrganisms.get(namespace));
                         iterator.remove();
@@ -315,6 +317,15 @@ public class ChaosCraftClient {
 
 
 
+    }
+
+    private void fireOnReport(List<ClientOrgManager> orgsReadyToReport) {
+        for (ClientOrgManager orgManager : orgsReadyToReport) {
+            if(!orgManager.getState().equals(ClientOrgManager.State.ReadyToReport)){
+                throw new ChaosNetException("Invalid state: " + orgManager.getState());
+            }
+            orgManager.triggerOnReport();
+        }
     }
 
 

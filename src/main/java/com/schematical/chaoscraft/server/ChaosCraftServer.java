@@ -258,7 +258,7 @@ public class ChaosCraftServer {
 
 
         sendChaosCraftEntitySpawnInfo(serverOrgManager);
-
+        serverOrgManager.triggerOnSpawned();
         return orgEntity;
     }
     protected  void sendChaosCraftEntitySpawnInfo(ServerOrgManager serverOrgManager){

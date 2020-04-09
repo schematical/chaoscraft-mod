@@ -9,8 +9,9 @@ import com.schematical.chaoscraft.network.packets.CCClientOrgDebugStateChangeReq
 import com.schematical.chaoscraft.network.packets.CCServerScoreEventPacket;
 import com.schematical.chaoscraft.server.ServerOrgManager;
 import com.schematical.chaoscraft.services.targetnet.ScanManager;
+import com.schematical.chaoscraft.tickables.BaseChaosEventListener;
+import com.schematical.chaoscraft.tickables.ChaosHighScoreTracker;
 import com.schematical.chaoscraft.tickables.OrgPositionManager;
-import com.schematical.chaoscraft.tickables.RTNeatTicker;
 import com.schematical.chaosnet.model.ChaosNetException;
 import com.schematical.chaosnet.model.Organism;
 import net.minecraft.entity.player.PlayerEntity;
@@ -34,7 +35,9 @@ public class ClientOrgManager extends BaseOrgManager {
     private ScanManager scanManager;
 
     public ClientOrgManager(){
-        this.attatchTickable(new OrgPositionManager());
+
+        this.attatchEventListener(new OrgPositionManager());
+        this.attatchEventListener(new ChaosHighScoreTracker());
     }
 
     public int getExpectedLifeEndTime(){
@@ -235,8 +238,16 @@ public class ClientOrgManager extends BaseOrgManager {
     public ScanManager getScanManager() {
         return scanManager;
     }
-
-
+    public void triggerOnReport(){
+        for (BaseChaosEventListener eventListener : getEventListeners()) {
+            eventListener.onClientReport(this);
+        }
+    }
+    public void triggerOnTickEvent() {
+        for (BaseChaosEventListener eventListener : getEventListeners()) {
+            eventListener.onClientTick(this);
+        }
+    }
     public enum State{
         Uninitialized,
         OrgAttached,

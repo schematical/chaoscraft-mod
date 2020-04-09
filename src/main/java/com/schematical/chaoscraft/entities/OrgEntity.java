@@ -1,6 +1,5 @@
 package com.schematical.chaoscraft.entities;
 
-import com.google.common.collect.Maps;
 import com.mojang.authlib.GameProfile;
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
@@ -10,21 +9,16 @@ import com.schematical.chaoscraft.ai.OutputNeuron;
 import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.events.OrgEvent;
-import com.schematical.chaoscraft.fitness.managers.FitnessManagerBase;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.CCClientOutputNeuronActionPacket;
 import com.schematical.chaoscraft.network.packets.CCInventoryChangeEventPacket;
 import com.schematical.chaoscraft.server.ServerOrgManager;
 import com.schematical.chaosnet.model.ChaosNetException;
-import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CraftingTableBlock;
 import net.minecraft.block.material.Material;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.*;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -32,9 +26,7 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.item.Items;
 import net.minecraft.item.crafting.*;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
@@ -327,7 +319,7 @@ public class OrgEntity extends MobEntity {
 
 
     public ItemStack craft(IRecipe recipe) {
-        OrgEntity.CanCraftResults canCraftResults = nNet.entity.canCraftReturnDetail(recipe,IRecipeType.CRAFTING);//TODO: Make this for real
+        OrgEntity.CanCraftResults canCraftResults = canCraftReturnDetail(recipe,IRecipeType.CRAFTING);//TODO: Make this for real
         if(!canCraftResults.equals(CanCraftResults.Success)){
             throw new ChaosNetException("Cannot craft " + recipe.getId().toString() + " - " + canCraftResults.toString());
         }
@@ -375,6 +367,7 @@ public class OrgEntity extends MobEntity {
                             }else {
                                 //matchingStack.setCount(matchingStack.getCount() - amountToSubtract);
                                 ItemStack newItemStack = itemStack.copy();
+                                newItemStack.setCount(newItemStack.getCount() - amountToSubtract);
                                 newItemStacks.put(i, newItemStack);
                                 hasMatched = true;
                             }
@@ -405,7 +398,9 @@ public class OrgEntity extends MobEntity {
             entityDropItem(outputStack.getItem(), outputStack.getCount());
             outputStack.setCount(0);
         }*/
-
+        if (!recipe.canFit(2, 2)) {
+            ChaosCraft.LOGGER.info(this.getCCNamespace() + " CRAFTED BIG ITEM: " + recipe.getId().toString());
+        }
         return outputStack;
     }
 
@@ -919,7 +914,7 @@ public class OrgEntity extends MobEntity {
                 this.clientOrgManager.markTicking();
             }
 
-            this.clientOrgManager.fireTickables();
+            this.clientOrgManager.triggerOnTickEvent();
 
 
             this.observationHack();

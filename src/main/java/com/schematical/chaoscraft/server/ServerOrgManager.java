@@ -9,6 +9,7 @@ import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.fitness.managers.EntityDiscoveryFitnessManager;
 import com.schematical.chaoscraft.fitness.managers.FitnessManagerBase;
 import com.schematical.chaoscraft.network.packets.CCClientOutputNeuronActionPacket;
+import com.schematical.chaoscraft.tickables.BaseChaosEventListener;
 import com.schematical.chaoscraft.tickables.OrgPositionManager;
 import com.schematical.chaosnet.model.ChaosNetException;
 import com.schematical.chaosnet.model.Organism;
@@ -35,7 +36,7 @@ public class ServerOrgManager extends BaseOrgManager {
     public ChunkPos currChunkPos;
     public ServerOrgManager(){
 
-        this.attatchTickable(new OrgPositionManager());
+        this.attatchEventListener(new OrgPositionManager());
     }
     public void setTmpNamespace(String _tmpNamespace){
         tmpNamespace = _tmpNamespace;
@@ -70,6 +71,7 @@ public class ServerOrgManager extends BaseOrgManager {
         spawnTime = orgEntity.world.getGameTime();
 
         setState(State.Spawned);
+        triggerOnSpawned();
     }
     public void setPlayerEntity(ServerPlayerEntity serverPlayerEntity){
         if(!state.equals(State.Uninitialized)){
@@ -80,6 +82,13 @@ public class ServerOrgManager extends BaseOrgManager {
 
         setState(State.PlayerAttached);
     }
+    public void triggerOnSpawned(){
+        for (BaseChaosEventListener eventListener : getEventListeners()) {
+            eventListener.onServerSpawn(this);
+        }
+    }
+
+
 
     public ServerPlayerEntity getServerPlayerEntity(){
         return this.serverPlayerEntity;
@@ -168,10 +177,13 @@ public class ServerOrgManager extends BaseOrgManager {
             }
             this.neuronActions.clear();
 
-            fireTickables();
-        }
-        this.getActionBuffer().execute();
 
+        }
+
+        this.getActionBuffer().execute();
+        for (BaseChaosEventListener eventListener : getEventListeners()) {
+            eventListener.onServerTick(this);
+        }
     }
     public void setState(State newState){
         if(state.equals(newState)){
@@ -194,6 +206,9 @@ public class ServerOrgManager extends BaseOrgManager {
             return;
         }
         setState(State.Dead);
+        for (BaseChaosEventListener eventListener : getEventListeners()) {
+            eventListener.onServerDeath(this);
+        }
     }
     public float getMaxLife(){
         return maxLifeSeconds;

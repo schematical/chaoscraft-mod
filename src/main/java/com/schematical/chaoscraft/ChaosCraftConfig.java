@@ -55,13 +55,16 @@ public class ChaosCraftConfig {
             ChaosCraft.LOGGER.error("Error saving Config: " + e.getMessage());
         }
     }
-    public static String getConfigPath(){
+    public static String getDirPath(){
         Map<String, String> env = System.getenv();
         String chaosdir = env.get("chaosdir");
         if(chaosdir != null){
             return chaosdir;
         }
-        return System.getProperty("user.home") + "/chaoscraft/config.json";
+        return System.getProperty("user.home") + "/chaoscraft/";
+    }
+    public static String getConfigPath(){
+        return getDirPath() + "config.json";
     }
     public void load(){
         File f = new File(getConfigPath());

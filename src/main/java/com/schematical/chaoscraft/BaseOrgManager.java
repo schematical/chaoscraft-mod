@@ -4,17 +4,15 @@ import com.schematical.chaoscraft.ai.NeuralNet;
 import com.schematical.chaoscraft.ai.action.ActionBuffer;
 import com.schematical.chaoscraft.ai.biology.BiologyBase;
 import com.schematical.chaoscraft.entities.OrgEntity;
-import com.schematical.chaoscraft.tickables.OrgPositionManager;
-import com.schematical.chaoscraft.tickables.iChaosOrgTickable;
+import com.schematical.chaoscraft.tickables.BaseChaosEventListener;
 import com.schematical.chaosnet.model.Organism;
-import net.minecraft.entity.Entity;
 
 import java.util.ArrayList;
 
 public abstract class BaseOrgManager {
     protected Organism organism;
     protected OrgEntity orgEntity;
-    private ArrayList<iChaosOrgTickable> tickables = new ArrayList<iChaosOrgTickable>();
+    private ArrayList<BaseChaosEventListener> eventListeners = new ArrayList<BaseChaosEventListener>();
     private ActionBuffer actionBuffer;
 
     public void attachOrganism(Organism organism){
@@ -41,17 +39,15 @@ public abstract class BaseOrgManager {
         return organism;
     }
 
-    public void attatchTickable(iChaosOrgTickable tickable){
-        tickables.add(tickable);
-    }
-    public void fireTickables() {
-        for (iChaosOrgTickable tickable : tickables) {
-            tickable.Tick(this);
-        }
+    public void attatchEventListener(BaseChaosEventListener tickable){
+        eventListeners.add(tickable);
     }
 
-    public iChaosOrgTickable getTickable(Class<?> t){
-        for (iChaosOrgTickable tickable : tickables) {
+    public ArrayList<BaseChaosEventListener> getEventListeners(){
+        return eventListeners;
+    }
+    public BaseChaosEventListener getTickable(Class<?> t){
+        for (BaseChaosEventListener tickable : eventListeners) {
             if(t.isInstance(tickable)){
                 return tickable;
             }

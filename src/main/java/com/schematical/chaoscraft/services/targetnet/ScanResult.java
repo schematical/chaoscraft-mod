@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class ScanResult{
-    private int max = 3;
+    private int max = 5;
     private String targetSlotId;
     private float lowestScore = 99999;
     private ArrayList<ScanEntry> scanEntries = new ArrayList<>();

@@ -110,7 +110,7 @@ public class ScanManager {
         ActionTargetSlot highestActionTargetSlot = null;
         ScanEntry highestActionScanEntry = null;
         ScanEntry highestItemScanEntry = null;
-        int tickCombos = 0;
+
 
         for (String targetSlotId : highestResults.keySet()) {
 
@@ -126,14 +126,14 @@ public class ScanManager {
                         throw new ChaosNetException("Missing `itemScanResult` for " + targetSlotId);
                     }
                     for (ScanEntry topItemScanEntry : itemScanResult.getTopEntries()) {
-                        tickCombos +=1;
+
                         if (actionTargetSlot.validateTargetAndItem(orgEntity, topScanEntry.getChaosTarget(), topItemScanEntry.getChaosTargetItem())) {
 
                             focusedActionScore = -9999;
                             this.focusedActionTargetSlot = actionTargetSlot;
                             this.focusedActionTargetSlot.setTarget(topScanEntry.getChaosTarget());
                             this.focusedActionTargetSlot.setTargetItem(topItemScanEntry.getChaosTargetItem());
-                            if (!clientOrgManager.getActionBuffer().hasExecutedRecently(this.focusedActionTargetSlot.createAction(), 5)) {
+                            if (!clientOrgManager.getActionBuffer().hasExecutedRecently(this.focusedActionTargetSlot.createAction(), 10)) {
 
                                 List<OutputNeuron> outputs = orgEntity.getNNet().evaluate(NeuralNet.EvalGroup.ACTION);//Ideally the output neurons will set the score
 
@@ -176,7 +176,6 @@ public class ScanManager {
         //Add an action locally
 
 
-        ChaosCraft.LOGGER.info("tickCombos: " + tickCombos + " " + ((highestActionTargetSlot != null) ? highestActionTargetSlot.getActionBaseClass().getSimpleName() : " null"));
 
 
         if(highestActionTargetSlot != null) {
