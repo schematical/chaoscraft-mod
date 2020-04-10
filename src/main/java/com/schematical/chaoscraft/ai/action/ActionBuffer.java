@@ -24,6 +24,8 @@ import java.util.HashMap;
 
 public class ActionBuffer {
     private BaseOrgManager orgManager;
+    private int cooldown = -1;
+
     public ActionBuffer(BaseOrgManager baseOrgManager){
         orgManager = baseOrgManager;
     }
@@ -214,6 +216,10 @@ public class ActionBuffer {
 
     public void tickClient() {
         if(currAction == null){
+            if(cooldown > 0){
+                cooldown -= 1;
+                return;
+            }
             //we should be scanning...
             ClientOrgManager clientOrgManager = (ClientOrgManager) getOrgManager();
             ScanManager scanManager = clientOrgManager.getScanManager();
@@ -236,6 +242,7 @@ public class ActionBuffer {
                 ) {
                     recentActions.add(currAction);
                     currAction = null;
+                    cooldown = 10;
                     return;
                 } else {
                     throw new ChaosNetException("Invalid ActionState at this point: " + currAction.getActionState().toString());

@@ -143,9 +143,9 @@ public class CraftAction extends NavigateToAction{
         }*/
         OrgEntity.CanCraftResults results = orgEntity.canCraftReturnDetail(recipe, recipe.getType());
         if(!results.equals(OrgEntity.CanCraftResults.Success)){
-            if(ChaosCraft.getClient() != null) {
+           /* if(ChaosCraft.getClient() != null) {
                 throw new ChaosNetException("This should not be possible. Might be able to just return false: " + recipe.getId().toString() + " - Result: " + results.toString());
-            }
+            }*/
             return false;
         }
         return true;

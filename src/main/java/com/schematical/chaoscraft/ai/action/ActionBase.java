@@ -145,8 +145,8 @@ public abstract class ActionBase {
 
     public String toString(){
         String s = this.getClass().getSimpleName();
-        s += ": " + target.toString();
-        s += " " + targetItem.toString();
+        s += " T:" + target.toString() + " -";
+        s += " I:" + targetItem.toString(getActionBuffer().getOrgManager().getEntity());
         s += " " + state.toString();
         return s;
     }

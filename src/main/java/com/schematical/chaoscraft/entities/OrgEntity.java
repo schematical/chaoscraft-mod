@@ -492,9 +492,9 @@ public class OrgEntity extends MobEntity {
 
         Material material = state.getMaterial();
         if(
-                material == Material.WATER ||
-                material == Material.AIR ||
-                material == Material.LAVA
+            material == Material.WATER ||
+            material == Material.AIR ||
+            material == Material.LAVA
         ){
             return ActionResultType.FAIL;
         }
