@@ -48,7 +48,7 @@ public class CraftAction extends NavigateToAction{
         }
         ItemStack outputStack = null;
         try {
-            outputStack = getOrgEntity().craft(recipe);
+            outputStack = getOrgEntity().craftWith(recipe, getTarget().getTargetBlockPos());
         }catch(ChaosNetException e){
             ChaosCraft.LOGGER.error(e.getMessage() + " - server is slightly out of sync?");
             markFailed();
@@ -95,19 +95,11 @@ public class CraftAction extends NavigateToAction{
         if(recipe == null){
             return false;
         }
-        if(recipe.getType().equals(IRecipeType.CRAFTING)){
-            if (!recipe.canFit(2, 2)) {
-                BlockPos blockPos = chaosTarget.getTargetBlockPos();
-                if (blockPos == null) {
-                    return false;
-                }
-                if (!(orgEntity.world.getBlockState(blockPos).getBlock() instanceof CraftingTableBlock)) {
-                    return false;
-                }
-            }
-        }else{
-            throw new ChaosNetException("TODO: Matt - write this");
+        OrgEntity.CanCraftResults results = orgEntity.canCraftWithReturnDetail(recipe,recipe.getType(), chaosTarget.getTargetBlockPos());
+        if(!results.equals(OrgEntity.CanCraftResults.Success)){
+            return false;
         }
+
         return true;
 
     }

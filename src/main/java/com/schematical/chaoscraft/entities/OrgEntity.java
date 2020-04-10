@@ -261,7 +261,26 @@ public class OrgEntity extends MobEntity {
         return false;
 
     }
+    public CanCraftResults canCraftWithReturnDetail(IRecipe recipe, IRecipeType iRecipeType, BlockPos blockPos) {
+        if(!iRecipeType.equals(IRecipeType.CRAFTING)){
+            throw new ChaosNetException("TODO: Figure out what to do with this: " + iRecipeType);
+        }
 
+        if(
+            blockPos != null &&
+            world.getBlockState(blockPos).getBlock() instanceof CraftingTableBlock
+        ){
+            if (!recipe.canFit(3, 3)) {
+                return CanCraftResults.Fail_3X3;
+            }
+        }else{
+            if (!recipe.canFit(2, 2)) {
+                return CanCraftResults.Fail_2X2;
+            }
+
+        }
+        return canCraftReturnDetail(recipe, iRecipeType);
+    }
     public CanCraftResults canCraftReturnDetail(IRecipe recipe, IRecipeType iRecipeType) {
         //Check to see if they have the items in inventory for that
 
@@ -279,20 +298,7 @@ public class OrgEntity extends MobEntity {
         ICraftingRecipe craftingRecipe = (ICraftingRecipe)recipe;
         if(!craftingRecipe.getType().)*/
         RecipeItemHelper recipeItemHelper = getRecipeItemHelper();
-        boolean isUsingCraftingTable = false;
-        BlockRayTraceResult rayTraceResult = nNet.entity.rayTraceBlocks(nNet.entity.REACH_DISTANCE);
-        if(world.getBlockState(rayTraceResult.getPos()).getBlock() instanceof CraftingTableBlock){
-            isUsingCraftingTable = true;
-        }
-        if(!isUsingCraftingTable) {
-            if (!recipe.canFit(2, 2)) {
-                return CanCraftResults.Fail_2X2;
-            }
-        }else{
-            if (!recipe.canFit(3, 3)) {
-                return CanCraftResults.Fail_3X3;
-            }
-        }
+
         boolean result = recipeItemHelper.canCraft(recipe, null);
         if(!result){
             return CanCraftResults.Fail_RecipeHelper;
@@ -318,8 +324,8 @@ public class OrgEntity extends MobEntity {
     }
 
 
-    public ItemStack craft(IRecipe recipe) {
-        OrgEntity.CanCraftResults canCraftResults = canCraftReturnDetail(recipe,IRecipeType.CRAFTING);//TODO: Make this for real
+    public ItemStack craftWith(IRecipe recipe, BlockPos blockPos) {
+        OrgEntity.CanCraftResults canCraftResults = canCraftWithReturnDetail(recipe,IRecipeType.CRAFTING, blockPos);//TODO: Make this for real
         if(!canCraftResults.equals(CanCraftResults.Success)){
             throw new ChaosNetException("Cannot craft " + recipe.getId().toString() + " - " + canCraftResults.toString());
         }
@@ -389,7 +395,7 @@ public class OrgEntity extends MobEntity {
         ItemStack outputStack = recipe.getRecipeOutput().copy();
         //ChaosCraft.LOGGER.info(this.getCCNamespace() + " - Crafted: " + outputStack.getDisplayName());
         //if(newItemSlot != -1) {
-            itemHandler.setStackInSlot(newItemSlot,outputStack);//        orgInventory.add(emptySlotIndex, outputStack);
+            itemHandler.setStackInSlot(newItemSlot, outputStack);//        orgInventory.add(emptySlotIndex, outputStack);
 
            syncSlot(newItemSlot);
             observableAttributeManager.ObserveCraftableRecipes(this);

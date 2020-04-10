@@ -2,12 +2,15 @@ package com.schematical.chaoscraft.ai.outputs.rawnav;
 
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.OutputNeuron;
+import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaosnet.model.ChaosNetException;
+import com.sun.org.apache.xpath.internal.operations.Or;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.RecipeManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockRayTraceResult;
 import org.json.simple.JSONObject;
 
 
@@ -68,7 +71,9 @@ public class CraftOutput extends OutputNeuron {
         //ChaosCraft.logger.info("Attempting to Craft: " + recipe.getRegistryName().toString());
         ItemStack outputStack = null;
         try {
-            outputStack = nNet.entity.craft(recipe);
+            OrgEntity orgEntity = (OrgEntity) getEntity();
+            BlockRayTraceResult rayTraceResult = orgEntity.rayTraceBlocks(orgEntity.REACH_DISTANCE);
+            outputStack = nNet.entity.craftWith(recipe, rayTraceResult.getPos());
         }catch(ChaosNetException e){
             ChaosCraft.LOGGER.error(e.getMessage() + " - server is slightly out of sync");
             return;

@@ -293,8 +293,9 @@ public class ChaosCraftClient {
                 (liveOrgCount) < ChaosCraft.config.maxBotCount
             )
         ) {
-           fireOnReport(orgsReadyToReport);
+
             if(thread == null) {
+                triggerOnReport(orgsReadyToReport);
                 if(newOrganisms.size() > 0){
                     cleanUp();
                     Iterator<String> iterator = newOrganisms.keySet().iterator();
@@ -319,7 +320,7 @@ public class ChaosCraftClient {
 
     }
 
-    private void fireOnReport(List<ClientOrgManager> orgsReadyToReport) {
+    private void triggerOnReport(List<ClientOrgManager> orgsReadyToReport) {
         for (ClientOrgManager orgManager : orgsReadyToReport) {
             if(!orgManager.getState().equals(ClientOrgManager.State.ReadyToReport)){
                 throw new ChaosNetException("Invalid state: " + orgManager.getState());
