@@ -355,11 +355,15 @@ public class OrgEntity extends MobEntity {
         /*ArrayList<ItemStack> itemStacks = (ArrayList<ItemStack>)Arrays.asList(matchingStacks);*/
         HashMap<Integer, ItemStack> newItemStacks = new HashMap<>();
         for (Ingredient recipeItem : recipeItems) {
+            ItemStack[] matchingStacks = recipeItem.getMatchingStacks();
             boolean hasMatched = false;
-            for(int i = 0; i < slots; i++) {
+            if(matchingStacks.length == 0){
+                hasMatched = true;
+            }
+            for(int i = 0; i < slots && !hasMatched; i++) {
                 ItemStack itemStack = itemHandler.getStackInSlot(i);
                 if(!itemStack.isEmpty()) {
-                    ItemStack[] matchingStacks = recipeItem.getMatchingStacks();
+
 
                     for (int ii = 0; ii < matchingStacks.length && !hasMatched; ii++) {
                         ItemStack matchingStack = matchingStacks[ii];
@@ -382,8 +386,22 @@ public class OrgEntity extends MobEntity {
                 }
 
             }
+
             if(!hasMatched){
-                throw new ChaosNetException("Missing ingreedient for recipe: " + recipe.getId().toString());
+                String message = "AttemptingToCraft:" + recipe.getId().toString() + "\n";
+
+                message += "Requirements: (OR) - length: " +  matchingStacks.length + "\n";
+                for (int ii = 0; ii < matchingStacks.length; ii++) {
+                    message += "  " + matchingStacks[ii].getItem().getRegistryName().toString() + " x " + matchingStacks[ii].getCount() + "\n";
+                }
+                message += "Inventory: \n";
+                for(int i = 0; i < slots; i++) {
+                    ItemStack itemStack = itemHandler.getStackInSlot(i);
+                    if (!itemStack.isEmpty()) {
+                        message += "  " + itemStack.getItem().getRegistryName().toString() + " x " + itemStack.getCount() + "\n";
+                    }
+                }
+                throw new ChaosNetException( "Missing ingreedient for recipe: " + recipe.getId().toString() + " \n" + message);
             }
         }
 

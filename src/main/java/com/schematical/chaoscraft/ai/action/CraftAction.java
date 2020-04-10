@@ -6,6 +6,7 @@ import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.util.ChaosTarget;
 import com.schematical.chaoscraft.util.ChaosTargetItem;
 import com.schematical.chaosnet.model.ChaosNetException;
+import net.minecraft.block.Block;
 import net.minecraft.block.CraftingTableBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -21,6 +22,17 @@ public class CraftAction extends NavigateToAction{
     }
     @Override
     protected void _tick() {
+       /* if (!getTargetItem().getRecipe().canFit(2, 2)) {
+            ChaosCraft.LOGGER.info(getOrgEntity().getCCNamespace() + " TRYING TO  CRAFT BIG ITEM: " + getTargetItem().getRecipe().getId().toString());
+        }
+        if(
+                getTarget().getTargetBlockPos()  != null
+        ) {
+            Block block = getOrgEntity().world.getBlockState(getTarget().getTargetBlockPos()).getBlock();
+            if (block instanceof CraftingTableBlock) {
+                ChaosCraft.LOGGER.info(getOrgEntity().getCCNamespace() + " Targeted a crafting table while trying to craft: " + getTargetItem().getRecipe().getId().toString());
+            }
+        }*/
         tickLook();
         if(
             !getTarget().canEntityTouch(getOrgEntity()) &&
@@ -91,10 +103,13 @@ public class CraftAction extends NavigateToAction{
     public static boolean validateTargetAndItem(OrgEntity orgEntity, ChaosTarget chaosTarget, ChaosTargetItem chaosTargetItem) {
 
 
-        IRecipe recipe = chaosTargetItem.getRecipe();
-        if(recipe == null){
+       if(!validateTarget(orgEntity, chaosTarget)){
+           return false;
+       }
+        if(!validateTargetItem(orgEntity, chaosTargetItem)){
             return false;
         }
+        IRecipe recipe = chaosTargetItem.getRecipe();
         OrgEntity.CanCraftResults results = orgEntity.canCraftWithReturnDetail(recipe,recipe.getType(), chaosTarget.getTargetBlockPos());
         if(!results.equals(OrgEntity.CanCraftResults.Success)){
             return false;
@@ -104,9 +119,17 @@ public class CraftAction extends NavigateToAction{
 
     }
 
-    public static boolean validateTarget(OrgEntity orgEntity, ChaosTarget chaosTarget, ChaosTargetItem chaosTargetItem) {
+    public static boolean validateTarget(OrgEntity orgEntity, ChaosTarget chaosTarget) {
 
-
+        if(chaosTarget.getTargetBlockPos() == null){
+            return false;
+        }
+        Block block = orgEntity.world.getBlockState(chaosTarget.getTargetBlockPos()).getBlock();
+        if (block instanceof CraftingTableBlock) {
+            //ChaosCraft.LOGGER.info(orgEntity.getCCNamespace() + "VALIDATE CRAFTING TABLE! ");
+        }else{
+            //return false;//TODO: remvoe this later
+        }
         return true;
 
     }
@@ -115,10 +138,15 @@ public class CraftAction extends NavigateToAction{
         if(recipe == null){
             return false;
         }
-
-        if(!orgEntity.canCraft(recipe)){
-            throw new ChaosNetException("This should not be possible. Might be able to just return false");
-            //return false;
+      /*  if (!recipe.canFit(2, 2)) {
+            ChaosCraft.LOGGER.info(orgEntity.getCCNamespace() + " CAN CRAFT BIG ITEM: " + recipe.getId().toString());
+        }*/
+        OrgEntity.CanCraftResults results = orgEntity.canCraftReturnDetail(recipe, recipe.getType());
+        if(!results.equals(OrgEntity.CanCraftResults.Success)){
+            if(ChaosCraft.getClient() != null) {
+                throw new ChaosNetException("This should not be possible. Might be able to just return false: " + recipe.getId().toString() + " - Result: " + results.toString());
+            }
+            return false;
         }
         return true;
 
