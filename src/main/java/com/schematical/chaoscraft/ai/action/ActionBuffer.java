@@ -116,6 +116,8 @@ public class ActionBuffer {
                 }
                 /*throw new ChaosNetException*/
                 ChaosCraft.LOGGER.error(message);
+                currAction.markFailed();
+                return this;
             }
         } catch (NoSuchMethodException e) {
             throw new ChaosNetException(e.getMessage());

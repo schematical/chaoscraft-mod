@@ -131,9 +131,9 @@ public abstract class ActionBase {
      /*   if(!this.actionBuffer.isServer()){
             throw new ChaosNetException("Client should not be changing `actionBuffer` state");
         }*/
-        if(!this.state.equals(ActionState.Running)){
+       /* if(!this.state.equals(ActionState.Running)){
             throw new ChaosNetException("Invalid `ActionBase.state`: " + this.state);
-        }
+        }*/
         this.setState(ActionState.Failed);
     }
     public void attachScoreEvent(CCServerScoreEventPacket scoreEventPacket){
