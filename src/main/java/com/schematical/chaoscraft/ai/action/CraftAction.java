@@ -128,7 +128,7 @@ public class CraftAction extends NavigateToAction{
         if (block instanceof CraftingTableBlock) {
             //ChaosCraft.LOGGER.info(orgEntity.getCCNamespace() + "VALIDATE CRAFTING TABLE! ");
         }else{
-            //return false;//TODO: remvoe this later
+            return false;//TODO: remvoe this later
         }
         return true;
 

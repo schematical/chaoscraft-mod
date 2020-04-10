@@ -111,7 +111,11 @@ public class ActionTargetSlot extends TargetSlot {
         } catch (IllegalAccessException e) {
             throw new ChaosNetException(e.getMessage());
         } catch (InvocationTargetException e) {
-            throw new ChaosNetException(actionBaseClass.getClass().getSimpleName() + "   " + e.getMessage());
+            String stack = "";
+            for (int i = 0; i < e.getStackTrace().length; i++) {
+                stack += " - " + e.getStackTrace()[i].toString() + "\n";
+            }
+            throw new ChaosNetException(actionBaseClass.getSimpleName() + "   " + e.getMessage() + " \n Stack:\n" + stack);
         }
 
     }
