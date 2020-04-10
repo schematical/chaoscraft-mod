@@ -750,7 +750,7 @@ public class OrgEntity extends MobEntity {
     }
 
 
-    public ItemStack tossEquippedStack() {
+    public ItemStack tossEquippedStack(BlockPos blockPos) {
 
         ItemStack itemStack = getHeldItem(Hand.MAIN_HAND);
         if(
@@ -759,19 +759,8 @@ public class OrgEntity extends MobEntity {
         ){
             return null;
         }
-        Vec3d itemVec3d = null;
 
 
-
-        Vec3d vec3d = this.getEyePosition(1);
-        Vec3d vec3d1 = this.getLook(1);
-        itemVec3d = vec3d.add(
-            new Vec3d(
-                vec3d1.x * 5d,
-                vec3d1.y * 5d,
-                vec3d1.z * 5d
-            )
-        );
 
          itemHandler.extractItem(selectedItemIndex, itemStack.getCount(), false);
 
@@ -780,15 +769,12 @@ public class OrgEntity extends MobEntity {
         if(!itemStackCheck.equals(ItemStack.EMPTY)){
             throw new ChaosNetException("Hand still had equipped: " + itemStackCheck.getItem().toString() + " - after it was removed");
         }
-        ItemEntity entityItem = new ItemEntity(world, itemVec3d.x, itemVec3d.y, itemVec3d.z);
+        ItemEntity entityItem = new ItemEntity(world, blockPos.getX(), blockPos.getY(), blockPos.getZ());
         entityItem.setItem(itemStack);
         world.getServer().getWorld(DimensionType.OVERWORLD).summonEntity(entityItem);
 
 
         syncSlot(selectedItemIndex);
-
-
-        ChaosCraft.LOGGER.info(this.getCCNamespace() + " - Tossed item: " + itemStack.getItem().getItem().getRegistryName() + " now holding " + itemStackCheck.getItem().getRegistryName());
         return itemStack;
     }
     public ItemStack getItemStackFromInventory(String resourceId) {
