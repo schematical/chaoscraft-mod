@@ -42,11 +42,16 @@ public class ICSetScoreOutput extends OutputNeuron {
     public float evaluate(){
         if(!loaded) {
             BiologyBase biologyBase = this.nNet.getBiology(targetSlotId);
+            if(biologyBase == null){
+               throw new ChaosNetException("No `actionTargetSlot` with id " + targetSlotId );
+            }
             if (biologyBase instanceof ActionTargetSlot) {
                 actionTargetSlot = (ActionTargetSlot) biologyBase;
                 if (actionTargetSlot == null) {
                     throw new ChaosNetException("Cannot find `actionTargetSlot`: " + targetSlotId);
                 }
+            }else{
+                throw new ChaosNetException("Invalid `actionTargetSlot`: " + targetSlotId + " - " + biologyBase.getClass().getSimpleName());
             }
             loaded = true;
         }
@@ -69,6 +74,9 @@ public class ICSetScoreOutput extends OutputNeuron {
             chaosTargetItem = new ChaosTargetItem(scanEntry.targetSlot);
         }else{
             throw new ChaosNetException("Invalid `scanEntry` for item scan");
+        }
+        if (actionTargetSlot == null) {
+            throw new ChaosNetException("Null `actionTargetSlot`: " + targetSlotId);
         }
         boolean isValid = actionTargetSlot.validateTargetItem((OrgEntity)getEntity(),chaosTargetItem);
         if(!isValid){

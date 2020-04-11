@@ -38,16 +38,14 @@ public class EntityDiscoveryFitnessManager extends FitnessManagerBase {
         }
         EventHolder eventHolder = events.get(event.eventType.toString()).get(event.toSimpleId());
         eventHolder.count += 1;
-        int baseScore = 3;
-        if( event.eventType.equals(CCWorldEvent.Type.ITEM_CRAFTED)){
-            baseScore = 10;
-        }
+        int baseScore = 1;
+
         int score = (int)Math.round(baseScore/eventHolder.count);
-        if(score > 0) {
+        if(eventHolder.count == 1) {
             EntityFitnessRule entityFitnessRule = new EntityFitnessRule();
             entityFitnessRule.id = event.eventType.toString() + ":" + event.toSimpleId();
             EntityFitnessScoreEvent scoreEvent = new EntityFitnessScoreEvent(event, score, entityFitnessRule);
-            scoreEvent.life = score * 2;
+            scoreEvent.life = score * 5;
             addScoreEvent(scoreEvent);
         }
     }

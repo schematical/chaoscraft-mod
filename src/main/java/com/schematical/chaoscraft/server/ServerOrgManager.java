@@ -124,11 +124,7 @@ public class ServerOrgManager extends BaseOrgManager {
         }
         BlockPos orgPos = orgEntity.getPosition();
 
-     /*   Vec3i newChunk = new Vec3i(
-                (int)Math.floor(orgPos.getX()/ 16),
-                (int)Math.floor(orgPos.getY()/ 16),
-                (int)Math.floor(orgPos.getZ()/ 16)
-        );*/
+
         ChunkPos newChunkPos = new ChunkPos(orgPos);
         if(
             currChunkPos == null ||

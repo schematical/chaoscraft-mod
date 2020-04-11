@@ -592,7 +592,10 @@ public class ChaosCraftServer {
 
 
     public void chunkEnterEvent(EntityEvent.EnteringChunk event) {
-        if(event.getEntity() instanceof OrgEntity && event.getEntity().world instanceof ServerWorld) {
+        if(
+            event.getEntity() instanceof OrgEntity &&
+            event.getEntity().world instanceof ServerWorld
+        ) {
             ServerWorld world = (ServerWorld) event.getEntity().world;
 
             ChunkPos oldPos = new ChunkPos(event.getOldChunkX(), event.getOldChunkZ());
@@ -620,6 +623,8 @@ public class ChaosCraftServer {
             if(chunkLoadCount.containsKey(newPos)) {
                 //We have a count saved, so add that
                 newCount += chunkLoadCount.get(newPos);
+            }else {
+                //world.forceChunk(newPos.x, newPos.z, true);
             }
 
             //Write it!

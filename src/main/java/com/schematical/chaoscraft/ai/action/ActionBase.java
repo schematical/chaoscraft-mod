@@ -221,6 +221,9 @@ public abstract class ActionBase {
         Interrupted,
         Timedout
     }
+    public class ActionBaseValidator{
+
+    }
 
 
 }

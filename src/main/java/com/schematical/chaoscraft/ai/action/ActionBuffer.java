@@ -103,7 +103,7 @@ public class ActionBuffer {
                 if(chaosTargetItem.getRecipe() != null){
                     message +=chaosTargetItem.getRecipe().getId().toString()+ " ";
                 }else if(chaosTargetItem.getInventorySlot() != null){
-                    message += itemStackHandler.getStackInSlot(chaosTargetItem.getInventorySlot()).getItem().getRegistryName().toString() + " x " + itemStackHandler.getStackInSlot(chaosTargetItem.getInventorySlot()).getCount()+ " ";
+                    message += itemStackHandler.getStackInSlot(chaosTargetItem.getInventorySlot()).getItem().getRegistryName().toString() + "(Slot: " + chaosTargetItem.getInventorySlot() + ") x " + itemStackHandler.getStackInSlot(chaosTargetItem.getInventorySlot()).getCount()+ " ";
                 }else{
                     message += "T_ITEM IS NULL  ";
                 }

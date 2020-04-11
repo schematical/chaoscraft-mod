@@ -29,11 +29,11 @@ public class TossItemAction extends NavigateToAction{
             itemStack == null ||
             itemStack.isEmpty()
         ){
-            markCompleted();
+            markFailed();
             return;
         }
 
-
+        markCompleted();
         CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.TOSSED_EQUIPPED_STACK);
         worldEvent.item = itemStack.getItem();
         getOrgEntity().getServerOrgManager().test(worldEvent);
