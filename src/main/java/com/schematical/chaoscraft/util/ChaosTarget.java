@@ -242,6 +242,9 @@ public class ChaosTarget {
         switch(parts[0]){
             case("entity"):
                 chaosTarget.targetEntity = world.getEntityByID(Integer.parseInt(parts[1]));
+                /*if(chaosTarget.targetEntity == null){
+                    throw new ChaosNetException("No targetEntity with entityId: " + parts[1]);
+                }*/
                 break;
             case("blockpos"):
                 String[] parts2 = parts[1].split(",");

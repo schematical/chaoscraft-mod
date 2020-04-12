@@ -10,10 +10,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
 import net.minecraft.world.dimension.DimensionType;
+import net.minecraftforge.items.ItemStackHandler;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 public abstract class ActionBase {
+    //public static final ActionBaseValidator VALIDATOR = new ActionBaseValidator();
     private ActionBuffer actionBuffer;
     private float actionScore = 0;
     protected int actionAgeTicks = 0;
@@ -24,22 +28,7 @@ public abstract class ActionBase {
 
     //TODO: Track score events that happened when this action was happening
 
-    public static boolean validateTargetAndItem(OrgEntity orgEntity, ChaosTarget chaosTarget, ChaosTargetItem chaosTargetItem){
-        if(
-            validateTarget( orgEntity, chaosTarget) &&
-            validateTargetItem( orgEntity, chaosTargetItem)
-        ) {
-            return true;
-        }else{
-            return false;
-        }
-    }
-    public static boolean validateTarget(OrgEntity orgEntity, ChaosTarget chaosTarget){
-        return true;
-    }
-    public static boolean validateTargetItem(OrgEntity orgEntity, ChaosTargetItem chaosTargetItem){
-        return true;
-    }
+
     public void setActionBuffer(ActionBuffer actionBuffer){
         this.actionBuffer = actionBuffer;
     }
@@ -128,13 +117,24 @@ public abstract class ActionBase {
     }
 
     public void markFailed(){
-     /*   if(!this.actionBuffer.isServer()){
-            throw new ChaosNetException("Client should not be changing `actionBuffer` state");
-        }*/
-       /* if(!this.state.equals(ActionState.Running)){
+
+        if(!this.state.equals(ActionState.Running)){
             throw new ChaosNetException("Invalid `ActionBase.state`: " + this.state);
-        }*/
+        }
         this.setState(ActionState.Failed);
+    }
+    public void markInvalid(){
+        if(!this.state.equals(ActionState.Pending)){
+            throw new ChaosNetException("Invalid `ActionBase.state`: " + this.state);
+        }
+        if(ChaosCraft.getClient() != null){
+            if(isValid()){
+                ChaosCraft.LOGGER.error("Client for some reason still thinks this to be a valid action: \n" + debugLog());
+            }
+        }else{
+            ChaosCraft.LOGGER.error( debugLog());
+        }
+        this.setState(ActionState.Invalid);
     }
     public void attachScoreEvent(CCServerScoreEventPacket scoreEventPacket){
         scoreEvents.add(scoreEventPacket);
@@ -213,17 +213,77 @@ public abstract class ActionBase {
         );
     }
 
+    public String debugLog() {
+        String message = "Invalid Action: " + getClass().getSimpleName() + " " + getOrgEntity().getCCNamespace() + " ";
+        ChaosTarget target = getTarget();
+        if(target.getTargetBlockPos() != null){
+            message += target.getTargetBlockPos().toString()+ " ";
+            message += getActionBuffer().getOrgManager().getEntity().world.getBlockState(target.getTargetBlockPos()).getBlock().getRegistryName().toString() + " ";
+        }else if(target.getTargetEntity() != null){
+            message += target.getTargetEntity().getType().getRegistryName().toString()+ " ";
+        }else{
+            message += "TARGET IS NULL  ";
+        }
+        ItemStackHandler itemStackHandler = getActionBuffer().getOrgManager().getEntity().getItemHandler();
+        ChaosTargetItem chaosTargetItem = getTargetItem();
+        if(chaosTargetItem.getRecipe() != null){
+            message +=chaosTargetItem.getRecipe().getId().toString()+ " ";
+        }else if(chaosTargetItem.getInventorySlot() != null){
+            message += itemStackHandler.getStackInSlot(chaosTargetItem.getInventorySlot()).getItem().getRegistryName().toString() + "(Slot: " + chaosTargetItem.getInventorySlot() + ") x " + itemStackHandler.getStackInSlot(chaosTargetItem.getInventorySlot()).getCount()+ " ";
+        }else{
+            message += "T_ITEM IS NULL  ";
+        }
+        message += "\n\n";
+
+        for(int i = 0; i < itemStackHandler.getSlots(); i++){
+            if(!itemStackHandler.getStackInSlot(i).isEmpty()) {
+                message += i + " " + itemStackHandler.getStackInSlot(i).getItem().getRegistryName().toString() + " x " + itemStackHandler.getStackInSlot(i).getCount() + "\n";
+            }
+        }
+        return message;
+    }
+    public boolean isValid(){
+        try {
+            Method m = getClass().getMethod("validateTargetAndItem", OrgEntity.class, ChaosTarget.class, ChaosTargetItem.class);
+
+            boolean results = (boolean)m.invoke(null, getActionBuffer().getOrgManager().getEntity(), getTarget(), getTargetItem());
+            return results;
+        } catch (NoSuchMethodException e) {
+            throw new ChaosNetException(e.getMessage());
+        } catch (IllegalAccessException e) {
+            throw new ChaosNetException(e.getMessage());
+        } catch (InvocationTargetException e) {
+            throw new ChaosNetException(e.getMessage());
+        }
+    }
+
     public enum ActionState{
         Pending,
         Running,
+        Invalid,
         Completed,
         Failed,
         Interrupted,
         Timedout
     }
-    public class ActionBaseValidator{
-
-    }
+    //public static class ActionBaseValidator{
+        public static boolean validateTargetAndItem(OrgEntity orgEntity, ChaosTarget chaosTarget, ChaosTargetItem chaosTargetItem){
+            if(
+                    validateTarget( orgEntity, chaosTarget) &&
+                            validateTargetItem( orgEntity, chaosTargetItem)
+            ) {
+                return true;
+            }else{
+                return false;
+            }
+        }
+        public static boolean validateTarget(OrgEntity orgEntity, ChaosTarget chaosTarget){
+            return true;
+        }
+        public static boolean validateTargetItem(OrgEntity orgEntity, ChaosTargetItem chaosTargetItem){
+            return true;
+        }
+    //}
 
 
 }

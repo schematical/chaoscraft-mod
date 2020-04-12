@@ -42,7 +42,7 @@ public class MeleeAttackAction extends NavigateToAction{
     public static boolean validateTargetAndItem(OrgEntity orgEntity, ChaosTarget chaosTarget, ChaosTargetItem chaosTargetItem){
         if(
                 validateTarget( orgEntity, chaosTarget) &&
-                        validateTargetItem( orgEntity, chaosTargetItem)
+                validateTargetItem( orgEntity, chaosTargetItem)
         ) {
             return true;
         }else{

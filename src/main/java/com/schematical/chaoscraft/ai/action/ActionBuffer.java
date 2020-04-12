@@ -55,7 +55,6 @@ public class ActionBuffer {
             ServerOrgManager serverOrgManager = ((ServerOrgManager) orgManager);
             if(serverOrgManager.getState().equals(ServerOrgManager.State.Spawned)){
                 serverOrgManager.markTicking();
-
             }
         }
 
@@ -64,7 +63,8 @@ public class ActionBuffer {
                 //Do nothng
             }else if(
                 currAction.getActionState().equals(ActionBase.ActionState.Completed) ||
-                currAction.getActionState().equals(ActionBase.ActionState.Failed)
+                currAction.getActionState().equals(ActionBase.ActionState.Failed) ||
+                currAction.getActionState().equals(ActionBase.ActionState.Invalid)
             ){
                 //recentActions.add(currAction);//Prob remove this. This should happen client side
                 currAction = null;
@@ -83,48 +83,8 @@ public class ActionBuffer {
         }*/
         action.setActionBuffer(this);
         currAction = action;
-        try {
-            Method m = currAction.getClass().getMethod("validateTargetAndItem", OrgEntity.class, ChaosTarget.class, ChaosTargetItem.class);
-
-            boolean results = (boolean)m.invoke(null, getOrgManager().getEntity(), currAction.getTarget(), currAction.getTargetItem());
-            if(!results){
-                String message = "Invalid Action: " + currAction.getClass().getSimpleName() + " ";
-                ChaosTarget target = currAction.getTarget();
-                if(target.getTargetBlockPos() != null){
-                    message += target.getTargetBlockPos().toString()+ " ";
-                    message += getOrgManager().getEntity().world.getBlockState(target.getTargetBlockPos()).getBlock().getRegistryName().toString() + " ";
-                }else if(target.getTargetEntity() != null){
-                    message += target.getTargetEntity().getType().getRegistryName().toString()+ " ";
-                }else{
-                    message += "TARGET IS NULL  ";
-                }
-                ItemStackHandler itemStackHandler = getOrgManager().getEntity().getItemHandler();
-                ChaosTargetItem chaosTargetItem = currAction.getTargetItem();
-                if(chaosTargetItem.getRecipe() != null){
-                    message +=chaosTargetItem.getRecipe().getId().toString()+ " ";
-                }else if(chaosTargetItem.getInventorySlot() != null){
-                    message += itemStackHandler.getStackInSlot(chaosTargetItem.getInventorySlot()).getItem().getRegistryName().toString() + "(Slot: " + chaosTargetItem.getInventorySlot() + ") x " + itemStackHandler.getStackInSlot(chaosTargetItem.getInventorySlot()).getCount()+ " ";
-                }else{
-                    message += "T_ITEM IS NULL  ";
-                }
-                message += "\n\n";
-
-                for(int i = 0; i < itemStackHandler.getSlots(); i++){
-                    if(!itemStackHandler.getStackInSlot(i).isEmpty()) {
-                        message += i + " " + itemStackHandler.getStackInSlot(i).getItem().getRegistryName().toString() + " x " + itemStackHandler.getStackInSlot(i).getCount() + "\n";
-                    }
-                }
-                /*throw new ChaosNetException*/
-                ChaosCraft.LOGGER.error(message);
-                currAction.markFailed();
-                return this;
-            }
-        } catch (NoSuchMethodException e) {
-            throw new ChaosNetException(e.getMessage());
-        } catch (IllegalAccessException e) {
-            throw new ChaosNetException(e.getMessage());
-        } catch (InvocationTargetException e) {
-            throw new ChaosNetException(e.getMessage());
+        if(!currAction.isValid()){
+            currAction.markInvalid();
         }
 
 
@@ -191,6 +151,8 @@ public class ActionBuffer {
             simpleActionStats.score += currAction.getScoreTotal();
         }else if(message.actionState.equals(ActionBase.ActionState.Interrupted)){
             currAction.markInterrupted();
+        }else if(message.actionState.equals(ActionBase.ActionState.Invalid)){
+            currAction.markInvalid();
         }else{
             throw new ChaosNetException("Invalid state: " + message.actionState);
         }
@@ -240,7 +202,8 @@ public class ActionBuffer {
                     //Do nothng
                 } else if (
                     currAction.getActionState().equals(ActionBase.ActionState.Completed) ||
-                    currAction.getActionState().equals(ActionBase.ActionState.Failed)
+                    currAction.getActionState().equals(ActionBase.ActionState.Failed) ||
+                    currAction.getActionState().equals(ActionBase.ActionState.Invalid)
                 ) {
                     recentActions.add(currAction);
                     currAction = null;
