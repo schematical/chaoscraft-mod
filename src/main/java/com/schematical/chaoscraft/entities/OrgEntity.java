@@ -164,9 +164,7 @@ public class OrgEntity extends MobEntity {
     }
 
 
-    public ItemStackHandler getItemStackHandeler(){
-        return this.itemHandler;
-    }
+
     @Override
     public void jump(){
         if(
@@ -562,7 +560,7 @@ public class OrgEntity extends MobEntity {
 
     public ItemStack equip(String resourceId) {
 
-        ItemStackHandler itemStackHandler = getItemStackHandeler();
+        ItemStackHandler itemStackHandler = getItemHandler();
         int slots = itemStackHandler.getSlots();
         for(int i = 0; i < slots; i++) {
             ItemStack itemStack = itemStackHandler.getStackInSlot(i);
@@ -586,7 +584,7 @@ public class OrgEntity extends MobEntity {
 
     public ItemStack equipSlot(int i) {
 
-        ItemStackHandler itemStackHandler = getItemStackHandeler();
+        ItemStackHandler itemStackHandler = getItemHandler();
         ItemStack itemStack = itemStackHandler.getStackInSlot(i);
 
 

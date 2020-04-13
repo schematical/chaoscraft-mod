@@ -59,7 +59,8 @@ public class CCInventoryChangeEventPacket {
                 //Load the NNet into memory
                 ClientOrgManager clientOrgManager = ChaosCraft.getClient().myOrganisms.get(message.orgNamespace);
                 if(clientOrgManager == null){
-                    throw new ChaosNetException("Cannot find Org: " + message.orgNamespace);
+                    /*throw new ChaosNetException*/ChaosCraft.LOGGER.warn("Cannot find Org: " + message.orgNamespace);
+                    return;
                 }
                 clientOrgManager.getEntity().updateInventory(message.index, message.itemStack, message.selectedItemIndex);
 

@@ -3,6 +3,7 @@ package com.schematical.chaoscraft.ai.action;
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.network.packets.CCServerScoreEventPacket;
+import com.schematical.chaoscraft.server.ServerOrgManager;
 import com.schematical.chaoscraft.util.ChaosTarget;
 import com.schematical.chaoscraft.util.ChaosTargetItem;
 import com.schematical.chaosnet.model.ChaosNetException;
@@ -133,6 +134,7 @@ public abstract class ActionBase {
             }
         }else{
             ChaosCraft.LOGGER.error( debugLog());
+            ((ServerOrgManager) getActionBuffer().getOrgManager()).resync();
         }
         this.setState(ActionState.Invalid);
     }

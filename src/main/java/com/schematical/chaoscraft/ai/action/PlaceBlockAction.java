@@ -3,7 +3,6 @@ package com.schematical.chaoscraft.ai.action;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.util.ChaosTarget;
 import com.schematical.chaoscraft.util.ChaosTargetItem;
-import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
@@ -60,7 +59,7 @@ public class PlaceBlockAction extends NavigateToAction{
         if(chaosTargetItem.getInventorySlot() == null){
             return false;
         }
-        ItemStack itemStack = orgEntity.getItemStackHandeler().getStackInSlot(chaosTargetItem.getInventorySlot());
+        ItemStack itemStack = orgEntity.getItemHandler().getStackInSlot(chaosTargetItem.getInventorySlot());
         if(
             itemStack == null ||
             itemStack.isEmpty()

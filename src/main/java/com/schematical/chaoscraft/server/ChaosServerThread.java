@@ -67,7 +67,7 @@ public class ChaosServerThread implements Runnable {
             switch(statusCode){
                 case(400):
 
-                    ChaosCraft.getServer().repair();
+                    //ChaosCraft.getServer().repair();
                     break;
                 case(401):
                     ChaosCraft.auth();

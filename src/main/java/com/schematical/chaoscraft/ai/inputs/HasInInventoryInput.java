@@ -23,7 +23,7 @@ public class HasInInventoryInput extends InputNeuron {
             setCurrentValue(-1);
             return getCurrentValue();
         }
-        ItemStackHandler itemStackHandler = nNet.entity.getItemStackHandeler();
+        ItemStackHandler itemStackHandler = nNet.entity.getItemHandler();
 
         setCurrentValue(itemStackHandler.getStackInSlot(slot).getCount() / item.getItemStackLimit(itemStackHandler.getStackInSlot(slot)));
         return getCurrentValue();

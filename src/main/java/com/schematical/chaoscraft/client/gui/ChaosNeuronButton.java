@@ -10,7 +10,7 @@ import java.util.HashMap;
 @OnlyIn(Dist.CLIENT)
 public class ChaosNeuronButton extends Button {
 
-    public static final int EXPANDED_WIDTH = 200;
+    public static final int EXPANDED_WIDTH = 350;
     public static final int MIN_WIDTH = 40;
     public enum State{
         Open,
@@ -18,6 +18,7 @@ public class ChaosNeuronButton extends Button {
     }
     private final NeuronBase neuronBase;
     private final int i;
+    private int defaultY;
 
     public State state = State.Closed;
     private ChaosNNetViewOverlayGui chaosNNetViewOverlayGui;
@@ -31,6 +32,7 @@ public class ChaosNeuronButton extends Button {
                 (button)->{
 
                 });
+        defaultY = y;
         String text = null;
         this.chaosNNetViewOverlayGui = chaosNNetViewOverlayGui;
         this.neuronBase  = neuronBase;
@@ -43,6 +45,7 @@ public class ChaosNeuronButton extends Button {
     }
 
     public void renderRefresh(){
+        y = defaultY + (int)Math.round(chaosNNetViewOverlayGui.getScrollAmount());
         if(state.equals(State.Closed)){
             switch(neuronBase._base_type()){
                 case(com.schematical.chaoscraft.Enum.INPUT):

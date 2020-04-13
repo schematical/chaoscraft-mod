@@ -18,7 +18,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '0.3.10'
+version = '0.3.14'
 group = 'com.schematical.chaoscraft' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'chaoscraft'
 

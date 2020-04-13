@@ -13,7 +13,7 @@ import java.util.Collections;
 public class ChaosHighScoreTracker extends BaseChaosEventListener {
     private static ClientOrgManager highScoreOrgManager = null;
     private static int highScore = -99999;
-    private static final int minThreshold = 50;
+    private static final int minThreshold = 20;
 
     public void onClientReport(ClientOrgManager clientOrgManager) {
         Double score = clientOrgManager.getServerScoreEventTotal();

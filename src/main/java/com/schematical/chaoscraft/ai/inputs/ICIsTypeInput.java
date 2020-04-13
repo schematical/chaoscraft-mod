@@ -20,7 +20,10 @@ public class ICIsTypeInput extends InputNeuron {
         ScanManager scanManager =  ((OrgEntity)this.getEntity()).getClientOrgManager().getScanManager();
         ScanEntry scanEntry = scanManager.getScanItemInstance().getFocusedScanEntry();
 
-        if(scanEntry.atts.resourceId.equals(scanEntry)) {
+        if(
+            scanEntry.targetSlot != null &&
+            nNet.entity.getItemHandler().getStackInSlot(scanEntry.targetSlot).getItem().getRegistryName().toString().equals(itemId)
+        ) {
             setCurrentValue(1);
         }
 

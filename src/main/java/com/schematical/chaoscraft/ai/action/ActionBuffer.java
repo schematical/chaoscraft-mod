@@ -101,6 +101,7 @@ public class ActionBuffer {
             //clientActionPacket.setBiology(targetSlot);
             ChaosNetworkManager.sendToServer(pkt);
         }else{
+
             CCActionStateChangeEventPacket pkt = new CCActionStateChangeEventPacket(
                     orgManager.getCCNamespace(),
                     currAction.getActionState()

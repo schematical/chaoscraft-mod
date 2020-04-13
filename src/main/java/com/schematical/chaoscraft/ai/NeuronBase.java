@@ -195,7 +195,7 @@ public abstract class NeuronBase extends InnovationBase {
 
     }
     public String toLongString(){
-        String response = this.getClass().getSimpleName().replace("Input","") + " " + this.activator.getClass().getSimpleName() + " ";
+        String response = this.getClass().getSimpleName().replace("Input","") + " "/* + this.activator.getClass().getSimpleName() + " "*/;
         response += getPrettyCurrValue();
         return response;
     }

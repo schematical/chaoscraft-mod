@@ -8,15 +8,19 @@ import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.fitness.managers.EntityDiscoveryFitnessManager;
 import com.schematical.chaoscraft.fitness.managers.FitnessManagerBase;
+import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.CCClientOutputNeuronActionPacket;
+import com.schematical.chaoscraft.network.packets.CCInventoryResyncEventPacket;
 import com.schematical.chaoscraft.tickables.BaseChaosEventListener;
 import com.schematical.chaoscraft.tickables.OrgPositionManager;
+import com.schematical.chaosnet.ChaosNet;
 import com.schematical.chaosnet.model.ChaosNetException;
 import com.schematical.chaosnet.model.Organism;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.items.ItemStackHandler;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -134,6 +138,15 @@ public class ServerOrgManager extends BaseOrgManager {
             currChunkPos = newChunkPos;
 
         }
+    }
+    public void resync(){
+
+        CCInventoryResyncEventPacket packet = new CCInventoryResyncEventPacket(
+                orgEntity.getCCNamespace(),
+                orgEntity.getSelectedItemIndex(),
+                orgEntity.getItemHandler()
+        );
+        ChaosNetworkManager.sendTo(packet, serverPlayerEntity);
     }
     public void tickOrg(){
         if( this.orgEntity.getBoundingBox() == null){

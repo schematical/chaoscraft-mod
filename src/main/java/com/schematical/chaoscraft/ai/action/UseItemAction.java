@@ -11,7 +11,6 @@ import net.minecraft.item.*;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 
 public class UseItemAction extends NavigateToAction{
@@ -122,7 +121,7 @@ public class UseItemAction extends NavigateToAction{
         if(chaosTargetItem.getInventorySlot() == null){
             return false;
         }
-        ItemStack itemStack = orgEntity.getItemStackHandeler().getStackInSlot(chaosTargetItem.getInventorySlot());
+        ItemStack itemStack = orgEntity.getItemHandler().getStackInSlot(chaosTargetItem.getInventorySlot());
         if(
             itemStack == null ||
             itemStack.isEmpty()
