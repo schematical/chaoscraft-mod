@@ -43,7 +43,7 @@ public class WonderAction extends NavigateToAction{
     public void shuffleBlockPos(){
         BlockPos pos = this.getOrgEntity().getPosition().add(
                 (int)(Math.round(Math.random() * range * 2) - range),
-                (int)(Math.round(Math.random() * 5 * 2) - 5),
+                (int)(Math.round(Math.random() * 1 * 2) - 1),
                 (int)(Math.round(Math.random() * range * 2) - range)
         );
         setTarget(new ChaosTarget(pos));
