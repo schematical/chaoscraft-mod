@@ -10,7 +10,7 @@ import java.util.HashMap;
 @OnlyIn(Dist.CLIENT)
 public class ChaosNeuronButton extends Button {
 
-    public static final int EXPANDED_WIDTH = 350;
+    public static final int EXPANDED_WIDTH = 250;
     public static final int MIN_WIDTH = 40;
     public enum State{
         Open,
