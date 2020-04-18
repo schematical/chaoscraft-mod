@@ -1,0 +1,22 @@
+
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+  build:
+    commands:
+      - pwd
+      - echo Build started on `date`
+      - envsubst '${CURSE_FORGE_API_KEY}' < build.gradle >> build.gradle
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - ls -la  ~/
+      - gradle build
+artifacts:
+  files:
+    - 'build/lib/*'
+  base-directory: 'src/*'
+  discard-paths:
+    no

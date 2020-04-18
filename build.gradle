@@ -11,6 +11,8 @@ buildscript {
 
 plugins {
     id 'com.github.johnrengelman.shadow' version '5.2.0'
+    id 'net.minecraftforge.gradle.forge' version '2.0.2'
+    id 'com.matthewprenger.cursegradle' version "1.4.0"
 }
 
 apply plugin: 'net.minecraftforge.gradle'
@@ -89,7 +91,14 @@ minecraft {
         }
     }
 }
-
+curseforge {
+    apiKey = '$CURSE_FORGE_API_KEY' // This should really be in a gradle.properties file
+    project {
+        id = '317351'
+        changelog = 'Changes' // A file can also be set using: changelog = file('changelog.txt')
+        releaseType = 'alpha'
+    }
+}
 configurations {
     shade
 }
