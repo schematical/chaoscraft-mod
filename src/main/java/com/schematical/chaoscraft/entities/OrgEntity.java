@@ -99,8 +99,8 @@ public class OrgEntity extends MobEntity {
         //EnchantmentHelper.addRandomEnchantment(new Random(), itemStack, 10, true);
         itemHandler.setStackInSlot(1, itemStack);*/
 
-        itemHandler.setStackInSlot(1,  new ItemStack(Items.STONE_PICKAXE, 1));
-        setHeldItem(Hand.MAIN_HAND,  itemHandler.getStackInSlot(1));
+        //itemHandler.setStackInSlot(1,  new ItemStack(Items.STONE_PICKAXE, 1));
+       //setHeldItem(Hand.MAIN_HAND,  itemHandler.getStackInSlot(1));
     }
     public int getSelectedItemIndex(){
         return selectedItemIndex;
