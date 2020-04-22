@@ -5,6 +5,7 @@ import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.biology.BiologyBase;
 import com.schematical.chaoscraft.ai.biology.TargetSlot;
 import com.schematical.chaoscraft.ai.biology.iTargetable;
+import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.server.ServerOrgManager;
 import com.schematical.chaoscraft.services.targetnet.ScanManager;
@@ -27,7 +28,12 @@ public class OrgPositionManager extends BaseChaosEventListener {
     public boolean isLookingAtTarget = false;
     public float lookAtScore = 0;
 
-
+    public void onClientTick(ClientOrgManager clientOrgManager){
+        onTick(clientOrgManager);
+    }
+    public void onServerTick(ServerOrgManager serverOrgManager){
+        onTick(serverOrgManager);
+    }
     public void onTick(BaseOrgManager orgManager) {
         boolean isServer = orgManager instanceof ServerOrgManager;
         if( this.startPos == null){

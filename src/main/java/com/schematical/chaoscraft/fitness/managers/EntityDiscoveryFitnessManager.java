@@ -21,8 +21,8 @@ public class EntityDiscoveryFitnessManager extends FitnessManagerBase {
         if(
                 !(
                         event.eventType.equals(CCWorldEvent.Type.BLOCK_MINED) ||
-                        event.eventType.equals(CCWorldEvent.Type.BLOCK_PLACED) ||
-                        event.eventType.equals(CCWorldEvent.Type.ITEM_COLLECTED) ||
+                        //event.eventType.equals(CCWorldEvent.Type.BLOCK_PLACED) ||
+                        //event.eventType.equals(CCWorldEvent.Type.ITEM_COLLECTED) ||
                         event.eventType.equals(CCWorldEvent.Type.ITEM_CRAFTED)||
                         event.eventType.equals(CCWorldEvent.Type.ITEM_USED) /*||
                         event.eventType.equals(CCWorldEvent.Type.TOUCHED_BLOCK)*/

@@ -25,7 +25,7 @@ public class RTNeatTicker extends BaseChaosEventListener {
     }
 
 
-    public void onTick(BaseOrgManager serverOrgManager) {
+    public void onClientTick(BaseOrgManager serverOrgManager) {
         if( this.observableAttributeManager.newAttributes.size() != newAttributesLength){
             List<ObservedAttributesElement> newAttributes = new ArrayList<ObservedAttributesElement>();
             for(int i = newAttributesLength; i < this.observableAttributeManager.newAttributes.size(); i++){
