@@ -294,6 +294,10 @@ public class ChaosCraftServer {
         return serverOrgManagers;
     }
     public void loadFitnessFunctions(){
+        //Load the roles... package this as a single request
+
+
+
         if(
             fitnessManager != null ||
             ChaosCraft.config.trainingRoomNamespace == null ||

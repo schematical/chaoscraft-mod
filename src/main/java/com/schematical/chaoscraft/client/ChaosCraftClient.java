@@ -38,7 +38,7 @@ public class ChaosCraftClient {
     protected String trainingRoomNamespace;
     protected String trainingRoomUsernameNamespace;
     protected String sessionNamespace;
-    protected String env = "prod";
+    protected String env = "pre-alpha";
 
     public ArrayList<String> _debugSpawnedOrgNamespaces = new ArrayList<String>();
     public ArrayList<String> _debugReportedOrgNamespaces = new ArrayList<String>();
