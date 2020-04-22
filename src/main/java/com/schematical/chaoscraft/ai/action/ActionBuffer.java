@@ -14,11 +14,7 @@ import com.schematical.chaoscraft.util.ChaosTarget;
 import com.schematical.chaoscraft.util.ChaosTargetItem;
 import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.world.World;
-import net.minecraftforge.items.ItemStackHandler;
-import org.apache.logging.log4j.core.jmx.Server;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 

@@ -26,6 +26,7 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
+import net.minecraft.item.Items;
 import net.minecraft.item.crafting.*;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
@@ -98,7 +99,8 @@ public class OrgEntity extends MobEntity {
         //EnchantmentHelper.addRandomEnchantment(new Random(), itemStack, 10, true);
         itemHandler.setStackInSlot(1, itemStack);*/
 
-        //itemHandler.setStackInSlot(1,  new ItemStack(Items.OAK_LOG, 4));
+        //itemHandler.setStackInSlot(1,  new ItemStack(Items.STONE_PICKAXE, 1));
+       //setHeldItem(Hand.MAIN_HAND,  itemHandler.getStackInSlot(1));
     }
     public int getSelectedItemIndex(){
         return selectedItemIndex;
@@ -502,7 +504,8 @@ public class OrgEntity extends MobEntity {
 
         boolean harvest = state.getBlock().canHarvestBlock(state, world, pos, this.getPlayerWrapper());
 
-        ItemStack stack = getHeldItemMainhand();
+        ItemStack stack = itemHandler.getStackInSlot(selectedItemIndex);//;
+
         //String tool = state.getBlock().getHarvestTool(state);
 
 
@@ -524,6 +527,11 @@ public class OrgEntity extends MobEntity {
             //ChaosCraft.logger.info(this.getName() + " Mining: " + state.getBlock().getRegistryName().toString() +  " Held Stack: " + stack.getItem().getRegistryName().toString() + "  Harvest: "  + harvest);
 
             if (harvest) {
+                if(!stack.isEmpty()) {
+                    if (stack.getItem().getRegistryName().toString().equals("minecraft:wooden_pickaxe")) {
+                        ChaosCraft.LOGGER.info("Mined something with a pickaxe:");
+                    }
+                }
                 state.getBlock().harvestBlock(world, this.getPlayerWrapper(), pos, state, world.getTileEntity(pos), stack);
                 CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.BLOCK_MINED);
                 worldEvent.block = state.getBlock();

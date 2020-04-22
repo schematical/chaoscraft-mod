@@ -1,4 +1,4 @@
-#Disclaimer: 
+## Disclaimer: 
 I, Matt(`schematical`) am NOT an academic. Writing papers is NOT my strong point. Writing code is. 
 Please keep that in mind as you read this. I am sure I will refer to things in terms that would differ from what most data scientists would.  
 
@@ -78,7 +78,7 @@ When an Org decides to scan the TargetNNet ticks out of sync with the DefaultNNe
 Additionally we added another Biological trait called a TargetSlot. The idea behind this was that we would allow them to target more than one type. 
 The state data from the selected target for each TargetSlot is fed into the default nNet allowing it to make decisions based on what is targeted.
 
-####Craft/Item NNets:
+#### Craft/Item NNets:
 We did the same thing with selecting items in the inventory or recipes to craft.
 
 ### Action Buffer:

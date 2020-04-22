@@ -4,6 +4,7 @@ import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.util.ChaosTarget;
 import com.schematical.chaoscraft.util.ChaosTargetItem;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
@@ -49,10 +50,17 @@ public class PlaceBlockAction extends NavigateToAction{
         if(chaosTarget.getTargetBlockPos() == null){
             return false;
         }
+        BlockState blockState = orgEntity.world.getBlockState(chaosTarget.getTargetBlockPos());
 
-        /*if(chaosTarget.isVisiblyBlocked(orgEntity)){
+
+        Material material = blockState.getMaterial();
+        if(
+                material == Material.WATER ||
+                material == Material.AIR ||
+                material == Material.LAVA
+        ){
             return false;
-        }*/
+        }
         return true;
     }
     public static boolean validateTargetItem(OrgEntity orgEntity,  ChaosTargetItem chaosTargetItem) {
