@@ -860,7 +860,7 @@ public class OrgEntity extends MobEntity {
         if(desiredLookVec == null){
             desiredLookVec = this.getLook(1);
         }
-        this.nNet.entity.getLookController().setLookPosition(
+        this.getLookController().setLookPosition(
                 desiredLookVec.getX(),
                 desiredLookVec.getY(),
                 desiredLookVec.getZ(),

@@ -220,7 +220,7 @@ public class ChaosCraftServer {
     }
 
     public OrgEntity spawnOrg(ServerOrgManager serverOrgManager) {
-        if(!serverOrgManager.getState().equals(ServerOrgManager.State.QueuedForSpawn)) {
+        if(!serverOrgManager.getState().equals(ServerOrgManager.State.QueuedForSpawn)) {//ServerOrgManager.State.QueuedForSpawn
 
 
 
