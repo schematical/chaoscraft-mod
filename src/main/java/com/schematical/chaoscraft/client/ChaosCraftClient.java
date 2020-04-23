@@ -47,7 +47,7 @@ public class ChaosCraftClient {
     public HashMap<String, ClientOrgManager> myOrganisms = new HashMap<String, ClientOrgManager>();
     public Thread thread;
     public static List<KeyBinding> keyBindings = new ArrayList<KeyBinding>();
-    private int ticksRequiredToCallChaosNet = 100;
+    private int ticksRequiredToCallChaosNet = 20 * 15;
     private ChaosCraftServerPlayerInfo.State observationState = ChaosCraftServerPlayerInfo.State.None;
     private Minecraft minecraft;
     private ChaosPlayerNeuronTestScreen chaosPlayerNeuronTestScreen;
