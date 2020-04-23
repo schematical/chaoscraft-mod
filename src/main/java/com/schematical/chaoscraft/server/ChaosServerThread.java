@@ -84,7 +84,7 @@ public class ChaosServerThread implements Runnable {
         }catch(Exception exception){
             ChaosCraft.getServer().consecutiveErrorCount += 1;
 
-            ChaosCraft.LOGGER.error("ChaosServerThread Error: " + exception.getMessage() + " - exception type: " + exception.getClass().getName());
+            ChaosCraft.LOGGER.error("XChaosServerThread Error: " + exception.getMessage() + " - exception type: " + exception.getClass().getName() + "\n\n" + exception.getStackTrace());
            // ChaosCraft.getClient().thread = null;//End should cover this
 
 

@@ -221,7 +221,7 @@ public class ChaosCraft
         CCTestCommand.register(event.getCommandDispatcher());
         CCHardResetCommand.register(event.getCommandDispatcher());
         CCBlockResetCommand.register(event.getCommandDispatcher());
-        server.loadFitnessFunctions();
+        server.loadRoles();
     }
 
     @SubscribeEvent

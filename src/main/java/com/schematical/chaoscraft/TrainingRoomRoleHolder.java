@@ -16,8 +16,9 @@ public class TrainingRoomRoleHolder {
         fitnessManager = new ChaosCraftFitnessManager();
         JSONParser parser = new JSONParser();
         try{
+            String fitnessRulesRaw = trainingRoomRole.getFitnessRulesRaw();
             JSONArray obj = (JSONArray) parser.parse(
-                    trainingRoomRole.getFitnessRules().getFitnessRulesRaw()
+                    fitnessRulesRaw
             );
             fitnessManager.parseData(obj);
         } catch (ParseException e) {
