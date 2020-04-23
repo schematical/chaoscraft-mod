@@ -3,6 +3,7 @@ package com.schematical.chaoscraft.server;
 import com.amazonaws.opensdk.config.ConnectionConfiguration;
 import com.amazonaws.opensdk.config.TimeoutConfiguration;
 import com.schematical.chaoscraft.ChaosCraft;
+import com.schematical.chaoscraft.TrainingRoomRoleHolder;
 import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.entities.AlteredBlockInfo;
 import com.schematical.chaoscraft.entities.OrgEntity;
@@ -19,9 +20,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.stats.Stat;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -31,11 +30,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.entity.EntityEvent;
-import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import org.json.simple.JSONArray;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -46,13 +40,13 @@ import java.util.List;
 
 public class ChaosCraftServer {
     public HashMap<String, ChaosCraftServerPlayerInfo> userMap = new HashMap<String, ChaosCraftServerPlayerInfo>();
-
+    private State state = State.Unitilized;
     public int consecutiveErrorCount;
     public Thread thread;
     public MinecraftServer server;
     public static int spawnHash;
     public static HashMap<String, ServerOrgManager> organisms = new HashMap<String, ServerOrgManager>();
-    public ChaosCraftFitnessManager fitnessManager;
+    public HashMap<String, TrainingRoomRoleHolder> trainingRoomRoles = new HashMap<>();
     public int longTickCount = 0;
     public int ticksSinceLastThread = -1;
     public iServerSpawnProvider spawnProvider = new SpawnBlockPosProvider();//PlayerSpawnPosProvider();
@@ -66,9 +60,9 @@ public class ChaosCraftServer {
 
     public void tick(){
         if(
-            ChaosCraft.getServer().fitnessManager == null
+           state.equals(State.Unitilized)
         ){
-            loadFitnessFunctions();
+            loadRoles();
             return;
         }
 
@@ -220,7 +214,7 @@ public class ChaosCraftServer {
     }
 
     public OrgEntity spawnOrg(ServerOrgManager serverOrgManager) {
-        if(!serverOrgManager.getState().equals(ServerOrgManager.State.QueuedForSpawn)) {//ServerOrgManager.State.QueuedForSpawn
+        if(!serverOrgManager.getState().equals(ServerOrgManager.State.QueuedForSpawn)) {
 
 
 
@@ -293,38 +287,37 @@ public class ChaosCraftServer {
         }
         return serverOrgManagers;
     }
-    public void loadFitnessFunctions(){
-        //Load the roles... package this as a single request
-
+    public void loadRoles(){
 
 
         if(
-            fitnessManager != null ||
             ChaosCraft.config.trainingRoomNamespace == null ||
             ChaosCraft.config.trainingRoomUsernameNamespace == null
         ){
             ChaosCraft.LOGGER.error("Not enough TrainingRoom Data set");
             return;
-
         }
+        //Load the roles... package this as a single request
+        GetUsernameTrainingroomsTrainingroomPackageRequest request = new GetUsernameTrainingroomsTrainingroomPackageRequest();
+        request.setTrainingroom(ChaosCraft.config.trainingRoomNamespace);
+        request.setUsername(ChaosCraft.config.trainingRoomUsernameNamespace);
 
-        GetUsernameTrainingroomsTrainingroomFitnessrulesRequest fitnessRulesRequest = new GetUsernameTrainingroomsTrainingroomFitnessrulesRequest();
-        fitnessRulesRequest.setTrainingroom(ChaosCraft.config.trainingRoomNamespace);
-        fitnessRulesRequest.setUsername(ChaosCraft.config.trainingRoomUsernameNamespace);
+
         try {
-            GetUsernameTrainingroomsTrainingroomFitnessrulesResult result = ChaosCraft.sdk.getUsernameTrainingroomsTrainingroomFitnessrules(fitnessRulesRequest);
-            String fitnessRulesRaw = result.getTrainingRoomFitnessRules().getFitnessRulesRaw();
+            GetUsernameTrainingroomsTrainingroomPackageResult result = ChaosCraft.sdk.getUsernameTrainingroomsTrainingroomPackage(request);
+            TrainingRoomPackage trainingRoomPackage = result.getTrainingRoomPackage();
+            for (TrainingRoomRole role : trainingRoomPackage.getRoles()) {
 
-            JSONParser parser = new JSONParser();
 
-            JSONArray obj = (JSONArray) parser.parse(
-                fitnessRulesRaw
-            );
-            ChaosCraft.getServer().fitnessManager = new ChaosCraftFitnessManager();
-            ChaosCraft.getServer().fitnessManager.parseData(obj);
 
-        } catch (ParseException e) {
-            e.printStackTrace();
+
+                TrainingRoomRoleHolder trainingRoomRoleHolder = new TrainingRoomRoleHolder(role);
+
+                trainingRoomRoles.put(role.getNamespace(), trainingRoomRoleHolder);
+
+            }
+
+
         }catch(ChaosNetException exception) {
             //logger.error(exeception.getMessage());
             ChaosCraft.getServer().consecutiveErrorCount += 1;
@@ -682,5 +675,9 @@ public class ChaosCraftServer {
 
 
         }
+    }
+    public enum State{
+        Unitilized,
+        FitnessLoaded
     }
 }
