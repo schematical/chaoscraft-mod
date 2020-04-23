@@ -69,6 +69,21 @@ public class ChaosNetworkInfoOverlayGui extends Screen {
         for ( ClientOrgManager.State state : coll.keySet() ) {
             message += " - " + state + ": " + coll.get(state).size() + "\n";
         }
+        HashMap<String, Integer> roleCounts = new HashMap<>();
+        for (ClientOrgManager clientOrgManager : chaosCraftClient.myOrganisms.values()) {
+            String roleNamespace = clientOrgManager.getOrganism().getTrainingRoomRoleNamespace();
+            if(!roleCounts.containsKey(roleNamespace)){
+                roleCounts.put(roleNamespace, 0);
+            }
+            roleCounts.put(roleNamespace,  roleCounts.get(roleNamespace));
+
+        }
+        message += "Role Counts: \n";
+        for (String s : roleCounts.keySet()) {
+            message += " - " + s + ": " + roleCounts.get(s) + "\n";
+        }
+
+
         message += "\n";
         if(chaosCraftClient.lastResponse != null) {
             Stats stats = chaosCraftClient.lastResponse.getStats();
