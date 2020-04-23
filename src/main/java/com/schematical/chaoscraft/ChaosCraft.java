@@ -143,6 +143,10 @@ public class ChaosCraft
             env = env.toString();
         }
         switch(env){
+            case("prod"):
+            case("pre-alpha"):
+                builder = builder.endpoint("https://api.chaosnet.ai");
+                break;
             case("dev"):
                 builder = builder.endpoint("https://dev-api.chaosnet.ai");
         }
