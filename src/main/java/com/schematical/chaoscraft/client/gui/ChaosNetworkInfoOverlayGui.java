@@ -75,7 +75,7 @@ public class ChaosNetworkInfoOverlayGui extends Screen {
             if(!roleCounts.containsKey(roleNamespace)){
                 roleCounts.put(roleNamespace, 0);
             }
-            roleCounts.put(roleNamespace,  roleCounts.get(roleNamespace));
+            roleCounts.put(roleNamespace,  roleCounts.get(roleNamespace) + 1);
 
         }
         message += "Role Counts: \n";

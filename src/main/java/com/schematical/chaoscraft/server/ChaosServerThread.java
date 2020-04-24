@@ -62,7 +62,7 @@ public class ChaosServerThread implements Runnable {
 
         }catch(ChaosNetException exception){
             //logger.error(exeception.getMessage());
-            ChaosCraft.getServer().consecutiveErrorCount += 1;
+             ChaosCraft.getServer().consecutiveErrorCount += 1;
 
             int statusCode = exception.sdkHttpMetadata().httpStatusCode();
             switch(statusCode){
