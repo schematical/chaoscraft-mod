@@ -33,7 +33,7 @@ public class EntityRuleFitnessManager extends FitnessManagerBase {
 
     public void test(CCWorldEvent event){
         String trainingRoomRoleNamespace = serverOrgManager.getOrganism().getTrainingRoomRoleNamespace();
-       TrainingRoomRoleHolder trainingRoomRoleHolder =  ChaosCraft.getServer().trainingRoomRoles.get(trainingRoomRoleNamespace);
+        TrainingRoomRoleHolder trainingRoomRoleHolder =  ChaosCraft.getServer().trainingRoomRoles.get(trainingRoomRoleNamespace);
         List<EntityFitnessScoreEvent> _scoreEvents = trainingRoomRoleHolder.fitnessManager.testEntityFitnessEvent(this.serverOrgManager.getEntity(), event);
         Iterator<EntityFitnessScoreEvent> iterator =_scoreEvents.iterator();
         while(iterator.hasNext()){

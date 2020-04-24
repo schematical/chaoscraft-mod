@@ -26,6 +26,9 @@ public class OrgEntityRenderer extends LivingRenderer<OrgEntity, BipedModel<OrgE
     @Override
     public ResourceLocation getEntityTexture(@Nonnull OrgEntity entity) {
         ClientOrgManager clientOrgManager =  entity.getClientOrgManager();
+        if(clientOrgManager == null){
+            return new ResourceLocation(ChaosCraft.MODID, "meeseeks.png");
+        }
         Organism organism = clientOrgManager.getOrganism();
         String trainingRoomRoleNamespace =organism.getTrainingRoomRoleNamespace();
         switch(trainingRoomRoleNamespace){
