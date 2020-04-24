@@ -44,6 +44,7 @@ public class ChaosServerThread implements Runnable {
             GetUsernameTrainingroomsTrainingroomOrganismsResult response = ChaosCraft.sdk.getUsernameTrainingroomsTrainingroomOrganisms(request);
             List<Organism> organisms = response.getOrganismCollection();
 
+
             for (Organism organism : organisms) {
                 if(!ChaosCraft.getServer().organisms.containsKey(organism.getNamespace())){
                     ChaosCraft.LOGGER.error("Server - Cant find `ChaosCraft.getServer().organisms` org: " + organism.getNamespace());
