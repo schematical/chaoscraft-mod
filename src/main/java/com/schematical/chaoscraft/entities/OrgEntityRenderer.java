@@ -23,6 +23,15 @@ public class OrgEntityRenderer extends LivingRenderer<OrgEntity, BipedModel<OrgE
     @Nullable
     @Override
     public ResourceLocation getEntityTexture(@Nonnull OrgEntity entity) {
+        String trainingRoomRoleNamespace = entity.getClientOrgManager().getOrganism().getTrainingRoomRoleNamespace();
+        switch(trainingRoomRoleNamespace){
+            case("hiders"):
+                return new ResourceLocation(ChaosCraft.MODID, "mario.png");
+
+            case("seekers"):
+                return new ResourceLocation(ChaosCraft.MODID, "ironman.png");
+
+        }
         return new ResourceLocation(ChaosCraft.MODID, "bot.png");
     }
 }
