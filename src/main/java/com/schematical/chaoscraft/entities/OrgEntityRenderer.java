@@ -2,6 +2,8 @@ package com.schematical.chaoscraft.entities;
 
 import com.schematical.chaoscraft.ChaosCraft;
 
+import com.schematical.chaoscraft.client.ClientOrgManager;
+import com.schematical.chaosnet.model.Organism;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.layers.HeldItemLayer;
@@ -23,7 +25,9 @@ public class OrgEntityRenderer extends LivingRenderer<OrgEntity, BipedModel<OrgE
     @Nullable
     @Override
     public ResourceLocation getEntityTexture(@Nonnull OrgEntity entity) {
-        String trainingRoomRoleNamespace = entity.getClientOrgManager().getOrganism().getTrainingRoomRoleNamespace();
+        ClientOrgManager clientOrgManager =  entity.getClientOrgManager();
+        Organism organism = clientOrgManager.getOrganism();
+        String trainingRoomRoleNamespace =organism.getTrainingRoomRoleNamespace();
         switch(trainingRoomRoleNamespace){
             case("hiders"):
                 return new ResourceLocation(ChaosCraft.MODID, "mario.png");

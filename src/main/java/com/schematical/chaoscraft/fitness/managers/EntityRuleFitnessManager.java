@@ -1,6 +1,7 @@
 package com.schematical.chaoscraft.fitness.managers;
 
 import com.schematical.chaoscraft.ChaosCraft;
+import com.schematical.chaoscraft.TrainingRoomRoleHolder;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.events.EntityFitnessScoreEvent;
@@ -31,9 +32,9 @@ public class EntityRuleFitnessManager extends FitnessManagerBase {
 
 
     public void test(CCWorldEvent event){
-
-
-        List<EntityFitnessScoreEvent> _scoreEvents = ChaosCraft.getServer().trainingRoomRoles.get(serverOrgManager.getOrganism().getTrainingRoomRoleNamespace()).fitnessManager.testEntityFitnessEvent(this.serverOrgManager.getEntity(), event);
+        String trainingRoomRoleNamespace = serverOrgManager.getOrganism().getTrainingRoomRoleNamespace();
+       TrainingRoomRoleHolder trainingRoomRoleHolder =  ChaosCraft.getServer().trainingRoomRoles.get(trainingRoomRoleNamespace);
+        List<EntityFitnessScoreEvent> _scoreEvents = trainingRoomRoleHolder.fitnessManager.testEntityFitnessEvent(this.serverOrgManager.getEntity(), event);
         Iterator<EntityFitnessScoreEvent> iterator =_scoreEvents.iterator();
         while(iterator.hasNext()){
             EntityFitnessScoreEvent scoreEvent = iterator.next();
