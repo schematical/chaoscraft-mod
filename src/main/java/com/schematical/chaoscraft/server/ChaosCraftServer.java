@@ -314,7 +314,7 @@ public class ChaosCraftServer {
                 TrainingRoomRoleHolder trainingRoomRoleHolder = new TrainingRoomRoleHolder(role);
 
                 trainingRoomRoles.put(role.getNamespace(), trainingRoomRoleHolder);
-
+                state = State.FitnessLoaded;
             }
 
 
