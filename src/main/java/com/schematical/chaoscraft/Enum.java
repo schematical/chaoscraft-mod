@@ -16,5 +16,12 @@ public class Enum {
     public final static String MIDDLE = "MIDDLE";
     public final static int SPEED = 4;
     public final static String BLOCK_TOUCH_STATE = "BLOCK_TOUCH_STATE";
+    public final static String _base_type = "bt";//"_base_type";
+    public final static String $TYPE = "t";//"_base_type";
+    public final static String dependencies = "d";//"dependencies";
+    public final static String $EVAL_GROUP = "eg";//"$EVAL_GROUP";
+    public final static String weight = "w";//"weight";
+    public final static String activator = "a";//"activator";
+    public final static String neuronId = "n";//"activator";
 }
 

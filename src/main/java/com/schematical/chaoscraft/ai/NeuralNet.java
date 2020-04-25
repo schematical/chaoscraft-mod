@@ -118,7 +118,7 @@ public class NeuralNet {
             /*Iterator<JSONObject>*/ iterator = neurons.iterator();
             while (iterator.hasNext()) {
                 JSONObject neuronBaseJSON = iterator.next();
-                Object type = neuronBaseJSON.get("$TYPE");
+                Object type = neuronBaseJSON.get(Enum.$TYPE);
 
 
                 if(type == null){
@@ -130,9 +130,21 @@ public class NeuralNet {
                 if(clsName.equals("TargetCandidateCountInput")){//TODO: Remove this hackyness
                     clsName = "TargetCandidateCanSeeInput";
                 }
-
-
-                String fullClassName = "com.schematical.chaoscraft.ai." + neuronBaseJSON.get("_base_type").toString()  +  "s." + clsName;
+                String baseType = null;
+                switch(neuronBaseJSON.get(Enum._base_type).toString()){
+                    case("o"):
+                        baseType = Enum.OUTPUT.toLowerCase();
+                        break;
+                    case("i"):
+                        baseType = Enum.INPUT.toLowerCase();
+                        break;
+                    case("m"):
+                        baseType = Enum.MIDDLE.toLowerCase();
+                        break;
+                    default:
+                        throw new ChaosNetException("Invalid `_base_type`: " + neuronBaseJSON.get(Enum._base_type).toString());
+                }
+                String fullClassName = "com.schematical.chaoscraft.ai." + baseType  +  "s." + clsName;
                 //ChaosCraft.logger.info("Full Class name: " + fullClassName);
                 Class cls = Class.forName(fullClassName);
                 NeuronBase neuronBase = (NeuronBase) cls.newInstance();

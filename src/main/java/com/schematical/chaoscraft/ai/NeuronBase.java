@@ -1,6 +1,7 @@
 package com.schematical.chaoscraft.ai;
 
 
+import com.schematical.chaoscraft.Enum;
 import com.schematical.chaoscraft.ai.activators.*;
 import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.entity.LivingEntity;
@@ -49,20 +50,22 @@ public abstract class NeuronBase extends InnovationBase {
             throw new Error("Neuron has already parsedData");
         }
         this.id = (String) jsonObject.get("id");
-        JSONArray jsonDependencies = (JSONArray) jsonObject.get("dependencies");
-        Iterator<JSONObject> iterator = jsonDependencies.iterator();
-        while (iterator.hasNext()) {
-            JSONObject neuronDepJSON = iterator.next();
-            NeuronDep neuronDep = new NeuronDep();
-            neuronDep.parseData(neuronDepJSON);
-            if(neuronDep.depNeuronId.equals(id)){
-                throw new ChaosNetException("Invalid `neuronDep` - NeuronDep on self: " + id);
-            }else {
-                this.dependencies.add(neuronDep);
+        JSONArray jsonDependencies = (JSONArray) jsonObject.get(com.schematical.chaoscraft.Enum.dependencies);
+        if(jsonDependencies != null) {
+            Iterator<JSONObject> iterator = jsonDependencies.iterator();
+            while (iterator.hasNext()) {
+                JSONObject neuronDepJSON = iterator.next();
+                NeuronDep neuronDep = new NeuronDep();
+                neuronDep.parseData(neuronDepJSON);
+                if (neuronDep.depNeuronId.equals(id)) {
+                    throw new ChaosNetException("Invalid `neuronDep` - NeuronDep on self: " + id);
+                } else {
+                    this.dependencies.add(neuronDep);
+                }
             }
         }
 
-        Object evalGroupJSON = jsonObject.get("$EVAL_GROUP");
+        Object evalGroupJSON = jsonObject.get(Enum.$EVAL_GROUP);
 
 
         if(evalGroupJSON == null){
@@ -73,7 +76,7 @@ public abstract class NeuronBase extends InnovationBase {
         }
 
 
-        Object type = jsonObject.get("activator");
+        Object type = jsonObject.get(Enum.activator);
 
 
         if(type == null){

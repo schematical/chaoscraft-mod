@@ -123,36 +123,37 @@ public class ScanManager {
                 for (ScanEntry topScanEntry : scanResult.getTopEntries()) {
                     ScanResult itemScanResult = scanItemInstance.getScanResults().get(targetSlotId);
                     if(itemScanResult == null) {
-                        throw new ChaosNetException("Missing `itemScanResult` for " + targetSlotId);
-                    }
-                    for (ScanEntry topItemScanEntry : itemScanResult.getTopEntries()) {
+                        //throw new ChaosNetException("Missing `itemScanResult` for " + targetSlotId);
+                    }else {
+                        for (ScanEntry topItemScanEntry : itemScanResult.getTopEntries()) {
 
-                        if (actionTargetSlot.validateTargetAndItem(orgEntity, topScanEntry.getChaosTarget(), topItemScanEntry.getChaosTargetItem())) {
+                            if (actionTargetSlot.validateTargetAndItem(orgEntity, topScanEntry.getChaosTarget(), topItemScanEntry.getChaosTargetItem())) {
 
-                            focusedActionScore = -9999;
-                            this.focusedActionTargetSlot = actionTargetSlot;
-                            this.focusedActionTargetSlot.setTarget(topScanEntry.getChaosTarget());
-                            this.focusedActionTargetSlot.setTargetItem(topItemScanEntry.getChaosTargetItem());
-                            if (!clientOrgManager.getActionBuffer().hasExecutedRecently(this.focusedActionTargetSlot.createAction(), 10)) {
+                                focusedActionScore = -9999;
+                                this.focusedActionTargetSlot = actionTargetSlot;
+                                this.focusedActionTargetSlot.setTarget(topScanEntry.getChaosTarget());
+                                this.focusedActionTargetSlot.setTargetItem(topItemScanEntry.getChaosTargetItem());
+                                if (!clientOrgManager.getActionBuffer().hasExecutedRecently(this.focusedActionTargetSlot.createAction(), 10)) {
 
-                                List<OutputNeuron> outputs = orgEntity.getNNet().evaluate(NeuralNet.EvalGroup.ACTION);//Ideally the output neurons will set the score
+                                    List<OutputNeuron> outputs = orgEntity.getNNet().evaluate(NeuralNet.EvalGroup.ACTION);//Ideally the output neurons will set the score
 
-                                Iterator<OutputNeuron> iterator = outputs.iterator();
+                                    Iterator<OutputNeuron> iterator = outputs.iterator();
 
-                                while (iterator.hasNext()) {
-                                    OutputNeuron outputNeuron = iterator.next();
-                                    outputNeuron.execute();
-                                }
+                                    while (iterator.hasNext()) {
+                                        OutputNeuron outputNeuron = iterator.next();
+                                        outputNeuron.execute();
+                                    }
 
-                                if (focusedActionScore > highestATSScore) {
-                                    highestATSScore = focusedActionScore;
-                                    highestActionTargetSlot = actionTargetSlot;
-                                    highestActionScanEntry = topScanEntry;
-                                    highestItemScanEntry = topItemScanEntry;
+                                    if (focusedActionScore > highestATSScore) {
+                                        highestATSScore = focusedActionScore;
+                                        highestActionTargetSlot = actionTargetSlot;
+                                        highestActionScanEntry = topScanEntry;
+                                        highestItemScanEntry = topItemScanEntry;
+                                    }
                                 }
                             }
-                        }
 
+                        }
                     }
                 }
                 actionTargetSlot.setTarget(originalTarget);

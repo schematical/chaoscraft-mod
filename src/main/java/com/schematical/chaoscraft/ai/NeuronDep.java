@@ -35,14 +35,14 @@ public class NeuronDep extends InnovationBase {
         _currentValue = -1;
     }
     public void parseData(JSONObject jsonObject){
-        Object neuronIdObj = jsonObject.get("neuronId");
+        Object neuronIdObj = jsonObject.get(com.schematical.chaoscraft.Enum.neuronId);
         if(neuronIdObj == null){
             throw new Error("Could not find a valid `neuronId` " + jsonObject.toJSONString());
         }
         String neuronId = neuronIdObj.toString();
 
         this.depNeuronId = neuronId;
-        this.weight = Float.parseFloat(jsonObject.get("weight").toString());
+        this.weight = Float.parseFloat(jsonObject.get(com.schematical.chaoscraft.Enum.weight).toString());
     }
     public void populate(NeuralNet neuralNet){
         this.depNeuron = neuralNet.neurons.get(this.depNeuronId);
