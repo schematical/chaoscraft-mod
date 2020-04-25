@@ -62,7 +62,7 @@ public class ChaosAuthOverlayGui extends Screen {
 
                 AuthLoginResponse authLoginResponse = ChaosCraft.sdk.postAuthLogin(postAuthLoginRequest).getAuthLoginResponse();
 
-                ChaosCraft.LOGGER.info("Access Token >> {}", authLoginResponse.getAccessToken());
+
                 ChaosCraft.config.username = authLogin.getUsername();
                 ChaosCraft.config.idToken =  authLoginResponse.getIdToken();
                 ChaosCraft.config.refreshToken =  authLoginResponse.getRefreshToken();

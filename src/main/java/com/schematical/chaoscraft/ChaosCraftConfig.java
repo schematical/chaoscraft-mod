@@ -50,8 +50,7 @@ public class ChaosCraftConfig {
 
 
             fileWriter.write(obj.toJSONString());
-            System.out.println("Successfully Copied JSON Object to File..." + obj.toJSONString());
-            System.out.println("\nJSON Object: " + obj);
+
             fileWriter.close();
         }catch (Exception e){
             ChaosCraft.LOGGER.error("Error saving Config: " + e.getMessage());

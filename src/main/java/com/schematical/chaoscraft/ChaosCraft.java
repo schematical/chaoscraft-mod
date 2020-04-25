@@ -48,6 +48,7 @@ import org.apache.logging.log4j.Logger;
 import com.schematical.chaosnet.ChaosNet;
 import com.schematical.chaosnet.auth.ChaosnetCognitoUserPool;
 import com.schematical.chaosnet.model.*;
+import org.msgpack.core.MessagePack;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod("chaoscraft")
@@ -65,10 +66,12 @@ public class ChaosCraft
     private static ChaosCraftClient client;
     private static ChaosCraftServer server;
 
+
     public ChaosCraft() {
    /*     if(true){
             return;
         }*/
+
         config = new ChaosCraftConfig();
         config.load();
         LOGGER.info("Config Loaded - Env: " + config.env);

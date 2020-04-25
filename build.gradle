@@ -131,6 +131,7 @@ dependencies {
 //        // excluding org.json which is provided by Android
 //        exclude group: 'org.json', module: 'json'
 //    }
+    compile 'org.msgpack:msgpack-core:0.8.20'
 }
 
 shadowJar {
