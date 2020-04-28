@@ -127,9 +127,9 @@ public class NeuralNet {
 
                 String clsName = type.toString();  // use fully qualified name
 
-                if(clsName.equals("TargetCandidateCountInput")){//TODO: Remove this hackyness
+              /*  if(clsName.equals("TargetCandidateCountInput")){//TODO: Remove this hackyness
                     clsName = "TargetCandidateCanSeeInput";
-                }
+                }*/
                 String baseType = null;
                 switch(neuronBaseJSON.get(Enum._base_type).toString()){
                     case("o"):

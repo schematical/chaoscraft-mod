@@ -88,13 +88,24 @@ public class ClientOrgManager extends BaseOrgManager {
         super.attachOrgEntity(orgEntity);
         this.orgEntity.observableAttributeManager = new CCObservableAttributeManager(organism);
         this.scanManager = new ScanManager(this);
-        this.orgEntity.attachNNetRaw(organism.getNNetRaw());
         orgEntity.attachClientOrgEntity(this);
+        try {
+            this.orgEntity.attachNNetRaw(organism.getNNetRaw());
+            spawnCount += 1;
+            state = State.EntityAttached;
+        }catch(Exception exceptions){
+            markOrgAsInvalid();
+        }
+
         //this.attatchTickable(new TargetNNetManager(this.scanManager));
         //this.attatchTickable(new RTNeatTicker(this.orgEntity));
-        spawnCount += 1;
-        state = State.EntityAttached;
+
     }
+
+    private void markOrgAsInvalid() {
+        state = State.Invalid;
+    }
+
     public ArrayList<CCServerScoreEventPacket> getServerScoreEvents(){
         return serverScoreEvents;
     }
@@ -169,7 +180,10 @@ public class ClientOrgManager extends BaseOrgManager {
         state = State.SpawnMessageSent;
     }
     public void markAttemptingReport() {
-        if(!state.equals(State.ReadyToReport)){
+        if(
+            !state.equals(State.ReadyToReport) &&
+            !state.equals(State.Invalid)
+        ){
             throw new ChaosNetException(getCCNamespace() + " - Invalid State: " + state);
         }
         state = State.AttemptingToReport;
@@ -257,6 +271,7 @@ public class ClientOrgManager extends BaseOrgManager {
         ReadyToReport,
         AttemptingToReport,
         FinishedReport,
+        Invalid,
     }
 
 }

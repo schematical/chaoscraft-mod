@@ -71,7 +71,7 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
             list.add("Observing: " + clientOrgManager.getCCNamespace());
             NeuralNet nNet = clientOrgManager.getEntity().getNNet();
 
-            list.add("Score: " + clientOrgManager.getLatestScore());
+            list.add("Score: " + clientOrgManager.getLatestScore()  + " - Role:" + clientOrgManager.getOrganism().getTrainingRoomRoleNamespace());
             float secondsToLive = (clientOrgManager.getExpectedLifeEndTime() - clientOrgManager.getEntity().world.getGameTime()) /20;
             list.add("Expected Life End: " + secondsToLive);
             ArrayList<CCServerScoreEventPacket> scoreEvents = (ArrayList<CCServerScoreEventPacket>)clientOrgManager.getServerScoreEvents().clone();

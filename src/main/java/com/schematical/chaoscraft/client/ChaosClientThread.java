@@ -34,20 +34,32 @@ public class ChaosClientThread implements Runnable {
             if(orgNamespace == null) {
                 ChaosCraft.LOGGER.error("!!!Invalid CCNamespace == null ");
             }else {
-                if(ChaosCraft.getClient()._debugReportedOrgNamespaces.contains(clientOrgManager.getCCNamespace())){
-                    ChaosCraft.LOGGER.error("Client has already reported org: " + clientOrgManager.getCCNamespace());
-                }
+
                 reportEntry.setScore(clientOrgManager.getServerScoreEventTotal());
                 reportEntry.setNamespace(clientOrgManager.getCCNamespace());
                 report.add(reportEntry);
-                ChaosCraft.getClient()._debugReportedOrgNamespaces.add(clientOrgManager.getCCNamespace());
+
                 clientOrgManager.markAttemptingReport();
 
             }
             newAttributes.addAll(clientOrgManager.getEntity().observableAttributeManager.newAttributes);
         }
+        for (ClientOrgManager clientOrgManager :  ChaosCraft.getClient().getOrgsWithState(ClientOrgManager.State.Invalid)) {
+            String orgNamespace = clientOrgManager.getCCNamespace();
 
+            TrainingRoomSessionNextReport reportEntry = new TrainingRoomSessionNextReport();
+            if(orgNamespace == null) {
+                ChaosCraft.LOGGER.error("!!!Invalid CCNamespace == null ");
+            }else {
 
+                reportEntry.setScore(-10000d);
+                reportEntry.setNamespace(clientOrgManager.getCCNamespace());
+                report.add(reportEntry);
+
+                clientOrgManager.markAttemptingReport();
+
+            }
+        }
         trainingRoomSessionNextRequest.setReport(report);
         trainingRoomSessionNextRequest.setNNetRaw(true);
         trainingRoomSessionNextRequest.setObservedAttributes(newAttributes);

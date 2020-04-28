@@ -147,8 +147,7 @@ public class OrgEntity extends MobEntity {
             //ActionTargetSlot.init(nNet);
 
         } catch (Exception e) {
-            ChaosCraft.LOGGER.error("Failed To Decode NNet: " + getCCNamespace() + " -- " + nNetRaw);
-            e.printStackTrace();
+            throw new ChaosNetException("Failed To Decode NNet: " + getCCNamespace() + " -- " + nNetRaw);
         }
     }
     @Override

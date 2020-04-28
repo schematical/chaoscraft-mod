@@ -40,8 +40,7 @@ public class ChaosCraftClient {
     protected String sessionNamespace;
     protected String env = "pre-alpha";
 
-    public ArrayList<String> _debugSpawnedOrgNamespaces = new ArrayList<String>();
-    public ArrayList<String> _debugReportedOrgNamespaces = new ArrayList<String>();
+
     public int consecutiveErrorCount = 0;
     public HashMap<String, ClientOrgManager> newOrganisms = new HashMap<String, ClientOrgManager>();
     public HashMap<String, ClientOrgManager> myOrganisms = new HashMap<String, ClientOrgManager>();
@@ -376,11 +375,7 @@ public class ChaosCraftClient {
         while (iterator.hasNext()) {
             ClientOrgManager clientOrgManager = iterator.next();
 
-            if (_debugSpawnedOrgNamespaces.contains(clientOrgManager.getCCNamespace())) {
-                ChaosCraft.LOGGER.error("Client already tried to spawn: " + clientOrgManager.getCCNamespace()  + " State: " + clientOrgManager.getState());
-            } else {
-                _debugSpawnedOrgNamespaces.add(clientOrgManager.getCCNamespace());
-            }
+
             CCClientSpawnPacket packet = new CCClientSpawnPacket(
                 clientOrgManager.getCCNamespace()
             );

@@ -59,8 +59,7 @@ public class ChaosNetworkInfoOverlayGui extends Screen {
         message += "trainingRoomNamespace:  " + chaosCraftClient.getTrainingRoomNamespace() + "\n";
         message += "trainingRoomUsernameNamespace:  " + chaosCraftClient.getTrainingRoomUsernameNamespace() + "\n";
         message += "sessionNamespace:  " + chaosCraftClient.getSessionNamespace() + "\n";
-        message += "debugSpawnedOrgNamespaces:  " + chaosCraftClient._debugSpawnedOrgNamespaces.size() + "\n";
-        message += "debugReportedOrgNamespaces:  " + chaosCraftClient._debugReportedOrgNamespaces.size() + "\n";
+
 
         message += "consecutiveErrorCount:  " + chaosCraftClient.consecutiveErrorCount + "\n";
 
