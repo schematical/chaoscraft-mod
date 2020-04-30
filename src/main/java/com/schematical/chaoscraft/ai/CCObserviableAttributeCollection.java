@@ -2,6 +2,7 @@ package com.schematical.chaoscraft.ai;
 
 import com.schematical.chaoscraft.entities.OrgEntity;
 import net.minecraft.entity.Entity;
+import net.minecraft.scoreboard.Team;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
@@ -15,6 +16,7 @@ public class CCObserviableAttributeCollection{
     public String resourceType;
     public Vec3d position;
     public BlockPos _blockPos;
+    public Team team;
 
     public double getDist(OrgEntity orgEntity){
         Vec3d eyePos = orgEntity.getEyePosition(1);

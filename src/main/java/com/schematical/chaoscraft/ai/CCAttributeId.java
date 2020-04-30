@@ -11,4 +11,7 @@ public abstract class CCAttributeId {
     public static final String BLOCK_TOUCH_STATE = "BLOCK_TOUCH_STATE";
     public static final String TARGET_SLOT = "TARGET_SLOT";
 
+    public static final String ENTITY_TEAM_ID = "ENTITY_TEAM_ID";
+
+    public static final String ENTITY_TEAM_ALIGH_STATE = "ENTITY_TEAM_ALIGH_STATE";
 }

@@ -1,11 +1,13 @@
 package com.schematical.chaoscraft.ai.inputs;
 
 import com.schematical.chaoscraft.ChaosCraft;
+import com.schematical.chaoscraft.Enum;
 import com.schematical.chaoscraft.ai.CCAttributeId;
 import com.schematical.chaoscraft.ai.CCObserviableAttributeCollection;
 import com.schematical.chaoscraft.ai.InputNeuron;
 import com.schematical.chaoscraft.ai.biology.Eye;
 import com.schematical.chaoscraft.tickables.OrgPositionManager;
+import com.schematical.chaosnet.model.ChaosNetException;
 import org.json.simple.JSONObject;
 
 
@@ -71,6 +73,41 @@ public class IsLookingAtInput extends InputNeuron {
                 }
 
             break;
+            case(CCAttributeId.ENTITY_TEAM_ALIGH_STATE):
+                attributeCollections = eye.canSeenEntities();
+                for(CCObserviableAttributeCollection attributeCollection: attributeCollections) {
+                    if( attributeCollection.team != null) {
+
+                        boolean match = false;
+                        switch (attributeValue) {
+                            case (Enum.ALIGH):
+                                if (attributeCollection.team.equals(this.getEntity().getTeam())) {
+                                    match = true;
+                                }
+                                break;
+                            case(Enum.OPPONENT):
+                                if (!attributeCollection.team.equals(this.getEntity().getTeam())) {
+                                    match = true;
+                                }
+                                break;
+                            default:
+                                throw new ChaosNetException("Invalid `ENTITY_TEAM_ALIGH_STATE`:" + attributeValue);
+                        }
+                        if(match){
+                            if (useDistanceAsValue) {
+                                double dist = attributeCollection.getDist(nNet.entity);
+                                float distVal = 1 - (float) dist / eye.maxDistance;
+                                if (distVal > newVal) {
+                                    newVal = distVal;
+                                }
+                            } else {
+                                setCurrentValue(1);
+                            }
+                        }
+                    }
+                }
+
+                break;
             case(CCAttributeId.BLOCK_TOUCH_STATE):
                 attributeCollections = eye.canSeenBlocks();
                 for(CCObserviableAttributeCollection attributeCollection: attributeCollections) {

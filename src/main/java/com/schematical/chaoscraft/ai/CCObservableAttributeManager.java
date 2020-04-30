@@ -101,6 +101,7 @@ public class CCObservableAttributeManager {
         atts.resourceId = resourceLocation.toString();
         atts.resourceType = CCResourceType.ENTITY;
         atts.position = entity.getPositionVector();
+        atts.team = entity.getTeam();
         atts._entity = entity;
         TestUnique(CCAttributeId.ENTITY_ID, atts.resourceId);
         return atts;

@@ -9,6 +9,8 @@ public class Enum {
     public static final String ITEM_ID = "ITEM_ID";
     public static final String AXIS = "AXIS";
 
+    public static final String ALIGH = "ALIGH";
+    public static final String OPPONENT = "OPPONENT";
 
 
     public final static String INPUT = "INPUT";
