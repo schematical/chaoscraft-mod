@@ -262,6 +262,11 @@ public class ClientOrgManager extends BaseOrgManager {
             eventListener.onClientTick(this);
         }
     }
+
+    public void setExpectedLifeEndTime(int expectedLifeEndTime) {
+        this.expectedLifeEndTime =  expectedLifeEndTime;
+    }
+
     public enum State{
         Uninitialized,
         OrgAttached,

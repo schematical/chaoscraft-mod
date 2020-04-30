@@ -229,23 +229,18 @@ public class ChaosCraftClient {
 
     }
 
-    public void attachOrgToEntity(String orgNamespace, int entityId) {
-        OrgEntity orgEntity = (OrgEntity)Minecraft.getInstance().world.getEntityByID(entityId);
+    public void attachOrgToEntity(CCServerEntitySpawnedPacket pkt) {
+        OrgEntity orgEntity = (OrgEntity)Minecraft.getInstance().world.getEntityByID(pkt.entityId);
         if(orgEntity == null){
-            ChaosCraft.LOGGER.error("Client could not find entityId: " + entityId + " to attach org: " + orgNamespace);
+            ChaosCraft.LOGGER.error("Client could not find entityId: " + pkt.entityId + " to attach org: " + pkt.orgNamespace);
 
             Iterator<Entity> iterator = Minecraft.getInstance().world.getAllEntities().iterator();
             while(iterator.hasNext() && orgEntity == null){
                 Entity entity = iterator.next();
-                if( entity.getDisplayName().getString().equals(orgNamespace)) {
-                    ChaosCraft.LOGGER.error("Client found a potential match after all entityId: " + entity.getEntityId() + " will attach org: " + orgNamespace + " == " + entity.getDisplayName().getString());
+                if( entity.getDisplayName().getString().equals(pkt.orgNamespace)) {
+                    ChaosCraft.LOGGER.error("Client found a potential match after all entityId: " + entity.getEntityId() + " will attach org: " + pkt.orgNamespace + " == " + entity.getDisplayName().getString());
                     orgEntity = (OrgEntity) entity;
                 }
-                /*if(entity instanceof  OrgEntity){
-                    OrgEntity testOrgEntity = (OrgEntity) entity;
-                    if(testOrgEntity.)
-
-                }*/
 
 
             }
@@ -255,8 +250,9 @@ public class ChaosCraftClient {
                 return;
             }
         }
-        ClientOrgManager clientOrgManager = myOrganisms.get(orgNamespace);
+        ClientOrgManager clientOrgManager = myOrganisms.get(pkt.orgNamespace);
         clientOrgManager.attachOrgEntity(orgEntity);
+        clientOrgManager.setExpectedLifeEndTime(pkt.expectedLifeEndTime);
 
     }
     public List<ClientOrgManager> getOrgsWithState(ClientOrgManager.State state){

@@ -1126,6 +1126,7 @@ public class OrgEntity extends MobEntity {
         this.itemHandler.setStackInSlot(index, itemStack);
         this.selectedItemIndex = selectedItemIndex;
     }
+
     public enum CanCraftResults{
         Success,
         Fail_2X2,

@@ -260,7 +260,8 @@ public class ChaosCraftServer {
         ChaosNetworkManager.sendTo(
                 new CCServerEntitySpawnedPacket(
                         serverOrgManager.getCCNamespace(),
-                        serverOrgManager.getEntity().getEntityId()
+                        serverOrgManager.getEntity().getEntityId(),
+                        (int) (serverOrgManager.getEntity().world.getGameTime() + ((serverOrgManager.getMaxLife() - serverOrgManager.getAgeSeconds()) * 20))
                 ),
                 serverPlayerEntity
         );

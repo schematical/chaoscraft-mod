@@ -8,13 +8,15 @@ import java.util.function.Supplier;
 
 public class CCServerEntitySpawnedPacket {
     private static final String GLUE = "@";
-    private final String orgNamespace;
-    private final int entityId;
+    public final String orgNamespace;
+    public final int entityId;
+    public final int expectedLifeEndTime;
 
-    public CCServerEntitySpawnedPacket(String orgNamespace, int entityId)
+    public CCServerEntitySpawnedPacket(String orgNamespace, int entityId, int expectedLifeEndTime)
     {
         this.orgNamespace = orgNamespace;
         this.entityId = entityId;
+        this.expectedLifeEndTime = expectedLifeEndTime;
     }
     public String getOrgNamespace(){
         return orgNamespace;
@@ -23,14 +25,17 @@ public class CCServerEntitySpawnedPacket {
     public static void encode(CCServerEntitySpawnedPacket pkt, PacketBuffer buf)
     {
         String payload = pkt.orgNamespace + GLUE + pkt.entityId;
-        buf.writeString(payload);
+        buf.writeString(pkt.orgNamespace);
+        buf.writeInt(pkt.entityId);
+        buf.writeInt(pkt.expectedLifeEndTime);
     }
 
     public static CCServerEntitySpawnedPacket decode(PacketBuffer buf)
     {
-        String payload = buf.readString(32767);
-        String[] parts = payload.split(GLUE);
-        return new CCServerEntitySpawnedPacket(parts[0], Integer.parseInt(parts[1]));//(buf.readVarInt()
+        String orgNamespace = buf.readString(32767);
+       int entityId =  buf.readInt();
+       int expectedLifeEndTime = buf.readInt();
+        return new CCServerEntitySpawnedPacket(orgNamespace, entityId,expectedLifeEndTime);
     }
 
     public static class Handler
@@ -42,7 +47,7 @@ public class CCServerEntitySpawnedPacket {
                 //Pretty sure the server should get this
 
                 //Load the NNet into memory
-                ChaosCraft.getClient().attachOrgToEntity(message.orgNamespace, message.entityId);
+                ChaosCraft.getClient().attachOrgToEntity(message);
 
             });
             ctx.get().setPacketHandled(true);
