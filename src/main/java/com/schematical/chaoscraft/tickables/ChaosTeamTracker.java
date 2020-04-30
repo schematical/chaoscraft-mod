@@ -2,10 +2,15 @@ package com.schematical.chaoscraft.tickables;
 
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.client.ClientOrgManager;
+import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.network.packets.CCServerScoreEventPacket;
 import com.schematical.chaoscraft.server.ServerOrgManager;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.scoreboard.ScorePlayerTeam;
 import net.minecraft.scoreboard.Scoreboard;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 
 import java.io.File;
@@ -13,10 +18,15 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 public class ChaosTeamTracker extends BaseChaosEventListener {
     private static HashMap<String, ScorePlayerTeam> teams = new HashMap();
     private static Scoreboard scoreboard = null;
+    private static final int ticksBetweenScoreCheck = 10;
+    private static final int maxDistance = 40;
+    private int ticksSinceLastScoreCheck = 0;
+
     public void onServerSpawn(ServerOrgManager serverOrgManager) {
         if(scoreboard == null) {
             World world = serverOrgManager.getEntity().world;
@@ -31,6 +41,63 @@ public class ChaosTeamTracker extends BaseChaosEventListener {
 
         scoreboard.addPlayerToTeam(serverOrgManager.getEntity().getCachedUniqueIdString(), scorePlayerTeam);
         //isOnSameTeam
+    }
+    //TODO: Move to seperate class and extend team tracker
+    public void onClientTick(ClientOrgManager baseOrgManager){
+        ticksSinceLastScoreCheck += 1;
+        if(ticksSinceLastScoreCheck < ticksBetweenScoreCheck){
+            return;
+        }
+        ticksSinceLastScoreCheck = 0;
+        if(baseOrgManager.getOrganism().getTrainingRoomRoleNamespace().equals(Roles.hider.toString())){
+            if(baseOrgManager.getEntity().getTags().contains(VisibleState.SEEN.toString())){
+                //Just remove tag
+                baseOrgManager.getEntity().removeTag(VisibleState.SEEN.toString());
+            }else{
+                //REWARD
+                baseOrgManager.addServerScoreEvent(
+                        new CCServerScoreEventPacket(
+                                baseOrgManager.getCCNamespace(),
+                                1,
+                                1,
+                                "HIDE_SUCCESS",
+                                1,
+                                baseOrgManager.getExpectedLifeEndTime() + 1,
+                                0
+                        )
+                );
+            }
+            return;
+        }
+        AxisAlignedBB grownBox = baseOrgManager.getEntity().getBoundingBox().grow(maxDistance, maxDistance, maxDistance);
+        List<OrgEntity> entities =  baseOrgManager.getEntity().world.getEntitiesWithinAABB(OrgEntity.class,  grownBox);
+        for (OrgEntity orgEntity : entities) {
+            if(orgEntity.getClientOrgManager().getOrganism().getTrainingRoomRoleNamespace().equals(Roles.hider.toString())){
+                //This org should get points
+                baseOrgManager.addServerScoreEvent(
+                        new CCServerScoreEventPacket(
+                                baseOrgManager.getCCNamespace(),
+                                1,
+                                1,
+                                "SEEK_SUCCESS",
+                                1,
+                                baseOrgManager.getExpectedLifeEndTime() + 1,
+                                0
+                        )
+                );
+
+                //Penalize the hider
+                orgEntity.addTag(VisibleState.SEEN.toString());
+            }
+        }
+
+    }
+    public enum VisibleState{
+        SEEN
+    }
+    public enum Roles{
+        seeker,
+        hider
     }
 
 }
