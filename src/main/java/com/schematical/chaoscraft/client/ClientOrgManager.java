@@ -11,6 +11,7 @@ import com.schematical.chaoscraft.server.ServerOrgManager;
 import com.schematical.chaoscraft.services.targetnet.ScanManager;
 import com.schematical.chaoscraft.tickables.BaseChaosEventListener;
 import com.schematical.chaoscraft.tickables.ChaosHighScoreTracker;
+import com.schematical.chaoscraft.tickables.ChaosTeamTracker;
 import com.schematical.chaoscraft.tickables.OrgPositionManager;
 import com.schematical.chaosnet.model.ChaosNetException;
 import com.schematical.chaosnet.model.Organism;
@@ -38,6 +39,7 @@ public class ClientOrgManager extends BaseOrgManager {
 
         this.attatchEventListener(new OrgPositionManager());
         this.attatchEventListener(new ChaosHighScoreTracker());
+        this.attatchEventListener(new ChaosTeamTracker());
     }
 
     public int getExpectedLifeEndTime(){

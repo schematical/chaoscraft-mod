@@ -130,10 +130,12 @@ public class NeuralNet {
               /*  if(clsName.equals("TargetCandidateCountInput")){//TODO: Remove this hackyness
                     clsName = "TargetCandidateCanSeeInput";
                 }*/
+                ArrayList<String> potentialPaths = new ArrayList<>();
                 String baseType = null;
                 switch(neuronBaseJSON.get(Enum._base_type).toString()){
                     case("o"):
                         baseType = Enum.OUTPUT.toLowerCase();
+                        potentialPaths.add(baseType + "s.rawnav");
                         break;
                     case("i"):
                         baseType = Enum.INPUT.toLowerCase();
@@ -144,9 +146,24 @@ public class NeuralNet {
                     default:
                         throw new ChaosNetException("Invalid `_base_type`: " + neuronBaseJSON.get(Enum._base_type).toString());
                 }
-                String fullClassName = "com.schematical.chaoscraft.ai." + baseType  +  "s." + clsName;
-                //ChaosCraft.logger.info("Full Class name: " + fullClassName);
-                Class cls = Class.forName(fullClassName);
+                potentialPaths.add(baseType + "s");
+                Class cls = null;
+                for (String potentialPath : potentialPaths) {
+                    if(cls == null) {
+                        try {
+                            String fullClassName = "com.schematical.chaoscraft.ai." + potentialPath + "." + clsName;
+                            //ChaosCraft.logger.info("Full Class name: " + fullClassName);
+                            cls = Class.forName(fullClassName);
+                        } catch (ClassNotFoundException classNotFoundException) {
+
+                        }
+                    }
+                }
+                if(cls == null){
+                    throw new ChaosNetException("Could not file Neuron Class: " + clsName);
+                }
+
+
                 NeuronBase neuronBase = (NeuronBase) cls.newInstance();
                 neuronBase.attachNNet(this);
                 neuronBase.parseData(neuronBaseJSON);

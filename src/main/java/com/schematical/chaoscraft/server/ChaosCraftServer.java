@@ -530,7 +530,7 @@ public class ChaosCraftServer {
                 observingPlayers.add(serverPlayerInfo);
             }else if( serverPlayerInfo.state.equals(ChaosCraftServerPlayerInfo.State.ObservingActive)) {
                 if(
-                        !serverPlayerInfo.observingEntity.getState().equals(ServerOrgManager.State.Ticking)
+                    !serverPlayerInfo.observingEntity.getState().equals(ServerOrgManager.State.Ticking)
                 ) {
                     serverPlayerInfo.state = ChaosCraftServerPlayerInfo.State.None;
                     serverPlayerInfo.observingEntity = null;

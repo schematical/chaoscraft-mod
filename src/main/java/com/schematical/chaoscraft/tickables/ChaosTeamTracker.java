@@ -33,7 +33,10 @@ public class ChaosTeamTracker extends BaseChaosEventListener {
             scoreboard = world.getScoreboard();
         }
         if(!teams.containsKey(serverOrgManager.getOrganism().getTrainingRoomRoleNamespace())){
-            ScorePlayerTeam newScorePlayerTeam = scoreboard.createTeam(serverOrgManager.getOrganism().getTrainingRoomRoleNamespace());//TODO: Change to training room role setting
+            ScorePlayerTeam newScorePlayerTeam = scoreboard.getTeam(serverOrgManager.getOrganism().getTrainingRoomRoleNamespace());
+            if(newScorePlayerTeam == null) {
+                newScorePlayerTeam = scoreboard.createTeam(serverOrgManager.getOrganism().getTrainingRoomRoleNamespace());//TODO: Change to training room role setting
+            }
             teams.put(serverOrgManager.getOrganism().getTrainingRoomRoleNamespace(), newScorePlayerTeam);
         }
         ScorePlayerTeam scorePlayerTeam = teams.get(serverOrgManager.getOrganism().getTrainingRoomRoleNamespace());
