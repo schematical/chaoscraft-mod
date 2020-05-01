@@ -4,6 +4,7 @@ import com.schematical.chaoscraft.BaseOrgManager;
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
 import com.schematical.chaoscraft.ai.OutputNeuron;
+import com.schematical.chaoscraft.ai.outputs.rawnav.RawOutputNeuron;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.fitness.managers.EntityDiscoveryFitnessManager;
@@ -25,6 +26,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.items.ItemStackHandler;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -40,6 +42,8 @@ public class ServerOrgManager extends BaseOrgManager {
     private int longTicksSinceStateChange = 0;
     private FitnessManagerBase entityFitnessManager;
     public ChunkPos currChunkPos;
+    private HashMap<String, RawOutputNeuron> rawOutputNeurons = new HashMap();
+
     public ServerOrgManager(){
 
         this.attatchEventListener(new OrgPositionManager());
@@ -157,6 +161,7 @@ public class ServerOrgManager extends BaseOrgManager {
         if( this.orgEntity.getBoundingBox() == null){
             return;
         }
+
        /* if (
             this.getEntity().getNNet() == null ||
             this.getEntity().getNNet().neurons == null
@@ -193,8 +198,22 @@ public class ServerOrgManager extends BaseOrgManager {
 
 
         }*/
+        if(
+            this.rawOutputNeurons.size() > 0
+        ) {
+            if (state.equals(State.Spawned)) {
+                markTicking();
+            }
 
-        this.getActionBuffer().execute();
+            for (RawOutputNeuron rawOutputNeuron : this.rawOutputNeurons.values()) {
+                if (rawOutputNeuron.getServerValue() != null) {
+                    rawOutputNeuron.execute();
+                    rawOutputNeuron.markExecuted();
+                }
+            }
+        }else {
+            this.getActionBuffer().execute();
+        }
         for (BaseChaosEventListener eventListener : getEventListeners()) {
             eventListener.onServerTick(this);
         }
@@ -258,6 +277,18 @@ public class ServerOrgManager extends BaseOrgManager {
     public FitnessManagerBase getEntityFitnessManager() {
         return entityFitnessManager;
     }
+
+    public RawOutputNeuron getRawOutputNeuron(String id) {
+        if(!rawOutputNeurons.containsKey(id)){
+            return null;
+        }
+        return this.rawOutputNeurons.get(id);
+    }
+    public void addRawOutputNeuron(RawOutputNeuron rawOutputNeuron){
+        rawOutputNeuron.rawAttach(this);
+        this.rawOutputNeurons.put(rawOutputNeuron.id, rawOutputNeuron);
+    }
+
 
 
     public enum State{

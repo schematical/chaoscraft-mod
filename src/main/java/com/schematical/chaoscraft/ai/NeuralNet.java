@@ -21,6 +21,7 @@ public class NeuralNet {
     public boolean ready = false;
     private EvalGroup currentTargetEvalGroup;
 
+
     public NeuralNet() {
 
     }
@@ -118,50 +119,14 @@ public class NeuralNet {
             /*Iterator<JSONObject>*/ iterator = neurons.iterator();
             while (iterator.hasNext()) {
                 JSONObject neuronBaseJSON = iterator.next();
-                Object type = neuronBaseJSON.get(Enum.$TYPE);
+                String type = neuronBaseJSON.get(Enum.$TYPE).toString();;
 
 
                 if(type == null){
                     throw new Error("Invalid Neuron. Missing `$TYPE` - Org.namepace: " + entity.getCCNamespace() + " - Neuron: " + neuronBaseJSON.toJSONString());
                 }
-
-                String clsName = type.toString();  // use fully qualified name
-
-              /*  if(clsName.equals("TargetCandidateCountInput")){//TODO: Remove this hackyness
-                    clsName = "TargetCandidateCanSeeInput";
-                }*/
-                ArrayList<String> potentialPaths = new ArrayList<>();
-                String baseType = null;
-                switch(neuronBaseJSON.get(Enum._base_type).toString()){
-                    case("o"):
-                        baseType = Enum.OUTPUT.toLowerCase();
-                        potentialPaths.add(baseType + "s.rawnav");
-                        break;
-                    case("i"):
-                        baseType = Enum.INPUT.toLowerCase();
-                        break;
-                    case("m"):
-                        baseType = Enum.MIDDLE.toLowerCase();
-                        break;
-                    default:
-                        throw new ChaosNetException("Invalid `_base_type`: " + neuronBaseJSON.get(Enum._base_type).toString());
-                }
-                potentialPaths.add(baseType + "s");
-                Class cls = null;
-                for (String potentialPath : potentialPaths) {
-                    if(cls == null) {
-                        try {
-                            String fullClassName = "com.schematical.chaoscraft.ai." + potentialPath + "." + clsName;
-                            //ChaosCraft.logger.info("Full Class name: " + fullClassName);
-                            cls = Class.forName(fullClassName);
-                        } catch (ClassNotFoundException classNotFoundException) {
-
-                        }
-                    }
-                }
-                if(cls == null){
-                    throw new ChaosNetException("Could not file Neuron Class: " + clsName);
-                }
+                String baseType = neuronBaseJSON.get(Enum._base_type).toString();
+                Class cls = getClassFromType(type, baseType);
 
 
                 NeuronBase neuronBase = (NeuronBase) cls.newInstance();
@@ -185,6 +150,44 @@ public class NeuralNet {
             e.printStackTrace();
             throw new ChaosNetException(e.getClass().getSimpleName() + " - " + e.getMessage() + " -Look above for Stacktrace");
         }
+    }
+    public static Class getClassFromType(String type, String shortBaseType){
+        String clsName = type;  // use fully qualified name
+
+
+        ArrayList<String> potentialPaths = new ArrayList<>();
+        String baseType = null;
+        switch(shortBaseType.toLowerCase()){
+            case("o"):
+                baseType = Enum.OUTPUT.toLowerCase();
+                potentialPaths.add(baseType + "s.rawnav");
+                break;
+            case("i"):
+                baseType = Enum.INPUT.toLowerCase();
+                break;
+            case("m"):
+                baseType = Enum.MIDDLE.toLowerCase();
+                break;
+            default:
+                throw new ChaosNetException("Invalid `_base_type`: " + shortBaseType);
+        }
+        potentialPaths.add(baseType + "s");
+        Class cls = null;
+        for (String potentialPath : potentialPaths) {
+            if(cls == null) {
+                try {
+                    String fullClassName = "com.schematical.chaoscraft.ai." + potentialPath + "." + clsName;
+                    //ChaosCraft.logger.info("Full Class name: " + fullClassName);
+                    cls = Class.forName(fullClassName);
+                } catch (ClassNotFoundException classNotFoundException) {
+
+                }
+            }
+        }
+        if(cls == null){
+            throw new ChaosNetException("Could not file Neuron Class: " + clsName);
+        }
+        return cls;
     }
     public BiologyBase getBiology(String id){
         if(!biology.containsKey(id)){

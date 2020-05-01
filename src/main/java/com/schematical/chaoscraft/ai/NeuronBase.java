@@ -3,6 +3,7 @@ package com.schematical.chaoscraft.ai;
 
 import com.schematical.chaoscraft.Enum;
 import com.schematical.chaoscraft.ai.activators.*;
+import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.entity.LivingEntity;
 import org.json.simple.JSONArray;
@@ -39,10 +40,8 @@ public abstract class NeuronBase extends InnovationBase {
     public void setDebugEntity(LivingEntity debugEntity){
         this.debugEntity = debugEntity;
     }
-    public LivingEntity getEntity(){
-        if(debugEntity != null){
-            return debugEntity;
-        }
+    public OrgEntity getEntity(){
+
         return nNet.entity;
     }
     public void parseData(JSONObject jsonObject){

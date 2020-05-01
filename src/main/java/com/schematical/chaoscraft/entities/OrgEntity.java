@@ -6,6 +6,7 @@ import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
 import com.schematical.chaoscraft.ai.CCObserviableAttributeCollection;
 import com.schematical.chaoscraft.ai.NeuralNet;
 import com.schematical.chaoscraft.ai.OutputNeuron;
+import com.schematical.chaoscraft.ai.outputs.rawnav.RawOutputNeuron;
 import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.events.OrgEvent;
@@ -26,7 +27,6 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.item.Items;
 import net.minecraft.item.crafting.*;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
@@ -35,10 +35,7 @@ import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.registries.ObjectHolder;
 import org.json.simple.JSONObject;
-import org.msgpack.core.MessagePack;
-import org.msgpack.core.MessageUnpacker;
 
-import java.nio.ByteBuffer;
 import java.util.*;
 
 public class OrgEntity extends MobEntity {
@@ -919,12 +916,11 @@ public class OrgEntity extends MobEntity {
                 if(outputNeuron.executeSide.equals(OutputNeuron.ExecuteSide.Client)){
                     outputNeuron.execute();
                 }else {
-                    CCClientOutputNeuronActionPacket packet = new CCClientOutputNeuronActionPacket(
-                            clientOrgManager.getCCNamespace(),
-                            outputNeuron.id,
-                            outputNeuron.getCurrentValue()
-                    );
-                    ChaosNetworkManager.sendToServer(packet);
+                    if(outputNeuron instanceof RawOutputNeuron) {
+                        RawOutputNeuron rawOutputNeuron = (RawOutputNeuron) outputNeuron;
+                        CCClientOutputNeuronActionPacket packet = new CCClientOutputNeuronActionPacket(rawOutputNeuron);
+                        ChaosNetworkManager.sendToServer(packet);
+                    }
                 }
 
 

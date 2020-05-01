@@ -266,7 +266,7 @@ public class ChaosCraftServer {
                 serverPlayerEntity
         );
     }
-    public void processClientOutputNeuronActionPacket(CCClientOutputNeuronActionPacket message){
+   /* public void processClientOutputNeuronActionPacket(CCClientOutputNeuronActionPacket message){
         if(!organisms.containsKey(message.getOrgNamespace())){
             //ChaosCraft.LOGGER.error("Server Cannot find org to process neuron action packet: " + message.getOrgNamespace());
             return;
@@ -274,7 +274,7 @@ public class ChaosCraftServer {
         ServerOrgManager serverOrgManager = organisms.get(message.getOrgNamespace());
         serverOrgManager.queueOutputNeuronAction(message);
 
-    }
+    }*/
     public List<ServerOrgManager> checkForDeadOrgs(){
 
         List<ServerOrgManager> serverOrgManagers = getOrgsWithState(ServerOrgManager.State.Ticking);

@@ -1,43 +1,39 @@
 package com.schematical.chaoscraft.network.packets;
 
 import com.schematical.chaoscraft.ChaosCraft;
+import com.schematical.chaoscraft.ai.OutputNeuron;
+import com.schematical.chaoscraft.ai.outputs.rawnav.RawOutputNeuron;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
 public class CCClientOutputNeuronActionPacket {
-    private static final String GLUE = "@";
-    private final String orgNamespace;
-    private final String neuronId;
-    private final float value;
 
-    public CCClientOutputNeuronActionPacket(String orgNamespace, String neuronId, float value)
+
+    private final RawOutputNeuron neuron;
+
+    public CCClientOutputNeuronActionPacket( RawOutputNeuron neuron)
     {
-        this.orgNamespace = orgNamespace;
-        this.neuronId = neuronId;
-        this.value = value;
+
+        this.neuron = neuron;
     }
-    public String getOrgNamespace(){
-        return orgNamespace;
+
+    public OutputNeuron getNeuron(){
+        return this.neuron;
     }
-    public String getNeuronId(){
-        return this.neuronId;
-    }
-    public float getValue(){
-        return value;
-    }
+
     public static void encode(CCClientOutputNeuronActionPacket pkt, PacketBuffer buf)
     {
-        String payload = pkt.orgNamespace + GLUE + pkt.neuronId + GLUE +  pkt.value;
-        buf.writeString(payload);
+
+        pkt.neuron.encode(buf);
     }
 
     public static CCClientOutputNeuronActionPacket decode(PacketBuffer buf)
     {
-        String payload = buf.readString(32767);
-        String[] parts = payload.split(GLUE);
-        return new CCClientOutputNeuronActionPacket(parts[0], parts[1], Float.parseFloat(parts[2]));//(buf.readVarInt()
+
+        RawOutputNeuron rawOutputNeuron = RawOutputNeuron.decode(buf);
+        return new CCClientOutputNeuronActionPacket( rawOutputNeuron);//(buf.readVarInt()
     }
 
     public static class Handler
@@ -49,7 +45,7 @@ public class CCClientOutputNeuronActionPacket {
                 //Pretty sure the server should get this
 
                 //Load the NNet into memory
-                ChaosCraft.getServer().processClientOutputNeuronActionPacket(message);
+               // ChaosCraft.getServer().processClientOutputNeuronActionPacket(message);
 
             });
             ctx.get().setPacketHandled(true);
