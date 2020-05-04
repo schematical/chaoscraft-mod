@@ -54,18 +54,7 @@
         "$BIOLOGY_TYPE":"Eye"
       }
     },
-    {
-      "$TYPE":"IsLookingAtInput",
-      "attributeId":"BLOCK_TOUCH_STATE",
-      "attributeValue": {
-        "$SOURCE":"enum",
-        "$ENUM":"BLOCK_TOUCH_STATE"
-      },
-      "eye":{
-        "$SOURCE":"biology",
-        "$BIOLOGY_TYPE":"Eye"
-      }
-    },
+
     {
       "$TYPE":"IsLookingAtInput",
       "attributeId":"ENTITY_TEAM_ALIGH_STATE",
@@ -156,12 +145,13 @@
     {
       "$TYPE":"TargetCandidateTypeInput",
       "$EVAL_GROUP": "TARGET",
-      "attributeId":"ENTITY_ID",
+      "attributeId":"ENTITY_TEAM_ALIGH_STATE",
       "attributeValue":{
         "$SOURCE":"oa",
-        "$ATTRIBUTE_ID":"ENTITY_ID"
+        "$ATTRIBUTE_ID":"OPPONENT"
       }
     },
+
     {
       "$TYPE":"TargetCandidateTypeInput",
       "$EVAL_GROUP": "TARGET",
@@ -206,65 +196,17 @@
         "$SOURCE":"biology",
         "$BIOLOGY_TYPE":"TargetSlot"
       }
-    },
-    {
-      "$TYPE":"ActionCandidateCompletedCountInput",
-      "$EVAL_GROUP": "ACTION",
-      "$DEFAULT":"true",
-      "targetSlotId":{
-        "$SOURCE":"biology",
-        "$BIOLOGY_TYPE":"ActionTargetSlot"
-      }
-    },
-    {
-      "$TYPE":"ActionCandidateFailedCountInput",
-      "$EVAL_GROUP": "ACTION",
-      "$DEFAULT":"true",
-      "targetSlotId":{
-        "$SOURCE":"biology",
-        "$BIOLOGY_TYPE":"ActionTargetSlot"
-      }
-    },
-    {
-      "$TYPE":"ActionCandidateExecutedCountInput",
-      "$EVAL_GROUP": "ACTION",
-      "$DEFAULT":"true",
-      "targetSlotId":{
-        "$SOURCE":"biology",
-        "$BIOLOGY_TYPE":"ActionTargetSlot"
-      }
-    },
-    {
-      "$TYPE":"ActionCandidateLastExecutedInput",
-      "$EVAL_GROUP": "ACTION",
-      "$DEFAULT":"true",
-      "targetSlotId":{
-        "$SOURCE":"biology",
-        "$BIOLOGY_TYPE":"ActionTargetSlot"
-      }
-    },
-    {
-      "$TYPE":"ActionCandidateScoreInput",
-      "$EVAL_GROUP": "ACTION",
-      "$DEFAULT":"true",
-      "targetSlotId":{
-        "$SOURCE":"biology",
-        "$BIOLOGY_TYPE":"ActionTargetSlot"
-      }
     }
   ],
   "outputNeurons":[
-    {
-      "$TYPE":"AttackOutput",
-      "$DEFAULT": "true"
-    },
+
     {
       "$TYPE":"ChangePitchOutput",
       "$DEFAULT": "true"
     },
     {
       "$TYPE":"ChangeHeadYawOutput",
-      "$DEFAULT": "true"#
+      "$DEFAULT": "true"
     },
     {
       "$TYPE":"ChangeYawOutput",
@@ -301,50 +243,7 @@
         "$MUTATION_MODE":"add",
         "$MUTATION_CHANCE":0.001
       }
-    },
-    {
-      "$ID": "TossItemActionTargetSlot",
-      "$TYPE":"ActionTargetSlot",
-      "$COUNT":1,
-      "index":"{{index}}",
-      "action": "TossItemAction"
-    },
-    {
-      "$ID": "CraftActionTargetSlot",
-      "$TYPE":"ActionTargetSlot",
-      "$COUNT":1,
-      "index":"{{index}}",
-      "action": "CraftAction"
-    },
-    {
-      "$ID": "DigBlockActionTargetSlot",
-      "$TYPE":"ActionTargetSlot",
-      "$COUNT":1,
-      "index":"{{index}}",
-      "action": "DigBlockAction"
-    },
-    {
-      "$ID": "MeleeAttackActionTargetSlot",
-      "$TYPE":"ActionTargetSlot",
-      "$COUNT":1,
-      "index":"{{index}}",
-      "action": "MeleeAttackAction"
-    },
-    {
-      "$ID": "PlaceBlockActionTargetSlot",
-      "$TYPE":"ActionTargetSlot",
-      "$COUNT":1,
-      "index":"{{index}}",
-      "action": "PlaceBlockAction"
-    },
-    {
-      "$ID": "UseItemActionTargetSlot",
-      "$TYPE":"ActionTargetSlot",
-      "$COUNT":1,
-      "index":"{{index}}",
-      "action": "UseItemAction"
     }
-
   ],
   "enum":{
     "ENTITY_TEAM_ALIGH_STATE":[
