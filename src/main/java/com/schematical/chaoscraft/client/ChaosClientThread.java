@@ -103,6 +103,7 @@ public class ChaosClientThread implements Runnable {
             SdkErrorHttpMetadata sdkErrorHttpMetadata = exception.sdkHttpMetadata();
             Integer statusCode = null;
             if(sdkErrorHttpMetadata != null) {
+                statusCode = sdkErrorHttpMetadata.httpStatusCode();
                 switch (statusCode) {
                     case (502):
                     case (504):
