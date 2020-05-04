@@ -2,8 +2,6 @@ package com.schematical.chaoscraft.entities;
 
 import com.schematical.chaoscraft.ChaosCraft;
 
-import com.schematical.chaoscraft.client.ClientOrgManager;
-import com.schematical.chaosnet.model.Organism;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.layers.HeldItemLayer;
@@ -25,19 +23,17 @@ public class OrgEntityRenderer extends LivingRenderer<OrgEntity, BipedModel<OrgE
     @Nullable
     @Override
     public ResourceLocation getEntityTexture(@Nonnull OrgEntity entity) {
-        ClientOrgManager clientOrgManager =  entity.getClientOrgManager();
-        if(clientOrgManager == null){
-            return new ResourceLocation(ChaosCraft.MODID, "meeseeks.png");
-        }
-        Organism organism = clientOrgManager.getOrganism();
-        String trainingRoomRoleNamespace =organism.getTrainingRoomRoleNamespace();
-        switch(trainingRoomRoleNamespace){
-            case("hiders"):
-                return new ResourceLocation(ChaosCraft.MODID, "mario.png");
+       String trainingRoomRoleNamespace = entity.getTrainingRoomRoleNamespace();
 
-            case("seekers"):
-                return new ResourceLocation(ChaosCraft.MODID, "ironman.png");
+        if(trainingRoomRoleNamespace != null) {
+            switch (trainingRoomRoleNamespace) {
+                case ("hiders"):
+                    return new ResourceLocation(ChaosCraft.MODID, "mario.png");
 
+                case ("seekers"):
+                    return new ResourceLocation(ChaosCraft.MODID, "ironman.png");
+
+            }
         }
         return new ResourceLocation(ChaosCraft.MODID, "bot.png");
     }

@@ -1,9 +1,11 @@
 package com.schematical.chaoscraft;
 
+import com.amazonaws.opensdk.SdkErrorHttpMetadata;
 import com.amazonaws.opensdk.config.ConnectionConfiguration;
 import com.amazonaws.opensdk.config.TimeoutConfiguration;
 import com.schematical.chaoscraft.blocks.ChaosBlocks;
 import com.schematical.chaoscraft.client.*;
+import com.schematical.chaoscraft.client.gui.ChaosAuthOverlayGui;
 import com.schematical.chaoscraft.commands.*;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.entities.OrgEntityRenderer;
@@ -14,6 +16,7 @@ import com.schematical.chaoscraft.server.ChaosCraftServer;
 
 import com.schematical.chaoscraft.tileentity.ChaosTileEntity;
 import com.schematical.chaosnet.ChaosNetClientBuilder;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
@@ -49,6 +52,9 @@ import com.schematical.chaosnet.ChaosNet;
 import com.schematical.chaosnet.auth.ChaosnetCognitoUserPool;
 import com.schematical.chaosnet.model.*;
 import org.msgpack.core.MessagePack;
+
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod("chaoscraft")
@@ -169,8 +175,29 @@ public class ChaosCraft
                 AuthLoginResponse authLoginResponse = ChaosCraft.sdk.postAuthToken(postAuthTokenRequest).getAuthLoginResponse();
                 config.accessToken = authLoginResponse.getAccessToken();
                 LOGGER.info("ACCESS TOKEN:" + config.refreshToken.substring(0, 10) + "'....");
-            }catch (ChaosNetException e) {
-                LOGGER.error(e);
+            }catch (ChaosNetException exception) {
+                SdkErrorHttpMetadata sdkErrorHttpMetadata = exception.sdkHttpMetadata();
+                Integer statusCode = null;
+                if(sdkErrorHttpMetadata != null) {
+                    statusCode = sdkErrorHttpMetadata.httpStatusCode();
+                    switch (statusCode) {
+                        case (400):
+
+                            //ChaosCraft.getServer().repair();
+                            break;
+                        case (401):
+                        case (403):
+                            ChaosCraft.config.refreshToken = null;
+                            ChaosCraft.config.accessToken = null;
+                            ChaosCraft.config.save();
+                            break;
+
+                    }
+                }
+                ByteBuffer byteBuffer = exception.sdkHttpMetadata().responseContent();
+                String message = StandardCharsets.UTF_8.decode(byteBuffer).toString();//new String(byteBuffer.as().array(), StandardCharsets.UTF_8 );
+                ChaosCraft.LOGGER.error("ChaosServerThread  Error: " + message + " - statusCode: " + statusCode);
+
             }
 
         }

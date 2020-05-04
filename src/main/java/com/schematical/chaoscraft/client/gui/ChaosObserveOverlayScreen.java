@@ -9,6 +9,7 @@ import com.schematical.chaoscraft.ai.action.ActionBase;
 import com.schematical.chaoscraft.ai.action.ActionBuffer;
 import com.schematical.chaoscraft.ai.biology.ActionTargetSlot;
 import com.schematical.chaoscraft.ai.biology.BiologyBase;
+import com.schematical.chaoscraft.ai.biology.Eye;
 import com.schematical.chaoscraft.ai.biology.TargetSlot;
 import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.network.packets.CCServerObserverOrgChangeEventPacket;
@@ -198,9 +199,9 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
         }
         
         
-        debugScanInstance(event);
+        //debugScanInstance(event);
 
-
+        debugEyes(event);
 
 
 
@@ -302,6 +303,35 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
             }
 
         }
+    }
+    private void debugEyes(RenderWorldLastEvent event) {
+        for (BiologyBase biologyBase : clientOrgManager.getEntity().getNNet().biology.values()) {
+            if(biologyBase instanceof Eye){
+                Eye eye = (Eye) biologyBase;
+                Vec3d vec3d = clientOrgManager.getEntity().getEyePosition(1);
+                Vec3d vec3d1 = clientOrgManager.getEntity().getLook(1);
+                vec3d1 = vec3d1.rotatePitch(eye.pitch);
+                vec3d1 = vec3d1.rotateYaw(eye.yaw);
+                Vec3d vec3d2 = vec3d.add(
+                        new Vec3d(
+                                vec3d1.x * eye.maxDistance,
+                                vec3d1.y *eye. maxDistance,
+                                vec3d1.z * eye.maxDistance
+                        )
+                );
+                CCGUIHelper.drawLine2d(
+                        event.getMatrixStack(),
+                        vec3d,
+                        vec3d2,
+                        Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getProjectedView(),
+                        Color.GREEN,
+                        .5f
+                );
+            }
+        }
+
+       
+
     }
 
     public void setDisplaySettings(boolean displayScore, boolean displayTarget, boolean displayInventory, boolean drawTargetLines) {

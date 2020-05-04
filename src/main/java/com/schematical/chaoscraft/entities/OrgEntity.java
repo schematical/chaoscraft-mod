@@ -14,7 +14,9 @@ import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.CCClientOutputNeuronActionPacket;
 import com.schematical.chaoscraft.network.packets.CCInventoryChangeEventPacket;
 import com.schematical.chaoscraft.server.ServerOrgManager;
+import com.schematical.chaoscraft.util.ChaosTarget;
 import com.schematical.chaosnet.model.ChaosNetException;
+import com.schematical.chaosnet.model.Organism;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -59,7 +61,7 @@ public class OrgEntity extends MobEntity {
     protected double desiredPitch;
     protected double desiredYaw;
     protected double desiredHeadYaw;
-
+    protected ChaosTarget chaosTarget;
 
 
     //Mining related variables
@@ -101,6 +103,28 @@ public class OrgEntity extends MobEntity {
 
         //itemHandler.setStackInSlot(1,  new ItemStack(Items.STONE_PICKAXE, 1));
        //setHeldItem(Hand.MAIN_HAND,  itemHandler.getStackInSlot(1));
+    }
+    public String getTrainingRoomRoleNamespace(){
+
+        String ROLE_TAG_PREFIX = "role-";
+        if(clientOrgManager != null) {
+            Organism organism = clientOrgManager.getOrganism();
+           return organism.getTrainingRoomRoleNamespace();
+
+        }else {
+            for (String tag : getTags()) {
+                if (tag.substring(0, ROLE_TAG_PREFIX.length()).equals(ROLE_TAG_PREFIX)) {
+                    return tag.substring(ROLE_TAG_PREFIX.length());
+                }
+            }
+        }
+        return null;
+    }
+    public ChaosTarget getChaosTarget(){
+        if(chaosTarget == null){
+            chaosTarget = new ChaosTarget(this);
+        }
+        return chaosTarget;
     }
     public int getSelectedItemIndex(){
         return selectedItemIndex;

@@ -99,6 +99,7 @@ public class ClientOrgManager extends BaseOrgManager {
             markOrgAsInvalid();
         }
 
+
         //this.attatchTickable(new TargetNNetManager(this.scanManager));
         //this.attatchTickable(new RTNeatTicker(this.orgEntity));
 

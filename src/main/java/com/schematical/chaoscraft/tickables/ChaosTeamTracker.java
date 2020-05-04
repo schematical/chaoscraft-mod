@@ -4,7 +4,6 @@ import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.network.packets.CCServerScoreEventPacket;
 import com.schematical.chaoscraft.server.ServerOrgManager;
-import com.schematical.chaoscraft.util.ChaosTarget;
 import net.minecraft.scoreboard.ScorePlayerTeam;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -68,10 +67,19 @@ public class ChaosTeamTracker extends BaseChaosEventListener {
         AxisAlignedBB grownBox = baseOrgManager.getEntity().getBoundingBox().grow(maxDistance, maxDistance, maxDistance);
         List<OrgEntity> entities =  baseOrgManager.getEntity().world.getEntitiesWithinAABB(OrgEntity.class,  grownBox);
         for (OrgEntity orgEntity : entities) {
-            if(orgEntity.getClientOrgManager().getOrganism().getTrainingRoomRoleNamespace().equals(Roles.hiders.toString())){
+            if(
+                    Roles.hiders.toString().equals(
+                        orgEntity.getTrainingRoomRoleNamespace()
+                    )
+
+            ){
                 //This org should get points
-                ChaosTarget chaosTarget = new ChaosTarget(orgEntity);
-                if(!chaosTarget.isVisiblyBlocked(baseOrgManager.getEntity())) {
+
+
+                if(
+                    !orgEntity.getChaosTarget().isVisiblyBlocked(baseOrgManager.getEntity()) &&
+                     orgEntity.getChaosTarget().isEntityLookingAt(baseOrgManager.getEntity())
+                ) {
                     baseOrgManager.addServerScoreEvent(
                             new CCServerScoreEventPacket(
                                     baseOrgManager.getCCNamespace(),

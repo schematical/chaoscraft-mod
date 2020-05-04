@@ -1,5 +1,6 @@
 package com.schematical.chaoscraft.server;
 
+import com.amazonaws.opensdk.SdkErrorHttpMetadata;
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaosnet.model.*;
@@ -63,19 +64,22 @@ public class ChaosServerThread implements Runnable {
         }catch(ChaosNetException exception){
             //logger.error(exeception.getMessage());
              ChaosCraft.getServer().consecutiveErrorCount += 1;
+            SdkErrorHttpMetadata sdkErrorHttpMetadata = exception.sdkHttpMetadata();
+            Integer statusCode = null;
+            if(sdkErrorHttpMetadata != null) {
+                statusCode = sdkErrorHttpMetadata.httpStatusCode();
+                switch (statusCode) {
+                    case (400):
 
-            int statusCode = exception.sdkHttpMetadata().httpStatusCode();
-            switch(statusCode){
-                case(400):
-
-                    //ChaosCraft.getServer().repair();
-                    break;
-                case(401):
-                    ChaosCraft.auth();
-                    break;
-                case(409):
-                    //ChaosCraft.auth();
-                    break;
+                        //ChaosCraft.getServer().repair();
+                        break;
+                    case (401):
+                        ChaosCraft.auth();
+                        break;
+                    case (409):
+                        //ChaosCraft.auth();
+                        break;
+                }
             }
             ByteBuffer byteBuffer = exception.sdkHttpMetadata().responseContent();
             String message = StandardCharsets.UTF_8.decode(byteBuffer).toString();//new String(byteBuffer.as().array(), StandardCharsets.UTF_8 );

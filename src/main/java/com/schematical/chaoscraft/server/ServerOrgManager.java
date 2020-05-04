@@ -85,6 +85,7 @@ public class ServerOrgManager extends BaseOrgManager {
 
         setState(State.Spawned);
         triggerOnSpawned();
+        this.orgEntity.addTag("role-" + this.organism.getTrainingRoomRoleNamespace());
     }
     public void setPlayerEntity(ServerPlayerEntity serverPlayerEntity){
         if(!state.equals(State.Uninitialized)){
