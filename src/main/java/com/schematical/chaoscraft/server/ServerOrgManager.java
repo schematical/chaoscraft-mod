@@ -102,20 +102,22 @@ public class ServerOrgManager extends BaseOrgManager {
 
     }
     private void initInventory(){
-        String inv0 = this.roleSettings.getString(ChaosSettings.INV_0);
-        if(inv0 != null){
-            String[] parts = inv0.split("@");
-            int count = 1;
-            String id = parts[0];
-            if(parts.length > 1){
-                count = Integer.parseInt(parts[1]);
-            }
+        for(int i = 0; i < 4; i++) {
+            String invValue = this.roleSettings.getString(ChaosSettings.valueOf("INV_" + i));
+            if (invValue != null) {
+                String[] parts = invValue.split("@");
+                int count = 1;
+                String id = parts[0];
+                if (parts.length > 1) {
+                    count = Integer.parseInt(parts[1]);
+                }
 
-            GameRegistry.findRegistry(Item.class);
-            Item item = (Item)ForgeRegistries.ITEMS.getValue(new ResourceLocation(id));
-            ItemStack itemStack = new ItemStack(item, count);
-            this.orgEntity.getItemHandler().setStackInSlot(0, itemStack);
-            this.orgEntity.syncSlot(0);
+                GameRegistry.findRegistry(Item.class);
+                Item item = (Item) ForgeRegistries.ITEMS.getValue(new ResourceLocation(id));
+                ItemStack itemStack = new ItemStack(item, count);
+                this.orgEntity.getItemHandler().setStackInSlot(i, itemStack);
+                this.orgEntity.syncSlot(i);
+            }
         }
     }
     public void setPlayerEntity(ServerPlayerEntity serverPlayerEntity){

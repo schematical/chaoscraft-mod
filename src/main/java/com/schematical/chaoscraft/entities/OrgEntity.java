@@ -483,7 +483,7 @@ public class OrgEntity extends MobEntity {
         Vec3d vec3d = this.getEyePosition( 1.0F);
         //Vec3d vec3d1 = this.getLook(1);
 
-        Vec3d vec3d1 = this.getLook( 1.0F).scale(25);
+        Vec3d vec3d1 = this.getLook( 1.0F).scale(blockReachDistance);
         Vec3d vec3d2 = vec3d.add(
             vec3d1
         );
