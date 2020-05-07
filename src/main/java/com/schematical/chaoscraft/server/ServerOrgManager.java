@@ -52,7 +52,7 @@ public class ServerOrgManager extends BaseOrgManager {
     private FitnessManagerBase entityFitnessManager;
     public ChunkPos currChunkPos;
     private HashMap<String, RawOutputNeuron> rawOutputNeurons = new HashMap();
-    public SettingsMap roleSettings;
+    private SettingsMap roleSettings;
 
     public ServerOrgManager(){
 
@@ -322,6 +322,9 @@ public class ServerOrgManager extends BaseOrgManager {
         this.rawOutputNeurons.put(rawOutputNeuron.id, rawOutputNeuron);
     }
 
+    public SettingsMap getRoleSettings() {
+        return this.roleSettings;
+    }
 
 
     public enum State{

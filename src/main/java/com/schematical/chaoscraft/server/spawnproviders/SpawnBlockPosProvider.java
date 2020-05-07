@@ -5,6 +5,7 @@ import com.schematical.chaoscraft.blocks.ChaosBlocks;
 import com.schematical.chaoscraft.blocks.SpawnBlock;
 import com.schematical.chaoscraft.server.ServerOrgManager;
 import com.schematical.chaoscraft.tileentity.SpawnBlockTileEntity;
+import com.schematical.chaoscraft.util.ChaosSettings;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
@@ -29,7 +30,7 @@ public class SpawnBlockPosProvider implements iServerSpawnProvider {
             SpawnBlockTileEntity spawnBlockTileEntity = (SpawnBlockTileEntity)ChaosCraft.getServer().server.getWorld(DimensionType.OVERWORLD).getTileEntity(pos);
             if(
                 spawnBlockTileEntity != null &&
-                spawnBlockTileEntity.getSpawnPointId().equals("default") &&
+                spawnBlockTileEntity.getSpawnPointId().equals(serverOrgManager.getRoleSettings().getString(ChaosSettings.SPAWN_POINT_ID)) &&
                 spawnBlockTileEntity.canSpawn()
             ){
                 spawnBlocks.add(pos);

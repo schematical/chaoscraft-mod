@@ -1,5 +1,9 @@
 package com.schematical.chaoscraft.util;
 
 public enum ChaosSettings {
-    INV_0
+    SPAWN_POINT_ID,
+    INV_0,
+    INV_1,
+    INV_2,
+    INV_3,
 }
