@@ -5,6 +5,7 @@ import com.schematical.chaoscraft.ai.action.ActionBuffer;
 import com.schematical.chaoscraft.ai.biology.BiologyBase;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.tickables.BaseChaosEventListener;
+import com.schematical.chaoscraft.util.SettingsMap;
 import com.schematical.chaosnet.model.Organism;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ public abstract class BaseOrgManager {
 
     public void attachOrganism(Organism organism){
         this.organism = organism;
+
     }
     public void attachOrgEntity(OrgEntity orgEntity){
         this.orgEntity = orgEntity;

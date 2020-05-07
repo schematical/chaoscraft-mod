@@ -2,6 +2,7 @@ package com.schematical.chaoscraft.server;
 
 import com.schematical.chaoscraft.BaseOrgManager;
 import com.schematical.chaoscraft.ChaosCraft;
+import com.schematical.chaoscraft.TrainingRoomRoleHolder;
 import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
 import com.schematical.chaoscraft.ai.OutputNeuron;
 import com.schematical.chaoscraft.ai.outputs.rawnav.RawOutputNeuron;
@@ -16,14 +17,22 @@ import com.schematical.chaoscraft.network.packets.CCInventoryResyncEventPacket;
 import com.schematical.chaoscraft.tickables.BaseChaosEventListener;
 import com.schematical.chaoscraft.tickables.ChaosTeamTracker;
 import com.schematical.chaoscraft.tickables.OrgPositionManager;
+import com.schematical.chaoscraft.util.ChaosSettings;
+import com.schematical.chaoscraft.util.SettingsMap;
 import com.schematical.chaosnet.ChaosNet;
 import com.schematical.chaosnet.model.ChaosNetException;
 import com.schematical.chaosnet.model.Organism;
+import com.schematical.chaosnet.model.TrainingRoomRole;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,6 +52,7 @@ public class ServerOrgManager extends BaseOrgManager {
     private FitnessManagerBase entityFitnessManager;
     public ChunkPos currChunkPos;
     private HashMap<String, RawOutputNeuron> rawOutputNeurons = new HashMap();
+    public SettingsMap roleSettings;
 
     public ServerOrgManager(){
 
@@ -62,7 +72,10 @@ public class ServerOrgManager extends BaseOrgManager {
             ChaosCraft.LOGGER.error(getCCNamespace() + " - has invalid state: " + state);
             return;
         }
+
         super.attachOrganism(organism);
+        TrainingRoomRoleHolder trainingRoomRoleHolder = ChaosCraft.getServer().trainingRoomRoles.get(this.organism.getTrainingRoomRoleNamespace());
+        roleSettings = new SettingsMap(trainingRoomRoleHolder.trainingRoomRole.getSettings());
         setState(State.OrgAttached);
     }
     @Override
@@ -86,6 +99,24 @@ public class ServerOrgManager extends BaseOrgManager {
         setState(State.Spawned);
         triggerOnSpawned();
         this.orgEntity.addTag("role-" + this.organism.getTrainingRoomRoleNamespace());
+
+    }
+    private void initInventory(){
+        String inv0 = this.roleSettings.getString(ChaosSettings.INV_0);
+        if(inv0 != null){
+            String[] parts = inv0.split("@");
+            int count = 1;
+            String id = parts[0];
+            if(parts.length > 1){
+                count = Integer.parseInt(parts[1]);
+            }
+
+            GameRegistry.findRegistry(Item.class);
+            Item item = (Item)ForgeRegistries.ITEMS.getValue(new ResourceLocation(id));
+            ItemStack itemStack = new ItemStack(item, count);
+            this.orgEntity.getItemHandler().setStackInSlot(0, itemStack);
+            this.orgEntity.syncSlot(0);
+        }
     }
     public void setPlayerEntity(ServerPlayerEntity serverPlayerEntity){
         if(!state.equals(State.Uninitialized)){
@@ -203,6 +234,7 @@ public class ServerOrgManager extends BaseOrgManager {
             this.rawOutputNeurons.size() > 0
         ) {
             if (state.equals(State.Spawned)) {
+                initInventory();
                 markTicking();
             }
 

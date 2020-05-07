@@ -452,7 +452,7 @@ public class OrgEntity extends MobEntity {
         return outputStack;
     }
 
-    private void syncSlot(int i) {
+    public void syncSlot(int i) {
         CCInventoryChangeEventPacket pkt = new CCInventoryChangeEventPacket(
                 getCCNamespace(),
                 selectedItemIndex,
