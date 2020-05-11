@@ -50,6 +50,7 @@ public class ActionBuffer {
         }else{
             ServerOrgManager serverOrgManager = ((ServerOrgManager) orgManager);
             if(serverOrgManager.getState().equals(ServerOrgManager.State.Spawned)){
+                serverOrgManager.initInventory();
                 serverOrgManager.markTicking();
             }
         }

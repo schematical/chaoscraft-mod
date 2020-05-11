@@ -102,7 +102,7 @@ public class ServerOrgManager extends BaseOrgManager {
         this.orgEntity.addTag("role-" + this.organism.getTrainingRoomRoleNamespace());
 
     }
-    private void initInventory(){
+    public void initInventory(){
         for(int i = 0; i < 4; i++) {
             String invValue = this.roleSettings.getString(ChaosSettings.valueOf("INV_" + i));
             if (invValue != null) {
