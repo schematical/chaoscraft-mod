@@ -677,6 +677,14 @@ public class ChaosCraftServer {
 
         }
     }
+
+    public void handleClientOrgUpdatePacket(CCClientOrgUpdatePacket message) {
+        if(!organisms.containsKey(message.getOrgNamespace())){
+            return;
+        }
+        organisms.get(message.getOrgNamespace()).handleClientOrgUpdatePacket(message);
+    }
+
     public enum State{
         Unitilized,
         FitnessLoaded

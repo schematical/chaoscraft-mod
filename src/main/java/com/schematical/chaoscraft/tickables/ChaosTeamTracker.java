@@ -2,6 +2,8 @@ package com.schematical.chaoscraft.tickables;
 
 import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.entities.OrgEntity;
+import com.schematical.chaoscraft.network.ChaosNetworkManager;
+import com.schematical.chaoscraft.network.packets.CCClientOrgUpdatePacket;
 import com.schematical.chaoscraft.network.packets.CCServerScoreEventPacket;
 import com.schematical.chaoscraft.server.ServerOrgManager;
 import net.minecraft.scoreboard.ScorePlayerTeam;
@@ -17,6 +19,8 @@ public class ChaosTeamTracker extends BaseChaosEventListener {
     private static Scoreboard scoreboard = null;
     private static final int ticksBetweenScoreCheck = 10;
     private static final int maxDistance = 40;
+    private static final int maxLife = 45;
+    private static final int lifeReward = 1;
     private int ticksSinceLastScoreCheck = 0;
 
     public void onServerSpawn(ServerOrgManager serverOrgManager) {
@@ -50,17 +54,32 @@ public class ChaosTeamTracker extends BaseChaosEventListener {
                 baseOrgManager.getEntity().removeTag(VisibleState.SEEN.toString());
             }else{
                 //REWARD
+                int life = 0;
+                //         (int) (orgEntity.world.getGameTime() + ((serverOrgManager.getMaxLife() - serverOrgManager.getAgeSeconds()) * 20)),
+                //float lifeEndSeconds = (baseOrgManager.getExpectedLifeEndTime() - baseOrgManager.getEntity().world.getGameTime())/20;
+                if(baseOrgManager.getLatestScore() < maxLife){
+                    life = lifeReward;
+                    ChaosNetworkManager.sendToServer(
+                            new CCClientOrgUpdatePacket(
+                                    baseOrgManager.getCCNamespace(),
+                                    CCClientOrgUpdatePacket.Action.UpdateLifeEnd,
+                                    life
+                            )
+                    );
+                }
+
                 baseOrgManager.addServerScoreEvent(
                         new CCServerScoreEventPacket(
                                 baseOrgManager.getCCNamespace(),
                                 1,
-                                1,
+                                life,
                                 "HIDE_SUCCESS",
                                 1,
-                                baseOrgManager.getExpectedLifeEndTime() + 1,
+                                baseOrgManager.getExpectedLifeEndTime() + life * 20,
                                 0
                         )
                 );
+
             }
             return;
         }
@@ -80,15 +99,34 @@ public class ChaosTeamTracker extends BaseChaosEventListener {
                     !orgEntity.getChaosTarget().isVisiblyBlocked(baseOrgManager.getEntity()) &&
                      orgEntity.getChaosTarget().isEntityLookingAt(baseOrgManager.getEntity())
                 ) {
+                    int life = 0;
+                    //float lifeEndSeconds = (baseOrgManager.getExpectedLifeEndTime() - baseOrgManager.getEntity().world.getGameTime())/20;
+                    if(baseOrgManager.getLatestScore() < maxLife){
+                        life = lifeReward;
+                        ChaosNetworkManager.sendToServer(
+                                new CCClientOrgUpdatePacket(
+                                        baseOrgManager.getCCNamespace(),
+                                        CCClientOrgUpdatePacket.Action.UpdateLifeEnd,
+                                        life
+                                )
+                        );
+                    }
                     baseOrgManager.addServerScoreEvent(
                             new CCServerScoreEventPacket(
                                     baseOrgManager.getCCNamespace(),
                                     1,
-                                    1,
+                                    life,
                                     "SEEK_SUCCESS",
                                     1,
-                                    baseOrgManager.getExpectedLifeEndTime() + 1,
+                                    baseOrgManager.getExpectedLifeEndTime() + life * 20,
                                     0
+                            )
+                    );
+                    ChaosNetworkManager.sendToServer(
+                            new CCClientOrgUpdatePacket(
+                                    baseOrgManager.getCCNamespace(),
+                                    CCClientOrgUpdatePacket.Action.UpdateLifeEnd,
+                                    life
                             )
                     );
 

@@ -97,12 +97,14 @@ public class ChaosClientThread implements Runnable {
             ChaosCraft.getClient().consecutiveErrorCount = 0;
             ChaosCraft.getClient().thread = null;
         }catch(ChaosNetException exception){
-            //logger.error(exeception.getMessage());
+            String message = exception.getMessage();
             ChaosCraft.getClient().consecutiveErrorCount += 1;
 
             SdkErrorHttpMetadata sdkErrorHttpMetadata = exception.sdkHttpMetadata();
             Integer statusCode = null;
             if(sdkErrorHttpMetadata != null) {
+                ByteBuffer byteBuffer = sdkErrorHttpMetadata.responseContent();
+                message = StandardCharsets.UTF_8.decode(byteBuffer).toString();//new String(byteBuffer.as().array(), StandardCharsets.UTF_8 );
                 statusCode = sdkErrorHttpMetadata.httpStatusCode();
                 switch (statusCode) {
                     case (502):
@@ -121,8 +123,7 @@ public class ChaosClientThread implements Runnable {
                         break;
                 }
             }
-            ByteBuffer byteBuffer = exception.sdkHttpMetadata().responseContent();
-            String message = StandardCharsets.UTF_8.decode(byteBuffer).toString();//new String(byteBuffer.as().array(), StandardCharsets.UTF_8 );
+
             ChaosCraft.LOGGER.error("ChaosClientThread `/next` Error: " + message + " - statusCode: " + statusCode);
             ChaosCraft.getClient().thread = null;
             ChaosCraft.getClient().setTicksRequiredToCallChaosNet(1000);

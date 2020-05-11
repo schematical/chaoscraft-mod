@@ -12,6 +12,7 @@ import com.schematical.chaoscraft.fitness.managers.EntityDiscoveryFitnessManager
 import com.schematical.chaoscraft.fitness.managers.EntityRuleFitnessManager;
 import com.schematical.chaoscraft.fitness.managers.FitnessManagerBase;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
+import com.schematical.chaoscraft.network.packets.CCClientOrgUpdatePacket;
 import com.schematical.chaoscraft.network.packets.CCClientOutputNeuronActionPacket;
 import com.schematical.chaoscraft.network.packets.CCInventoryResyncEventPacket;
 import com.schematical.chaoscraft.tickables.BaseChaosEventListener;
@@ -326,6 +327,14 @@ public class ServerOrgManager extends BaseOrgManager {
 
     public SettingsMap getRoleSettings() {
         return this.roleSettings;
+    }
+
+    public void handleClientOrgUpdatePacket(CCClientOrgUpdatePacket message) {
+        if(CCClientOrgUpdatePacket.Action.UpdateLifeEnd.equals(message.action)){
+            maxLifeSeconds += message.value;
+        }else{
+            throw new ChaosNetException("Invalid `CCClientOrgUpdatePacket.Action`: " + message.action);
+        }
     }
 
 
