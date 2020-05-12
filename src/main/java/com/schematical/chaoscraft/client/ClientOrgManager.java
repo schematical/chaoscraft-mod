@@ -52,15 +52,16 @@ public class ClientOrgManager extends BaseOrgManager {
         serverScoreEvents.add(pkt);
         orgEntity.world.playSound((PlayerEntity)null, orgEntity.getPosition(), SoundEvents.BLOCK_BELL_USE, SoundCategory.AMBIENT, 3.0F, 1f);
         BasicParticleType particleType = ParticleTypes.ITEM_SLIME;
-        int max = (int)Math.round(pkt.score * pkt.multiplier * .1f);
+        int max = (int)Math.round(pkt.score * pkt.multiplier /** .1f*/);
 
         if(max < 0){
            particleType = ParticleTypes.FLAME;
             max = Math.abs(max);
         }
-        if(max > 10){
+       /* if(max > 10){
             max = 10;
-        }
+        }*/
+        max = max * 25;
         for(int i = 0; i < max; i ++) {
             BlockPos pos = orgEntity.getPosition();
             orgEntity.world.addParticle(

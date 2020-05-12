@@ -685,6 +685,10 @@ public class ChaosCraftServer {
         organisms.get(message.getOrgNamespace()).handleClientOrgUpdatePacket(message);
     }
 
+    public HashMap<String, ServerOrgManager> getOrganisms() {
+        return organisms;
+    }
+
     public enum State{
         Unitilized,
         FitnessLoaded

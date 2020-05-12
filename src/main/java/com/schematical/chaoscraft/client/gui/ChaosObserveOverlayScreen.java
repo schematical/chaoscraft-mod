@@ -14,6 +14,7 @@ import com.schematical.chaoscraft.ai.biology.TargetSlot;
 import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.network.packets.CCServerObserverOrgChangeEventPacket;
 import com.schematical.chaoscraft.network.packets.CCServerScoreEventPacket;
+import com.schematical.chaoscraft.server.ServerOrgManager;
 import com.schematical.chaoscraft.services.targetnet.ScanInstance;
 import com.schematical.chaoscraft.services.targetnet.ScanManager;
 import com.schematical.chaoscraft.util.ChaosTarget;
@@ -201,9 +202,9 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
         
         //debugScanInstance(event);
 
-        debugEyes(event);
+        //debugEyes(event);
 
-
+        //debugSeekers(event);
 
         ActionBase actionBase = clientOrgManager.getActionBuffer().getCurrAction();
         if(actionBase != null){
@@ -333,6 +334,12 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
        
 
     }
+
+
+
+
+
+
 
     public void setDisplaySettings(boolean displayScore, boolean displayTarget, boolean displayInventory, boolean drawTargetLines) {
         this.displayScore = displayScore;

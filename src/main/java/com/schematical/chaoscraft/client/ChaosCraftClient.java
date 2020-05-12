@@ -51,7 +51,7 @@ public class ChaosCraftClient {
     private Minecraft minecraft;
     private ChaosPlayerNeuronTestScreen chaosPlayerNeuronTestScreen;
     private ChaosObserveOverlayScreen chaosObserveOverlayScreen;
-
+    private ArrayList<iRenderWorldLastEvent> renderListeners = new ArrayList<>();
 
 
 
@@ -535,7 +535,23 @@ public class ChaosCraftClient {
             return;
         }
         chaosObserveOverlayScreen.onRenderWorldLastEvent(event);
+        Iterator<iRenderWorldLastEvent> iterator = renderListeners.iterator();
+        while(iterator.hasNext()){
+            iRenderWorldLastEvent renderListener = iterator.next();
+            boolean keepMe = renderListener.onRenderWorldLastEvent(event);
+            if(!keepMe){
+                iterator.remove();
+            }
+
+        }
     }
+    public void addRenderListener(iRenderWorldLastEvent renderListener){
+        renderListeners.add(renderListener);
+    }
+    public void removeRenderListener(iRenderWorldLastEvent renderListener){
+        renderListeners.remove(renderListener);
+    }
+
 
     public ChaosObserveOverlayScreen getObserveOverlayScreen() {
         return chaosObserveOverlayScreen;
