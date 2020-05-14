@@ -1,10 +1,12 @@
 package com.schematical.chaoscraft.client;
 
 import com.schematical.chaoscraft.ChaosCraft;
+import com.schematical.chaoscraft.TrainingRoomRoleHolder;
 import com.schematical.chaoscraft.client.gui.*;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.*;
+import com.schematical.chaoscraft.server.ChaosCraftServer;
 import com.schematical.chaoscraft.server.ChaosCraftServerPlayerInfo;
 import com.schematical.chaoscraft.services.targetnet.ScanManager;
 import com.schematical.chaoscraft.services.targetnet.ScanState;
@@ -39,6 +41,7 @@ public class ChaosCraftClient {
     protected String trainingRoomUsernameNamespace;
     protected String sessionNamespace;
     protected String env = "pre-alpha";
+    public HashMap<String, TrainingRoomRoleHolder> trainingRoomRoles = new HashMap<>();
 
 
     public int consecutiveErrorCount = 0;
@@ -60,7 +63,68 @@ public class ChaosCraftClient {
         chaosObserveOverlayScreen = new ChaosObserveOverlayScreen(this.minecraft);
 
     }
+    public void loadTrainingRoomPackage(){
 
+
+        if(
+            this.trainingRoomNamespace == null ||
+            this.trainingRoomUsernameNamespace == null
+        ){
+            ChaosCraft.LOGGER.error("Not enough TrainingRoom Data set");
+            return;
+        }
+        //Load the roles... package this as a single request
+        GetUsernameTrainingroomsTrainingroomPackageRequest request = new GetUsernameTrainingroomsTrainingroomPackageRequest();
+        request.setTrainingroom(this.trainingRoomNamespace);
+        request.setUsername(this.trainingRoomUsernameNamespace);
+
+
+        try {
+            GetUsernameTrainingroomsTrainingroomPackageResult result = ChaosCraft.sdk.getUsernameTrainingroomsTrainingroomPackage(request);
+            TrainingRoomPackage trainingRoomPackage = result.getTrainingRoomPackage();
+            for (TrainingRoomRole role : trainingRoomPackage.getRoles()) {
+
+
+
+
+                TrainingRoomRoleHolder trainingRoomRoleHolder = new TrainingRoomRoleHolder(role);
+
+                trainingRoomRoles.put(role.getNamespace(), trainingRoomRoleHolder);
+                state = ChaosCraftClient.State.TrainingRoomPackageLoaded;
+            }
+            startTrainingSession();
+
+        }catch(ChaosNetException exception) {
+            //logger.error(exeception.getMessage());
+            ChaosCraft.getServer().consecutiveErrorCount += 1;
+
+            int statusCode = exception.sdkHttpMetadata().httpStatusCode();
+            switch (statusCode) {
+                case (400):
+
+                    ChaosCraft.getServer().repair();
+                    break;
+                case (401):
+                    ChaosCraft.auth();
+                    break;
+                case (409):
+                    //ChaosCraft.auth();
+                    break;
+            }
+            ByteBuffer byteBuffer = exception.sdkHttpMetadata().responseContent();
+            String message = StandardCharsets.UTF_8.decode(byteBuffer).toString();//new String(byteBuffer.as().array(), StandardCharsets.UTF_8 );
+            ChaosCraft.LOGGER.error("loadRoles  Error: " + message + " - statusCode: " + statusCode);
+            exception.printStackTrace();
+        }catch(Exception exception){
+            // ChaosCraft.getServer().consecutiveErrorCount += 1;
+
+            ChaosCraft.LOGGER.error("loadRoles Error: " + exception.getMessage() + " - exception type: " + exception.getClass().getName());
+            // ChaosCraft.getClient().thread = null;//End should cover this
+
+
+        }
+
+    }
     public ChaosCraftServerPlayerInfo.State getObservationState(){
         return observationState;
     }
@@ -105,7 +169,7 @@ public class ChaosCraftClient {
 
             Minecraft.getInstance().displayGuiScreen((Screen)null);
         }
-        startTrainingSession();
+        loadTrainingRoomPackage();
     }
     public HashMap<ScanState, Integer> getScanStateCounts(){
         HashMap<ScanState, Integer> states = new HashMap<>();
@@ -135,15 +199,20 @@ public class ChaosCraftClient {
             PostUsernameTrainingroomsTrainingroomSessionsStartResult result = ChaosCraft.sdk.postUsernameTrainingroomsTrainingroomSessionsStart(startSessionRequest);
             sessionNamespace = result.getTraningRoomSessionStartResponse().getSession().getNamespace();
             //ChaosCraft.config.save();
+            state = State.TrainingRoomSessionStarted;
 
-
-        }catch(ChaosNetException exception){
+        }catch(ChaosNetException exception) {
             int statusCode = exception.sdkHttpMetadata().httpStatusCode();
-            if(statusCode == 401){
+            if (statusCode == 401) {
                 ChaosCraft.LOGGER.error(exception.getMessage());
                 String message = "Your login has expired. Please re-run `/chaoscraft-auth {username} {password}`";
                 //ChaosCraft.chat(message);
                 ChaosCraft.LOGGER.error(message);
+            }else if(statusCode == 418){
+
+                ChaosAlertOverlay chaosAlertOverlay = new ChaosAlertOverlay("chaoscraft.gui.alert.put-your-session-to-sleep");
+                Minecraft.getInstance().displayGuiScreen(chaosAlertOverlay);
+
             }else{
                /* throw exception;*/
                 ByteBuffer byteBuffer = exception.sdkHttpMetadata().responseContent();
@@ -152,14 +221,14 @@ public class ChaosCraftClient {
 
             }
 
-        }catch(Exception exception){
+        }/*catch(Exception exception){
             ChaosCraft.getClient().consecutiveErrorCount += 1;
 
-            ChaosCraft.LOGGER.error("ChaosClientThread `/next` Error: " + exception.getMessage() + " - exception type: " + exception.getClass().getName());
+            ChaosCraft.LOGGER.error("ChaosClientThread `startTrainingSession` Error: " + exception.getMessage() + " - exception type: " + exception.getClass().getName() + " stack: " + exception.getStackTrace());
             ChaosCraft.getClient().thread = null;
             ChaosCraft.getClient().setTicksRequiredToCallChaosNet(1000);
 
-        }
+        }*/
 
     }
 
@@ -266,7 +335,7 @@ public class ChaosCraftClient {
     }
     public void tick(){
 
-        if(!state.equals(State.Authed)){
+        if(!state.equals(State.TrainingRoomSessionStarted)){
             return;
         }
         /*if(true){
@@ -567,6 +636,7 @@ public class ChaosCraftClient {
     public enum State{
         Uninitiated,
         AuthSent,
-        Authed
+        TrainingRoomPackageLoaded,
+        TrainingRoomSessionStarted, Authed
     }
 }

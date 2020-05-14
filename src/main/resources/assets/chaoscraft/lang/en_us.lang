@@ -41,3 +41,5 @@ chaoscraft.gui.observer-menu.display-scores="Display Scores"
 chaoscraft.gui.observer-menu.draw-target-lines="Draw Target Lines"
 chaoscraft.gui.observer-menu.display-inventory="Display Inventory"
 chaoscraft.gui.mainmenu.org-details="Org Details"
+chaoscraft.gui.alert.title=Alert
+chaoscraft.gui.alert.put-your-session-to-sleep="You already have an active TrainingRoomSession. \nYou must log on to ChaosNet.ai and put that session to `sleep` \n before you can start another."

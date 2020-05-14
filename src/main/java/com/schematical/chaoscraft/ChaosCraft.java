@@ -5,7 +5,6 @@ import com.amazonaws.opensdk.config.ConnectionConfiguration;
 import com.amazonaws.opensdk.config.TimeoutConfiguration;
 import com.schematical.chaoscraft.blocks.ChaosBlocks;
 import com.schematical.chaoscraft.client.*;
-import com.schematical.chaoscraft.client.gui.ChaosAuthOverlayGui;
 import com.schematical.chaoscraft.commands.*;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.entities.OrgEntityRenderer;
@@ -16,7 +15,6 @@ import com.schematical.chaoscraft.server.ChaosCraftServer;
 
 import com.schematical.chaoscraft.tileentity.ChaosTileEntity;
 import com.schematical.chaosnet.ChaosNetClientBuilder;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
@@ -51,7 +49,6 @@ import org.apache.logging.log4j.Logger;
 import com.schematical.chaosnet.ChaosNet;
 import com.schematical.chaosnet.auth.ChaosnetCognitoUserPool;
 import com.schematical.chaosnet.model.*;
-import org.msgpack.core.MessagePack;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -251,7 +248,7 @@ public class ChaosCraft
         CCTestCommand.register(event.getCommandDispatcher());
         CCHardResetCommand.register(event.getCommandDispatcher());
         CCBlockResetCommand.register(event.getCommandDispatcher());
-        server.loadRoles();
+        server.loadTrainingRoomPackage();
     }
 
     @SubscribeEvent

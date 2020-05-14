@@ -2,6 +2,7 @@ package com.schematical.chaoscraft.client;
 
 import com.schematical.chaoscraft.BaseOrgManager;
 import com.schematical.chaoscraft.ChaosCraft;
+import com.schematical.chaoscraft.TrainingRoomRoleHolder;
 import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
@@ -13,6 +14,8 @@ import com.schematical.chaoscraft.tickables.BaseChaosEventListener;
 import com.schematical.chaoscraft.tickables.ChaosHighScoreTracker;
 import com.schematical.chaoscraft.tickables.ChaosTeamTracker;
 import com.schematical.chaoscraft.tickables.OrgPositionManager;
+import com.schematical.chaoscraft.util.ChaosSettings;
+import com.schematical.chaoscraft.util.SettingsMap;
 import com.schematical.chaosnet.model.ChaosNetException;
 import com.schematical.chaosnet.model.Organism;
 import net.minecraft.entity.player.PlayerEntity;
@@ -34,12 +37,14 @@ public class ClientOrgManager extends BaseOrgManager {
     private int reportReattempts = 0;
     private int spawnCount = -1;
     private ScanManager scanManager;
+    private SettingsMap roleSettings;
 
     public ClientOrgManager(){
 
         this.attatchEventListener(new OrgPositionManager());
         this.attatchEventListener(new ChaosHighScoreTracker());
-        this.attatchEventListener(new ChaosTeamTracker());
+
+
     }
 
     public int getExpectedLifeEndTime(){
@@ -80,8 +85,15 @@ public class ClientOrgManager extends BaseOrgManager {
         if(!state.equals(State.Uninitialized)){
             throw new ChaosNetException(getCCNamespace() + " - has invalid state: " + state);
         }
+
         super.attachOrganism(organism);
         state = State.OrgAttached;
+        TrainingRoomRoleHolder trainingRoomRoleHolder = ChaosCraft.getClient().trainingRoomRoles.get(this.organism.getTrainingRoomRoleNamespace());
+        roleSettings = new SettingsMap(trainingRoomRoleHolder.trainingRoomRole.getSettings());
+
+        if(roleSettings.getBoolean(ChaosSettings.USE_CHAOS_TEAM_TRACKER)){
+            this.attatchEventListener(new ChaosTeamTracker());
+        }
     }
     public void attachOrgEntity(OrgEntity orgEntity){
         if(!state.equals(State.SpawnMessageSent)){

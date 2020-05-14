@@ -20,4 +20,10 @@ public class SettingsMap {
         }
         return this.settings.get(chaosSetting.name()).getValue();
     }
+    public boolean getBoolean(ChaosSettings chaosSetting){
+        if(!this.settings.containsKey(chaosSetting.name())){
+            throw new ChaosNetException("ChaosSetting not found: " + chaosSetting.name() + " - " + this.settings.keySet().toString());
+        }
+        return this.settings.get(chaosSetting.name()).getValue() == "true";
+    }
 }

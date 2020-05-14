@@ -4,10 +4,8 @@ import com.amazonaws.opensdk.config.ConnectionConfiguration;
 import com.amazonaws.opensdk.config.TimeoutConfiguration;
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.TrainingRoomRoleHolder;
-import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.entities.AlteredBlockInfo;
 import com.schematical.chaoscraft.entities.OrgEntity;
-import com.schematical.chaoscraft.fitness.ChaosCraftFitnessManager;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.*;
 import com.schematical.chaoscraft.server.spawnproviders.SpawnBlockPosProvider;
@@ -62,7 +60,7 @@ public class ChaosCraftServer {
         if(
            state.equals(State.Unitilized)
         ){
-            loadRoles();
+            loadTrainingRoomPackage();
             return;
         }
 
@@ -288,7 +286,7 @@ public class ChaosCraftServer {
         }
         return serverOrgManagers;
     }
-    public void loadRoles(){
+    public void loadTrainingRoomPackage(){
 
 
         if(

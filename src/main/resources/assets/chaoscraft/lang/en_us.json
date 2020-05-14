@@ -1,4 +1,5 @@
 {
+  "chaoscraft.gui.close":"Close",
   "chaoscraft.commands.auth.success":"Auth successful: {0}",
   "chaoscraft.commands.auth.failed":"Auth Failed: {0}",
   "chaoscraft.commands.ccsummon.success":"Summon Success: {0}",
@@ -36,5 +37,8 @@
   "chaoscraft.gui.observer-menu.draw-target-lines":"Draw Target Lines",
   "chaoscraft.gui.observer-menu.display-inventory":"Display Inventory",
   "chaoscraft.gui.debugmenu.stir": "Stir",
-  "chaoscraft.gui.mainmenu.org-details":"Org Details"
+  "chaoscraft.gui.mainmenu.org-details":"Org Details",
+
+  "chaoscraft.gui.alert.title": "Alert",
+  "chaoscraft.gui.alert.put-your-session-to-sleep":"You already have an active TrainingRoomSession. \nYou must log on to ChaosNet.ai and put that session to `sleep` \nbefore you can start another."
 }

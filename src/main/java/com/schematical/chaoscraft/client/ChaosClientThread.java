@@ -2,7 +2,11 @@ package com.schematical.chaoscraft.client;
 
 import com.amazonaws.opensdk.SdkErrorHttpMetadata;
 import com.schematical.chaoscraft.ChaosCraft;
+import com.schematical.chaoscraft.client.gui.ChaosAlertOverlay;
 import com.schematical.chaosnet.model.*;
+import net.minecraft.client.Minecraft;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -12,6 +16,7 @@ import java.util.Collection;
 /**
  * Created by user1a on 1/30/19.
  */
+@OnlyIn(Dist.CLIENT)
 public class ChaosClientThread implements Runnable {
 
     public void run(){
@@ -121,6 +126,10 @@ public class ChaosClientThread implements Runnable {
                     case (409):
                         //ChaosCraft.auth();
                         break;
+                    case(418):
+                        ChaosAlertOverlay chaosAlertOverlay = new ChaosAlertOverlay("chaoscraft.gui.alert.put-your-session-to-sleep");
+                        Minecraft.getInstance().displayGuiScreen(chaosAlertOverlay);
+                        break;
                 }
             }
 
@@ -131,7 +140,7 @@ public class ChaosClientThread implements Runnable {
         }catch(Exception exception){
             ChaosCraft.getClient().consecutiveErrorCount += 1;
 
-            ChaosCraft.LOGGER.error("ChaosClientThread `/next` Error: " + exception.getMessage() + " - exception type: " + exception.getClass().getName());
+            ChaosCraft.LOGGER.error("ChaosClientThread `/next` Error: " + exception.getMessage() + " - exception type: " + exception.getClass().getName() + " Stack: \n" + exception.getStackTrace().toString());
             ChaosCraft.getClient().thread = null;
             ChaosCraft.getClient().setTicksRequiredToCallChaosNet(1000);
 
