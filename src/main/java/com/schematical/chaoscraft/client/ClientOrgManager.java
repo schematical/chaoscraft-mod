@@ -61,7 +61,7 @@ public class ClientOrgManager extends BaseOrgManager {
        /* if(max > 10){
             max = 10;
         }*/
-        max = max * 25;
+        max = max * 3;
         for(int i = 0; i < max; i ++) {
             BlockPos pos = orgEntity.getPosition();
             orgEntity.world.addParticle(

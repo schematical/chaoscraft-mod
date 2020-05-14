@@ -26,7 +26,7 @@ public class ChaosTeamTracker extends BaseChaosEventListener implements iRenderW
     private static HashMap<String, ScorePlayerTeam> teams = new HashMap();
     private static Scoreboard scoreboard = null;
     private static final int ticksBetweenScoreCheck = 10;
-    private static final int maxDistance = 40;
+    private static final int maxDistance = 20;
     private static final int maxDebugRenderDistance = 5;
     private static final int maxLife = 45;
     private static final int lifeReward = 1;
@@ -105,8 +105,6 @@ public class ChaosTeamTracker extends BaseChaosEventListener implements iRenderW
         seenOrgs.clear();
         AxisAlignedBB grownBox = baseOrgManager.getEntity().getBoundingBox().grow(maxDistance, maxDistance, maxDistance);
         List<OrgEntity> entities =  baseOrgManager.getEntity().world.getEntitiesWithinAABB(OrgEntity.class,  grownBox);
-        Vec3d vec3d = clientOrgManager.getEntity().getEyePosition(1);
-        Vec3d vec3d1 = clientOrgManager.getEntity().getLook(1);
 
         for (OrgEntity orgEntity : entities) {
             if(
@@ -124,7 +122,7 @@ public class ChaosTeamTracker extends BaseChaosEventListener implements iRenderW
                     Double yawDelta = orgEntity.getChaosTarget().getYawDelta(clientOrgManager.getEntity());
                     if(Math.abs(yawDelta) < maxYawDelta) {
                         seenOrgs.add(orgEntity);
-                        int life = 1;
+                        int life = 0;
                         if (baseOrgManager.getLatestScore() < maxLife) {
                             life = lifeReward;
                             ChaosNetworkManager.sendToServer(
@@ -138,7 +136,7 @@ public class ChaosTeamTracker extends BaseChaosEventListener implements iRenderW
                         baseOrgManager.addServerScoreEvent(
                                 new CCServerScoreEventPacket(
                                         baseOrgManager.getCCNamespace(),
-                                        1,
+                                        (int)Math.round(maxDistance - orgEntity.getChaosTarget().getDist(clientOrgManager.getEntity())),
                                         life,
                                         "SEEK_SUCCESS",
                                         1,
@@ -193,7 +191,7 @@ public class ChaosTeamTracker extends BaseChaosEventListener implements iRenderW
                     vec3d2,
                     Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getProjectedView(),
                     Color.GREEN,
-                    .5f
+                    .1f
             );
 
             Vec3d minVec3d = vec3d1.rotateYaw(-1 * maxYawDelta);
@@ -210,7 +208,7 @@ public class ChaosTeamTracker extends BaseChaosEventListener implements iRenderW
                     minVec3d2,
                     Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getProjectedView(),
                     Color.GREEN,
-                    .5f
+                    .1f
             );
             for (OrgEntity orgEntity : seenOrgs) {
                 Vec3d toVec3d = orgEntity.getEyePosition(1);
@@ -220,7 +218,7 @@ public class ChaosTeamTracker extends BaseChaosEventListener implements iRenderW
                         toVec3d,
                         Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getProjectedView(),
                         Color.RED,
-                        .5f
+                        .1f
                 );
 
             }
