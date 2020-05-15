@@ -1,10 +1,12 @@
 package com.schematical.chaoscraft.ai.inputs.targetcandidate;
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.Enum;
+import com.schematical.chaoscraft.ai.CCAttributeId;
 import com.schematical.chaoscraft.ai.InputNeuron;
 import com.schematical.chaoscraft.ai.memory.BlockStateMemoryBufferSlot;
 import com.schematical.chaoscraft.services.targetnet.ScanEntry;
 import com.schematical.chaoscraft.services.targetnet.ScanManager;
+import com.schematical.chaoscraft.util.ChaosTarget;
 import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
@@ -25,26 +27,44 @@ public class TCPosIsRelativeInput extends InputNeuron {
         if(scanEntry.getTargetBlockPos() == null) {
             return getCurrentValue();
         }
-        if(attributeId.equals(Enum.OWNER_ENTITY)){
-            BlockPos offsetBlockPos = new BlockPos(
-                    offset.getX() + scanEntry.getPosition().getX(),
-                    offset.getY() + scanEntry.getPosition().getY(),
-                    offset.getZ() + scanEntry.getPosition().getZ()
-            );
+        BlockPos offsetBlockPos = new BlockPos(
+                offset.getX() + scanEntry.getPosition().getX(),
+                offset.getY() + scanEntry.getPosition().getY(),
+                offset.getZ() + scanEntry.getPosition().getZ()
+        );
+        ChaosTarget offsetTarget = new ChaosTarget(offsetBlockPos);
+        switch(attributeId) {
+            case (CCAttributeId.BLOCK_ID):
+                if (
 
-            //BlockState blockState = getEntity().world.getBlockState(offsetBlockPos);
-            if(attributeValue.equals("me")) {
-                BlockStateMemoryBufferSlot blockStateMemoryBufferSlot = this.getEntity().getClientOrgManager().getBlockStateMemory().get(offsetBlockPos);
-                if (blockStateMemoryBufferSlot != null) {
-                    if (blockStateMemoryBufferSlot.ownerEntityId == this.getEntity().getEntityId()) {
-                        setCurrentValue(1);
-                    }
+                        offsetTarget.getObservedAttributes(getEntity()).resourceId.equals(attributeValue)
+                ) {
+                    setCurrentValue(1);
                 }
-            }else{
-                throw new ChaosNetException("TODO: Write me");
-            }
-        }else{
-            throw new ChaosNetException("TODO: Write me 2");
+                break;
+            case (CCAttributeId.ENTITY_ID):
+                throw new ChaosNetException("This prob should not happen");
+               /* if (
+                        scanEntry.atts.resourceId.equals(attributeValue)
+                ) {
+                    setCurrentValue(1);
+                }*/
+               // break;
+            case (CCAttributeId.OWNER_ENTITY):
+
+
+                //BlockState blockState = getEntity().world.getBlockState(offsetBlockPos);
+                if (attributeValue.equals("me")) {
+                    BlockStateMemoryBufferSlot blockStateMemoryBufferSlot = this.getEntity().getClientOrgManager().getBlockStateMemory().get(offsetBlockPos);
+                    if (blockStateMemoryBufferSlot != null) {
+                        if (blockStateMemoryBufferSlot.ownerEntityId == this.getEntity().getEntityId()) {
+                            setCurrentValue(1);
+                        }
+                    }
+                } else {
+                    throw new ChaosNetException("TODO: Write me");
+                }
+                break;
         }
 
 
@@ -66,6 +86,7 @@ public class TCPosIsRelativeInput extends InputNeuron {
                     Integer.parseInt(pos.get("Z").toString())
             );
         }catch(Exception e){
+            offset = new Vec3i(0,0,0);
             ChaosCraft.LOGGER.error("!!!!!!!!!!!!!!! MISSING POS!!!!!!!!!!!!");//throw e;
         }
 
