@@ -26,4 +26,10 @@ public class SettingsMap {
         }
         return this.settings.get(chaosSetting.name()).getValue() == "true";
     }
+    public int getInt(ChaosSettings chaosSetting){
+        if(!this.settings.containsKey(chaosSetting.name())){
+            throw new ChaosNetException("ChaosSetting not found: " + chaosSetting.name() + " - " + this.settings.keySet().toString());
+        }
+        return Integer.parseInt(this.settings.get(chaosSetting.name()).getValue());
+    }
 }

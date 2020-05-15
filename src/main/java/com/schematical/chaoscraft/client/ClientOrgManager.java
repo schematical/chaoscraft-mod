@@ -38,7 +38,7 @@ public class ClientOrgManager extends BaseOrgManager {
     private int reportReattempts = 0;
     private int spawnCount = -1;
     private ScanManager scanManager;
-    private SettingsMap roleSettings;
+
     private BlockStateMemoryBuffer blockStateMemory = new BlockStateMemoryBuffer();
     public ClientOrgManager(){
 
@@ -97,6 +97,7 @@ public class ClientOrgManager extends BaseOrgManager {
         if(roleSettings.getBoolean(ChaosSettings.USE_CHAOS_TEAM_TRACKER)){
             this.attatchEventListener(new ChaosTeamTracker());
         }
+
     }
     public void attachOrgEntity(OrgEntity orgEntity){
         if(!state.equals(State.SpawnMessageSent)){
@@ -114,7 +115,7 @@ public class ClientOrgManager extends BaseOrgManager {
         }catch(Exception exceptions){
             markOrgAsInvalid();
         }
-
+        this.initInventory();
 
         //this.attatchTickable(new TargetNNetManager(this.scanManager));
         //this.attatchTickable(new RTNeatTicker(this.orgEntity));

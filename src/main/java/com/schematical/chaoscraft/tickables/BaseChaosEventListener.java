@@ -1,7 +1,9 @@
 package com.schematical.chaoscraft.tickables;
 
 import com.schematical.chaoscraft.BaseOrgManager;
+import com.schematical.chaoscraft.ai.action.ActionBase;
 import com.schematical.chaoscraft.client.ClientOrgManager;
+import com.schematical.chaoscraft.network.packets.CCClientActionPacket;
 import com.schematical.chaoscraft.server.ServerOrgManager;
 
 public class BaseChaosEventListener {
@@ -19,6 +21,9 @@ public class BaseChaosEventListener {
     }
 
     public void onServerDeath(ServerOrgManager baseOrgManager){
+
+    }
+    public void onServerActionComplete(ServerOrgManager serverOrgManager, ActionBase actionBase){
 
     }
 }

@@ -63,6 +63,7 @@ public class CCInventoryChangeEventPacket {
                     return;
                 }
                 clientOrgManager.getEntity().updateInventory(message.index, message.itemStack, message.selectedItemIndex);
+                //clientOrgManager.getActionBuffer().clearCurrAction();
 
             });
             ctx.get().setPacketHandled(true);

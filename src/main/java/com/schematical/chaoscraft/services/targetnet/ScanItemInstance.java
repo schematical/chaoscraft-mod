@@ -1,5 +1,6 @@
 package com.schematical.chaoscraft.services.targetnet;
 
+import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.NeuralNet;
 import com.schematical.chaoscraft.ai.OutputNeuron;
 import com.schematical.chaoscraft.ai.biology.ActionTargetSlot;
@@ -93,6 +94,8 @@ public class ScanItemInstance {
                 }
                 if(itemStack.isEmpty()){
                     hasSearchedEmpty = true;
+                }else{
+                    //ChaosCraft.LOGGER.debug("DELETE ME HERE IM JUST HERE FOR A DEBUG POINT");
                 }
             }
 

@@ -70,7 +70,9 @@ public class CCInventoryResyncEventPacket {
                 OrgEntity orgEntity =  clientOrgManager.getEntity();
                 for(int i = 0; i < orgEntity.getItemHandler().getSlots(); i++) {
                     orgEntity.updateInventory(i, message.itemStackHandler.getStackInSlot(i),  message.selectedItemIndex);
+
                 }
+                //clientOrgManager.getActionBuffer().clearCurrAction();
 
             });
             ctx.get().setPacketHandled(true);

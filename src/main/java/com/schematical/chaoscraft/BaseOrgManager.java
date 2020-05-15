@@ -5,8 +5,15 @@ import com.schematical.chaoscraft.ai.action.ActionBuffer;
 import com.schematical.chaoscraft.ai.biology.BiologyBase;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.tickables.BaseChaosEventListener;
+import com.schematical.chaoscraft.util.ChaosSettings;
 import com.schematical.chaoscraft.util.SettingsMap;
+import com.schematical.chaosnet.model.ChaosNetException;
 import com.schematical.chaosnet.model.Organism;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 
@@ -15,7 +22,7 @@ public abstract class BaseOrgManager {
     protected OrgEntity orgEntity;
     private ArrayList<BaseChaosEventListener> eventListeners = new ArrayList<BaseChaosEventListener>();
     private ActionBuffer actionBuffer;
-
+    protected SettingsMap roleSettings;
     public void attachOrganism(Organism organism){
         this.organism = organism;
 
@@ -25,7 +32,28 @@ public abstract class BaseOrgManager {
         this.actionBuffer = new ActionBuffer(this);
 
     }
+    public void initInventory(){
+        if(this.roleSettings == null){
+            throw new ChaosNetException("`this.roleSettings` has not been initialized");
+        }
+        for(int i = 0; i < 4; i++) {
+            String invValue = this.roleSettings.getString(ChaosSettings.valueOf("INV_" + i));
+            if (invValue != null) {
+                String[] parts = invValue.split("@");
+                int count = 1;
+                String id = parts[0];
+                if (parts.length > 1) {
+                    count = Integer.parseInt(parts[1]);
+                }
 
+                GameRegistry.findRegistry(Item.class);
+                Item item = (Item) ForgeRegistries.ITEMS.getValue(new ResourceLocation(id));
+                ItemStack itemStack = new ItemStack(item, count);
+                this.orgEntity.getItemHandler().setStackInSlot(i, itemStack);
+                this.orgEntity.syncSlot(i);
+            }
+        }
+    }
     public  OrgEntity getEntity(){
         return orgEntity;
     };

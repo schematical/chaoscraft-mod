@@ -19,8 +19,8 @@ public class PlaceBlockAction extends NavigateToAction{
     protected void _tick() {
         tickLook();
         if(
-                !getTarget().canEntityTouch(getOrgEntity()) &&
-                !getTarget().isEntityLookingAt(getOrgEntity())
+            !getTarget().canEntityTouch(getOrgEntity()) &&
+            !getTarget().isEntityLookingAt(getOrgEntity())
         ){
             tickNavigate();
             return;

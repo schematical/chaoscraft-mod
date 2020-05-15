@@ -108,9 +108,10 @@ public abstract class ActionBase {
         return actionBuffer.getOrgManager().getEntity();
     }
     public void markCompleted(){
-        /*if(!this.actionBuffer.isServer()){
-            throw new ChaosNetException("Client should not be changing `actionBuffer` state");
-        }*/
+        if(this.actionBuffer.isServer()){
+            ServerOrgManager serverOrgManager = (ServerOrgManager)this.actionBuffer.getOrgManager();
+            serverOrgManager.triggerServerActionComplete(this);
+        }
         if(!this.state.equals(ActionState.Running)){
             throw new ChaosNetException("Invalid `ActionBase.state`: " + this.state);
         }

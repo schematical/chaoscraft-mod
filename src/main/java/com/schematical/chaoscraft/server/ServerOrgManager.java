@@ -5,6 +5,7 @@ import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.TrainingRoomRoleHolder;
 import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
 import com.schematical.chaoscraft.ai.OutputNeuron;
+import com.schematical.chaoscraft.ai.action.ActionBase;
 import com.schematical.chaoscraft.ai.outputs.rawnav.RawOutputNeuron;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.events.CCWorldEvent;
@@ -53,7 +54,7 @@ public class ServerOrgManager extends BaseOrgManager {
     private FitnessManagerBase entityFitnessManager;
     public ChunkPos currChunkPos;
     private HashMap<String, RawOutputNeuron> rawOutputNeurons = new HashMap();
-    private SettingsMap roleSettings;
+
 
     public ServerOrgManager(){
 
@@ -77,6 +78,7 @@ public class ServerOrgManager extends BaseOrgManager {
         super.attachOrganism(organism);
         TrainingRoomRoleHolder trainingRoomRoleHolder = ChaosCraft.getServer().trainingRoomRoles.get(this.organism.getTrainingRoomRoleNamespace());
         roleSettings = new SettingsMap(trainingRoomRoleHolder.trainingRoomRole.getSettings());
+        maxLifeSeconds = roleSettings.getInt(ChaosSettings.BASE_LIFE_SECONDS);
         setState(State.OrgAttached);
     }
     @Override
@@ -102,25 +104,7 @@ public class ServerOrgManager extends BaseOrgManager {
         this.orgEntity.addTag("role-" + this.organism.getTrainingRoomRoleNamespace());
 
     }
-    public void initInventory(){
-        for(int i = 0; i < 4; i++) {
-            String invValue = this.roleSettings.getString(ChaosSettings.valueOf("INV_" + i));
-            if (invValue != null) {
-                String[] parts = invValue.split("@");
-                int count = 1;
-                String id = parts[0];
-                if (parts.length > 1) {
-                    count = Integer.parseInt(parts[1]);
-                }
 
-                GameRegistry.findRegistry(Item.class);
-                Item item = (Item) ForgeRegistries.ITEMS.getValue(new ResourceLocation(id));
-                ItemStack itemStack = new ItemStack(item, count);
-                this.orgEntity.getItemHandler().setStackInSlot(i, itemStack);
-                this.orgEntity.syncSlot(i);
-            }
-        }
-    }
     public void setPlayerEntity(ServerPlayerEntity serverPlayerEntity){
         if(!state.equals(State.Uninitialized)){
             ChaosCraft.LOGGER.error(getCCNamespace() + " - has invalid state: " + state);
@@ -335,6 +319,13 @@ public class ServerOrgManager extends BaseOrgManager {
         }else{
             throw new ChaosNetException("Invalid `CCClientOrgUpdatePacket.Action`: " + message.action);
         }
+    }
+
+    public void triggerServerActionComplete(ActionBase actionBase) {
+        for (BaseChaosEventListener eventListener : getEventListeners()) {
+            eventListener.onServerActionComplete(this, actionBase);
+        }
+
     }
 
 
