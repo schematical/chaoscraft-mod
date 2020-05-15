@@ -1,4 +1,4 @@
-package com.schematical.chaoscraft.ai.inputs;
+package com.schematical.chaoscraft.ai.inputs.targetcandidate;
 
 import com.schematical.chaoscraft.ai.InputNeuron;
 import com.schematical.chaoscraft.entities.OrgEntity;
@@ -9,22 +9,18 @@ import com.schematical.chaoscraft.util.TargetHelper;
 /**
  * Created by user1a on 12/8/18.
  */
-public class TargetCandidatePitchInput extends InputNeuron {
+public class TargetCandidateYawInput extends InputNeuron {
 
-    private static final float  PITCH_DEGREES = 180f;
+    private static final float  YAW_DEGREES = 360f;
 
     @Override
     public float evaluate(){
         ScanManager scanManager =  ((OrgEntity)this.getEntity()).getClientOrgManager().getScanManager();
         ScanEntry scanEntry = scanManager.getFocusedScanEntry();
 
-        Double degrees = TargetHelper.getPitchDelta(
-                scanEntry.getPosition(),
-                this.getEntity().getPositionVec(),
-                this.getEntity().getLookVec()
-        );
+        Double degrees = TargetHelper.getYawDelta(scanEntry.getPosition(), this.getEntity().getPositionVec(), this.getEntity().rotationYaw);
         if(degrees != null) {
-            setCurrentValue( degrees.floatValue() / PITCH_DEGREES);
+            setCurrentValue( degrees.floatValue() / YAW_DEGREES);
         }
 
 

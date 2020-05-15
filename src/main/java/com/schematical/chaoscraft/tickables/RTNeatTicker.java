@@ -3,7 +3,7 @@ package com.schematical.chaoscraft.tickables;
 import com.schematical.chaoscraft.BaseOrgManager;
 import com.schematical.chaoscraft.ai.*;
 import com.schematical.chaoscraft.ai.inputs.HasInInventoryInput;
-import com.schematical.chaoscraft.ai.inputs.TargetCandidateTypeInput;
+import com.schematical.chaoscraft.ai.inputs.targetcandidate.TargetCandidateTypeInput;
 import com.schematical.chaoscraft.ai.outputs.rawnav.CraftOutput;
 import com.schematical.chaoscraft.ai.outputs.rawnav.EquipOutput;
 import com.schematical.chaoscraft.entities.OrgEntity;

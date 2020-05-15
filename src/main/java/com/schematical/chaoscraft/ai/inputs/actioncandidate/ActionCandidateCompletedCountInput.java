@@ -1,4 +1,4 @@
-package com.schematical.chaoscraft.ai.inputs;
+package com.schematical.chaoscraft.ai.inputs.actioncandidate;
 
 import com.schematical.chaoscraft.ai.InputNeuron;
 import com.schematical.chaoscraft.ai.action.ActionBuffer;
@@ -10,7 +10,7 @@ import com.schematical.chaoscraft.services.targetnet.ScanManager;
 /**
  * Created by user1a on 12/8/18.
  */
-public class ActionCandidateExecutedCountInput extends InputNeuron {
+public class ActionCandidateCompletedCountInput extends InputNeuron {
 
 
 
@@ -22,7 +22,7 @@ public class ActionCandidateExecutedCountInput extends InputNeuron {
         ActionBuffer actionBuffer = clientOrgManager.getActionBuffer();
         String key = actionTargetSlot.getSimpleActionStatsKey();
         ActionBuffer.SimpleActionStats simpleActionStats = actionBuffer.getSimpleActionStats(key);
-        setCurrentValue(simpleActionStats.numTimesExecuted);
+        setCurrentValue(simpleActionStats.numCompleted);
 
         return getCurrentValue();
     }

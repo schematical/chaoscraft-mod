@@ -1,5 +1,7 @@
 package com.schematical.chaoscraft.ai.action;
 
+import com.schematical.chaoscraft.ai.memory.BlockStateMemoryBufferSlot;
+import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.util.ChaosTarget;
 import com.schematical.chaoscraft.util.ChaosTargetItem;
@@ -39,12 +41,21 @@ public class PlaceBlockAction extends NavigateToAction{
         BlockState blockState = getOrgEntity().world.getBlockState(placedBlockPos);
         if(blockState.isSolid()){
             markCompleted();
+
         }else{
             markFailed();//TODO: figure out how this is possible
             //throw new ChaosNetException("Something went wrong. The placed block area is empty. Was trying to place: " + itemStack.getItem().getRegistryName().toString());
         }
     }
-
+    public void onClientMarkCompleted() {
+        ClientOrgManager clientOrgManager = (ClientOrgManager) this.getActionBuffer().getOrgManager();
+        BlockStateMemoryBufferSlot blockStateMemoryBufferSlot = new BlockStateMemoryBufferSlot(getTarget().getPosition());
+        blockStateMemoryBufferSlot.ownerEntityId = getOrgEntity().getEntityId();
+        clientOrgManager.getBlockStateMemory().put(
+            getTarget().getPosition(),
+            blockStateMemoryBufferSlot
+        );
+    }
 
     public static boolean validateTarget(OrgEntity orgEntity, ChaosTarget chaosTarget) {
         if(chaosTarget.getTargetBlockPos() == null){

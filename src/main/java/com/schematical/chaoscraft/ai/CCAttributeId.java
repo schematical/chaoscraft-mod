@@ -14,4 +14,5 @@ public abstract class CCAttributeId {
     public static final String ENTITY_TEAM_ID = "ENTITY_TEAM_ID";
 
     public static final String ENTITY_TEAM_ALIGH_STATE = "ENTITY_TEAM_ALIGH_STATE";
+    public static final String OWNER_ENTITY = "OWNER_ENTITY";
 }

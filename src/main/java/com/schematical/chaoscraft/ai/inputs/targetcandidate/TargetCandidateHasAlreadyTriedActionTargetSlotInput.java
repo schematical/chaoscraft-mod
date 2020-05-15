@@ -1,7 +1,8 @@
-package com.schematical.chaoscraft.ai.inputs;
+package com.schematical.chaoscraft.ai.inputs.targetcandidate;
 
 import com.schematical.chaoscraft.ai.action.ActionBuffer;
 import com.schematical.chaoscraft.ai.biology.ActionTargetSlot;
+import com.schematical.chaoscraft.ai.inputs.BaseTargetInputNeuron;
 import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.services.targetnet.ScanEntry;

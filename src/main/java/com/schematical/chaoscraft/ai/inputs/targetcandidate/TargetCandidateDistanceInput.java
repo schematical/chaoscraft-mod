@@ -1,4 +1,4 @@
-package com.schematical.chaoscraft.ai.inputs;
+package com.schematical.chaoscraft.ai.inputs.targetcandidate;
 
 import com.schematical.chaoscraft.ai.InputNeuron;
 import com.schematical.chaoscraft.entities.OrgEntity;

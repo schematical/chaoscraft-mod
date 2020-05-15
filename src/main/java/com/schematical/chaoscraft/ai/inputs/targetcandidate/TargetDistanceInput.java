@@ -1,8 +1,9 @@
-package com.schematical.chaoscraft.ai.inputs;
+package com.schematical.chaoscraft.ai.inputs.targetcandidate;
 
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.InputNeuron;
 import com.schematical.chaoscraft.ai.biology.TargetSlot;
+import com.schematical.chaoscraft.ai.inputs.BaseTargetInputNeuron;
 import com.schematical.chaoscraft.events.CCWorldEvent;
 import com.schematical.chaoscraft.services.targetnet.ScanManager;
 import com.schematical.chaoscraft.util.TargetHelper;

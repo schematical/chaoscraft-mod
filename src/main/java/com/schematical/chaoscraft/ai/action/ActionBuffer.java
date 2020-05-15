@@ -141,6 +141,7 @@ public class ActionBuffer {
             simpleActionStats.lastExecutedWorldTime = getOrgManager().getEntity().world.getGameTime();
             simpleActionStats.numTimesExecuted += 1;
             simpleActionStats.score += currAction.getScoreTotal();
+            currAction.onClientMarkCompleted();
         }else if(message.actionState.equals(ActionBase.ActionState.Failed)){
             currAction.markFailed();
             simpleActionStats.numFails += 1;

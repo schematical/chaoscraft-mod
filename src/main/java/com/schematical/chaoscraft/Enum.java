@@ -7,6 +7,7 @@ public class Enum {
     public static final String BLOCK_ID = "BLOCK_ID";
     public static final String ENTITY_ID = "ENTITY_ID";
     public static final String ITEM_ID = "ITEM_ID";
+    public static final String OWNER_ENTITY = "OWNER_ENTITY";
     public static final String AXIS = "AXIS";
 
     public static final String ALIGH = "ALIGH";

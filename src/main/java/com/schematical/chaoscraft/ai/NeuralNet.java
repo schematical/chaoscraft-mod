@@ -164,6 +164,10 @@ public class NeuralNet {
                 break;
             case("i"):
                 baseType = Enum.INPUT.toLowerCase();
+                potentialPaths.add(baseType + "s.team");
+                potentialPaths.add(baseType + "s.targetcandidate");
+                potentialPaths.add(baseType + "s.actioncandidate");
+
                 break;
             case("m"):
                 baseType = Enum.MIDDLE.toLowerCase();

@@ -1,5 +1,6 @@
-package com.schematical.chaoscraft.ai.inputs;
+package com.schematical.chaoscraft.ai.inputs.targetcandidate;
 
+import com.schematical.chaoscraft.ai.inputs.BaseTargetInputNeuron;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceContext;

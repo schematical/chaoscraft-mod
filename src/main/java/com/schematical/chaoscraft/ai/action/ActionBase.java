@@ -259,6 +259,9 @@ public abstract class ActionBase {
         }
     }
 
+    public void onClientMarkCompleted() {
+    }
+
     public enum ActionState{
         Pending,
         Running,

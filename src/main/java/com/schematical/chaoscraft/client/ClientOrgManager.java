@@ -4,6 +4,7 @@ import com.schematical.chaoscraft.BaseOrgManager;
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.TrainingRoomRoleHolder;
 import com.schematical.chaoscraft.ai.CCObservableAttributeManager;
+import com.schematical.chaoscraft.ai.memory.BlockStateMemoryBuffer;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.CCClientOrgDebugStateChangeRequestPacket;
@@ -38,7 +39,7 @@ public class ClientOrgManager extends BaseOrgManager {
     private int spawnCount = -1;
     private ScanManager scanManager;
     private SettingsMap roleSettings;
-
+    private BlockStateMemoryBuffer blockStateMemory = new BlockStateMemoryBuffer();
     public ClientOrgManager(){
 
         this.attatchEventListener(new OrgPositionManager());
@@ -46,7 +47,9 @@ public class ClientOrgManager extends BaseOrgManager {
 
 
     }
-
+    public BlockStateMemoryBuffer getBlockStateMemory(){
+        return blockStateMemory;
+    }
     public int getExpectedLifeEndTime(){
         return expectedLifeEndTime;
     }

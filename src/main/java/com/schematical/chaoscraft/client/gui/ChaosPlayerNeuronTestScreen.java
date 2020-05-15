@@ -2,24 +2,19 @@ package com.schematical.chaoscraft.client.gui;
 
 import com.google.common.base.Strings;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.schematical.chaoscraft.ai.CCAttributeId;
 import com.schematical.chaoscraft.ai.NeuronBase;
 import com.schematical.chaoscraft.ai.inputs.BaseTargetInputNeuron;
-import com.schematical.chaoscraft.ai.inputs.TargetDistanceInput;
-import com.schematical.chaoscraft.ai.inputs.TargetPitchInput;
-import com.schematical.chaoscraft.ai.inputs.TargetYawInput;
+import com.schematical.chaoscraft.ai.inputs.targetcandidate.TargetDistanceInput;
+import com.schematical.chaoscraft.ai.inputs.targetcandidate.TargetPitchInput;
+import com.schematical.chaoscraft.ai.inputs.targetcandidate.TargetYawInput;
 import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.network.packets.CCServerObserverOrgChangeEventPacket;
-import com.schematical.chaoscraft.util.DebugTargetHolder;
-import com.schematical.chaoscraft.util.TargetHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.entity.player.ServerPlayerEntity;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ChaosPlayerNeuronTestScreen extends AbstractGui {
     private final Minecraft mc;

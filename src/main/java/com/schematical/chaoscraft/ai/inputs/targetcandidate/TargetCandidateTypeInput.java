@@ -1,7 +1,8 @@
-package com.schematical.chaoscraft.ai.inputs;
+package com.schematical.chaoscraft.ai.inputs.targetcandidate;
 
 import com.schematical.chaoscraft.ai.CCAttributeId;
 import com.schematical.chaoscraft.ai.InputNeuron;
+import com.schematical.chaoscraft.ai.memory.BlockStateMemoryBufferSlot;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.services.targetnet.ScanEntry;
 import com.schematical.chaoscraft.services.targetnet.ScanManager;
@@ -34,6 +35,17 @@ public class TargetCandidateTypeInput extends InputNeuron {
                     scanEntry.atts.resourceId.equals(attributeValue)
                 ) {
                     setCurrentValue(1);
+                }
+                break;
+            case(CCAttributeId.OWNER_ENTITY):
+                if(scanEntry.getTargetBlockPos() != null){
+                    BlockStateMemoryBufferSlot blockStateMemoryBufferSlot = this.getEntity().getClientOrgManager().getBlockStateMemory().get(scanEntry.getTargetBlockPos());
+                    if(blockStateMemoryBufferSlot != null){
+                        if(blockStateMemoryBufferSlot.ownerEntityId == this.getEntity().getEntityId()){
+                            setCurrentValue(1);
+                        }
+                    }
+
                 }
                 break;
         }
