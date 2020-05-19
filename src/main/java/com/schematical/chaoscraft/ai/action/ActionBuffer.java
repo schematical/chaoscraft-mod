@@ -35,6 +35,7 @@ public class ActionBuffer {
     private ArrayList<ActionBase> recentActions = new ArrayList<ActionBase>();
     private ActionBase currAction = null;
     private WonderAction wonderAction = null;
+
     public void execute(){
         if(isClient()) {
             throw new ChaosNetException("This should not get called Client side");
@@ -100,9 +101,12 @@ public class ActionBuffer {
         }else{
 
             CCActionStateChangeEventPacket pkt = new CCActionStateChangeEventPacket(
-                    orgManager.getCCNamespace(),
-                    currAction.getActionState()
+                orgManager.getCCNamespace(),
+                currAction.getActionState()
             );
+            if(currAction.getCorrectedChaosTarget() != null){
+                pkt.setCorrectedChaosTarget(currAction.getCorrectedChaosTarget());
+            }
             //clientActionPacket.setBiology(targetSlot);
             ServerOrgManager serverOrgManager = (ServerOrgManager)getOrgManager();
             ChaosNetworkManager.sendTo(pkt, serverOrgManager.getServerPlayerEntity());
@@ -140,6 +144,10 @@ public class ActionBuffer {
             simpleActionStats.numCompleted += 1;
             simpleActionStats.lastExecutedWorldTime = getOrgManager().getEntity().world.getGameTime();
             simpleActionStats.numTimesExecuted += 1;
+            ChaosTarget chaosTarget = message.getCorrectedChaosTarget(currAction.getOrgEntity().world);
+            if(chaosTarget != null) {
+                currAction.setCorrectedChaosTarget(chaosTarget);
+            }
             simpleActionStats.score += currAction.getScoreTotal();
             currAction.onClientMarkCompleted();
         }else if(message.actionState.equals(ActionBase.ActionState.Failed)){

@@ -49,10 +49,11 @@ public abstract class BaseOrgManager {
                 GameRegistry.findRegistry(Item.class);
                 Item item = (Item) ForgeRegistries.ITEMS.getValue(new ResourceLocation(id));
                 ItemStack itemStack = new ItemStack(item, count);
-                this.orgEntity.getItemHandler().setStackInSlot(i, itemStack);
-                if(ChaosCraft.getServer() != null) {
+                this.orgEntity.pickupItem(itemStack);
+                //this.orgEntity.getItemHandler().setStackInSlot(i, itemStack);
+                /*if(ChaosCraft.getServer() != null) {
                     this.orgEntity.syncSlot(i);
-                }
+                }*/
             }
         }
     }

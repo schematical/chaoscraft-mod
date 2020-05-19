@@ -41,6 +41,7 @@ public class PlaceBlockAction extends NavigateToAction{
         BlockPos placedBlockPos = rayTraceResult.getPos().offset(rayTraceResult.getFace());
         BlockState blockState = getOrgEntity().world.getBlockState(placedBlockPos);
         if(blockState.isSolid()){
+            setCorrectedChaosTarget(new ChaosTarget(placedBlockPos));
             markCompleted();
 
         }else{
@@ -50,17 +51,21 @@ public class PlaceBlockAction extends NavigateToAction{
     }
     public void onClientMarkCompleted() {
         ClientOrgManager clientOrgManager = (ClientOrgManager) this.getActionBuffer().getOrgManager();
-        BlockRayTraceResult rayTraceResult = getOrgEntity().rayTraceBlocks(getOrgEntity().REACH_DISTANCE);
+        /*BlockRayTraceResult rayTraceResult = getOrgEntity().rayTraceBlocks(getOrgEntity().REACH_DISTANCE);
         if(rayTraceResult == null){
-
             throw new ChaosNetException("null rayTraceResult onClientMarkCompleted");
         }
 
-        BlockPos placedBlockPos = rayTraceResult.getPos().offset(rayTraceResult.getFace());
-        BlockStateMemoryBufferSlot blockStateMemoryBufferSlot = new BlockStateMemoryBufferSlot(placedBlockPos);
+        BlockPos placedBlockPos = rayTraceResult.getPos().offset(rayTraceResult.getFace());*/
+        ChaosTarget correctedChaosTarget = this.getCorrectedChaosTarget();
+        if(correctedChaosTarget == null){
+            throw new ChaosNetException("`correctedChaosTarget` should not be null in `PlaceBlockAction`");
+        }
+        BlockStateMemoryBufferSlot blockStateMemoryBufferSlot = new BlockStateMemoryBufferSlot(correctedChaosTarget.getTargetBlockPos());
+        blockStateMemoryBufferSlot.debugBlockPos = this.getTarget().getTargetBlockPos();
         blockStateMemoryBufferSlot.ownerEntityId = getOrgEntity().getEntityId();
         clientOrgManager.getBlockStateMemory().put(
-            placedBlockPos,
+            this.getCorrectedChaosTarget().getTargetBlockPos(),
             blockStateMemoryBufferSlot
         );
     }

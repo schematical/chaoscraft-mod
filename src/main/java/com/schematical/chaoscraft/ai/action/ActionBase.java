@@ -10,6 +10,7 @@ import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -26,7 +27,7 @@ public abstract class ActionBase {
     private ChaosTarget target;
     private ChaosTargetItem targetItem;
     public ArrayList<CCServerScoreEventPacket> scoreEvents = new ArrayList<CCServerScoreEventPacket>();
-
+    private ChaosTarget correctedChaosTarget;
     //TODO: Track score events that happened when this action was happening
 
 
@@ -53,6 +54,12 @@ public abstract class ActionBase {
         enforceItemEquip();
         _tick();
 
+    }
+    public void setCorrectedChaosTarget(ChaosTarget correctedChaosTarget){
+       /* if(!this.actionBuffer.isServer()){
+            throw new ChaosNetException("Client should not be `setCorrectedChaosTarget`");
+        }*/
+        this.correctedChaosTarget = correctedChaosTarget;
     }
     public void tickFirst(){
         enforceItemEquip();
@@ -264,6 +271,10 @@ public abstract class ActionBase {
     }
 
     public void onClientMarkCompleted() {
+    }
+
+    protected ChaosTarget getCorrectedChaosTarget() {
+        return correctedChaosTarget;
     }
 
     public enum ActionState{

@@ -47,31 +47,33 @@ public class BuildyManager extends BaseChaosEventListener implements iRenderWorl
         ArrayList<BlockPos> searchMe = new ArrayList<BlockPos>();
         ArrayList<BlockPos> alreadySearched = new ArrayList<BlockPos>();
         //Get all placed blocks
-
+        int connectionBonus = 1;
         for (AlteredBlockInfo alteredBlockInfo : ChaosCraft.getServer().alteredBlocks.values()) {
             if (alteredBlockInfo.serverOrgManager.equals(serverOrgManager)) {
                 myBlocks.add(alteredBlockInfo.blockPos);
                 //alreadySearched.add(alteredBlockInfo.blockPos);
                 searchMe.add(alteredBlockInfo.blockPos);
             }
-        }
-        int safteyCatch = 0;
-        int connectionBonus = 1;
-        while(
-            safteyCatch < 100 &&
-            searchMe.size() > 0
-        ) {
-            ArrayList<BlockPos> searchNext = new ArrayList<>();
-            Iterator<BlockPos> iterator = searchMe.iterator();
-            while(iterator.hasNext()) {
-                BlockPos targetBlockPos = iterator.next();
+            int safteyCatch = 0;
 
-                if(!alreadySearched.contains(targetBlockPos)){
-                    alreadySearched.add(targetBlockPos);
-                    if(
-                        serverOrgManager.getEntity().world.getBlockState(targetBlockPos).isSolid() &&
-                        myBlocks.contains(targetBlockPos)
-                    ){
+            while(
+                 searchMe.size() > 0
+            ) {
+                safteyCatch += 1;
+                if(safteyCatch > 100){
+                    throw new ChaosNetException("Safty Catch Hit BuildyManager");
+                }
+                ArrayList<BlockPos> searchNext = new ArrayList<>();
+                Iterator<BlockPos> iterator = searchMe.iterator();
+                while(iterator.hasNext()) {
+                    BlockPos targetBlockPos = iterator.next();
+
+                    if(!alreadySearched.contains(targetBlockPos)){
+                        alreadySearched.add(targetBlockPos);
+                        if(
+                            serverOrgManager.getEntity().world.getBlockState(targetBlockPos).isSolid() &&
+                            myBlocks.contains(targetBlockPos)
+                        ){
                         /*ArrayList<BlockPos> selectdBlockCluster = null;
                         for (ArrayList<BlockPos> blockCluster : blockClusters) {
                             if(blockCluster.contains(targetBlockPos)){
@@ -81,22 +83,24 @@ public class BuildyManager extends BaseChaosEventListener implements iRenderWorl
                                 selectdBlockCluster = blockCluster;
                             }
                         }*/
-                        for (Direction direction : com.schematical.chaoscraft.Enum.getDirections()) {
-                            BlockPos newTargetBlockPos = targetBlockPos.offset(direction);
-                            if(!alreadySearched.contains(newTargetBlockPos)) {
-                                searchNext.add(newTargetBlockPos);
-                                connectionBonus += 1;
+                            for (Direction direction : com.schematical.chaoscraft.Enum.getDirections()) {
+                                BlockPos newTargetBlockPos = targetBlockPos.offset(direction);
+                                if(!alreadySearched.contains(newTargetBlockPos)) {
+                                    searchNext.add(newTargetBlockPos);
+                                    connectionBonus += 1;
 
+                                }
                             }
                         }
+                    }else{
+                        ChaosCraft.LOGGER.error("Block pos already searched");
                     }
-                }else{
-                    ChaosCraft.LOGGER.error("Block pos already searched");
                 }
-            }
 
-            searchMe = searchNext;
+                searchMe = searchNext;
+            }
         }
+
         CCServerScoreEventPacket serverScoreEventPacket = new CCServerScoreEventPacket(
                 serverOrgManager.getCCNamespace(),
                 myBlocks.size(),
@@ -132,6 +136,19 @@ public class BuildyManager extends BaseChaosEventListener implements iRenderWorl
                     Color.GREEN,
                     .5f
             );
+            if(
+                myBlock.debugBlockPos != null &&
+                !myBlock.debugBlockPos.equals(myBlock.blockPos)
+            ){
+                CCGUIHelper.drawAABB(
+                        event.getMatrixStack(),
+                        new AxisAlignedBB(myBlock.debugBlockPos),
+                        Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getProjectedView(),
+                        .002D,
+                        Color.WHITE,
+                        .5f
+                );
+            }
         }
 
         return true;
