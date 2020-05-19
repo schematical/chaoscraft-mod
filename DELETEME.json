@@ -2,6 +2,10 @@
   "settings":{
     "TrainingRoomRole":[
       {
+        "namespace":"BASE_LIFE_SECONDS",
+        "value":15
+      },
+      {
         "namespace":"SPAWN_POINT_ID",
         "value":"default"
       },
@@ -173,6 +177,24 @@
     },
 
     {
+      "$TYPE":"RCIsTypeInput",
+      "$EVAL_GROUP": "ITEM",
+      "attributeId":"RECIPE_ID",
+      "attributeValue":{
+        "$SOURCE":"oa",
+        "$ATTRIBUTE_ID":"RECIPE_ID"
+      }
+    },
+    {
+      "$TYPE":"ICIsTypeInput",
+      "$EVAL_GROUP": "ITEM",
+      "attributeId":"ITEM_ID",
+      "attributeValue":{
+        "$SOURCE":"oa",
+        "$ATTRIBUTE_ID":"ITEM_ID"
+      }
+    },
+    {
       "$TYPE":"IsLookingAtInput",
       "attributeId":"BLOCK_ID",
       "attributeValue":{
@@ -303,7 +325,6 @@
     },
     {
       "$TYPE":"TCPosIsRelativeInput",
-      "$DEFAULT":"true",
       "$EVAL_GROUP": "TARGET",
       "attributeId":"BLOCK_ID",
       "attributeValue":{
@@ -382,7 +403,7 @@
       "$DEFAULT":"true",
       "actionType":{
         "$SOURCE":"enum",
-        "$ENUM":"ACTIONS"
+        "$ENUM":"ACTION"
       }
     },
     {
@@ -475,7 +496,7 @@
       "index":"{{index}}",
       "action": {
         "$SOURCE": "enum",
-        "$ENUM": "action"
+        "$ENUM": "ACTION"
       }
     }
 
@@ -496,8 +517,12 @@
       "HAS_NOT_TOUCHED"
     ],
     "ACTION":[
-      "HAS_TOUCHED",
-      "HAS_NOT_TOUCHED"
+      "CraftAction",
+      "DigBlockAction",
+      "MeleeAttackAction",
+      "PlaceBlockAction",
+      "TossItemAction",
+      "UseItemAction"
     ]
   },
   "templates":{
@@ -510,9 +535,21 @@
       "maxZ":"{{rndInt '-5:5' }}"
     },
     "VEC3_I":{
-      "X":"{{rndInt '-2:2' }}",
-      "Y":"{{rndInt '-2:2' }}",
-      "Z":"{{rndInt '-5:5' }}"
+      "X":{
+        "$SOURCE": "int_range",
+        "$MIN": -1,
+        "$MAX": 1
+      },
+      "Y":{
+        "$SOURCE": "int_range",
+        "$MIN": -1,
+        "$MAX": 1
+      },
+      "Z":{
+        "$SOURCE": "int_range",
+        "$MIN": -1,
+        "$MAX": 1
+      }
     }
   },
   "activators": [

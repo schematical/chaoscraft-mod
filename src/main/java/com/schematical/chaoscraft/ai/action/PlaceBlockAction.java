@@ -5,6 +5,7 @@ import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.util.ChaosTarget;
 import com.schematical.chaoscraft.util.ChaosTargetItem;
+import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItem;
@@ -49,10 +50,17 @@ public class PlaceBlockAction extends NavigateToAction{
     }
     public void onClientMarkCompleted() {
         ClientOrgManager clientOrgManager = (ClientOrgManager) this.getActionBuffer().getOrgManager();
-        BlockStateMemoryBufferSlot blockStateMemoryBufferSlot = new BlockStateMemoryBufferSlot(getTarget().getPosition());
+        BlockRayTraceResult rayTraceResult = getOrgEntity().rayTraceBlocks(getOrgEntity().REACH_DISTANCE);
+        if(rayTraceResult == null){
+
+            throw new ChaosNetException("null rayTraceResult onClientMarkCompleted");
+        }
+
+        BlockPos placedBlockPos = rayTraceResult.getPos().offset(rayTraceResult.getFace());
+        BlockStateMemoryBufferSlot blockStateMemoryBufferSlot = new BlockStateMemoryBufferSlot(placedBlockPos);
         blockStateMemoryBufferSlot.ownerEntityId = getOrgEntity().getEntityId();
         clientOrgManager.getBlockStateMemory().put(
-            getTarget().getPosition(),
+            placedBlockPos,
             blockStateMemoryBufferSlot
         );
     }

@@ -17,6 +17,7 @@ import com.schematical.chaoscraft.network.packets.CCClientOrgUpdatePacket;
 import com.schematical.chaoscraft.network.packets.CCClientOutputNeuronActionPacket;
 import com.schematical.chaoscraft.network.packets.CCInventoryResyncEventPacket;
 import com.schematical.chaoscraft.tickables.BaseChaosEventListener;
+import com.schematical.chaoscraft.tickables.BuildyManager;
 import com.schematical.chaoscraft.tickables.ChaosTeamTracker;
 import com.schematical.chaoscraft.tickables.OrgPositionManager;
 import com.schematical.chaoscraft.util.ChaosSettings;
@@ -59,7 +60,8 @@ public class ServerOrgManager extends BaseOrgManager {
     public ServerOrgManager(){
 
         this.attatchEventListener(new OrgPositionManager());
-        this.attatchEventListener(new ChaosTeamTracker());
+        //this.attatchEventListener(new ChaosTeamTracker());
+        this.attatchEventListener(new BuildyManager());
     }
     public void setTmpNamespace(String _tmpNamespace){
         tmpNamespace = _tmpNamespace;

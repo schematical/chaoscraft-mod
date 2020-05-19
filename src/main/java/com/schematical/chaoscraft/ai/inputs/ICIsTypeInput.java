@@ -4,6 +4,7 @@ import com.schematical.chaoscraft.ai.InputNeuron;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.services.targetnet.ScanEntry;
 import com.schematical.chaoscraft.services.targetnet.ScanManager;
+import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.item.crafting.IRecipe;
 import org.json.simple.JSONObject;
 
@@ -17,7 +18,9 @@ public class ICIsTypeInput extends InputNeuron {
 
     @Override
     public float evaluate(){
-        ScanManager scanManager =  ((OrgEntity)this.getEntity()).getClientOrgManager().getScanManager();
+        ScanManager scanManager =  ((OrgEntity)this.getEntity())
+                .getClientOrgManager().
+                        getScanManager();
         ScanEntry scanEntry = scanManager.getScanItemInstance().getFocusedScanEntry();
 
         if(
@@ -33,6 +36,9 @@ public class ICIsTypeInput extends InputNeuron {
     public void parseData(JSONObject jsonObject){
         super.parseData(jsonObject);
         //recipeId = jsonObject.get("attributeId").toString();
+        if(jsonObject.get("attributeValue") == null){
+            throw new ChaosNetException("Missing `attributeValue` : " + jsonObject.toJSONString());
+        }
         this.itemId = jsonObject.get("attributeValue").toString();
 
     }

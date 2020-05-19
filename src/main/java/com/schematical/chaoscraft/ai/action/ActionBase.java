@@ -60,9 +60,12 @@ public abstract class ActionBase {
     public void enforceItemEquip(){
         if(this.getTargetItem() != null) {
             if (this.getTargetItem().getInventorySlot() != null) {
-                if (this.getOrgEntity().getSelectedItemIndex() != this.getTargetItem().getInventorySlot()) {
+                /*if (
+                    this.getOrgEntity().getSelectedItemIndex() != this.getTargetItem().getInventorySlot()
+
+                ) {*/
                     this.getOrgEntity().equipSlot(this.getTargetItem().getInventorySlot());
-                }
+                //}
             }
         }
     }

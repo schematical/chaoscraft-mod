@@ -36,8 +36,7 @@ public class TCPosIsRelativeInput extends InputNeuron {
         switch(attributeId) {
             case (CCAttributeId.BLOCK_ID):
                 if (
-
-                        offsetTarget.getObservedAttributes(getEntity()).resourceId.equals(attributeValue)
+                    offsetTarget.getObservedAttributes(getEntity()).resourceId.equals(attributeValue)
                 ) {
                     setCurrentValue(1);
                 }
@@ -75,11 +74,11 @@ public class TCPosIsRelativeInput extends InputNeuron {
     }
     public void parseData(JSONObject jsonObject){
         super.parseData(jsonObject);
-
-        attributeId = jsonObject.get("attributeId").toString();
-        attributeValue = jsonObject.get("attributeValue").toString();
-        JSONObject pos = (JSONObject)jsonObject.get("pos");
         try {
+            attributeId = jsonObject.get("attributeId").toString();
+            attributeValue = jsonObject.get("attributeValue").toString();
+            JSONObject pos = (JSONObject)jsonObject.get("pos");
+
             offset = new Vec3i(
                     Integer.parseInt(pos.get("X").toString()),
                     Integer.parseInt(pos.get("Y").toString()),
@@ -87,7 +86,7 @@ public class TCPosIsRelativeInput extends InputNeuron {
             );
         }catch(Exception e){
             offset = new Vec3i(0,0,0);
-            ChaosCraft.LOGGER.error("!!!!!!!!!!!!!!! MISSING POS!!!!!!!!!!!!");//throw e;
+            throw new ChaosNetException("!!!!!!!!!!!!!!! MISSING POS!!!!!!!!!!!! \n" + jsonObject.toJSONString());//throw e;
         }
 
     }

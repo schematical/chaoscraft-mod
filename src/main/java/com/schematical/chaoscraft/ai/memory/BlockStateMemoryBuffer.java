@@ -2,6 +2,7 @@ package com.schematical.chaoscraft.ai.memory;
 
 import net.minecraft.util.math.BlockPos;
 
+import java.util.Collection;
 import java.util.HashMap;
 
 public class BlockStateMemoryBuffer {
@@ -14,5 +15,9 @@ public class BlockStateMemoryBuffer {
             return null;
         }
         return blocks.get(blockPos);
+    }
+
+    public Collection<BlockStateMemoryBufferSlot> values() {
+       return blocks.values();
     }
 }

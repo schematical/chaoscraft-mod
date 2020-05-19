@@ -164,7 +164,7 @@ public class CCGUIHelper {
         tessellator.draw();
     }
 
-    static void drawAABB(MatrixStack stack, AxisAlignedBB aabb,  Vec3d viewerPos, double expand, Color color, float alpha) {
+    public static void drawAABB(MatrixStack stack, AxisAlignedBB aabb, Vec3d viewerPos, double expand, Color color, float alpha) {
         drawAABB(stack, aabb.grow(expand, expand, expand),  viewerPos, color, alpha);
     }
 }

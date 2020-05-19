@@ -1,8 +1,10 @@
 package com.schematical.chaoscraft.ai.inputs;
 
+import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.CCAttributeId;
 import com.schematical.chaoscraft.ai.CCObserviableAttributeCollection;
 import com.schematical.chaoscraft.ai.InputNeuron;
+import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import org.json.simple.JSONObject;
@@ -36,8 +38,15 @@ public class HasEquippedInput extends InputNeuron {
     @Override
     public void parseData(JSONObject jsonObject) {
         super.parseData(jsonObject);
-        attributeId = jsonObject.get("attributeId").toString();
-        attributeValue = jsonObject.get("attributeValue").toString();
+        try{
+            attributeId = jsonObject.get("attributeId").toString();
+            attributeValue = jsonObject.get("attributeValue").toString();
+
+        }catch(Exception e){
+            ChaosCraft.LOGGER.error(jsonObject.toJSONString());
+            throw e;
+        }
+
 
     }
     public String toLongString(){

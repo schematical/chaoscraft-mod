@@ -11,10 +11,7 @@ import com.schematical.chaoscraft.network.packets.CCClientOrgDebugStateChangeReq
 import com.schematical.chaoscraft.network.packets.CCServerScoreEventPacket;
 import com.schematical.chaoscraft.server.ServerOrgManager;
 import com.schematical.chaoscraft.services.targetnet.ScanManager;
-import com.schematical.chaoscraft.tickables.BaseChaosEventListener;
-import com.schematical.chaoscraft.tickables.ChaosHighScoreTracker;
-import com.schematical.chaoscraft.tickables.ChaosTeamTracker;
-import com.schematical.chaoscraft.tickables.OrgPositionManager;
+import com.schematical.chaoscraft.tickables.*;
 import com.schematical.chaoscraft.util.ChaosSettings;
 import com.schematical.chaoscraft.util.SettingsMap;
 import com.schematical.chaosnet.model.ChaosNetException;
@@ -44,6 +41,7 @@ public class ClientOrgManager extends BaseOrgManager {
 
         this.attatchEventListener(new OrgPositionManager());
         this.attatchEventListener(new ChaosHighScoreTracker());
+        this.attatchEventListener(new BuildyManager());
 
 
     }

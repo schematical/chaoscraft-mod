@@ -129,11 +129,11 @@ public class ScanManager {
 
                             if (actionTargetSlot.validateTargetAndItem(orgEntity, topScanEntry.getChaosTarget(), topItemScanEntry.getChaosTargetItem())) {
 
-                                focusedActionScore = -9999;
+                                focusedActionScore = -999;
                                 this.focusedActionTargetSlot = actionTargetSlot;
                                 this.focusedActionTargetSlot.setTarget(topScanEntry.getChaosTarget());
                                 this.focusedActionTargetSlot.setTargetItem(topItemScanEntry.getChaosTargetItem());
-                                if (!clientOrgManager.getActionBuffer().hasExecutedRecently(this.focusedActionTargetSlot.createAction(), 10)) {
+                                //if (!clientOrgManager.getActionBuffer().hasExecutedRecently(this.focusedActionTargetSlot.createAction(), 10)) {
 
                                     List<OutputNeuron> outputs = orgEntity.getNNet().evaluate(NeuralNet.EvalGroup.ACTION);//Ideally the output neurons will set the score
 
@@ -150,7 +150,7 @@ public class ScanManager {
                                         highestActionScanEntry = topScanEntry;
                                         highestItemScanEntry = topItemScanEntry;
                                     }
-                                }
+                                //}
                             }
 
                         }

@@ -1,5 +1,9 @@
 package com.schematical.chaoscraft;
 
+import net.minecraft.util.Direction;
+
+import java.util.ArrayList;
+
 /**
  * Created by user1a on 12/30/18.
  */
@@ -26,5 +30,15 @@ public class Enum {
     public final static String weight = "w";//"weight";
     public final static String activator = "a";//"activator";
     public final static String neuronId = "n";//"activator";
+    public static ArrayList<Direction> getDirections() {
+        ArrayList<Direction> directions = new ArrayList<>();
+        directions.add(Direction.DOWN);
+        directions.add(Direction.UP);
+        directions.add(Direction.NORTH);
+        directions.add(Direction.SOUTH);
+        directions.add(Direction.WEST);
+        directions.add(Direction.EAST);
+        return directions;
+    }
 }
 
