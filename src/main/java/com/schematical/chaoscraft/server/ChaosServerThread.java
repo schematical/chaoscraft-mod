@@ -66,6 +66,7 @@ public class ChaosServerThread implements Runnable {
              ChaosCraft.getServer().consecutiveErrorCount += 1;
             SdkErrorHttpMetadata sdkErrorHttpMetadata = exception.sdkHttpMetadata();
             Integer statusCode = null;
+            String message = exception.getMessage();
             if(sdkErrorHttpMetadata != null) {
                 statusCode = sdkErrorHttpMetadata.httpStatusCode();
                 switch (statusCode) {
@@ -80,9 +81,10 @@ public class ChaosServerThread implements Runnable {
                         //ChaosCraft.auth();
                         break;
                 }
+                ByteBuffer byteBuffer = sdkErrorHttpMetadata.responseContent();
+                message = StandardCharsets.UTF_8.decode(byteBuffer).toString();//new String(byteBuffer.as().array(), StandardCharsets.UTF_8 );
             }
-            ByteBuffer byteBuffer = exception.sdkHttpMetadata().responseContent();
-            String message = StandardCharsets.UTF_8.decode(byteBuffer).toString();//new String(byteBuffer.as().array(), StandardCharsets.UTF_8 );
+
             ChaosCraft.LOGGER.error("ChaosServerThread  Error: " + message + " - statusCode: " + statusCode);
 
 
