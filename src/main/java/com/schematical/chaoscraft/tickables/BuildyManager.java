@@ -93,7 +93,7 @@ public class BuildyManager extends BaseChaosEventListener implements iRenderWorl
                             }
                         }
                     }else{
-                        ChaosCraft.LOGGER.error("Block pos already searched");
+                        //ChaosCraft.LOGGER.error("Block pos already searched");
                     }
                 }
 
@@ -128,14 +128,7 @@ public class BuildyManager extends BaseChaosEventListener implements iRenderWorl
         }
 
         for (BlockStateMemoryBufferSlot myBlock : clientOrgManager.getBlockStateMemory().values()) {
-            CCGUIHelper.drawAABB(
-                    event.getMatrixStack(),
-                    new AxisAlignedBB(myBlock.blockPos),
-                    Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getProjectedView(),
-                    .002D,
-                    Color.GREEN,
-                    .5f
-            );
+            Color color = Color.GREEN;
             if(
                 myBlock.debugBlockPos != null &&
                 !myBlock.debugBlockPos.equals(myBlock.blockPos)
@@ -145,10 +138,19 @@ public class BuildyManager extends BaseChaosEventListener implements iRenderWorl
                         new AxisAlignedBB(myBlock.debugBlockPos),
                         Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getProjectedView(),
                         .002D,
-                        Color.WHITE,
+                        Color.PINK,
                         .5f
                 );
+                color = Color.RED;
             }
+            CCGUIHelper.drawAABB(
+                    event.getMatrixStack(),
+                    new AxisAlignedBB(myBlock.blockPos),
+                    Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getProjectedView(),
+                    .002D,
+                    color,
+                    .5f
+            );
         }
 
         return true;

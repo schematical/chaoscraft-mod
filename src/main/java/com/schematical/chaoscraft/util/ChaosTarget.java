@@ -67,11 +67,7 @@ public class ChaosTarget {
             );*/
         }
         if(blockPos != null) {
-            return new Vec3d(
-                    this.blockPos.getX() + .5f,
-                    this.blockPos.getY()+ .5f,
-                    this.blockPos.getZ()+ .5f
-            );
+            return (new AxisAlignedBB(blockPos)).getCenter();
         }
         return null;
     }
