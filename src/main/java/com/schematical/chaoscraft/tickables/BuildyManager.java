@@ -16,6 +16,7 @@ import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.CCServerScoreEventPacket;
 import com.schematical.chaoscraft.server.ServerOrgManager;
 import com.schematical.chaoscraft.services.targetnet.ScanInstance;
+import com.schematical.chaoscraft.util.ChaosTarget;
 import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Direction;
@@ -45,21 +46,20 @@ public class BuildyManager extends BaseChaosEventListener implements iRenderWorl
         }
         //blockClusters.clear();
         ArrayList<BlockPos> searchMe = new ArrayList<BlockPos>();
-        ArrayList<BlockPos> alreadySearched = new ArrayList<BlockPos>();
+
         //Get all placed blocks
         int connectionBonus = 1;
         for (AlteredBlockInfo alteredBlockInfo : ChaosCraft.getServer().alteredBlocks.values()) {
             if (alteredBlockInfo.serverOrgManager.equals(serverOrgManager)) {
                 myBlocks.add(alteredBlockInfo.blockPos);
                 //alreadySearched.add(alteredBlockInfo.blockPos);
-                if(!alreadySearched.contains(alteredBlockInfo.blockPos)) {
-                    searchMe.add(alteredBlockInfo.blockPos);
 
+                searchMe.add(alteredBlockInfo.blockPos);
 
-                }
             }
             int safteyCatch = 0;
             ArrayList<BlockPos> selectdBlockCluster = null;
+            ArrayList<BlockPos> alreadySearched = new ArrayList<BlockPos>();
             while(
                  searchMe.size() > 0
             ) {
@@ -82,24 +82,28 @@ public class BuildyManager extends BaseChaosEventListener implements iRenderWorl
                                Iterator<ArrayList<BlockPos>> iterator1 = blockClusters.iterator();
                                while(iterator1.hasNext()){
                                    ArrayList<BlockPos> blockCluster  = iterator1.next();
-                                   if (blockCluster.contains(targetBlockPos)) {
+
                                        if (
-                                           selectdBlockCluster == null
+                                           !blockCluster.equals(selectdBlockCluster) &&
+                                           blockCluster.contains(targetBlockPos)
                                        ) {
-                                           selectdBlockCluster = blockCluster;
-                                       }else{
-                                           if(  !blockCluster.equals(selectdBlockCluster)) {
+                                           if (
+                                               selectdBlockCluster == null
+                                           ) {
+                                               selectdBlockCluster = blockCluster;
+                                           } else {
+
                                                for (BlockPos blockPos : blockCluster) {
-                                                    if(!selectdBlockCluster.contains(blockPos)){
-                                                        selectdBlockCluster.add(blockPos);
-                                                    }
+                                                   if (!selectdBlockCluster.contains(blockPos)) {
+                                                       selectdBlockCluster.add(blockPos);
+                                                   }
                                                }
 
                                                iterator1.remove();
+
                                            }
-                                           // new ChaosNetException("TODO Merge the two");
                                        }
-                                   }
+
                                }
                                if (selectdBlockCluster == null) {
                                    selectdBlockCluster = new ArrayList<>();
@@ -112,12 +116,10 @@ public class BuildyManager extends BaseChaosEventListener implements iRenderWorl
                                for (Direction direction : com.schematical.chaoscraft.Enum.getDirections()) {
                                    BlockPos newTargetBlockPos = targetBlockPos.offset(direction);
                                    if(
-                                       !alreadySearched.contains(newTargetBlockPos) &&
-                                       !selectdBlockCluster.contains(newTargetBlockPos)
+                                       myBlocks.contains(newTargetBlockPos)
                                    ) {
                                        searchNext.add(newTargetBlockPos);
                                        connectionBonus += 1;
-
                                    }
                                }
                            }
@@ -133,10 +135,46 @@ public class BuildyManager extends BaseChaosEventListener implements iRenderWorl
                 searchMe = searchNext;
             }
         }
-        for (ArrayList<BlockPos> blockCluster : blockClusters) {
 
+        ArrayList<ArrayList<BlockPos>> removeMe = new ArrayList<>();
+        Iterator<ArrayList<BlockPos>> iterator1 = blockClusters.iterator();
+        while (iterator1.hasNext()) {
+            ArrayList<BlockPos> blockCluster = iterator1.next();
+            Iterator<ArrayList<BlockPos>> iterator2 = blockClusters.iterator();
+            while (iterator2.hasNext()) {
+                ArrayList<BlockPos> blockCluster2 = iterator2.next();
+                if(
+                    !blockCluster2.equals(blockCluster) &&
+                    !removeMe.contains(blockCluster2) &&
+                    !removeMe.contains(blockCluster)
+                ) {
+                    boolean blnMerge = false;
+                    for (BlockPos blockPos : blockCluster2) {
+                        if (blockCluster.contains(blockPos)) {
+                            blnMerge = true;
+                        }
+                    }
+                    if (blnMerge) {
+                        for (BlockPos blockPos : blockCluster) {
+                            if (!blockCluster.contains(blockPos)) {
+                                blockCluster.add(blockPos);
+                            }
+                        }
+                        removeMe.add(blockCluster2);
+                    }
+                }
+
+            }
 
         }
+        for (ArrayList<BlockPos> blockCluster : removeMe) {
+            blockClusters.remove(blockCluster);
+        }
+        for (ArrayList<BlockPos> blockCluster : blockClusters) {
+
+        }
+
+
 
         CCServerScoreEventPacket serverScoreEventPacket = new CCServerScoreEventPacket(
             serverOrgManager.getCCNamespace(),
