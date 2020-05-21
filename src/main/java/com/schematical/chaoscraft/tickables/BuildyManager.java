@@ -1,42 +1,47 @@
 package com.schematical.chaoscraft.tickables;
 
+import com.schematical.chaoscraft.BaseOrgManager;
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.ai.action.ActionBase;
 import com.schematical.chaoscraft.ai.action.PlaceBlockAction;
-import com.schematical.chaoscraft.ai.memory.BlockStateMemoryBuffer;
 import com.schematical.chaoscraft.ai.memory.BlockStateMemoryBufferSlot;
 import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.client.gui.CCGUIHelper;
 import com.schematical.chaoscraft.client.iRenderWorldLastEvent;
 import com.schematical.chaoscraft.entities.AlteredBlockInfo;
-import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.events.EntityFitnessScoreEvent;
 import com.schematical.chaoscraft.events.OrgEvent;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.CCServerScoreEventPacket;
 import com.schematical.chaoscraft.server.ServerOrgManager;
-import com.schematical.chaoscraft.services.targetnet.ScanInstance;
-import com.schematical.chaoscraft.util.ChaosTarget;
 import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
 public class BuildyManager extends BaseChaosEventListener implements iRenderWorldLastEvent {
     private ClientOrgManager clientOrgManager;
     public ArrayList<ArrayList<BlockPos>> blockClusters = new ArrayList<>();
-    private ArrayList<BlockPos> myBlocks = new ArrayList<>();
+    public HashMap<Integer, Color> colorMap = new HashMap<Integer, Color>();
+    private Color color;
+
     public void onClientTick(ClientOrgManager baseOrgManager) {
         if (clientOrgManager == null) {
             clientOrgManager = baseOrgManager;
             ChaosCraft.getClient().addRenderListener(this);
+            this.color =  new Color(
+                            (int) Math.round(Math.random() * 255),
+                            (int) Math.round(Math.random() * 255),
+                            (int) Math.round(Math.random() * 255)
+
+                    );
         }
     }
     @Override
@@ -44,19 +49,47 @@ public class BuildyManager extends BaseChaosEventListener implements iRenderWorl
         if (!(actionBase instanceof PlaceBlockAction)) {
             return;
         }
+
+        ArrayList<BlockPos> myBlocks = new ArrayList<>();
+        for (AlteredBlockInfo alteredBlockInfo : ChaosCraft.getServer().alteredBlocks.values()) {
+            if (alteredBlockInfo.serverOrgManager.equals(serverOrgManager)) {
+                myBlocks.add(alteredBlockInfo.blockPos);
+            }
+        }
+        ArrayList<ArrayList<BlockPos>> blockClusters = clusterBlocks(myBlocks, serverOrgManager);
+        for (ArrayList<BlockPos> blockCluster : blockClusters) {
+
+        }
+
+
+
+        CCServerScoreEventPacket serverScoreEventPacket = new CCServerScoreEventPacket(
+                serverOrgManager.getCCNamespace(),
+                myBlocks.size(),
+                myBlocks.size(),
+                "buildy",
+                1,
+                (int) (serverOrgManager.getEntity().world.getGameTime() + ((serverOrgManager.getMaxLife() - serverOrgManager.getAgeSeconds()) * 20)),
+                0
+        );
+        serverOrgManager.getEntity().addOrgEvent(new OrgEvent(new EntityFitnessScoreEvent(null, myBlocks.size(), null)));
+
+
+        ChaosNetworkManager.sendTo(serverScoreEventPacket, serverOrgManager.getServerPlayerEntity());
+
+    }
+    public ArrayList<ArrayList<BlockPos>> clusterBlocks(ArrayList<BlockPos> myBlocks, BaseOrgManager orgManager){
         //blockClusters.clear();
         ArrayList<BlockPos> searchMe = new ArrayList<BlockPos>();
 
         //Get all placed blocks
         int connectionBonus = 1;
-        for (AlteredBlockInfo alteredBlockInfo : ChaosCraft.getServer().alteredBlocks.values()) {
-            if (alteredBlockInfo.serverOrgManager.equals(serverOrgManager)) {
-                myBlocks.add(alteredBlockInfo.blockPos);
-                //alreadySearched.add(alteredBlockInfo.blockPos);
+        for (BlockPos _blockPos : myBlocks) {
 
-                searchMe.add(alteredBlockInfo.blockPos);
 
-            }
+            searchMe.add(_blockPos);
+
+
             int safteyCatch = 0;
             ArrayList<BlockPos> selectdBlockCluster = null;
             ArrayList<BlockPos> alreadySearched = new ArrayList<BlockPos>();
@@ -72,70 +105,45 @@ public class BuildyManager extends BaseChaosEventListener implements iRenderWorl
                 while(iterator.hasNext()) {
                     BlockPos targetBlockPos = iterator.next();
 
-                    if(!alreadySearched.contains(targetBlockPos)){
-                        alreadySearched.add(targetBlockPos);
+                   if(selectdBlockCluster == null) {
+                       Iterator<ArrayList<BlockPos>> iterator1 = blockClusters.iterator();
+                       while(iterator1.hasNext()){
+                           ArrayList<BlockPos> blockCluster  = iterator1.next();
+
+                           if (
+                               !blockCluster.equals(selectdBlockCluster) &&
+                               blockCluster.contains(targetBlockPos)
+                           ) {
+                               selectdBlockCluster = blockCluster;
+                           }
+
+                       }
+                       if (selectdBlockCluster == null) {
+                           selectdBlockCluster = new ArrayList<>();
+                           blockClusters.add(selectdBlockCluster);
+                       }
+                   }
+                   if(!selectdBlockCluster.contains(targetBlockPos)){
+                       selectdBlockCluster.add(targetBlockPos);
+                   }
+                    for (Direction direction : com.schematical.chaoscraft.Enum.getDirections()) {
+                        BlockPos newTargetBlockPos = targetBlockPos.offset(direction);
                         if(
-                            serverOrgManager.getEntity().world.getBlockState(targetBlockPos).isSolid() &&
-                            myBlocks.contains(targetBlockPos)
-                        ){
-                           if(selectdBlockCluster == null) {
-                               Iterator<ArrayList<BlockPos>> iterator1 = blockClusters.iterator();
-                               while(iterator1.hasNext()){
-                                   ArrayList<BlockPos> blockCluster  = iterator1.next();
-
-                                       if (
-                                           !blockCluster.equals(selectdBlockCluster) &&
-                                           blockCluster.contains(targetBlockPos)
-                                       ) {
-                                           if (
-                                               selectdBlockCluster == null
-                                           ) {
-                                               selectdBlockCluster = blockCluster;
-                                           } else {
-
-                                               for (BlockPos blockPos : blockCluster) {
-                                                   if (!selectdBlockCluster.contains(blockPos)) {
-                                                       selectdBlockCluster.add(blockPos);
-                                                   }
-                                               }
-
-                                               iterator1.remove();
-
-                                           }
-                                       }
-
-                               }
-                               if (selectdBlockCluster == null) {
-                                   selectdBlockCluster = new ArrayList<>();
-                                   blockClusters.add(selectdBlockCluster);
-
-                               }
-                           }
-                           if(!selectdBlockCluster.contains(targetBlockPos)){
-                               selectdBlockCluster.add(targetBlockPos);
-                               for (Direction direction : com.schematical.chaoscraft.Enum.getDirections()) {
-                                   BlockPos newTargetBlockPos = targetBlockPos.offset(direction);
-                                   if(
-                                       myBlocks.contains(newTargetBlockPos)
-                                   ) {
-                                       searchNext.add(newTargetBlockPos);
-                                       connectionBonus += 1;
-                                   }
-                               }
-                           }
-
-
-
+                            myBlocks.contains(newTargetBlockPos) &&
+                            !alreadySearched.contains(newTargetBlockPos)
+                        ) {
+                            alreadySearched.add(newTargetBlockPos);
+                            searchNext.add(newTargetBlockPos);
+                            connectionBonus += 1;
                         }
-                    }else{
-                        //ChaosCraft.LOGGER.error("Block pos already searched");
                     }
+
                 }
 
                 searchMe = searchNext;
             }
         }
-
+        ArrayList<ArrayList<BlockPos>> debugBlockClusters = (ArrayList<ArrayList<BlockPos>>)blockClusters.clone();
         ArrayList<ArrayList<BlockPos>> removeMe = new ArrayList<>();
         Iterator<ArrayList<BlockPos>> iterator1 = blockClusters.iterator();
         while (iterator1.hasNext()) {
@@ -155,7 +163,7 @@ public class BuildyManager extends BaseChaosEventListener implements iRenderWorl
                         }
                     }
                     if (blnMerge) {
-                        for (BlockPos blockPos : blockCluster) {
+                        for (BlockPos blockPos : blockCluster2) {
                             if (!blockCluster.contains(blockPos)) {
                                 blockCluster.add(blockPos);
                             }
@@ -170,25 +178,13 @@ public class BuildyManager extends BaseChaosEventListener implements iRenderWorl
         for (ArrayList<BlockPos> blockCluster : removeMe) {
             blockClusters.remove(blockCluster);
         }
-        for (ArrayList<BlockPos> blockCluster : blockClusters) {
-
+        if(
+            blockClusters.size() > 1 &&
+            debugBlockClusters.size() != blockClusters.size()
+        ){
+            ChaosCraft.LOGGER.info("X");
         }
-
-
-
-        CCServerScoreEventPacket serverScoreEventPacket = new CCServerScoreEventPacket(
-            serverOrgManager.getCCNamespace(),
-            myBlocks.size(),
-            myBlocks.size(),
-            "buildy",
-            connectionBonus,
-            (int) (serverOrgManager.getEntity().world.getGameTime() + ((serverOrgManager.getMaxLife() - serverOrgManager.getAgeSeconds()) * 20)),
-            0
-        );
-        serverOrgManager.getEntity().addOrgEvent(new OrgEvent(new EntityFitnessScoreEvent(null, myBlocks.size(), null)));
-
-
-        ChaosNetworkManager.sendTo(serverScoreEventPacket, serverOrgManager.getServerPlayerEntity());
+       return blockClusters;
     }
 
 
@@ -201,8 +197,33 @@ public class BuildyManager extends BaseChaosEventListener implements iRenderWorl
         if(!clientOrgManager.getEntity().isAlive()){
             return false;
         }
-
-        for (BlockStateMemoryBufferSlot myBlock : clientOrgManager.getBlockStateMemory().values()) {
+        ArrayList<BlockPos> myBlocks = new ArrayList<>();
+        for (BlockStateMemoryBufferSlot blockStateMemoryBufferSlot : clientOrgManager.getBlockStateMemory().values()) {
+            myBlocks.add(blockStateMemoryBufferSlot.blockPos);
+          /*  CCGUIHelper.drawAABB(
+                    event.getMatrixStack(),
+                    new AxisAlignedBB(blockStateMemoryBufferSlot.blockPos),
+                    Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getProjectedView(),
+                    .03D,
+                    color,
+                    .5f
+            );*/
+        }
+        ArrayList<ArrayList<BlockPos>> blockClusters = clusterBlocks(myBlocks, clientOrgManager);
+        for (int i = 0; i < blockClusters.size(); i++) {
+            if(!colorMap.containsKey(i)){
+                colorMap.put(
+                        i,
+                        new Color(
+                            (int) Math.round(Math.random() * 255),
+                            (int) Math.round(Math.random() * 255),
+                            (int) Math.round(Math.random() * 255)
+                        )
+                );
+            }
+            drawBlockCluster(event, blockClusters.get(i), colorMap.get(i));
+        }
+        /*for (BlockStateMemoryBufferSlot myBlock : clientOrgManager.getBlockStateMemory().values()) {
             Color color = Color.GREEN;
             if(
                 myBlock.debugBlockPos != null &&
@@ -226,10 +247,25 @@ public class BuildyManager extends BaseChaosEventListener implements iRenderWorl
                     color,
                     .5f
             );
-        }
-
+        }*/
         return true;
 
+    }
+
+    private void drawBlockCluster(RenderWorldLastEvent event, ArrayList<BlockPos> blockCluster, Color color) {
+
+        for (BlockPos blockPos : blockCluster) {
+
+
+            CCGUIHelper.drawAABB(
+                    event.getMatrixStack(),
+                    new AxisAlignedBB(blockPos),
+                    Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getProjectedView(),
+                    .03D,
+                    color,
+                    .5f
+            );
+        }
     }
 }
 

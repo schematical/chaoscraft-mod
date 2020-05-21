@@ -140,6 +140,8 @@ public class ChaosCraftClient {
     public void onWorldUnload() {
         state = State.Uninitiated;
         myOrganisms.clear();
+        renderListeners.clear();
+        observationState = ChaosCraftServerPlayerInfo.State.None;
 
     }
     public void showPlayerNeuronTestScreen(){
