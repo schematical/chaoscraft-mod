@@ -52,10 +52,14 @@ public class BuildyManager extends BaseChaosEventListener implements iRenderWorl
             if (alteredBlockInfo.serverOrgManager.equals(serverOrgManager)) {
                 myBlocks.add(alteredBlockInfo.blockPos);
                 //alreadySearched.add(alteredBlockInfo.blockPos);
-                searchMe.add(alteredBlockInfo.blockPos);
+                if(!alreadySearched.contains(alteredBlockInfo.blockPos)) {
+                    searchMe.add(alteredBlockInfo.blockPos);
+
+
+                }
             }
             int safteyCatch = 0;
-
+            ArrayList<BlockPos> selectdBlockCluster = null;
             while(
                  searchMe.size() > 0
             ) {
@@ -74,23 +78,52 @@ public class BuildyManager extends BaseChaosEventListener implements iRenderWorl
                             serverOrgManager.getEntity().world.getBlockState(targetBlockPos).isSolid() &&
                             myBlocks.contains(targetBlockPos)
                         ){
-                        /*ArrayList<BlockPos> selectdBlockCluster = null;
-                        for (ArrayList<BlockPos> blockCluster : blockClusters) {
-                            if(blockCluster.contains(targetBlockPos)){
-                                if(selectdBlockCluster != null){
-                                    throw new ChaosNetException("TODO Merge the two");
-                                }
-                                selectdBlockCluster = blockCluster;
-                            }
-                        }*/
-                            for (Direction direction : com.schematical.chaoscraft.Enum.getDirections()) {
-                                BlockPos newTargetBlockPos = targetBlockPos.offset(direction);
-                                if(!alreadySearched.contains(newTargetBlockPos)) {
-                                    searchNext.add(newTargetBlockPos);
-                                    connectionBonus += 1;
+                           if(selectdBlockCluster == null) {
+                               Iterator<ArrayList<BlockPos>> iterator1 = blockClusters.iterator();
+                               while(iterator1.hasNext()){
+                                   ArrayList<BlockPos> blockCluster  = iterator1.next();
+                                   if (blockCluster.contains(targetBlockPos)) {
+                                       if (
+                                           selectdBlockCluster == null
+                                       ) {
+                                           selectdBlockCluster = blockCluster;
+                                       }else{
+                                           if(  !blockCluster.equals(selectdBlockCluster)) {
+                                               for (BlockPos blockPos : blockCluster) {
+                                                    if(!selectdBlockCluster.contains(blockPos)){
+                                                        selectdBlockCluster.add(blockPos);
+                                                    }
+                                               }
 
-                                }
-                            }
+                                               iterator1.remove();
+                                           }
+                                           // new ChaosNetException("TODO Merge the two");
+                                       }
+                                   }
+                               }
+                               if (selectdBlockCluster == null) {
+                                   selectdBlockCluster = new ArrayList<>();
+                                   blockClusters.add(selectdBlockCluster);
+
+                               }
+                           }
+                           if(!selectdBlockCluster.contains(targetBlockPos)){
+                               selectdBlockCluster.add(targetBlockPos);
+                               for (Direction direction : com.schematical.chaoscraft.Enum.getDirections()) {
+                                   BlockPos newTargetBlockPos = targetBlockPos.offset(direction);
+                                   if(
+                                       !alreadySearched.contains(newTargetBlockPos) &&
+                                       !selectdBlockCluster.contains(newTargetBlockPos)
+                                   ) {
+                                       searchNext.add(newTargetBlockPos);
+                                       connectionBonus += 1;
+
+                                   }
+                               }
+                           }
+
+
+
                         }
                     }else{
                         //ChaosCraft.LOGGER.error("Block pos already searched");
@@ -100,15 +133,19 @@ public class BuildyManager extends BaseChaosEventListener implements iRenderWorl
                 searchMe = searchNext;
             }
         }
+        for (ArrayList<BlockPos> blockCluster : blockClusters) {
+
+
+        }
 
         CCServerScoreEventPacket serverScoreEventPacket = new CCServerScoreEventPacket(
-                serverOrgManager.getCCNamespace(),
-                myBlocks.size(),
-                myBlocks.size(),
-                "buildy",
-                connectionBonus,
-                (int) (serverOrgManager.getEntity().world.getGameTime() + ((serverOrgManager.getMaxLife() - serverOrgManager.getAgeSeconds()) * 20)),
-                0
+            serverOrgManager.getCCNamespace(),
+            myBlocks.size(),
+            myBlocks.size(),
+            "buildy",
+            connectionBonus,
+            (int) (serverOrgManager.getEntity().world.getGameTime() + ((serverOrgManager.getMaxLife() - serverOrgManager.getAgeSeconds()) * 20)),
+            0
         );
         serverOrgManager.getEntity().addOrgEvent(new OrgEvent(new EntityFitnessScoreEvent(null, myBlocks.size(), null)));
 
