@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 public class BuildyManager extends BaseChaosEventListener implements iRenderWorldLastEvent {
+    public int myScore = 0;//SERVER SIDE
+
     private ClientOrgManager clientOrgManager;
     public ArrayList<ArrayList<BlockPos>> blockClusters = new ArrayList<>();
     public HashMap<Integer, Color> colorMap = new HashMap<Integer, Color>();
@@ -57,16 +59,23 @@ public class BuildyManager extends BaseChaosEventListener implements iRenderWorl
             }
         }
         ArrayList<ArrayList<BlockPos>> blockClusters = clusterBlocks(myBlocks, serverOrgManager);
+        int newTotalScore = 0;
         for (ArrayList<BlockPos> blockCluster : blockClusters) {
-
+            int i = 0;
+            int clusterScore = 0;
+            for (BlockPos blockPos : blockCluster) {
+                i += 1;
+                clusterScore += i;
+            }
+            newTotalScore += clusterScore;
         }
 
-
-
+        int scoreToSend = newTotalScore - myScore;
+        myScore = newTotalScore;
         CCServerScoreEventPacket serverScoreEventPacket = new CCServerScoreEventPacket(
                 serverOrgManager.getCCNamespace(),
-                myBlocks.size(),
-                myBlocks.size(),
+                scoreToSend,
+                scoreToSend,
                 "buildy",
                 1,
                 (int) (serverOrgManager.getEntity().world.getGameTime() + ((serverOrgManager.getMaxLife() - serverOrgManager.getAgeSeconds()) * 20)),
@@ -178,12 +187,12 @@ public class BuildyManager extends BaseChaosEventListener implements iRenderWorl
         for (ArrayList<BlockPos> blockCluster : removeMe) {
             blockClusters.remove(blockCluster);
         }
-        if(
+      /*  if(
             blockClusters.size() > 1 &&
             debugBlockClusters.size() != blockClusters.size()
         ){
-            ChaosCraft.LOGGER.info("X");
-        }
+            ChaosCraft.LOGGER.info("X12345");
+        }*/
        return blockClusters;
     }
 
