@@ -24,4 +24,5 @@ public class ActionCandidateSetScoreOutput extends OutputNeuron {
         scanManager.setFocusedActionScore(getCurrentValue());
     }
 
+
 }

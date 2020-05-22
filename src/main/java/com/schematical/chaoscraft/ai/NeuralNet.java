@@ -101,7 +101,7 @@ public class NeuralNet {
             while (iterator.hasNext()) {
                 JSONObject outputBaseJSON = iterator.next();
 
-                String clsName = outputBaseJSON.get("$TYPE").toString();  // use fully qualified name
+                String clsName = outputBaseJSON.get("$BT").toString();  // use fully qualified name
 
 
                 String fullClassName = "com.schematical.chaoscraft.ai.biology." + clsName;
