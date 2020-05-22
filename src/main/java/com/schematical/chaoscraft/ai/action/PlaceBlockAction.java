@@ -45,7 +45,7 @@ public class PlaceBlockAction extends NavigateToAction{
             markCompleted();
 
         }else{
-            markFailed();//TODO: figure out how this is possible
+           // markFailed();//TODO: figure out how this is possible
             //throw new ChaosNetException("Something went wrong. The placed block area is empty. Was trying to place: " + itemStack.getItem().getRegistryName().toString());
         }
     }

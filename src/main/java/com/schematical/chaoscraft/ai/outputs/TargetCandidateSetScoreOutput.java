@@ -81,4 +81,11 @@ public class TargetCandidateSetScoreOutput extends OutputNeuron {
         super.parseData(jsonObject);
         targetSlotId = jsonObject.get("targetSlotId").toString();
     }
+    @Override
+    public String toLongString(){
+        if(actionTargetSlot == null) {
+            return this.toAbreviation() + " - " + targetSlotId;
+        }
+        return this.toAbreviation() + " - " + actionTargetSlot.getActionBaseClass().getSimpleName();
+    }
 }

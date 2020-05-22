@@ -998,16 +998,17 @@ public class OrgEntity extends MobEntity {
                 this.itemHandler.getStackInSlot(i).getCount() + stack.getCount() < stack.getMaxStackSize()
             ) {
                 this.itemHandler.insertItem(i, stack, false);
-
+                CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.ITEM_COLLECTED);
+                worldEvent.item = worldEventItem;
+                if (observableAttributeManager != null) {
+                    observableAttributeManager.Observe(worldEventItem);
+                    //TODO: Recheck what you can craft
+                    observableAttributeManager.ObserveCraftableRecipes(this);
+                }
                 if(serverOrgManager != null) {
-                    CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.ITEM_COLLECTED);
-                    worldEvent.item = worldEventItem;
+
                     serverOrgManager.test(worldEvent);
-                    if (observableAttributeManager != null) {
-                        observableAttributeManager.Observe(worldEventItem);
-                        //TODO: Recheck what you can craft
-                        observableAttributeManager.ObserveCraftableRecipes(this);
-                    }
+
                     syncSlot(i);
                 }
 

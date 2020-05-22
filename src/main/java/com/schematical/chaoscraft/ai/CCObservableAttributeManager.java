@@ -11,6 +11,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.RecipeManager;
 import net.minecraft.util.ResourceLocation;
 
 import net.minecraft.util.math.BlockPos;
@@ -117,7 +118,13 @@ public class CCObservableAttributeManager {
     public void ObserveCraftableRecipes(OrgEntity entityOrganism) {
         //TODO: Go through each craftable recipe and figure out what it can craft
         //List<IRecipe> craftableRecipes = new ArrayList<IRecipe>();
-        for (IRecipe irecipe : entityOrganism.getServer().getRecipeManager().getRecipes())
+        RecipeManager recipeManager = null;
+        if(entityOrganism.getServer() != null){
+            recipeManager = entityOrganism.getServer().getRecipeManager();
+        }else{
+            recipeManager = entityOrganism.world.getRecipeManager();
+        }
+        for (IRecipe irecipe : recipeManager.getRecipes())
         {
             if(entityOrganism.canCraft(irecipe)){
                 Observe(irecipe);
