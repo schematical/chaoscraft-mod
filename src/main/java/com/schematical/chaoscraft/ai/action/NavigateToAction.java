@@ -1,5 +1,6 @@
 package com.schematical.chaoscraft.ai.action;
 
+import com.schematical.chaoscraft.ChaosCraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -18,6 +19,7 @@ public abstract class NavigateToAction extends ActionBase{
     }
 
     public void tickNavigate(){
+
         getOrgEntity().getMoveHelper().strafe(2, strafe);
         Double deltaYaw = getTarget().getYawDelta(getOrgEntity());
         if(deltaYaw == null){

@@ -110,7 +110,7 @@ public class CCObservableAttributeManager {
     public CCObserviableAttributeCollection Observe(IRecipe recipe){
         CCObserviableAttributeCollection atts = new CCObserviableAttributeCollection();
         atts.resourceType = CCResourceType.RECIPE;
-        atts.resourceId = recipe.getType().toString();
+        atts.resourceId = recipe.getId().toString();
         TestUnique(CCAttributeId.RECIPE_ID, atts.resourceId);
         return atts;
     }
