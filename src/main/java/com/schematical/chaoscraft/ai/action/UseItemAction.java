@@ -53,11 +53,14 @@ public class UseItemAction extends NavigateToAction{
                 Hand.MAIN_HAND
         );
         if(rcResult.getType().equals(ActionResultType.SUCCESS)){
+            markCompleted();
             ChaosCraft.LOGGER.debug(getOrgEntity().getCCNamespace() + " successfully rightClicked " + heldItem.getRegistryName().getNamespace());
-        }else if(rcResult.getType().equals(ActionResultType.SUCCESS)){
+            return;
+        }else if(rcResult.getType().equals(ActionResultType.FAIL)){
             ChaosCraft.LOGGER.debug(getOrgEntity().getCCNamespace() + " failed to rightClick " + heldItem.getRegistryName().getNamespace());
+            markFailed();
+            return;
         }
-
         BlockRayTraceResult rayTraceResult = getOrgEntity().rayTraceBlocks(getOrgEntity().REACH_DISTANCE);
         if(
             rayTraceResult == null

@@ -15,6 +15,7 @@ import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.CCServerScoreEventPacket;
 import com.schematical.chaoscraft.server.ServerOrgManager;
 import com.schematical.chaosnet.model.ChaosNetException;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -53,9 +54,18 @@ public class BuildyManager extends BaseChaosEventListener implements iRenderWorl
         }
 
         ArrayList<BlockPos> myBlocks = new ArrayList<>();
+        ArrayList<String> blockStates = new ArrayList<>();
         for (AlteredBlockInfo alteredBlockInfo : ChaosCraft.getServer().alteredBlocks.values()) {
             if (alteredBlockInfo.serverOrgManager.equals(serverOrgManager)) {
-                myBlocks.add(alteredBlockInfo.blockPos);
+
+                BlockState blockState = serverOrgManager.getEntity().world.getBlockState(alteredBlockInfo.blockPos);
+                if(blockState.isSolid()) {
+                    myBlocks.add(alteredBlockInfo.blockPos);
+                    String blockType = blockState.getBlock().getRegistryName().toString();
+                    if (!blockStates.contains(blockType)) {
+                        blockStates.add(blockType);
+                    }
+                }
             }
         }
         ArrayList<ArrayList<BlockPos>> blockClusters = clusterBlocks(myBlocks, serverOrgManager);
@@ -69,9 +79,19 @@ public class BuildyManager extends BaseChaosEventListener implements iRenderWorl
             }
             newTotalScore += clusterScore;
         }
-
+        newTotalScore = newTotalScore  * blockStates.size();
+        if(blockStates.size() > 1){
+            ChaosCraft.LOGGER.info("blockStates.size(): " + blockStates.size());
+        }
         int scoreToSend = newTotalScore - myScore;
         myScore = newTotalScore;
+        int newLife =  newTotalScore;
+        /*if(serverOrgManager.getMaxLife() + newLife > 120){
+            newLife =
+        }
+        int ageLeftToLive = (serverOrgManager.getMaxLife() - serverOrgManager.getAgeSeconds());
+        serverOrgManager.adjustMaxLife();*/
+
         CCServerScoreEventPacket serverScoreEventPacket = new CCServerScoreEventPacket(
                 serverOrgManager.getCCNamespace(),
                 scoreToSend,

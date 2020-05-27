@@ -50,4 +50,9 @@ public class CCPlayerEntityWrapper extends PlayerEntity {
     public boolean isCreative() {
         return false;
     }
+    @Override
+    public void setPositionAndUpdate(double x, double y, double z){
+        super.setPositionAndUpdate(x,y,z);
+        this.entityOrganism.setPositionAndUpdate(x, y, z);
+    }
 }
