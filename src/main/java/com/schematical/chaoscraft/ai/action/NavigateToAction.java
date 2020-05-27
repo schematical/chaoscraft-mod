@@ -1,7 +1,9 @@
 package com.schematical.chaoscraft.ai.action;
 
 import com.schematical.chaoscraft.ChaosCraft;
+import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.item.ItemStack;
+import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -13,13 +15,30 @@ public abstract class NavigateToAction extends ActionBase{
     private int stuckTicks = 0;
     private int strafe = 0;
     private int stuckThreshold =  3 * 20;
-
+    private PathNavigator navigator;
     protected boolean isStuck(){
         return stuckTicks > stuckThreshold;
     }
 
     public void tickNavigate(){
 
+
+        if(getTarget().getTargetEntity() != null) {
+            this.getOrgEntity().getNavigator()
+                    .tryMoveToEntityLiving(getTarget().getTargetEntity(), 1.0D);
+        }else if(getTarget().getTargetBlockPos() != null){
+            this.getOrgEntity().getNavigator()
+                .tryMoveToXYZ(
+                        getTarget().getTargetBlockPos().getX(),
+                        getTarget().getTargetBlockPos().getY(),
+                        getTarget().getTargetBlockPos().getZ(),
+                        1.0D
+                );
+        }else{
+            throw new ChaosNetException("TODO: Make this work");
+        }
+    }
+    public void tickNavigateSimple(){
         getOrgEntity().getMoveHelper().strafe(2, strafe);
         Double deltaYaw = getTarget().getYawDelta(getOrgEntity());
         if(deltaYaw == null){
