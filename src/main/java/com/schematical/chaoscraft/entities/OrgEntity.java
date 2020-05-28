@@ -70,7 +70,7 @@ public class OrgEntity extends MobEntity {
 
 
     private int miningTicks = 0;
-
+    private ArrayList<ItemEntity> tossedItemEntities = new ArrayList<>();
 
 
 
@@ -582,6 +582,9 @@ public class OrgEntity extends MobEntity {
             if(serverOrgManager != null) {
                 ChaosCraft.getServer().replaceAlteredBlocks(serverOrgManager);
             }
+            for (ItemEntity tossedItemEntity : tossedItemEntities) {
+                tossedItemEntity.remove();
+            }
            /* if (chunkTicket != null) {
                 ForgeChunkManager.releaseTicket(chunkTicket);
                 chunkTicket = null;
@@ -801,6 +804,7 @@ public class OrgEntity extends MobEntity {
         }
         ItemEntity entityItem = new ItemEntity(world, blockPos.getX(), blockPos.getY(), blockPos.getZ());
         entityItem.setItem(itemStack);
+        tossedItemEntities.add(entityItem);
         world.getServer().getWorld(DimensionType.OVERWORLD).summonEntity(entityItem);
 
 

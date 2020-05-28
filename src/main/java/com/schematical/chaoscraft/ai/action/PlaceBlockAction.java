@@ -18,15 +18,20 @@ public class PlaceBlockAction extends NavigateToAction{
 
     @Override
     protected void _tick() {
-        tickLook();
+
         if(
-            !getTarget().canEntityTouch(getOrgEntity()) &&
-            !getTarget().isEntityLookingAt(getOrgEntity())
+            !getTarget().canEntityTouch(getOrgEntity()) /*||
+            getTarget().isVisiblyBlocked(getOrgEntity())*/
         ){
             tickNavigate();
             return;
         }
         tickArrived();
+        if(!getTarget().isEntityLookingAt(getOrgEntity())){
+            tickLook();
+            return;
+        }
+
         BlockRayTraceResult rayTraceResult = getOrgEntity().rayTraceBlocks(getOrgEntity().REACH_DISTANCE);
         if(rayTraceResult == null){
             markFailed();

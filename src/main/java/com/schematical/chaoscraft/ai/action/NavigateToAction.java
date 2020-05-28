@@ -81,20 +81,26 @@ public abstract class NavigateToAction extends ActionBase{
             stuckTicks = 0;
         }
         if(currMixItUpAction == null){
-            stopWalking();
+            //stopWalking();
             return;
         }
         if(currMixItUpAction.equals(MixItUpAction.Jump)){
             getOrgEntity().jump();
             return;
-        }
-        if(currMixItUpAction.equals(MixItUpAction.StrafeLeft)){
+        }else if(currMixItUpAction.equals(MixItUpAction.StrafeLeft)){
             strafe = -1;
+            getOrgEntity().getMoveHelper().strafe(0, strafe);
             return;
-        }
-        if(currMixItUpAction.equals(MixItUpAction.StrafeLeft)){
+        }else if(currMixItUpAction.equals(MixItUpAction.StrafeRight)){
             strafe = 1;
+            getOrgEntity().getMoveHelper().strafe(0, strafe);
             return;
+        } else if(currMixItUpAction.equals(MixItUpAction.BackUp)){
+            strafe = 1;
+            getOrgEntity().getMoveHelper().strafe(-1, 0);
+            return;
+        }else{
+            throw new ChaosNetException("No idea what `currMixItUpAction` is : " + currMixItUpAction.toString());
         }
     }
     public void tickArrived(){
@@ -104,7 +110,8 @@ public abstract class NavigateToAction extends ActionBase{
     public enum MixItUpAction{
         StrafeLeft,
         StrafeRight,
-        Jump
+        Jump,
+        BackUp
     }
 
 }

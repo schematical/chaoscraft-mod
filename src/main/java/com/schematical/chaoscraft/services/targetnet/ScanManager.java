@@ -29,6 +29,7 @@ public class ScanManager {
 
     private ScanItemInstance scanItemInstance;
     private ScanState scanState = ScanState.Pending;
+    private ScanEntry focusedItemScanEntry;
 
     public void setFocusedActionScore(float score){
         focusedActionScore = score;
@@ -130,6 +131,7 @@ public class ScanManager {
                             if (actionTargetSlot.validateTargetAndItem(orgEntity, topScanEntry.getChaosTarget(), topItemScanEntry.getChaosTargetItem())) {
 
                                 focusedActionScore = -999;
+                                this.focusedItemScanEntry = topItemScanEntry;
                                 this.focusedActionTargetSlot = actionTargetSlot;
                                 this.focusedActionTargetSlot.setTarget(topScanEntry.getChaosTarget());
                                 this.focusedActionTargetSlot.setTargetItem(topItemScanEntry.getChaosTargetItem());
@@ -231,5 +233,9 @@ public class ScanManager {
 
     public ScanState getState() {
         return scanState;
+    }
+
+    public float getFocusedActionItemScore() {
+        return focusedItemScanEntry.getScore(focusedActionTargetSlot.id);
     }
 }

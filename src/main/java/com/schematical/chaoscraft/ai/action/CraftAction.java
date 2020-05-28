@@ -33,16 +33,23 @@ public class CraftAction extends NavigateToAction{
                 ChaosCraft.LOGGER.info(getOrgEntity().getCCNamespace() + " Targeted a crafting table while trying to craft: " + getTargetItem().getRecipe().getId().toString());
             }
         }*/
-        tickLook();
         if(
-            !getTarget().canEntityTouch(getOrgEntity()) &&
-            !getTarget().isEntityLookingAt(getOrgEntity())
-        ){
-            tickNavigate();
-            return;
+            getOrgEntity().world.getBlockState(getTarget().getTargetBlockPos()).isSolid()
+        ) {
+            if (
+                !getTarget().canEntityTouch(getOrgEntity())/* ||
+                getTarget().isVisiblyBlocked(getOrgEntity())*/
+            ) {
+                tickNavigate();
+                return;
+            }
+            tickArrived();
+            if( !getTarget().isEntityLookingAt(getOrgEntity())) {
+                tickLook();
+                return;
+            }
         }
 
-        tickArrived();
         //When looking at stuff do stuff.
         RecipeManager recipeManager = this.getActionBuffer().getOrgManager().getEntity().world.getRecipeManager();;
         IRecipe recipe = null;
@@ -68,7 +75,7 @@ public class CraftAction extends NavigateToAction{
         }
 
         if(outputStack == null){
-           // throw new ChaosNetException("Something went wrong crafting: " + recipe.getType().toString() + " this should not be possible with the `evaluate` check above");
+            throw new ChaosNetException("Something went wrong crafting: " + recipe.getType().toString() + " this should not be possible with the `evaluate` check above");
         }else {
 
             CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.ITEM_CRAFTED);
@@ -128,7 +135,7 @@ public class CraftAction extends NavigateToAction{
         if (block instanceof CraftingTableBlock) {
             //ChaosCraft.LOGGER.info(orgEntity.getCCNamespace() + "VALIDATE CRAFTING TABLE! ");
         }else{
-            return false;//TODO: remvoe this later
+            //return false;//TODO: remvoe this later
         }
         return true;
 
