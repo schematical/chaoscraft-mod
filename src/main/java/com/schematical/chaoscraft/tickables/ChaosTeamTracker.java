@@ -31,7 +31,6 @@ public class ChaosTeamTracker extends BaseChaosEventListener implements iRenderW
     private static final int maxLife = 45;
     private static final int lifeReward = 1;
     private int ticksSinceLastScoreCheck = 0;
-    private boolean hasAttachedToClient = false;
     private ClientOrgManager clientOrgManager;
     private ArrayList<OrgEntity> seenOrgs = new ArrayList<>();
     private final float maxYawDelta = 45;
@@ -108,10 +107,9 @@ public class ChaosTeamTracker extends BaseChaosEventListener implements iRenderW
 
         for (OrgEntity orgEntity : entities) {
             if(
-                    Roles.hiders.toString().equals(
-                        orgEntity.getTrainingRoomRoleNamespace()
-                    )
-
+                Roles.hiders.toString().equals(
+                    orgEntity.getTrainingRoomRoleNamespace()
+                )
             ){
                 //This org should get points
 

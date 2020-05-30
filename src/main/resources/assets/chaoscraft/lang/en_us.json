@@ -40,5 +40,8 @@
   "chaoscraft.gui.mainmenu.org-details":"Org Details",
 
   "chaoscraft.gui.alert.title": "Alert",
-  "chaoscraft.gui.alert.put-your-session-to-sleep":"You already have an active TrainingRoomSession. \nYou must log on to ChaosNet.ai and put that session to `sleep` \nbefore you can start another."
+  "chaoscraft.gui.alert.put-your-session-to-sleep":"You already have an active TrainingRoomSession. \nYou must log on to ChaosNet.ai and put that session to `sleep` \nbefore you can start another.",
+
+  "chaoscraft.gui.matchmanagerblock.matchId": "Match Id",
+  "chaoscraft.gui.matchmanagerblock.matchDurationSeconds": "Match Duration (Seconds)"
 }

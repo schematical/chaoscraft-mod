@@ -7,7 +7,7 @@ import net.minecraftforge.fml.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public class CCClientSpawnPacket {
-    private static final String GLUE = "@";
+
     private final String orgNamespace;
 
 

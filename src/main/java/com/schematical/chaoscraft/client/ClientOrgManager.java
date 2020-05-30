@@ -92,9 +92,9 @@ public class ClientOrgManager extends BaseOrgManager {
         TrainingRoomRoleHolder trainingRoomRoleHolder = ChaosCraft.getClient().trainingRoomRoles.get(this.organism.getTrainingRoomRoleNamespace());
         roleSettings = new SettingsMap(trainingRoomRoleHolder.trainingRoomRole.getSettings());
 
-        if(roleSettings.getBoolean(ChaosSettings.USE_CHAOS_TEAM_TRACKER)){
+        //if(roleSettings.getBoolean(ChaosSettings.USE_CHAOS_TEAM_TRACKER)){
             this.attatchEventListener(new ChaosTeamTracker());
-        }
+        //}
 
     }
     public void attachOrgEntity(OrgEntity orgEntity){

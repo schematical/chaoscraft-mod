@@ -11,6 +11,7 @@ import com.schematical.chaoscraft.server.ChaosCraftServerPlayerInfo;
 import com.schematical.chaoscraft.services.targetnet.ScanManager;
 import com.schematical.chaoscraft.services.targetnet.ScanState;
 import com.schematical.chaoscraft.tileentity.FactoryTileEntity;
+import com.schematical.chaoscraft.tileentity.MatchManagerBlockTileEntity;
 import com.schematical.chaoscraft.tileentity.SpawnBlockTileEntity;
 import com.schematical.chaosnet.model.*;
 
@@ -559,7 +560,11 @@ public class ChaosCraftClient {
         ChaosTrainingRoomSelectionOverlayGui screen = new ChaosTrainingRoomSelectionOverlayGui();
         Minecraft.getInstance().displayGuiScreen(screen);
     }
+    public void showMatchManagerBlockGui(MatchManagerBlockTileEntity tileentity) {
+        ChaosMatchManagerBlockSettingScreen screen = new ChaosMatchManagerBlockSettingScreen(tileentity);
 
+        Minecraft.getInstance().displayGuiScreen(screen);
+    }
     public void showSpawnBlockGui(SpawnBlockTileEntity tileentity) {
         ChaosSpawnBlockSettingScreen screen = new ChaosSpawnBlockSettingScreen(tileentity);
         ChaosCraft.LOGGER.debug("Showing SPawnBlockGui: " +tileentity.getSpawnPointId());
