@@ -9,20 +9,19 @@ public class MeleeAttackAction extends NavigateToAction{
 
     @Override
     protected void _tick() {
-        tickLook();
 
         if(
-            !getTarget().canEntityTouch(getOrgEntity()) &&
-            !getTarget().isEntityLookingAt(getOrgEntity())
+            !getTarget().canEntityTouch(getOrgEntity()) /*||
+            getTarget().isVisiblyBlocked(getOrgEntity())*/
         ){
-            if(!getTarget().getTargetEntity().isAlive()){
-                markFailed();
-            }
             tickNavigate();
             return;
         }
-
         tickArrived();
+        if(!getTarget().isEntityLookingAt(getOrgEntity())){
+            tickLook();
+            return;
+        }
         //When looking at stuff do stuff.
         getOrgEntity().func_226292_a_(Hand.MAIN_HAND, true);
         if(!getTarget().isVisiblyBlocked(getOrgEntity())) {

@@ -23,9 +23,21 @@ public class WonderAction extends NavigateToAction{
         }
         if(getTarget().getDist(getOrgEntity()) < 3){
             shuffleBlockPos();
+            return;
         }
-        tickLook();
-        tickNavigate();
+        if(
+            !getTarget().canEntityTouch(getOrgEntity()) /*||
+            getTarget().isVisiblyBlocked(getOrgEntity())*/
+        ){
+            tickNavigate();
+            return;
+        }
+        tickArrived();
+        if(!getTarget().isEntityLookingAt(getOrgEntity())){
+            tickLook();
+            return;
+        }
+        shuffleBlockPos();
 
     }
     @Override

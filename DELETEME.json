@@ -426,8 +426,15 @@
     },
     {
       "$TYPE":"RCHasCraftedRecentlyInput",
-      "$EVAL_GROUP": "ITEM",
-      "$DEFAULT": "true"
+      "$EVAL_GROUP": "ITEM"
+    },
+    {
+      "$TYPE":"ACItemScoreInput",
+      "$EVAL_GROUP": "ACTION",
+      "targetSlotId":{
+        "$SOURCE":"biology",
+        "$BIOLOGY_TYPE":"ActionTargetSlot"
+      }
     }
   ],
   "outputNeurons":[
@@ -475,16 +482,21 @@
   "biology":[
     {
       "$TYPE":"Eye",
-      "$COUNT":10,
-      "index":"{{index}}",
+
+      "index":{
+        "$SOURCE": "count",
+        "$COUNT":10
+      },
       "pitch": "{{rndInt '-45:45' }}",
       "yaw": "{{rndInt '-90:90' }}",
       "maxDistance": "{{rndInt '2:10' }}"
     },
     {
       "$TYPE":"TargetSlot",
-      "$COUNT":2,
-      "index":"{{index}}",
+      "index":{
+        "$SOURCE": "count",
+        "$COUNT":2
+      },
       "$MUTATION":{
         "$MUTATION_MODE":"add",
         "$MUTATION_CHANCE":0.001
@@ -492,8 +504,6 @@
     },
     {
       "$TYPE":"ActionTargetSlot",
-      "$COUNT":1,
-      "index":"{{index}}",
       "action": {
         "$SOURCE": "enum",
         "$ENUM": "ACTION"

@@ -469,10 +469,8 @@ public class ChaosCraftClient {
                         ChaosInGameMenuOverlayGui screen = new ChaosInGameMenuOverlayGui();
                         Minecraft.getInstance().displayGuiScreen(screen);
                         break;
-                    case(CCKeyBinding.SHOW_SPECIES_LIST):
-                       /* CCSpeciesListView view2 = new CCSpeciesListView();
+                    case(CCKeyBinding.CHAOS_PAUSE):
 
-                        Minecraft.getInstance().displayGuiScreen(view2);*/
                         break;
                     case(CCKeyBinding.OBSERVER_MODE):
                       /*  List<EntityPlayerMP> players = Minecraft.getMinecraft().world.<EntityPlayerMP>getPlayers(EntityPlayerMP.class, new Predicate<EntityPlayerMP>() {

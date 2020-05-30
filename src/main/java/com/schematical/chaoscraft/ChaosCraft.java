@@ -302,7 +302,7 @@ public class ChaosCraft
         }
         if(ChaosCraft.client != null){
 
-            ChaosCraft.client.tick();
+         //   ChaosCraft.client.tick();
         }
 
     }
