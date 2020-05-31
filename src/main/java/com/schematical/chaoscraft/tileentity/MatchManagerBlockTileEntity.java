@@ -24,8 +24,8 @@ public class MatchManagerBlockTileEntity extends TileEntity implements ITickable
 
     @Override
     public void tick() {
-        if(!ChaosBlocks.matchManagerBlocks.contains(this.getPos())) {
-            ChaosBlocks.matchManagerBlocks.add(this.getPos());
+        if(!ChaosBlocks.matchManagerBlocks.containsKey(this.getPos())) {
+            ChaosBlocks.matchManagerBlocks.put(matchId, this.getPos());
         }
         if(matchTicksRemaining <= 0){
             resetMatch();

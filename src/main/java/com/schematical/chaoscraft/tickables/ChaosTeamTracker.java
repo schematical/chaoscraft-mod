@@ -117,7 +117,7 @@ public class ChaosTeamTracker extends BaseChaosEventListener implements iRenderW
                 if(
                     !orgEntity.getChaosTarget().isVisiblyBlocked(baseOrgManager.getEntity())
                 ) {
-                    Double yawDelta = orgEntity.getChaosTarget().getYawDelta(clientOrgManager.getEntity());
+                    Double yawDelta = orgEntity.getChaosTarget().getLookYawDelta(clientOrgManager.getEntity());
                     if(Math.abs(yawDelta) < maxYawDelta) {
                         seenOrgs.add(orgEntity);
                         int life = 0;

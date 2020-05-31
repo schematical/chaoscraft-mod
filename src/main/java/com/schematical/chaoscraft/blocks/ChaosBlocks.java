@@ -9,6 +9,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ChaosBlocks {
 
@@ -23,5 +24,5 @@ public class ChaosBlocks {
 
     public static ArrayList<BlockPos> spawnBlocks = new ArrayList<BlockPos>();
     public static ArrayList<BlockPos> waypointsBlocks = new ArrayList<BlockPos>();
-    public static ArrayList<BlockPos> matchManagerBlocks = new ArrayList<BlockPos>();
+    public static HashMap<String, BlockPos> matchManagerBlocks = new HashMap<>();
 }

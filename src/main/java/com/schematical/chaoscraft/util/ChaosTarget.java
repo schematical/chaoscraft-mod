@@ -119,6 +119,19 @@ public class ChaosTarget {
 
     }
 
+    public Double getLookYawDelta(Entity entity) {
+        Vec3d targetPosition = getTargetPositionCenter();
+        if (targetPosition == null) {
+            return null;
+        }
+        return TargetHelper.getYawDelta(
+                targetPosition,
+                entity.getEyePosition(1),
+                entity.getRotationYawHead()
+        );
+
+    }
+
     public Double getPitchDelta(Entity entity) {
         Vec3d targetPosition = getTargetPositionCenter();
         if (targetPosition == null) {
