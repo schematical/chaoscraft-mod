@@ -221,7 +221,7 @@ public class ServerOrgManager extends BaseOrgManager {
 
         }*/
         if(
-            this.ticksSinceRawOutputReceived > 20
+            this.ticksSinceRawOutputReceived < 20
         ) {
             if (state.equals(State.Spawned)) {
                 initInventory();
