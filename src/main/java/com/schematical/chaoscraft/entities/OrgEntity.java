@@ -84,7 +84,7 @@ public class OrgEntity extends MobEntity {
 
     private int spawnHash;
     private Vec3d desiredLookVec = null;
-    private boolean sendRawOutput;
+    private boolean sendRawOutput = false;
 
 
     public OrgEntity(EntityType<? extends MobEntity> type, World world) {
@@ -1161,6 +1161,10 @@ public class OrgEntity extends MobEntity {
 
     public void setSendRawOutput(boolean sendRawOutput) {
         this.sendRawOutput = sendRawOutput;
+    }
+
+    public boolean getSndRawOutput() {
+        return this.sendRawOutput;
     }
 
     public enum CanCraftResults{

@@ -1,6 +1,8 @@
 package com.schematical.chaoscraft.client.gui;
 
+import com.schematical.chaoscraft.ai.NeuronBase;
 import com.schematical.chaoscraft.ai.action.ActionBase;
+import com.schematical.chaoscraft.ai.outputs.rawnav.RawOutputNeuron;
 import com.schematical.chaoscraft.client.ClientOrgManager;
 import com.schematical.chaoscraft.network.packets.CCServerScoreEventPacket;
 import net.minecraft.client.gui.screen.Screen;
@@ -41,8 +43,17 @@ public class ChaosOrgActionBufferListOverlayGui extends Screen {
         y += 20;
         ActionBase currAction = clientOrgManager.getActionBuffer().getCurrAction();
         String message = "No Action";
+
         if(currAction != null) {
             message = "Curr: " + currAction.toString();
+        }
+        if(clientOrgManager.getEntity().getSndRawOutput()){
+            message += "- Raw:";
+            for (NeuronBase neuronBase : clientOrgManager.getEntity().getNNet().neurons.values()) {
+                if(neuronBase instanceof RawOutputNeuron){
+                    message += " " +neuronBase.toAbreviation() + " " + Math.round(neuronBase.getCurrentValue() * 100) / 100;
+                }
+            }
         }
         this.drawCenteredString(
                 this.font,
