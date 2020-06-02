@@ -322,22 +322,7 @@ public class BuildyManager extends BaseChaosEventListener implements iRenderWorl
             }
             drawBlockCluster(event, blockClusters.get(i), colorMap.get(i));
         }
-        Color lineColor = Color.RED;
-        ActionBase actionBase =  clientOrgManager.getActionBuffer().getCurrAction();
-        if(actionBase != null) {
-            ChaosTarget chaosTarget = actionBase.getTarget();
-            if (chaosTarget.canEntityTouch(clientOrgManager.getEntity())) {
-                lineColor = Color.GREEN;
-            }
-            CCGUIHelper.drawLine2d(
-                    event.getMatrixStack(),
-                    clientOrgManager.getEntity().getEyePosition(1f),
-                    chaosTarget.getTargetPositionCenter(),
-                    Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getProjectedView(),
-                    lineColor,
-                    .5f
-            );
-        }
+
         /*for (BlockStateMemoryBufferSlot myBlock : clientOrgManager.getBlockStateMemory().values()) {
             Color color = Color.GREEN;
             if(

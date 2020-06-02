@@ -39,10 +39,24 @@ public class ChaosOrgActionBufferListOverlayGui extends Screen {
                 16777215
         );
         y += 20;
+        ActionBase currAction = clientOrgManager.getActionBuffer().getCurrAction();
+        String message = "No Action";
+        if(currAction != null) {
+            message = "Curr: " + currAction.toString();
+        }
+        this.drawCenteredString(
+                this.font,
+                message,
+                this.width / 2,
+                y,
+                16777215
+        );
+
+        y += 20;
         ArrayList<ActionBase> actionBases = (ArrayList<ActionBase>)clientOrgManager.getActionBuffer().getRecentActions().clone();
         Collections.reverse(actionBases);
         for (ActionBase actionBase : actionBases) {
-            String message = actionBase.toString();
+             message = actionBase.toString();
             this.drawCenteredString(
                     this.font,
                     message,

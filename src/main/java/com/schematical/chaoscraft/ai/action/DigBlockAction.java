@@ -58,6 +58,10 @@ public class DigBlockAction extends NavigateToAction{
         ){
             return false;
         }
+        float hardness = blockState.getBlockHardness(orgEntity.world, chaosTarget.getTargetBlockPos());
+        if(hardness == -1.0F){
+            return false;
+        }
         return true;
     }
     public static boolean validateTargetAndItem(OrgEntity orgEntity, ChaosTarget chaosTarget, ChaosTargetItem chaosTargetItem){

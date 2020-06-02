@@ -140,7 +140,8 @@ public class ChaosClientThread implements Runnable {
         }catch(Exception exception){
             ChaosCraft.getClient().consecutiveErrorCount += 1;
 
-            ChaosCraft.LOGGER.error("ChaosClientThread `/next` Error: " + exception.getMessage() + " - exception type: " + exception.getClass().getName() + " Stack: \n" + exception.getStackTrace().toString());
+            ChaosCraft.LOGGER.error("ChaosClientThread regular Exception Error: " + exception.getMessage() + " - exception type: " + exception.getClass().getName());
+            exception.printStackTrace();
             ChaosCraft.getClient().thread = null;
             ChaosCraft.getClient().setTicksRequiredToCallChaosNet(1000);
 

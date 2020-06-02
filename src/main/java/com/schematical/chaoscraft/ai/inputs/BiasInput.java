@@ -16,6 +16,10 @@ public class BiasInput extends InputNeuron {
         this.setCurrentValue(weight);
         return this.getCurrentValue();
     }
+    public void reset(){
+        super.reset();
+        this.setCurrentValue(weight);
+    }
     @Override
     public void parseData(JSONObject jsonObject) {
         super.parseData(jsonObject);

@@ -84,7 +84,7 @@ public class OrgEntity extends MobEntity {
 
     private int spawnHash;
     private Vec3d desiredLookVec = null;
-
+    private boolean sendRawOutput;
 
 
     public OrgEntity(EntityType<? extends MobEntity> type, World world) {
@@ -944,10 +944,12 @@ public class OrgEntity extends MobEntity {
                 if(outputNeuron.executeSide.equals(OutputNeuron.ExecuteSide.Client)){
                     outputNeuron.execute();
                 }else {
-                    if(outputNeuron instanceof RawOutputNeuron) {
-                        RawOutputNeuron rawOutputNeuron = (RawOutputNeuron) outputNeuron;
-                        CCClientOutputNeuronActionPacket packet = new CCClientOutputNeuronActionPacket(rawOutputNeuron);
-                        ChaosNetworkManager.sendToServer(packet);
+                    if(this.sendRawOutput) {
+                        if (outputNeuron instanceof RawOutputNeuron) {
+                            RawOutputNeuron rawOutputNeuron = (RawOutputNeuron) outputNeuron;
+                            CCClientOutputNeuronActionPacket packet = new CCClientOutputNeuronActionPacket(rawOutputNeuron);
+                            ChaosNetworkManager.sendToServer(packet);
+                        }
                     }
                 }
 
@@ -1155,6 +1157,10 @@ public class OrgEntity extends MobEntity {
     public void updateInventory(int index, ItemStack itemStack, int selectedItemIndex) {
         this.itemHandler.setStackInSlot(index, itemStack);
         this.selectedItemIndex = selectedItemIndex;
+    }
+
+    public void setSendRawOutput(boolean sendRawOutput) {
+        this.sendRawOutput = sendRawOutput;
     }
 
     public enum CanCraftResults{

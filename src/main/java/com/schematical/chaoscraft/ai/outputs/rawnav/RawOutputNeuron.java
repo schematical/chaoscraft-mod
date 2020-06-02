@@ -6,6 +6,7 @@ import com.schematical.chaoscraft.ai.OutputNeuron;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.network.packets.CCClientOutputNeuronActionPacket;
 import com.schematical.chaoscraft.server.ServerOrgManager;
+import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.network.PacketBuffer;
 import org.apache.logging.log4j.core.jmx.Server;
 
@@ -73,6 +74,11 @@ public abstract class RawOutputNeuron extends OutputNeuron {
     }
     public void queueToFire(Float val){
         this.serverValue = val;
+        if(this.getEntity().getServerOrgManager() == null){
+            throw new ChaosNetException("THis should not happen Client Side");
+        }
+        this.getEntity().getServerOrgManager().resetTicksSinceRawOutputReceived();
+
     }
     public Float getServerValue(){
         return this.serverValue;

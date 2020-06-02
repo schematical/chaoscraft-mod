@@ -230,6 +230,18 @@
         "$BIOLOGY_TYPE":"Eye"
       }
     },
+    {
+      "$TYPE": "IsLookingAtInput",
+      "attributeId": "ENTITY_TEAM_ALIGH_STATE",
+      "attributeValue": {
+        "$SOURCE": "enum",
+        "$ENUM": "ENTITY_TEAM_ALIGH_STATE"
+      },
+      "eye": {
+        "$SOURCE": "biology",
+        "$BIOLOGY_TYPE": "Eye"
+      }
+    },
 
     {
       "$TYPE":"HasInInventoryInput",
@@ -439,7 +451,38 @@
   ],
   "outputNeurons":[
 
-
+    {
+      "$TYPE": "ChangePitchOutput",
+      "$DEFAULT": "true"
+    },
+    {
+      "$TYPE": "ChangeHeadYawOutput",
+      "$DEFAULT": "true"
+    },
+    {
+      "$TYPE": "ChangeYawOutput",
+      "$DEFAULT": "true"
+    },
+    {
+      "$TYPE": "JumpOutput",
+      "$DEFAULT": "true"
+    },
+    {
+      "$TYPE": "WalkForwardOutput",
+      "$DEFAULT": "true"
+    },
+    {
+      "$TYPE": "WalkSidewaysOutput",
+      "$DEFAULT": "true"
+    },
+    {
+      "$TYPE": "WalkSidewaysOutput",
+      "$DEFAULT": "true"
+    },
+    {
+      "$TYPE": "UseRawOutputNeuron",
+      "$DEFAULT": "true"
+    },
     {
       "$TYPE":"TargetCandidateSetScoreOutput",
       "$EVAL_GROUP": "TARGET",
@@ -512,6 +555,10 @@
 
   ],
   "enum":{
+    "ENTITY_TEAM_ALIGH_STATE": [
+      "ALIGH",
+      "OPPONENT"
+    ],
     "EVENT_INPUT_TYPES":[
       "PREDICTION",
       "HEALTH_CHANGE",
