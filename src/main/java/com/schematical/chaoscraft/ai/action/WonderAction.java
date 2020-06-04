@@ -2,42 +2,46 @@ package com.schematical.chaoscraft.ai.action;
 
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.util.ChaosTarget;
+import com.sun.javafx.geom.Vec2d;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 
-public class WonderAction extends NavigateToAction{
+public class WonderAction extends NavigateToAction {
     protected int ticksSinceLastChange = 0;
     protected int ticksSinceLastChangeThreshold = 15 * 20;
     protected int range = 50;
+    protected int range_min = 10;
 
+    public void tickFirst() {
+        shuffleBlockPos();
+
+        super.tickFirst();
+    }
     @Override
     protected void _tick() {
         ticksSinceLastChange += 1;
-        tickStuckCheck();
         if(getTarget() == null){
             shuffleBlockPos();
         }
         if(ticksSinceLastChange > ticksSinceLastChangeThreshold){
             shuffleBlockPos();
             ticksSinceLastChange = 0;
+        }else {
+            Vec2d vec2d = new Vec2d(
+                    getTarget().getPosition().getX() - getOrgEntity().getPosition().getX(),
+                    getTarget().getPosition().getZ() - getOrgEntity().getPosition().getZ()
+            );
+            double dist = Math.sqrt(Math.pow(vec2d.x, 2) + Math.pow(vec2d.y, 2));
+            if (dist < 3) {
+                shuffleBlockPos();
+                return;
+            }
         }
-        if(getTarget().getDist(getOrgEntity()) < 3){
-            shuffleBlockPos();
-            return;
-        }
-        if(
-            !getTarget().canEntityTouch(getOrgEntity()) /*||
-            getTarget().isVisiblyBlocked(getOrgEntity())*/
-        ){
-            tickNavigate();
-            return;
-        }
-        tickArrived();
-        if(!getTarget().isEntityLookingAt(getOrgEntity())){
-            tickLook();
-            return;
-        }
-        shuffleBlockPos();
+
+        tickNavigate();
+        tickLook();
+
+
 
     }
     @Override

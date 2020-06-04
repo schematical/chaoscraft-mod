@@ -10,6 +10,7 @@ import com.schematical.chaoscraft.network.packets.CCClientSetCurrActionPacket;
 import com.schematical.chaoscraft.server.ServerOrgManager;
 import com.schematical.chaoscraft.services.targetnet.ScanInstance;
 import com.schematical.chaoscraft.services.targetnet.ScanManager;
+import com.schematical.chaoscraft.util.ChaosSettings;
 import com.schematical.chaoscraft.util.ChaosTarget;
 import com.schematical.chaoscraft.util.ChaosTargetItem;
 import com.schematical.chaosnet.model.ChaosNetException;
@@ -40,16 +41,20 @@ public class ActionBuffer {
         if(isClient()) {
             throw new ChaosNetException("This should not get called Client side");
         }
+        ServerOrgManager serverOrgManager = ((ServerOrgManager) orgManager);
         if(currAction == null){
-            if(wonderAction == null){
-                wonderAction = new WonderAction();
-                wonderAction.setActionBuffer(this);
-            }
+            boolean wonderByDefault = serverOrgManager.getRoleSettings().getBoolean(ChaosSettings.WONDER_BY_DEFAULT);
+            if(wonderByDefault) {
+                if (wonderAction == null) {
+                    wonderAction = new WonderAction();
+                    wonderAction.setActionBuffer(this);
+                }
 
-            wonderAction.tick();
+                wonderAction.tick();
+            }
             return;
         }else{
-            ServerOrgManager serverOrgManager = ((ServerOrgManager) orgManager);
+
             if(serverOrgManager.getState().equals(ServerOrgManager.State.Spawned)){
                 serverOrgManager.initInventory();
                 serverOrgManager.markTicking();

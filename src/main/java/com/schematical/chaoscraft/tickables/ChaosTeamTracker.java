@@ -117,39 +117,9 @@ public class ChaosTeamTracker extends BaseChaosEventListener implements iRenderW
                 if(
                     !orgEntity.getChaosTarget().isVisiblyBlocked(baseOrgManager.getEntity())
                 ) {
-                    Double yawDelta = orgEntity.getChaosTarget().getLookYawDelta(clientOrgManager.getEntity());
+                    Double yawDelta = orgEntity.getChaosTarget().getLookYawDelta(baseOrgManager.getEntity());
                     if(Math.abs(yawDelta) < maxYawDelta) {
                         seenOrgs.add(orgEntity);
-                        int life = 0;
-                        if (baseOrgManager.getLatestScore() < maxLife) {
-                            life = lifeReward;
-                            ChaosNetworkManager.sendToServer(
-                                    new CCClientOrgUpdatePacket(
-                                            baseOrgManager.getCCNamespace(),
-                                            CCClientOrgUpdatePacket.Action.UpdateLifeEnd,
-                                            life
-                                    )
-                            );
-                        }
-                        baseOrgManager.addServerScoreEvent(
-                                new CCServerScoreEventPacket(
-                                        baseOrgManager.getCCNamespace(),
-                                        (int)Math.round(maxDistance - orgEntity.getChaosTarget().getDist(clientOrgManager.getEntity())),
-                                        life,
-                                        "SEEK_SUCCESS",
-                                        1,
-                                        baseOrgManager.getExpectedLifeEndTime() + life * 20,
-                                        0
-                                )
-                        );
-                        ChaosNetworkManager.sendToServer(
-                                new CCClientOrgUpdatePacket(
-                                        baseOrgManager.getCCNamespace(),
-                                        CCClientOrgUpdatePacket.Action.UpdateLifeEnd,
-                                        life
-                                )
-                        );
-
 
                         //Penalize the hider
                         orgEntity.addTag(VisibleState.SEEN.toString());
@@ -157,7 +127,33 @@ public class ChaosTeamTracker extends BaseChaosEventListener implements iRenderW
                 }
             }
         }
+        int life = 0;
+        int score = -1;
+        if(seenOrgs.size() > 0){
+            life = lifeReward;
+            score = 1;
+        }
+        if (baseOrgManager.getLatestScore() < maxLife) {
 
+            ChaosNetworkManager.sendToServer(
+                    new CCClientOrgUpdatePacket(
+                            baseOrgManager.getCCNamespace(),
+                            CCClientOrgUpdatePacket.Action.UpdateLifeEnd,
+                            life
+                    )
+            );
+        }
+        baseOrgManager.addServerScoreEvent(
+                new CCServerScoreEventPacket(
+                        baseOrgManager.getCCNamespace(),
+                        score,//(int)Math.round(maxDistance - orgEntity.getChaosTarget().getDist(clientOrgManager.getEntity())),
+                        life,
+                        "SEEK_SUCCESS",
+                        1,
+                        baseOrgManager.getExpectedLifeEndTime() + life * 20,
+                        0
+                )
+        );
     }
 
     @Override

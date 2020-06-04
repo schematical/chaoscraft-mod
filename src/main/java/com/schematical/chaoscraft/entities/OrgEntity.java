@@ -1167,6 +1167,10 @@ public class OrgEntity extends MobEntity {
         return this.sendRawOutput;
     }
 
+    public boolean getSendRawOutput() {
+        return this.sendRawOutput;
+    }
+
     public enum CanCraftResults{
         Success,
         Fail_2X2,

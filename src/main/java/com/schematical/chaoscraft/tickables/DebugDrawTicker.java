@@ -56,11 +56,16 @@ public class DebugDrawTicker extends BaseChaosEventListener implements iRenderWo
         }
 
         Color lineColor = Color.PINK;
+
         ActionBase actionBase = clientOrgManager.getActionBuffer().getCurrAction();
         if (actionBase != null) {
             ChaosTarget chaosTarget = actionBase.getTarget();
             if (chaosTarget.canEntityTouch(clientOrgManager.getEntity())) {
                 lineColor = Color.BLUE;
+            }
+            if(clientOrgManager.getEntity().getSendRawOutput()){
+                //return true;
+                lineColor = Color.YELLOW;
             }
             CCGUIHelper.drawLine2d(
                     event.getMatrixStack(),
