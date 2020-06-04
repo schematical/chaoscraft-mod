@@ -9,12 +9,10 @@ public class MeleeAttackAction extends NavigateToAction{
 
     @Override
     protected void _tick() {
-
+        tickNavigate();
         if(
-            !getTarget().canEntityTouch(getOrgEntity()) /*||
-            getTarget().isVisiblyBlocked(getOrgEntity())*/
+            !getTarget().canEntityTouch(getOrgEntity())
         ){
-            tickNavigate();
             return;
         }
         tickArrived();

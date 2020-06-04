@@ -1,13 +1,17 @@
 package com.schematical.chaoscraft.ai.action;
 
 import com.schematical.chaoscraft.ChaosCraft;
+import com.schematical.chaoscraft.Enum;
 import com.schematical.chaosnet.model.ChaosNetException;
+import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.PathNavigator;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.world.World;
 
 public abstract class NavigateToAction extends ActionBase{
     private MixItUpAction currMixItUpAction = null;
@@ -30,12 +34,24 @@ public abstract class NavigateToAction extends ActionBase{
             results = this.getOrgEntity().getNavigator()
                     .tryMoveToEntityLiving(getTarget().getTargetEntity(), 1.0D);
         }else if(getTarget().getTargetBlockPos() != null){
+            World world = getOrgEntity().world;
+            BlockPos targetBlockPos = getTarget().getTargetBlockPos();
+            BlockState blockState = world.getBlockState(getTarget().getTargetBlockPos());
+            if(blockState.isSolid()){
+                for (Direction direction : Enum.getDirections()) {
+                    BlockPos newBlockPos =  getTarget().getTargetBlockPos().offset(direction);
+                    BlockState newBlockState = world.getBlockState(newBlockPos);
+                    if(!newBlockState.isSolid()){
+                        targetBlockPos = newBlockPos;
+                    }
+                }
+            }
             results = this.getOrgEntity().getNavigator()
                     .tryMoveToXYZ(
-                            getTarget().getTargetBlockPos().getX(),
-                            getTarget().getTargetBlockPos().getY(),
-                            getTarget().getTargetBlockPos().getZ(),
-                            1.0D
+                            (double)((float)targetBlockPos.getX()) + 0.5D,
+                            (double)(targetBlockPos.getY() + 1),
+                            (double)((float)targetBlockPos.getZ()) + 0.5D,
+                    1d
                     );
         }else{
             throw new ChaosNetException("TODO: Make this work");
