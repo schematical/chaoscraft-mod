@@ -91,15 +91,17 @@ public class ChaosTarget {
     public BlockPos getTargetBlockPos() {
         return blockPos;
     }
-
     public boolean canEntityTouch(OrgEntity orgEntity){
+        return canEntityTouch(orgEntity, orgEntity.REACH_DISTANCE - 1);
+    }
+    public boolean canEntityTouch(OrgEntity orgEntity, double dist){
 
         BlockPos myPos = orgEntity.getPosition();
         BlockPos targetBlockPos = getPosition();
         if(targetBlockPos == null){
             return false;
         }
-        if( targetBlockPos.withinDistance(myPos, orgEntity.REACH_DISTANCE - 1)){
+        if( targetBlockPos.withinDistance(myPos,  dist)){
             return true;
         }
         return false;

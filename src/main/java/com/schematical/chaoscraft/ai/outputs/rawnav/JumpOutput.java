@@ -13,6 +13,6 @@ public class JumpOutput extends RawOutputNeuron {
             return;
         }
         //ChaosCraft.logger.info(nNet.entity.getName() + " Jumping: " + this._lastValue);
-        this.getEntity().jump();
+        this.getEntity()._jump();
     }
 }

@@ -20,6 +20,7 @@ public abstract class NavigateToAction extends ActionBase{
     private int strafe = 0;
     private int stuckThreshold =  2 * 20;
     private int stuckActionTicks = 0;
+    private int ticksUntilUpdatePath = 20;
     private PathNavigator navigator;
     protected boolean isStuck(){
         return stuckTicks > stuckThreshold;
@@ -61,9 +62,18 @@ public abstract class NavigateToAction extends ActionBase{
         }
     }
     public void tickNavigate(){
+        ticksUntilUpdatePath += 1;
+        if(ticksUntilUpdatePath > 20){
+            ticksUntilUpdatePath = 0;
+            if(getTarget().getTargetEntity() != null) {
+                boolean results = this.getOrgEntity().getNavigator()
+                        .tryMoveToEntityLiving(getTarget().getTargetEntity(), 1.0D);
+            }
+            this.getOrgEntity().getNavigator().updatePath();
+        }
         /*tickStuckCheck();
         if(!isStuck()) {*/
-            this.getOrgEntity().getNavigator().tick();
+            //this.getOrgEntity().getNavigator().tick();
         //}
 
     }
@@ -86,10 +96,10 @@ public abstract class NavigateToAction extends ActionBase{
         getOrgEntity().getMoveHelper().strafe(0, 0);
     }
     public void tickLook(){
-
+/*
         Vec3d pos = getTarget().getTargetPositionCenter();
 
-        this.getOrgEntity(). setDesiredLookPosition(pos);
+        this.getOrgEntity(). setDesiredLookPosition(pos);*/
 
     }
     public void tickStuckCheck(){
@@ -123,7 +133,7 @@ public abstract class NavigateToAction extends ActionBase{
         }
 
         if(currMixItUpAction.equals(MixItUpAction.Jump)){
-            getOrgEntity().jump();
+            getOrgEntity()._jump();
             return;
         }else if(currMixItUpAction.equals(MixItUpAction.StrafeLeft)){
             strafe = -1;
@@ -143,7 +153,7 @@ public abstract class NavigateToAction extends ActionBase{
     }
     public void tickArrived(){
 
-        tickStuckCheck();
+       // tickStuckCheck();
     }
     public enum MixItUpAction{
         StrafeLeft,

@@ -45,6 +45,7 @@ public class OrgEntity extends MobEntity {
     @ObjectHolder("chaoscraft:org_entity")
     public static final EntityType<OrgEntity> ORGANISM_TYPE = null;
     public static final double REACH_DISTANCE = 5.0D;
+    public static final double ATTACK_DISTANCE = 3.0D;
 
 
 
@@ -191,8 +192,8 @@ public class OrgEntity extends MobEntity {
 
 
 
-    @Override
-    public void jump(){
+    //@Override
+    public void _jump(){
         if(
             !this.isJumping &&
             !this.isAirBorne &&
