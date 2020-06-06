@@ -32,9 +32,15 @@ public abstract class NavigateToAction extends ActionBase{
         }
         boolean results = false;
         if(getTarget().getTargetEntity() != null) {
+            this.getOrgEntity().getLookController().setLookPositionWithEntity(getTarget().getTargetEntity(), 30.0F, 30.0f);
             results = this.getOrgEntity().getNavigator()
                     .tryMoveToEntityLiving(getTarget().getTargetEntity(), 1.0D);
         }else if(getTarget().getTargetBlockPos() != null){
+            this.getOrgEntity().getLookController().setLookPosition(
+                    getTarget().getTargetBlockPos().getX(),
+                    getTarget().getTargetBlockPos().getY(),
+                    getTarget().getTargetBlockPos().getZ()
+            );
             World world = getOrgEntity().world;
             BlockPos targetBlockPos = getTarget().getTargetBlockPos();
             BlockState blockState = world.getBlockState(getTarget().getTargetBlockPos());
@@ -96,6 +102,17 @@ public abstract class NavigateToAction extends ActionBase{
         getOrgEntity().getMoveHelper().strafe(0, 0);
     }
     public void tickLook(){
+        if(getTarget().getTargetEntity() != null) {
+            this.getOrgEntity().getLookController().setLookPositionWithEntity(getTarget().getTargetEntity(), 30.0F, 30.0f);
+        }else if(getTarget().getTargetBlockPos() != null) {
+            this.getOrgEntity().getLookController().setLookPosition(
+                getTarget().getTargetBlockPos().getX(),
+                getTarget().getTargetBlockPos().getY(),
+                getTarget().getTargetBlockPos().getZ()
+            );
+        }else{
+            throw new ChaosNetException("TODO: This shouldnt really happen as of now");
+        }
 /*
         Vec3d pos = getTarget().getTargetPositionCenter();
 
