@@ -3,6 +3,7 @@ package com.schematical.chaoscraft.ai.action;
 import com.schematical.chaoscraft.ChaosCraft;
 import com.schematical.chaoscraft.entities.OrgEntity;
 import com.schematical.chaoscraft.util.ChaosTarget;
+import com.schematical.chaosnet.model.ChaosNetException;
 import com.sun.javafx.geom.Vec2d;
 import net.minecraft.block.BeehiveBlock;
 import net.minecraft.block.Block;
@@ -16,6 +17,8 @@ public class WonderAction extends NavigateToAction {
     protected int ticksSinceLastChangeThreshold = 15 * 20;
     protected int range = 50;
     protected int range_min = 10;
+    private int shuffleBlockCoolDown = 0;
+    private boolean debug;
 
     public void tickFirst() {
         shuffleBlockPos();
@@ -29,10 +32,12 @@ public class WonderAction extends NavigateToAction {
         ticksSinceLastChange += 1;
         if(getTarget() == null){
             shuffleBlockPos();
+            return;
         }
         if(ticksSinceLastChange > ticksSinceLastChangeThreshold){
             shuffleBlockPos();
             ticksSinceLastChange = 0;
+            return;
         }else {
             Vec2d vec2d = new Vec2d(
                     getTarget().getPosition().getX() - getOrgEntity().getPosition().getX(),
@@ -40,14 +45,30 @@ public class WonderAction extends NavigateToAction {
             );
             double dist = Math.sqrt(Math.pow(vec2d.x, 2) + Math.pow(vec2d.y, 2));
             if (dist < 3) {
-                shuffleBlockPos();
+                //shuffleBlockPos();
                 return;
             }
         }
 
-        tickNavigate();
-        tickLook();
+        //tickNavigate();
 
+        if(
+            !getTarget().canEntityTouch(getOrgEntity())
+        ){
+            tickNavigate();
+            return;
+        }
+        tickArrived();
+        if(debug) {
+            ChaosCraft.LOGGER.info("Arrived at block");
+        }
+        if(!getTarget().isEntityLookingAt(getOrgEntity())) {
+            this.tickLook();
+            return;
+        }
+        if(debug) {
+            ChaosCraft.LOGGER.info("Looking at block");
+        }
 
 
     }
@@ -64,6 +85,11 @@ public class WonderAction extends NavigateToAction {
 
     }
     public void shuffleBlockPos(){
+        if(this.shuffleBlockCoolDown > 0){
+            this.shuffleBlockCoolDown -= 1;
+            return;
+        }
+        this.shuffleBlockCoolDown = 20;
         boolean found = false;
 
         for(int x = range * -1; x < range; x++){
@@ -80,6 +106,7 @@ public class WonderAction extends NavigateToAction {
                         ){
                             setTarget(new ChaosTarget(searchingBlockPos));
                             found = true;
+                            debug = true;
                         }
 
 
@@ -89,13 +116,27 @@ public class WonderAction extends NavigateToAction {
         }
 
         if(!found) {
-
-            BlockPos pos = this.getOrgEntity().getPosition().add(
-                    (int)(Math.round(Math.random() * range * 2) - range),
-                    (int)(Math.round(Math.random() * 1 * 2) - 1),
-                    (int)(Math.round(Math.random() * range * 2) - range)
-            );
-            setTarget(new ChaosTarget(pos));
+            BlockPos pos = null;
+          /*  int saftyCatch = 0;
+            while(pos == null && saftyCatch < 10) {
+                saftyCatch += 1;
+                if(saftyCatch > 10){
+                    throw new ChaosNetException("Could not find a block to wonder too");
+                }
+                pos = this.getOrgEntity().getPosition().add(
+                        (int) (Math.round(Math.random() * range * 2) - range),
+                        (int) (Math.round(Math.random() * 1 * 2) - 1),
+                        (int) (Math.round(Math.random() * range * 2) - range)
+                );
+                if(!this.getOrgEntity().getNavigator().canEntityStandOnPos(pos)){
+                    pos = null;
+                }
+            }*/
+            if(pos == null){
+                setTarget(new ChaosTarget(this.getOrgEntity().getPosition()));
+            }else {
+                setTarget(new ChaosTarget(pos));
+            }
         }
     }
 

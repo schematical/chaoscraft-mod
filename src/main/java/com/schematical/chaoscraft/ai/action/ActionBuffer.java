@@ -205,6 +205,7 @@ public class ActionBuffer {
             ){
                 //Start scanning again?
                 scanManager.resetScan();
+                cooldown = (100) + (int)Math.round(Math.random()  * 100);
             }else{
                 scanManager.tickScan();
             }

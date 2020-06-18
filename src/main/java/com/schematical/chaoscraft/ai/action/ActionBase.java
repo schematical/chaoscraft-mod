@@ -28,6 +28,8 @@ public abstract class ActionBase {
     private ChaosTargetItem targetItem;
     public ArrayList<CCServerScoreEventPacket> scoreEvents = new ArrayList<CCServerScoreEventPacket>();
     private ChaosTarget correctedChaosTarget;
+
+    private ChaosNetException _debugStackTraceException;
     //TODO: Track score events that happened when this action was happening
 
 
@@ -50,6 +52,9 @@ public abstract class ActionBase {
         if(state.equals(ActionState.Pending)){
             markRunning();
             tickFirst();
+            if(state.equals(ActionState.Failed)){
+                return;
+            }
         }
         enforceItemEquip();
         _tick();
@@ -123,6 +128,7 @@ public abstract class ActionBase {
             serverOrgManager.triggerServerActionComplete(this);
         }
         if(!this.state.equals(ActionState.Running)){
+            _debugStackTraceException.printStackTrace();
             throw new ChaosNetException("Invalid `ActionBase.state`: " + this.state);
         }
         this.setState(ActionState.Completed);
@@ -133,6 +139,8 @@ public abstract class ActionBase {
         if(!this.state.equals(ActionState.Running)){
             throw new ChaosNetException("Invalid `ActionBase.state`: " + this.state);
         }
+        _debugStackTraceException =  new ChaosNetException("DebugStackTrace");
+
         this.setState(ActionState.Failed);
     }
     public void markInvalid(){

@@ -367,13 +367,7 @@ public class ChaosCraftServer {
         userMap.remove(player.getUniqueID().toString());
     }
 
-    public void removeEntityFromWorld(ServerOrgManager serverOrgManager) {
-       if(!organisms.containsKey(serverOrgManager.getCCNamespace())){
-           ChaosCraft.LOGGER.error("Server is trying to remove an org from its `organisims` but it is not there: " + serverOrgManager.getCCNamespace());
-           return;
-       }
-        organisms.remove(serverOrgManager.getCCNamespace());
-    }
+
 
 
     public HashMap<ServerOrgManager.State, ArrayList<ServerOrgManager>> getOrgsSortedByState(){

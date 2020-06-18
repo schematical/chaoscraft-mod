@@ -15,10 +15,11 @@ public class DigBlockAction extends NavigateToAction{
 
     @Override
     protected void _tick() {
-        tickNavigate();
+
         if(
             !getTarget().canEntityTouch(getOrgEntity())
         ){
+            tickNavigate();
              return;
         }
 

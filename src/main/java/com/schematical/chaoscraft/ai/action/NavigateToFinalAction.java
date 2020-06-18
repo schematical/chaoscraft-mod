@@ -9,12 +9,14 @@ public class NavigateToFinalAction extends NavigateToAction {
 
     @Override
     protected void _tick() {
-        tickNavigate();
+
         if (
-                !getTarget().canEntityTouch(getOrgEntity(), OrgEntity.ATTACK_DISTANCE - 1)
+            !getTarget().canEntityTouch(getOrgEntity(), OrgEntity.ATTACK_DISTANCE - 1)
         ) {
-            markCompleted();
+            tickNavigate();
         }
+        markCompleted();
+        //return;
     }
 
 

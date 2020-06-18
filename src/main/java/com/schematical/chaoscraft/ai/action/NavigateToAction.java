@@ -30,12 +30,14 @@ public abstract class NavigateToAction extends ActionBase{
         if(getTarget() == null){
             throw new ChaosNetException("Missing Target in Action: " + getClass().getSimpleName());
         }
+        this.getOrgEntity().getNavigator().clearPath();
         boolean results = false;
         if(getTarget().getTargetEntity() != null) {
-            this.getOrgEntity().getLookController().setLookPositionWithEntity(getTarget().getTargetEntity(), 30.0F, 30.0f);
+            //this.getOrgEntity().getLookController().setLookPositionWithEntity(getTarget().getTargetEntity(), 30.0F, 30.0f);
             results = this.getOrgEntity().getNavigator()
                     .tryMoveToEntityLiving(getTarget().getTargetEntity(), 1.0D);
         }else if(getTarget().getTargetBlockPos() != null){
+            //BlockPos targetBlockPos = getTarget().getTargetBlockPos();
             this.getOrgEntity().getLookController().setLookPosition(
                     getTarget().getTargetBlockPos().getX(),
                     getTarget().getTargetBlockPos().getY(),
@@ -65,22 +67,29 @@ public abstract class NavigateToAction extends ActionBase{
         }
         if(!results){
             this.markFailed();
+            return;
         }
     }
     public void tickNavigate(){
         ticksUntilUpdatePath += 1;
         if(ticksUntilUpdatePath > 20){
             ticksUntilUpdatePath = 0;
+            boolean results = false;
             if(getTarget().getTargetEntity() != null) {
-                boolean results = this.getOrgEntity().getNavigator()
+                results = this.getOrgEntity().getNavigator()
                         .tryMoveToEntityLiving(getTarget().getTargetEntity(), 1.0D);
+            }else{
+                results = this.getOrgEntity().getNavigator()
+                        .tryMoveToXYZ(
+                                (double)((float)getTarget().getTargetBlockPos().getX()) + 0.5D,
+                                (double)(getTarget().getTargetBlockPos().getY() + 1),
+                                (double)((float)getTarget().getTargetBlockPos().getZ()) + 0.5D,
+                                1d
+                        );
             }
             this.getOrgEntity().getNavigator().updatePath();
         }
-        /*tickStuckCheck();
-        if(!isStuck()) {*/
-            //this.getOrgEntity().getNavigator().tick();
-        //}
+
 
     }
     /*public void tickNavigateSimple(){
@@ -106,10 +115,13 @@ public abstract class NavigateToAction extends ActionBase{
             this.getOrgEntity().getLookController().setLookPositionWithEntity(getTarget().getTargetEntity(), 30.0F, 30.0f);
         }else if(getTarget().getTargetBlockPos() != null) {
             this.getOrgEntity().getLookController().setLookPosition(
-                getTarget().getTargetBlockPos().getX(),
-                getTarget().getTargetBlockPos().getY(),
-                getTarget().getTargetBlockPos().getZ()
+                getTarget().getTargetBlockPos().getX() + .5f,
+                getTarget().getTargetBlockPos().getY() + .5f,
+                getTarget().getTargetBlockPos().getZ() + .5f
             );
+            if(!this.getOrgEntity().getNavigator().noPath()){
+                ChaosCraft.LOGGER.info("Still have a path some how");
+            }
         }else{
             throw new ChaosNetException("TODO: This shouldnt really happen as of now");
         }
@@ -169,6 +181,8 @@ public abstract class NavigateToAction extends ActionBase{
         }
     }
     public void tickArrived(){
+        this.getOrgEntity().getNavigator().clearPath();
+
 
        // tickStuckCheck();
     }

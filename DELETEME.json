@@ -2,6 +2,10 @@
   "settings":{
     "TrainingRoomRole":[
       {
+        "namespace":"WONDER_BY_DEFAULT",
+        "value":true
+      },
+      {
         "namespace":"BASE_LIFE_SECONDS",
         "value":15
       },
@@ -175,7 +179,9 @@
       "$DEFAULT":true,
       "weight":"{{rndFloat '-5:5' }}"
     },
-
+    {
+      "$TYPE":"YawInput"
+    },
     {
       "$TYPE":"RCIsTypeInput",
       "$EVAL_GROUP": "ITEM",
@@ -579,7 +585,8 @@
       "MeleeAttackAction",
       "PlaceBlockAction",
       "TossItemAction",
-      "UseItemAction"
+      "UseItemAction",
+      "NavigateToFinalAction"
     ]
   },
   "templates":{
@@ -594,18 +601,18 @@
     "VEC3_I":{
       "X":{
         "$SOURCE": "int_range",
-        "$MIN": -1,
-        "$MAX": 1
+        "$MIN": -0,
+        "$MAX": 0
       },
       "Y":{
         "$SOURCE": "int_range",
         "$MIN": -1,
-        "$MAX": 1
+        "$MAX": 0
       },
       "Z":{
         "$SOURCE": "int_range",
-        "$MIN": -1,
-        "$MAX": 1
+        "$MIN": -0,
+        "$MAX": 0
       }
     }
   },

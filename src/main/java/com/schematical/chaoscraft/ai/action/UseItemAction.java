@@ -19,31 +19,39 @@ public class UseItemAction extends NavigateToAction{
     protected void _tick() {
         ItemStack itemStack = getOrgEntity().getHeldItem(Hand.MAIN_HAND);
         Item heldItem = itemStack.getItem();
-        tickLook();
 
 
 
         if(heldItem instanceof ShootableItem){
+            /*tickNavigate();
+            return;*/
             if(
-                getTarget().isEntityLookingAt(getOrgEntity())
+                !getTarget().isEntityLookingAt(getOrgEntity())
             ) {
-
-                tickShootItem();
+                tickLook();
                 return;
             }
-            tickNavigate();
+            tickShootItem();
             return;
+
+
         }
 
 
         if(
-            !getTarget().canEntityTouch(getOrgEntity()) &&
-            !getTarget().isEntityLookingAt(getOrgEntity())
+            !getTarget().canEntityTouch(getOrgEntity()) /*&&
+          */
         ){
             tickNavigate();
             return;
         }
         tickArrived();
+
+        if(!getTarget().isEntityLookingAt(getOrgEntity())) {
+            this.tickLook();
+            return;
+        }
+
         if(!validateTargetItem(getOrgEntity(),  new ChaosTargetItem(getOrgEntity().getSelectedItemIndex()))){
             throw new ChaosNetException("Invalid Target");
         }
