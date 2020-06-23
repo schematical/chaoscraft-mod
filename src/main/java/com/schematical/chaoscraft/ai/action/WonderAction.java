@@ -46,7 +46,7 @@ public class WonderAction extends NavigateToAction {
             double dist = Math.sqrt(Math.pow(vec2d.x, 2) + Math.pow(vec2d.y, 2));
             if (dist < 3) {
                 //shuffleBlockPos();
-                return;
+                //return;
             }
         }
 

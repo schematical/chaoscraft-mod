@@ -9,6 +9,7 @@ import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
@@ -119,12 +120,16 @@ public abstract class NavigateToAction extends ActionBase{
                 getTarget().getTargetBlockPos().getY() + .5f,
                 getTarget().getTargetBlockPos().getZ() + .5f
             );
+            double d0 = getTarget().getTargetBlockPos().getX() - this.getOrgEntity().getPosX();
+            double d1 = getTarget().getTargetBlockPos().getZ() - this.getOrgEntity().getPosZ();
+            float delta = (float)(MathHelper.atan2(d1, d0) * (double)(180F / (float)Math.PI)) - 90.0F;
+            this.getOrgEntity().setDesiredYaw(delta );
             if(!this.getOrgEntity().getNavigator().noPath()){
                 ChaosCraft.LOGGER.info("Still have a path some how");
             }
         }else{
             throw new ChaosNetException("TODO: This shouldnt really happen as of now");
-        }
+        }//-229 7 -208
 /*
         Vec3d pos = getTarget().getTargetPositionCenter();
 

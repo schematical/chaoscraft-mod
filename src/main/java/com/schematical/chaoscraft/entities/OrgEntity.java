@@ -886,7 +886,7 @@ public class OrgEntity extends MobEntity {
     }
 
     private void updatePitchAndYaw(){
-        if(desiredLookVec == null){
+     /*   if(desiredLookVec == null){
             desiredLookVec = this.getLook(1);
         }
         this.getLookController().setLookPosition(
@@ -895,7 +895,7 @@ public class OrgEntity extends MobEntity {
                 desiredLookVec.getZ(),
                 360,
                 360
-        );
+        );*/
       /*  double yOffset = Math.sin(Math.toRadians(desiredPitch));
         double zOffset = Math.cos(Math.toRadians(this.desiredHeadYaw)) * Math.cos(Math.toRadians(desiredPitch));
         double xOffset = Math.sin(Math.toRadians(this.desiredHeadYaw)) * Math.cos(Math.toRadians(desiredPitch));
