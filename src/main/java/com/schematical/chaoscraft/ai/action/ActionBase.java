@@ -285,6 +285,10 @@ public abstract class ActionBase {
         return correctedChaosTarget;
     }
 
+    public void resume() {
+        tickFirst();
+    }
+
     public enum ActionState{
         Pending,
         Running,

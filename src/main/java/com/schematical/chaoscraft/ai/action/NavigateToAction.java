@@ -73,6 +73,7 @@ public abstract class NavigateToAction extends ActionBase{
     }
     public void tickNavigate(){
         ticksUntilUpdatePath += 1;
+        this.getOrgEntity().setDesiredYaw(null);
         if(ticksUntilUpdatePath > 20){
             ticksUntilUpdatePath = 0;
             boolean results = false;
@@ -122,8 +123,8 @@ public abstract class NavigateToAction extends ActionBase{
             );
             double d0 = getTarget().getTargetBlockPos().getX() - this.getOrgEntity().getPosX();
             double d1 = getTarget().getTargetBlockPos().getZ() - this.getOrgEntity().getPosZ();
-            float delta = (float)(MathHelper.atan2(d1, d0) * (double)(180F / (float)Math.PI)) - 90.0F;
-            this.getOrgEntity().setDesiredYaw(delta );
+            double delta = (float)(MathHelper.atan2(d1, d0) * (double)(180F / (float)Math.PI)) - 90.0F;
+            this.getOrgEntity().setDesiredYaw(delta);
             if(!this.getOrgEntity().getNavigator().noPath()){
                 ChaosCraft.LOGGER.info("Still have a path some how");
             }

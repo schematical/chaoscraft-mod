@@ -81,6 +81,9 @@ public class UseItemAction extends NavigateToAction{
         if((heldItem instanceof BlockItem)){
             /*throw new ChaosNetException*/ChaosCraft.LOGGER.error("Invalid action. `heldItem` instanceof `BlockItem`: " + heldItem.getRegistryName().toString());
         }
+        if((heldItem instanceof BucketItem)){
+            ChaosCraft.LOGGER.info("Attempting to use BucketItem: " + heldItem.getRegistryName().toString());
+        }
         ItemUseContext context = new ItemUseContext(
                 getOrgEntity().getPlayerWrapper(),
                 Hand.MAIN_HAND,
@@ -146,9 +149,11 @@ public class UseItemAction extends NavigateToAction{
         return true;
     }
     public static boolean validateTargetAndItem(OrgEntity orgEntity, ChaosTarget chaosTarget, ChaosTargetItem chaosTargetItem){
+        //FarmlandBlock //TODO: validate seeds with `FarmLandBlock`
+
         if(
                 validateTarget( orgEntity, chaosTarget) &&
-                        validateTargetItem( orgEntity, chaosTargetItem)
+                validateTargetItem( orgEntity, chaosTargetItem)
         ) {
             return true;
         }else{

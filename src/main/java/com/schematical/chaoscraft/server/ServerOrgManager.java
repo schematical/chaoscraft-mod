@@ -223,6 +223,7 @@ public class ServerOrgManager extends BaseOrgManager {
         if(
             this.ticksSinceRawOutputReceived < 20
         ) {
+            this.getEntity().getNavigator().clearPath();
             if (state.equals(State.Spawned)) {
                 initInventory();
                 markTicking();
@@ -235,6 +236,10 @@ public class ServerOrgManager extends BaseOrgManager {
                 }
             }
         }else {
+            if( this.ticksSinceRawOutputReceived == 20){
+                this.getActionBuffer().resumeAction();
+
+            }
             this.getActionBuffer().execute();
         }
         for (BaseChaosEventListener eventListener : getEventListeners()) {

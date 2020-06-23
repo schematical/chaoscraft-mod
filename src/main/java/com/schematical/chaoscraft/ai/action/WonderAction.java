@@ -38,36 +38,26 @@ public class WonderAction extends NavigateToAction {
             shuffleBlockPos();
             ticksSinceLastChange = 0;
             return;
-        }else {
-            Vec2d vec2d = new Vec2d(
-                    getTarget().getPosition().getX() - getOrgEntity().getPosition().getX(),
-                    getTarget().getPosition().getZ() - getOrgEntity().getPosition().getZ()
-            );
-            double dist = Math.sqrt(Math.pow(vec2d.x, 2) + Math.pow(vec2d.y, 2));
-            if (dist < 3) {
-                //shuffleBlockPos();
-                //return;
-            }
         }
 
-        //tickNavigate();
+
 
         if(
-            !getTarget().canEntityTouch(getOrgEntity())
+            !getTarget().canEntityTouch(getOrgEntity())//, OrgEntity.ATTACK_DISTANCE)
         ){
             tickNavigate();
             return;
         }
         tickArrived();
         if(debug) {
-            ChaosCraft.LOGGER.info("Arrived at block");
+            //ChaosCraft.LOGGER.info("Arrived at block");
         }
         if(!getTarget().isEntityLookingAt(getOrgEntity())) {
             this.tickLook();
             return;
         }
         if(debug) {
-            ChaosCraft.LOGGER.info("Looking at block");
+            //ChaosCraft.LOGGER.info("Looking at block");
         }
 
 

@@ -274,6 +274,13 @@ public class ActionBuffer {
         return recentActions;
     }
 
+    public void resumeAction() {
+        if(this.currAction == null){
+            return;
+        }
+        this.currAction.resume();
+    }
+
     public class SimpleActionStats{
         public int score = 0;
         public int numTimesExecuted = 0;

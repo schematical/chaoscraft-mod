@@ -17,7 +17,7 @@ public class ChangeYawOutput extends RawOutputNeuron {
         }*/
 
 
-        getEntity().setDesiredYaw(getEntity().rotationYaw + (delta  * 30));
+        getEntity().setDesiredYaw((double)getEntity().rotationYaw + (delta  * 30));
 
 
 

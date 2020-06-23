@@ -44,6 +44,7 @@ public class OrgEntity extends MobEntity {
 
     @ObjectHolder("chaoscraft:org_entity")
     public static final EntityType<OrgEntity> ORGANISM_TYPE = null;
+    public static final double LOOK_DISTANCE = 10.0D;
     public static final double REACH_DISTANCE = 5.0D;
     public static final double ATTACK_DISTANCE = 3.0D;
 
@@ -60,7 +61,7 @@ public class OrgEntity extends MobEntity {
     private int selectedItemIndex = 0;
     protected ItemStackHandler itemHandler = new ItemStackHandler(36);
     protected double desiredPitch;
-    protected double desiredYaw;
+    protected Double desiredYaw;
     protected double desiredHeadYaw;
     protected ChaosTarget chaosTarget;
 
@@ -133,8 +134,10 @@ public class OrgEntity extends MobEntity {
     public void setSpawnHash(int _spawnHash) {
         this.spawnHash = _spawnHash;
     }
-
-    public void setDesiredYaw(double _desiredYaw){
+    public void setDesiredYaw(float _desiredYaw){
+        this.setDesiredYaw((double) _desiredYaw);
+    }
+    public void setDesiredYaw(Double _desiredYaw){
         this.desiredYaw = _desiredYaw;
     }
     public ClientOrgManager getClientOrgManager(){
@@ -904,7 +907,9 @@ public class OrgEntity extends MobEntity {
         this.getLookController().setLookPosition(pos.getX() + xOffset, pos.getY()*//* + this.getEyeHeight() *//*+ yOffset, pos.getZ() + zOffset, 360, 360);
         */this.renderYawOffset = 0;//(float)this.desiredYaw;
         //this.rotationYawHead = (float)this.desiredYaw;
-        this.setRotation((float) this.desiredYaw, 0);
+        if(this.desiredYaw != null) {
+            this.setRotation( this.desiredYaw.floatValue(), 0);
+        }
     }
 
     private void checkForItemPickup(){
