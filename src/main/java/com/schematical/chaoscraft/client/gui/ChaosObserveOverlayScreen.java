@@ -229,16 +229,18 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
             );
 
             Path path = clientOrgManager.getEntity().getNavigator().getPath();
-            for(int i = path.getCurrentPathIndex(); i < path.getCurrentPathLength(); i++){
-                PathPoint pathPoint = path.getPathPointFromIndex(i);
-                CCGUIHelper.drawAABB(
-                        event.getMatrixStack(),
-                        new AxisAlignedBB(new BlockPos(pathPoint.x, pathPoint.y, pathPoint.z)),
-                        Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getProjectedView(),
-                        .001D,
-                        Color.GRAY,
-                        1f
-                );
+            if(path != null) {
+                for (int i = path.getCurrentPathIndex(); i < path.getCurrentPathLength(); i++) {
+                    PathPoint pathPoint = path.getPathPointFromIndex(i);
+                    CCGUIHelper.drawAABB(
+                            event.getMatrixStack(),
+                            new AxisAlignedBB(new BlockPos(pathPoint.x, pathPoint.y, pathPoint.z)),
+                            Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getProjectedView(),
+                            .001D,
+                            Color.GRAY,
+                            1f
+                    );
+                }
             }
 
             BlockPos blockPos = (clientOrgManager.getEntity().getNavigator().getTargetPos());

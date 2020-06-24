@@ -20,7 +20,9 @@ public class UseItemAction extends NavigateToAction{
         ItemStack itemStack = getOrgEntity().getHeldItem(Hand.MAIN_HAND);
         Item heldItem = itemStack.getItem();
 
-
+        if((heldItem instanceof BucketItem)){
+            ChaosCraft.LOGGER.info("Attempting to use BucketItem: " + heldItem.getRegistryName().toString());
+        }
 
         if(heldItem instanceof ShootableItem){
             /*tickNavigate();
@@ -61,6 +63,9 @@ public class UseItemAction extends NavigateToAction{
                 Hand.MAIN_HAND
         );
         if(rcResult.getType().equals(ActionResultType.SUCCESS)){
+            CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.ITEM_USED);
+            worldEvent.item = heldItem;
+            ((ServerOrgManager)getActionBuffer().getOrgManager()).test(worldEvent);
             markCompleted();
             ChaosCraft.LOGGER.debug(getOrgEntity().getCCNamespace() + " successfully rightClicked " + heldItem.getRegistryName().getNamespace());
             return;
@@ -81,9 +86,7 @@ public class UseItemAction extends NavigateToAction{
         if((heldItem instanceof BlockItem)){
             /*throw new ChaosNetException*/ChaosCraft.LOGGER.error("Invalid action. `heldItem` instanceof `BlockItem`: " + heldItem.getRegistryName().toString());
         }
-        if((heldItem instanceof BucketItem)){
-            ChaosCraft.LOGGER.info("Attempting to use BucketItem: " + heldItem.getRegistryName().toString());
-        }
+
         ItemUseContext context = new ItemUseContext(
                 getOrgEntity().getPlayerWrapper(),
                 Hand.MAIN_HAND,
@@ -93,9 +96,16 @@ public class UseItemAction extends NavigateToAction{
                 context
         );
         if(result.equals(ActionResultType.SUCCESS)) {
+            CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.ITEM_USED);
+            worldEvent.item = heldItem;
+            ((ServerOrgManager)getActionBuffer().getOrgManager()).test(worldEvent);
             ChaosCraft.LOGGER.debug(getOrgEntity().getCCNamespace() + " successfully used " + heldItem.getRegistryName().toString());
+            markCompleted();
+            return;
         }else if(result.equals(ActionResultType.FAIL)){
             ChaosCraft.LOGGER.debug(getOrgEntity().getCCNamespace() + " failed to use " + heldItem.getRegistryName().toString());
+            markFailed();
+            return;
         }
     }
 

@@ -286,7 +286,7 @@ public abstract class ActionBase {
     }
 
     public void resume() {
-        tickFirst();
+
     }
 
     public enum ActionState{

@@ -22,12 +22,22 @@ public abstract class NavigateToAction extends ActionBase{
     private int stuckThreshold =  2 * 20;
     private int stuckActionTicks = 0;
     private int ticksUntilUpdatePath = 20;
+    private int arricedTicks = 0;
     private PathNavigator navigator;
     protected boolean isStuck(){
         return stuckTicks > stuckThreshold;
     }
     public void tickFirst(){
         super.tickFirst();
+        setupPath();
+    }
+    public void setupPath(){
+        setupPath(true);
+    }
+    public void resume() {
+        setupPath(false);
+    }
+    public void setupPath(boolean failIfMiss){
         if(getTarget() == null){
             throw new ChaosNetException("Missing Target in Action: " + getClass().getSimpleName());
         }
@@ -61,12 +71,12 @@ public abstract class NavigateToAction extends ActionBase{
                             (double)((float)targetBlockPos.getX()) + 0.5D,
                             (double)(targetBlockPos.getY() + 1),
                             (double)((float)targetBlockPos.getZ()) + 0.5D,
-                    1d
+                            1d
                     );
         }else{
             throw new ChaosNetException("TODO: Make this work");
         }
-        if(!results){
+        if(!results && failIfMiss){
             this.markFailed();
             return;
         }
@@ -126,7 +136,7 @@ public abstract class NavigateToAction extends ActionBase{
             double delta = (float)(MathHelper.atan2(d1, d0) * (double)(180F / (float)Math.PI)) - 90.0F;
             this.getOrgEntity().setDesiredYaw(delta);
             if(!this.getOrgEntity().getNavigator().noPath()){
-                ChaosCraft.LOGGER.info("Still have a path some how");
+              //  ChaosCraft.LOGGER.info("Still have a path some how");
             }
         }else{
             throw new ChaosNetException("TODO: This shouldnt really happen as of now");
@@ -187,7 +197,12 @@ public abstract class NavigateToAction extends ActionBase{
         }
     }
     public void tickArrived(){
-        this.getOrgEntity().getNavigator().clearPath();
+        arricedTicks += 1;
+        if(arricedTicks < 20) {
+            this.getOrgEntity().getNavigator().clearPath();
+        }else if(arricedTicks == 20){
+            this.setupPath(false);
+        }
 
 
        // tickStuckCheck();
