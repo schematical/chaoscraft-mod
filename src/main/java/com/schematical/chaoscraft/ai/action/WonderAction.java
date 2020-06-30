@@ -80,7 +80,7 @@ public class WonderAction extends NavigateToAction {
             return;
         }
         this.shuffleBlockCoolDown = 20;
-        boolean found = false;
+       /* boolean found = false;
 
         for(int x = range * -1; x < range; x++){
             for(int y = 2; y < 5; y++){
@@ -105,9 +105,9 @@ public class WonderAction extends NavigateToAction {
             }
         }
 
-        if(!found) {
+        if(!found) {*/
             BlockPos pos = null;
-          /*  int saftyCatch = 0;
+            int saftyCatch = 0;
             while(pos == null && saftyCatch < 10) {
                 saftyCatch += 1;
                 if(saftyCatch > 10){
@@ -121,13 +121,13 @@ public class WonderAction extends NavigateToAction {
                 if(!this.getOrgEntity().getNavigator().canEntityStandOnPos(pos)){
                     pos = null;
                 }
-            }*/
+            }
             if(pos == null){
                 setTarget(new ChaosTarget(this.getOrgEntity().getPosition()));
             }else {
                 setTarget(new ChaosTarget(pos));
             }
-        }
+        //}
     }
 
 
