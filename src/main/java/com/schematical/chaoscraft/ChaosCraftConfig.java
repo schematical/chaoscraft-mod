@@ -81,13 +81,18 @@ public class ChaosCraftConfig {
                 );
                 username = obj.get("username").toString();
                 idToken = obj.get("idToken").toString();
-                refreshToken = obj.get("refreshToken").toString();
-                accessToken = obj.get("accessToken").toString();
+                if(obj.get("refreshToken") != null) {
+                    refreshToken = obj.get("refreshToken").toString();
+                }
+                if(obj.get("accessToken") != null) {
+                    accessToken = obj.get("accessToken").toString();
+                }
+
                 expiration = Integer.parseInt(obj.get("expiration").toString());
                 maxBotCount = Integer.parseInt(obj.get("maxBotCount").toString());
                 trainingRoomNamespace = obj.get("trainingRoomNamespace").toString();
                 trainingRoomUsernameNamespace = obj.get("trainingRoomUsernameNamespace").toString();
-                //sessionNamespace = obj.get("sessionNamespace").toString();
+
                 env = obj.get("env").toString();
             } catch (Exception e) {
                 e.printStackTrace();
