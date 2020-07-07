@@ -19,6 +19,7 @@ public class SpawnBlockTileEntity  extends TileEntity implements ITickableTileEn
     private String spawnPointId = "default";
     private int maxLivingEntities = -1;
     private int livingEntityCount = 0;
+    private String matchId = "default";
     protected ArrayList<ServerOrgManager> entities = new ArrayList<ServerOrgManager>();
     public SpawnBlockTileEntity() {
             super(ChaosTileEntity.SPAWN_TILE.get());
@@ -114,6 +115,13 @@ public class SpawnBlockTileEntity  extends TileEntity implements ITickableTileEn
 
     public String getSpawnPointId() {
         return spawnPointId;
+    }
+    public String getMatchId(){
+        return matchId;
+    }
+    public void setMatchId(String matchId){
+        this.matchId = matchId;
+        this.markForUpdate();
     }
     public void setSpawnPointId(String spawnPointId){
         setSpawnPointId(spawnPointId, false);

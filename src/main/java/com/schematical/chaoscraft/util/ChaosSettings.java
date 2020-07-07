@@ -7,5 +7,6 @@ public enum ChaosSettings {
     INV_2,
     INV_3,
     USE_CHAOS_TEAM_TRACKER,
+    WONDER_BY_DEFAULT,
     BASE_LIFE_SECONDS
 }

@@ -91,15 +91,17 @@ public class ChaosTarget {
     public BlockPos getTargetBlockPos() {
         return blockPos;
     }
-
     public boolean canEntityTouch(OrgEntity orgEntity){
+        return canEntityTouch(orgEntity, orgEntity.REACH_DISTANCE - 1);
+    }
+    public boolean canEntityTouch(OrgEntity orgEntity, double dist){
 
         BlockPos myPos = orgEntity.getPosition();
         BlockPos targetBlockPos = getPosition();
         if(targetBlockPos == null){
             return false;
         }
-        if( targetBlockPos.withinDistance(myPos, orgEntity.REACH_DISTANCE - 1)){
+        if( targetBlockPos.withinDistance(myPos,  dist)){
             return true;
         }
         return false;
@@ -115,6 +117,19 @@ public class ChaosTarget {
                 targetPosition,
                 entity.getEyePosition(1),
                 entity.rotationYaw
+        );
+
+    }
+
+    public Double getLookYawDelta(Entity entity) {
+        Vec3d targetPosition = getTargetPositionCenter();
+        if (targetPosition == null) {
+            return null;
+        }
+        return TargetHelper.getYawDelta(
+                targetPosition,
+                entity.getEyePosition(1),
+                entity.getRotationYawHead()
         );
 
     }
@@ -269,7 +284,7 @@ public class ChaosTarget {
     }
     public boolean isEntityLookingAt(OrgEntity orgEntity) {
         if(blockPos != null) {
-            BlockRayTraceResult rayTraceResult = orgEntity.rayTraceBlocks(orgEntity.REACH_DISTANCE);
+           /* BlockRayTraceResult rayTraceResult = orgEntity.rayTraceBlocks(orgEntity.REACH_DISTANCE);
             if (rayTraceResult == null) {
                 return false;
             }
@@ -277,14 +292,27 @@ public class ChaosTarget {
                 return false;
             }
             return true;
+            */
+            Vec3d vec3d = orgEntity.getEyePosition(1);
+            Vec3d vec3d1 = orgEntity.getLook(1);
+            Vec3d vec3d2 = vec3d.add(
+                    new Vec3d(
+                            vec3d1.x * orgEntity.LOOK_DISTANCE,
+                            vec3d1.y * orgEntity.LOOK_DISTANCE,
+                            vec3d1.z * orgEntity.LOOK_DISTANCE
+                    )
+            );
+
+            return new AxisAlignedBB(blockPos).rayTrace(vec3d, vec3d2).isPresent();
+
         }else if(targetEntity != null){
             Vec3d vec3d = orgEntity.getEyePosition(1);
             Vec3d vec3d1 = orgEntity.getLook(1);
             Vec3d vec3d2 = vec3d.add(
                     new Vec3d(
-                            vec3d1.x * orgEntity.REACH_DISTANCE,
-                            vec3d1.y * orgEntity.REACH_DISTANCE,
-                            vec3d1.z * orgEntity.REACH_DISTANCE
+                            vec3d1.x * orgEntity.LOOK_DISTANCE,
+                            vec3d1.y * orgEntity.LOOK_DISTANCE,
+                            vec3d1.z * orgEntity.LOOK_DISTANCE
                     )
             );
 

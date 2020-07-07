@@ -11,44 +11,52 @@ import net.minecraftforge.fml.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public class CCClientSpawnBlockStateChangePacket {
-    private static final String GLUE = "@";
+
     private final BlockPos pos;
     private final String spawnPointId;
     private int maxLivingEntites;
+    private String matchId;
 
 
-    public CCClientSpawnBlockStateChangePacket( String spawnPointId, BlockPos pos, int maxLivingEntites)
+    public CCClientSpawnBlockStateChangePacket( String spawnPointId, BlockPos pos, int maxLivingEntites, String matchId)
     {
         this.pos = pos;
         this.spawnPointId = spawnPointId;
         this.maxLivingEntites = maxLivingEntites;
+        this.matchId = matchId;
     }
     public String getSpawnPointId(){
         return spawnPointId;
     }
-    public BlockPos getState(){
+    public BlockPos getBlockPos(){
         return pos;
+    }
+    public int getMaxLivingEntites(){ return maxLivingEntites; }
+    public String getMatchId(){
+        return matchId;
     }
 
     public static void encode(CCClientSpawnBlockStateChangePacket pkt, PacketBuffer buf)
     {
-        String payload =  pkt.spawnPointId + GLUE + pkt.pos.getX() + GLUE + pkt.pos.getY() + GLUE + pkt.pos.getZ() + GLUE + pkt.maxLivingEntites;
-        buf.writeString(payload);
+
+        buf.writeString(pkt.spawnPointId);
+        buf.writeBlockPos(pkt.pos);
+        buf.writeInt(pkt.maxLivingEntites);
+        buf.writeString(pkt.matchId);
     }
 
     public static CCClientSpawnBlockStateChangePacket decode(PacketBuffer buf)
     {
-        String payload = buf.readString(32767);
-        String[] parts = payload.split(GLUE);
+        String spawnPointId = buf.readString(32767);
+        BlockPos blockPos = buf.readBlockPos();
+        int maxLivingEntites = buf.readInt();
+        String matchId = buf.readString(32767);
 
         return new CCClientSpawnBlockStateChangePacket(
-                parts[0],
-                new BlockPos(
-                        Integer.parseInt(parts[1]),
-                        Integer.parseInt(parts[2]),
-                        Integer.parseInt(parts[3])
-                ),
-                Integer.parseInt(parts[4])
+                spawnPointId,
+                blockPos,
+                maxLivingEntites,
+                matchId
         );
     }
 
@@ -61,7 +69,7 @@ public class CCClientSpawnBlockStateChangePacket {
                 SpawnBlockTileEntity spawnBlockTileEntity = ((SpawnBlockTileEntity)tileEntity);
                 spawnBlockTileEntity.setSpawnPointId(message.spawnPointId, true);
                 spawnBlockTileEntity.setMaxLivingEntities(message.maxLivingEntites);
-
+                spawnBlockTileEntity.setMatchId(message.matchId);
             });
             ctx.get().setPacketHandled(true);
         }

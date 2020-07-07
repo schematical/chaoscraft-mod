@@ -41,7 +41,7 @@ public class ClientOrgManager extends BaseOrgManager {
 
         this.attatchEventListener(new OrgPositionManager());
         this.attatchEventListener(new ChaosHighScoreTracker());
-        //this.attatchEventListener(new BuildyManager());
+        this.attatchEventListener(new DebugDrawTicker());
 
 
     }

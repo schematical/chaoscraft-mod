@@ -42,8 +42,8 @@ public class ScanResult{
             Iterator<ScanEntry> iterator = scanEntries.iterator();
             boolean removed = false;
             while(
-                    iterator.hasNext() &&
-                            !removed
+                iterator.hasNext() &&
+                !removed
             ){
                 ScanEntry removeScanEntry = iterator.next();
                 if(removeScanEntry.getScore(targetSlotId) == lowestScore){

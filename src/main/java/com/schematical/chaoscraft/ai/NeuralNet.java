@@ -41,8 +41,14 @@ public class NeuralNet {
         Iterator<Map.Entry<String, NeuronBase>> iterator = neurons.entrySet().iterator();
 
         while (iterator.hasNext()) {
+
             NeuronBase neuronBase = iterator.next().getValue();
-            neuronBase.reset();
+            if(
+                neuronBase._base_type().equals(com.schematical.chaoscraft.Enum.OUTPUT) &&
+                neuronBase.getEvalGroup().equals(currentTargetEvalGroup)
+            ) {
+                neuronBase.reset();
+            }
         }
         for(BiologyBase biologyBase: biology.values()){
             biologyBase.reset();

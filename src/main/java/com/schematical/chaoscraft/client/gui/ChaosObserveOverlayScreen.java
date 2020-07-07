@@ -24,6 +24,8 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.pathfinding.Path;
+import net.minecraft.pathfinding.PathPoint;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -206,6 +208,7 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
 
         //debugSeekers(event);
 
+
         ActionBase actionBase = clientOrgManager.getActionBuffer().getCurrAction();
         if(actionBase != null){
             AxisAlignedBB target = actionBase.getTarget().getBoundingBox();
@@ -217,8 +220,44 @@ public class ChaosObserveOverlayScreen extends AbstractGui {
                     Color.RED,
                     1f
             );
+
+            clientOrgManager.getEntity().getNavigator().tryMoveToXYZ(
+                actionBase.getTarget().getPosition().getX(),
+                actionBase.getTarget().getPosition().getY(),
+                actionBase.getTarget().getPosition().getZ(),
+                1d
+            );
+
+            Path path = clientOrgManager.getEntity().getNavigator().getPath();
+            if(path != null) {
+                for (int i = path.getCurrentPathIndex(); i < path.getCurrentPathLength(); i++) {
+                    PathPoint pathPoint = path.getPathPointFromIndex(i);
+                    CCGUIHelper.drawAABB(
+                            event.getMatrixStack(),
+                            new AxisAlignedBB(new BlockPos(pathPoint.x, pathPoint.y, pathPoint.z)),
+                            Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getProjectedView(),
+                            .001D,
+                            Color.GRAY,
+                            1f
+                    );
+                }
+            }
+
+            BlockPos blockPos = (clientOrgManager.getEntity().getNavigator().getTargetPos());
+            if(blockPos != null) {
+                CCGUIHelper.drawAABB(
+                        event.getMatrixStack(),
+                        new AxisAlignedBB(blockPos),
+                        Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getProjectedView(),
+                        .001D,
+                        Color.CYAN,
+                        1f
+                );
+            }
+
+
         }
-        
+
 
 
         for (BiologyBase biologyBase : this.clientOrgManager.getNNet().biology.values()) {

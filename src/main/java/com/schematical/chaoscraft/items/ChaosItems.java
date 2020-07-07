@@ -24,5 +24,8 @@ public class ChaosItems {
     public static final RegistryObject<Item> WAYPOINT_BLOCK_ITEM = ITEMS.register("waypoint_block_item", () ->
             new BlockItem(ChaosBlocks.WAYPOINT_BLOCK.get(),  new Item.Properties().group(ItemGroup.BUILDING_BLOCKS))
     );
+    public static final RegistryObject<Item> MATCH_MANAGER_BLOCK_ITEM = ITEMS.register("match_manager_block_item", () ->
+            new BlockItem(ChaosBlocks.MATCH_MANAGER_BLOCK.get(),  new Item.Properties().group(ItemGroup.BUILDING_BLOCKS))
+    );
 
 }

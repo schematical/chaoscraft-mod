@@ -19,31 +19,41 @@ public class UseItemAction extends NavigateToAction{
     protected void _tick() {
         ItemStack itemStack = getOrgEntity().getHeldItem(Hand.MAIN_HAND);
         Item heldItem = itemStack.getItem();
-        tickLook();
 
-
+        if((heldItem instanceof BucketItem)){
+            ChaosCraft.LOGGER.info("Attempting to use BucketItem: " + heldItem.getRegistryName().toString());
+        }
 
         if(heldItem instanceof ShootableItem){
+            /*tickNavigate();
+            return;*/
             if(
-                getTarget().isEntityLookingAt(getOrgEntity())
+                !getTarget().isEntityLookingAt(getOrgEntity())
             ) {
-
-                tickShootItem();
+                tickLook();
                 return;
             }
-            tickNavigate();
+            tickShootItem();
             return;
+
+
         }
 
 
         if(
-            !getTarget().canEntityTouch(getOrgEntity()) &&
-            !getTarget().isEntityLookingAt(getOrgEntity())
+            !getTarget().canEntityTouch(getOrgEntity()) /*&&
+          */
         ){
             tickNavigate();
             return;
         }
         tickArrived();
+
+        if(!getTarget().isEntityLookingAt(getOrgEntity())) {
+            this.tickLook();
+            return;
+        }
+
         if(!validateTargetItem(getOrgEntity(),  new ChaosTargetItem(getOrgEntity().getSelectedItemIndex()))){
             throw new ChaosNetException("Invalid Target");
         }
@@ -53,6 +63,9 @@ public class UseItemAction extends NavigateToAction{
                 Hand.MAIN_HAND
         );
         if(rcResult.getType().equals(ActionResultType.SUCCESS)){
+            CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.ITEM_USED);
+            worldEvent.item = heldItem;
+            ((ServerOrgManager)getActionBuffer().getOrgManager()).test(worldEvent);
             markCompleted();
             ChaosCraft.LOGGER.debug(getOrgEntity().getCCNamespace() + " successfully rightClicked " + heldItem.getRegistryName().getNamespace());
             return;
@@ -73,6 +86,7 @@ public class UseItemAction extends NavigateToAction{
         if((heldItem instanceof BlockItem)){
             /*throw new ChaosNetException*/ChaosCraft.LOGGER.error("Invalid action. `heldItem` instanceof `BlockItem`: " + heldItem.getRegistryName().toString());
         }
+
         ItemUseContext context = new ItemUseContext(
                 getOrgEntity().getPlayerWrapper(),
                 Hand.MAIN_HAND,
@@ -82,9 +96,16 @@ public class UseItemAction extends NavigateToAction{
                 context
         );
         if(result.equals(ActionResultType.SUCCESS)) {
+            CCWorldEvent worldEvent = new CCWorldEvent(CCWorldEvent.Type.ITEM_USED);
+            worldEvent.item = heldItem;
+            ((ServerOrgManager)getActionBuffer().getOrgManager()).test(worldEvent);
             ChaosCraft.LOGGER.debug(getOrgEntity().getCCNamespace() + " successfully used " + heldItem.getRegistryName().toString());
+            markCompleted();
+            return;
         }else if(result.equals(ActionResultType.FAIL)){
             ChaosCraft.LOGGER.debug(getOrgEntity().getCCNamespace() + " failed to use " + heldItem.getRegistryName().toString());
+            markFailed();
+            return;
         }
     }
 
@@ -138,9 +159,11 @@ public class UseItemAction extends NavigateToAction{
         return true;
     }
     public static boolean validateTargetAndItem(OrgEntity orgEntity, ChaosTarget chaosTarget, ChaosTargetItem chaosTargetItem){
+        //FarmlandBlock //TODO: validate seeds with `FarmLandBlock`
+
         if(
                 validateTarget( orgEntity, chaosTarget) &&
-                        validateTargetItem( orgEntity, chaosTargetItem)
+                validateTargetItem( orgEntity, chaosTargetItem)
         ) {
             return true;
         }else{

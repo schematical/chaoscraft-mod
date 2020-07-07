@@ -5,38 +5,22 @@ import com.schematical.chaoscraft.util.ChaosTarget;
 import com.schematical.chaoscraft.util.ChaosTargetItem;
 import net.minecraft.util.Hand;
 
-public class MeleeAttackAction extends NavigateToAction{
+public class NavigateToFinalAction extends NavigateToAction {
 
     @Override
     protected void _tick() {
 
-        if(
+        if (
             !getTarget().canEntityTouch(getOrgEntity(), OrgEntity.ATTACK_DISTANCE - 1)
-        ){
+        ) {
             tickNavigate();
-            return;
         }
-
-        tickArrived();
-        if(!getTarget().isEntityLookingAt(getOrgEntity())){
-            tickLook();
-            return;
-        }
-        //When looking at stuff do stuff.
-        getOrgEntity().func_226292_a_(Hand.MAIN_HAND, true);
-        if(!getTarget().isVisiblyBlocked(getOrgEntity())) {
-            getOrgEntity().attackEntityAsMob(getTarget().getTargetEntity());
-        }
-        if(!getTarget().getTargetEntity().isAlive()){
-            markCompleted();
-        }
+        markCompleted();
+        //return;
     }
 
 
     public static boolean validateTarget(OrgEntity orgEntity, ChaosTarget chaosTarget) {
-        if(chaosTarget.getTargetEntity() == null){
-            return false;
-        }
 
         return true;
     }

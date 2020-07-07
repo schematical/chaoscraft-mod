@@ -10,6 +10,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -18,15 +19,20 @@ public class PlaceBlockAction extends NavigateToAction{
 
     @Override
     protected void _tick() {
-        tickLook();
+
         if(
-            !getTarget().canEntityTouch(getOrgEntity()) &&
-            !getTarget().isEntityLookingAt(getOrgEntity())
+            !getTarget().canEntityTouch(getOrgEntity()) /*||
+            getTarget().isVisiblyBlocked(getOrgEntity())*/
         ){
             tickNavigate();
             return;
         }
         tickArrived();
+        if(!getTarget().isEntityLookingAt(getOrgEntity())){
+            tickLook();
+            return;
+        }
+
         BlockRayTraceResult rayTraceResult = getOrgEntity().rayTraceBlocks(getOrgEntity().REACH_DISTANCE);
         if(rayTraceResult == null){
             markFailed();
@@ -37,16 +43,21 @@ public class PlaceBlockAction extends NavigateToAction{
         }*/
         ItemStack itemStack = getOrgEntity().getHeldItem(Hand.MAIN_HAND);
         //When looking at stuff do stuff.
-        getOrgEntity().rightClick(rayTraceResult);
-        BlockPos placedBlockPos = rayTraceResult.getPos().offset(rayTraceResult.getFace());
-        BlockState blockState = getOrgEntity().world.getBlockState(placedBlockPos);
-        if(blockState.isSolid()){
-            setCorrectedChaosTarget(new ChaosTarget(placedBlockPos));
-            markCompleted();
-
-        }else{
-           // markFailed();//TODO: figure out how this is possible
-            //throw new ChaosNetException("Something went wrong. The placed block area is empty. Was trying to place: " + itemStack.getItem().getRegistryName().toString());
+        ActionResultType result = getOrgEntity().rightClick(rayTraceResult);
+        if(result.equals(ActionResultType.SUCCESS)) {
+            BlockPos placedBlockPos = rayTraceResult.getPos().offset(rayTraceResult.getFace());
+            BlockState blockState = getOrgEntity().world.getBlockState(placedBlockPos);
+            if (blockState.isSolid()) {
+                setCorrectedChaosTarget(new ChaosTarget(placedBlockPos));
+                markCompleted();
+                return;
+            } /*else {
+                // markFailed();//TODO: figure out how this is possible
+                throw new ChaosNetException("Something went wrong. The placed block area is empty. Was trying to place: " + itemStack.getItem().getRegistryName().toString());
+            }*/
+        }else if(result.equals(ActionResultType.FAIL)){
+            markFailed();
+            return;
         }
     }
     public void onClientMarkCompleted() {

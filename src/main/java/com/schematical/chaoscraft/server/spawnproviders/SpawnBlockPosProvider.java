@@ -21,16 +21,18 @@ public class SpawnBlockPosProvider implements iServerSpawnProvider {
 
     @Override
     public BlockPos getSpawnPos(ServerOrgManager serverOrgManager){
+
         if(ChaosBlocks.spawnBlocks.size() == 0){
             ChaosCraft.LOGGER.error("Cannot find any spawnBlocks");
             return null;
         }
         ArrayList<BlockPos> spawnBlocks = new ArrayList<>();
+        String spawnPointId = serverOrgManager.getRoleSettings().getString(ChaosSettings.SPAWN_POINT_ID);
         for (BlockPos pos : ChaosBlocks.spawnBlocks) {
             SpawnBlockTileEntity spawnBlockTileEntity = (SpawnBlockTileEntity)ChaosCraft.getServer().server.getWorld(DimensionType.OVERWORLD).getTileEntity(pos);
             if(
                 spawnBlockTileEntity != null &&
-                spawnBlockTileEntity.getSpawnPointId().equals(serverOrgManager.getRoleSettings().getString(ChaosSettings.SPAWN_POINT_ID)) &&
+                spawnBlockTileEntity.getSpawnPointId().equals(spawnPointId) &&
                 spawnBlockTileEntity.canSpawn()
             ){
                 spawnBlocks.add(pos);

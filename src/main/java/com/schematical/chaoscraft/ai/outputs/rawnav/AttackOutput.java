@@ -12,13 +12,13 @@ import java.util.List;
 /**
  * Created by user1a on 12/8/18.
  */
-public class AttackOutput extends OutputNeuron {
+public class AttackOutput extends RawOutputNeuron {
     @Override
     public void execute() {
         if(this.getCurrentValue() <= .5f){
             return;
         }
-        OrgEntity entity = this.nNet.entity;
+        OrgEntity entity = this.getEntity();
         List<LivingEntity> entities = entity.world.getEntitiesWithinAABB(LivingEntity.class, entity.getBoundingBox().grow(2.0D, 1.0D, 2.0D));
         //
 

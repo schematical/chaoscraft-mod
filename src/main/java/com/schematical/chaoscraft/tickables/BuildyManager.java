@@ -14,12 +14,15 @@ import com.schematical.chaoscraft.events.OrgEvent;
 import com.schematical.chaoscraft.network.ChaosNetworkManager;
 import com.schematical.chaoscraft.network.packets.CCServerScoreEventPacket;
 import com.schematical.chaoscraft.server.ServerOrgManager;
+import com.schematical.chaoscraft.util.ChaosTarget;
 import com.schematical.chaosnet.model.ChaosNetException;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 
 import java.awt.*;
@@ -68,15 +71,86 @@ public class BuildyManager extends BaseChaosEventListener implements iRenderWorl
                 }
             }
         }
+
         ArrayList<ArrayList<BlockPos>> blockClusters = clusterBlocks(myBlocks, serverOrgManager);
         int newTotalScore = 0;
         for (ArrayList<BlockPos> blockCluster : blockClusters) {
             int i = 0;
             int clusterScore = 0;
+            Vec3i minVec = new Vec3i(
+                    9999,
+                    9999,
+                    9999
+            );
+            Vec3i maxVec = new Vec3i(
+                    -9999,
+                    -9999,
+                    -9999
+            );
             for (BlockPos blockPos : blockCluster) {
                 i += 1;
                 clusterScore += i;
+                if(blockPos.getX() < minVec.getX()){
+                    minVec = new Vec3i(
+                            blockPos.getX(),
+                            minVec.getY(),
+                            minVec.getZ()
+                    );
+                }
+                if(blockPos.getY() < minVec.getY()){
+                    minVec = new Vec3i(
+                            minVec.getX(),
+                            blockPos.getY(),
+                            minVec.getZ()
+                    );
+                }
+                if(blockPos.getZ() < minVec.getZ()){
+                    minVec = new Vec3i(
+                            minVec.getX(),
+                            minVec.getY(),
+                            blockPos.getZ()
+                    );
+                }
+                if(blockPos.getX() > maxVec.getX()){
+                    maxVec = new Vec3i(
+                            blockPos.getX(),
+                            maxVec.getY(),
+                            maxVec.getZ()
+                    );
+                }
+                if(blockPos.getY() > maxVec.getY()){
+                    maxVec = new Vec3i(
+                            maxVec.getX(),
+                            blockPos.getY(),
+                            maxVec.getZ()
+                    );
+                }
+                if(blockPos.getZ() > maxVec.getZ()){
+                    maxVec = new Vec3i(
+                            maxVec.getX(),
+                            maxVec.getY(),
+                            blockPos.getZ()
+                    );
+                }
+
+
             }
+            Vec3i dimensions = new Vec3i(
+                    maxVec.getX() - minVec.getX(),
+                    maxVec.getY() - minVec.getY(),
+                    maxVec.getZ() - minVec.getZ()
+            );
+            int dimensionMultiplier = 1;
+            if(dimensions.getX() > 1){
+                dimensionMultiplier += 1;
+            }
+            if(dimensions.getY() > 1){
+                dimensionMultiplier += 2;
+            }
+            if(dimensions.getZ() > 1){
+                dimensionMultiplier += 1;
+            }
+            clusterScore *= dimensionMultiplier;
             newTotalScore += clusterScore;
         }
         newTotalScore = newTotalScore  * blockStates.size();
@@ -86,12 +160,8 @@ public class BuildyManager extends BaseChaosEventListener implements iRenderWorl
         int scoreToSend = newTotalScore - myScore;
         myScore = newTotalScore;
         int newLife =  newTotalScore;
-        /*if(serverOrgManager.getMaxLife() + newLife > 120){
-            newLife =
-        }
-        int ageLeftToLive = (serverOrgManager.getMaxLife() - serverOrgManager.getAgeSeconds());
-        serverOrgManager.adjustMaxLife();*/
 
+        serverOrgManager.adjustMaxLife(newLife);
         CCServerScoreEventPacket serverScoreEventPacket = new CCServerScoreEventPacket(
                 serverOrgManager.getCCNamespace(),
                 scoreToSend,
@@ -101,7 +171,7 @@ public class BuildyManager extends BaseChaosEventListener implements iRenderWorl
                 (int) (serverOrgManager.getEntity().world.getGameTime() + ((serverOrgManager.getMaxLife() - serverOrgManager.getAgeSeconds()) * 20)),
                 0
         );
-        serverOrgManager.getEntity().addOrgEvent(new OrgEvent(new EntityFitnessScoreEvent(null, myBlocks.size(), null)));
+        serverOrgManager.getEntity().addOrgEvent(new OrgEvent(new EntityFitnessScoreEvent(null, scoreToSend, null)));
 
 
         ChaosNetworkManager.sendTo(serverScoreEventPacket, serverOrgManager.getServerPlayerEntity());
@@ -252,6 +322,7 @@ public class BuildyManager extends BaseChaosEventListener implements iRenderWorl
             }
             drawBlockCluster(event, blockClusters.get(i), colorMap.get(i));
         }
+
         /*for (BlockStateMemoryBufferSlot myBlock : clientOrgManager.getBlockStateMemory().values()) {
             Color color = Color.GREEN;
             if(

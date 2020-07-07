@@ -15,15 +15,19 @@ public class DigBlockAction extends NavigateToAction{
 
     @Override
     protected void _tick() {
-        tickLook();
+
         if(
-            !getTarget().canEntityTouch(getOrgEntity()) &&
-            !getTarget().isEntityLookingAt(getOrgEntity())
+            !getTarget().canEntityTouch(getOrgEntity())
         ){
             tickNavigate();
+             return;
+        }
+
+        tickArrived();
+        if(!getTarget().isEntityLookingAt(getOrgEntity())){
+            tickLook();
             return;
         }
-        tickArrived();
         BlockRayTraceResult rayTraceResult = getOrgEntity().rayTraceBlocks(getOrgEntity().REACH_DISTANCE);
         if(rayTraceResult == null){
             return;
@@ -53,6 +57,10 @@ public class DigBlockAction extends NavigateToAction{
             material == Material.AIR ||
             material == Material.LAVA
         ){
+            return false;
+        }
+        float hardness = blockState.getBlockHardness(orgEntity.world, chaosTarget.getTargetBlockPos());
+        if(hardness == -1.0F){
             return false;
         }
         return true;

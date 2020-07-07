@@ -24,7 +24,11 @@ public class SettingsMap {
         if(!this.settings.containsKey(chaosSetting.name())){
             throw new ChaosNetException("ChaosSetting not found: " + chaosSetting.name() + " - " + this.settings.keySet().toString());
         }
-        return this.settings.get(chaosSetting.name()).getValue() == "true";
+        String value = this.settings.get(chaosSetting.name()).getValue();
+          if(value.equals("true")){
+              return true;
+          };
+          return false;
     }
     public int getInt(ChaosSettings chaosSetting){
         if(!this.settings.containsKey(chaosSetting.name())){
