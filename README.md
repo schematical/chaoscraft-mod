@@ -1,4 +1,5 @@
 # chaoscraft-mod
+website: chaosnet.ai
 
 Note this is v0.3.* that is currently based off of 1.15.1 and is very much unstable as we build it.
 
