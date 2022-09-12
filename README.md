@@ -1,5 +1,5 @@
 # chaoscraft-mod
-[Sign up on chaosnet.ai to use the mod, it's free](https://chaosnet.ai)
+[Sign up on chaosnet.ai to use the mod](https://chaosnet.ai)
 
 
 Note this is v0.3.* that is currently based off of 1.15.1 and is very much unstable as we build it.
@@ -31,7 +31,7 @@ This will start minecraft and you are ready to go!
 When you start a game you should be prompted to login with your ChaosNet login credentials
 
 ## Select a Training Room:
-Assuming you are NOT connecting to a server that has already been setup once you log in you should be prompted to set the Trianing Room.
+Assuming you are NOT connecting to a server that has already been setup once you log in you should be prompted to set the Training Room.
 
 ## Start Training:
 From there the simulation should kick off.
@@ -46,16 +46,6 @@ Try running the following:
 /chaoscraft-repair
 ```
 This will attempt to repair your build.
-
-## Other stuff:
-### CurseForge:
-Eventually the mod may live at the following:
-
-https://minecraft.curseforge.com/projects/chaoscraftai
-
-
-
-
 
 ## Matt's SideNotes:
 AWS APIGateway Build Commands (I now have a script for this).
